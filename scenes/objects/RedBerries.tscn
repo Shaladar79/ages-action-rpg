@@ -1,0 +1,19 @@
+[gd_scene format=3 uid="uid://ds673l7rktwi7"]
+
+[ext_resource type="Texture2D" uid="uid://dd6vnpymedigu" path="res://art/objects/berry_red.png" id="1_kayot"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_kayot"]
+size = Vector2(30, 16)
+
+[node name="RedBerries" type="Node2D" unique_id=1951334605]
+y_sort_enabled = true
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=57967279]
+texture = ExtResource("1_kayot")
+
+[node name="StaticBody2D" type="StaticBody2D" parent="." unique_id=464364147]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D" unique_id=1402595364]
+y_sort_enabled = true
+position = Vector2(1, 7)
+shape = SubResource("RectangleShape2D_kayot")

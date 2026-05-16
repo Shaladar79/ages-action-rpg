@@ -1,0 +1,18 @@
+[gd_scene format=3 uid="uid://bbtcp0gd34bl6"]
+
+[ext_resource type="Texture2D" uid="uid://c3welt5tyagg" path="res://art/objects/tree_4.png" id="1_js681"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_3uqqh"]
+size = Vector2(53, 31)
+
+[node name="TriTree" type="Node2D" unique_id=377346599]
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=141866262]
+scale = Vector2(2, 2)
+texture = ExtResource("1_js681")
+
+[node name="StaticBody2D" type="StaticBody2D" parent="." unique_id=1116252684]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D" unique_id=157275179]
+position = Vector2(0.5, 15.5)
+shape = SubResource("RectangleShape2D_3uqqh")

@@ -1,0 +1,21 @@
+[gd_scene format=3 uid="uid://8eslssy1o847"]
+
+[ext_resource type="Texture2D" uid="uid://cn6fklkkbxiub" path="res://art/objects/rock_1.png" id="1_8kf4m"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_8kf4m"]
+size = Vector2(11.333334, 5.333334)
+
+[node name="RockLarge" type="Node2D" unique_id=1659248713]
+z_as_relative = false
+
+[node name="Sprite" type="Sprite2D" parent="." unique_id=581538357]
+y_sort_enabled = true
+texture = ExtResource("1_8kf4m")
+
+[node name="Body" type="StaticBody2D" parent="." unique_id=840178050]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Body" unique_id=81325060]
+y_sort_enabled = true
+position = Vector2(0, 9)
+scale = Vector2(3, 3)
+shape = SubResource("RectangleShape2D_8kf4m")

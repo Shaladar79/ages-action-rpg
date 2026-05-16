@@ -1,0 +1,17 @@
+// sprite_four_angle_walking_df7efb83.png (exported)
+// 192×192 | 4×4 = 16 frames
+
+this.load.spritesheet('sprite_four_angle_walking_df7efb83', 'sprite_four_angle_walking_df7efb83.png', {
+    frameWidth: 48,
+    frameHeight: 48
+});
+
+this.anims.create({
+    key: 'sprite_four_angle_walking_df7efb83_anim',
+    frames: this.anims.generateFrameNumbers('sprite_four_angle_walking_df7efb83', { start: 0, end: 15 }),
+    frameRate: 30,
+    repeat: -1
+});
+
+const sprite_four_angle_walking_df7efb83 = this.add.sprite(x, y, 'sprite_four_angle_walking_df7efb83');
+sprite_four_angle_walking_df7efb83.play('sprite_four_angle_walking_df7efb83_anim');
