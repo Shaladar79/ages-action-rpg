@@ -1,15 +1,16 @@
 [gd_scene format=4 uid="uid://mocyt6bni57t"]
 
-[ext_resource type="PackedScene" uid="uid://ds0nibabilemd" path="res://scenes/player/Player.tscn" id="1_n72ae"]
-[ext_resource type="Texture2D" uid="uid://de6j78px5p618" path="res://art/tilesets/forest Test.png" id="2_kba2i"]
-[ext_resource type="PackedScene" uid="uid://8eslssy1o847" path="res://scenes/objects/RockLarge.tscn" id="3_b1igh"]
-[ext_resource type="PackedScene" uid="uid://ds673l7rktwi7" path="res://scenes/objects/RedBerries.tscn" id="4_m42qy"]
-[ext_resource type="PackedScene" uid="uid://de75vyy5u7wn" path="res://scenes/objects/FallenLog.tscn" id="5_g4nyb"]
-[ext_resource type="PackedScene" uid="uid://bbtcp0gd34bl6" path="res://scenes/objects/TriTree.tscn" id="6_bhruj"]
+[ext_resource type="Texture2D" uid="uid://de6j78px5p618" path="res://art/tilesets/forest Test.png" id="1_i3rsd"]
+[ext_resource type="PackedScene" uid="uid://de75vyy5u7wn" path="res://scenes/objects/FallenLog.tscn" id="2_f38oy"]
+[ext_resource type="PackedScene" uid="uid://ds0nibabilemd" path="res://scenes/player/Player.tscn" id="3_m0ivj"]
+[ext_resource type="PackedScene" uid="uid://8eslssy1o847" path="res://scenes/objects/RockLarge.tscn" id="4_obw6i"]
+[ext_resource type="PackedScene" uid="uid://ds673l7rktwi7" path="res://scenes/objects/RedBerries.tscn" id="5_56i7j"]
+[ext_resource type="PackedScene" uid="uid://bbtcp0gd34bl6" path="res://scenes/objects/TriTree.tscn" id="6_1aw3b"]
+[ext_resource type="PackedScene" uid="uid://cgquvit4sidaj" path="res://scenes/enemies/Dawn of Man/slimeman_green.tscn" id="7_gaq8h"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_b1igh"]
 resource_name = "forrest_ground"
-texture = ExtResource("2_kba2i")
+texture = ExtResource("1_i3rsd")
 texture_region_size = Vector2i(32, 32)
 4:5/0 = 0
 2:7/0 = 0
@@ -48,19 +49,22 @@ tile_set = SubResource("TileSet_m42qy")
 [node name="YSortObjects" type="Node2D" parent="." unique_id=371510646]
 y_sort_enabled = true
 
-[node name="FallenLog" parent="YSortObjects" unique_id=529155089 instance=ExtResource("5_g4nyb")]
+[node name="FallenLog" parent="YSortObjects" unique_id=529155089 instance=ExtResource("2_f38oy")]
 position = Vector2(221, 155)
 
-[node name="Player" parent="YSortObjects" unique_id=949372820 instance=ExtResource("1_n72ae")]
+[node name="Player" parent="YSortObjects" unique_id=949372820 instance=ExtResource("3_m0ivj")]
 z_index = 1
 y_sort_enabled = true
 position = Vector2(62.279434, 64.89875)
 
-[node name="RockLarge" parent="YSortObjects" unique_id=1659248713 instance=ExtResource("3_b1igh")]
+[node name="RockLarge" parent="YSortObjects" unique_id=1659248713 instance=ExtResource("4_obw6i")]
 position = Vector2(-116, 48)
 
-[node name="RedBerries" parent="YSortObjects" unique_id=1951334605 instance=ExtResource("4_m42qy")]
+[node name="RedBerries" parent="YSortObjects" unique_id=1951334605 instance=ExtResource("5_56i7j")]
 position = Vector2(-74, 85)
 
-[node name="TriTree" parent="YSortObjects" unique_id=377346599 instance=ExtResource("6_bhruj")]
+[node name="TriTree" parent="YSortObjects" unique_id=377346599 instance=ExtResource("6_1aw3b")]
 position = Vector2(-7, 145)
+
+[node name="SlimemanGreen" parent="YSortObjects" unique_id=528529545 instance=ExtResource("7_gaq8h")]
+position = Vector2(123, 176)
