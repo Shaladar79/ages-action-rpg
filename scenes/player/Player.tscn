@@ -217,6 +217,8 @@ animations = [{
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_gfjak"]
 size = Vector2(20, 25)
 
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_4kuee"]
+
 [node name="Player" type="CharacterBody2D" unique_id=949372820]
 script = ExtResource("1_gfjak")
 
@@ -234,3 +236,11 @@ shape = SubResource("RectangleShape2D_gfjak")
 position = Vector2(2, 3)
 zoom = Vector2(3, 3)
 position_smoothing_enabled = true
+
+[node name="AttackArea" type="Area2D" parent="." unique_id=2092656896]
+monitoring = false
+monitorable = false
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="AttackArea" unique_id=432478603]
+shape = SubResource("RectangleShape2D_4kuee")
+disabled = true
