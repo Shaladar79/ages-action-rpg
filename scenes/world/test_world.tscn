@@ -1,70 +1,43 @@
-[gd_scene format=4 uid="uid://mocyt6bni57t"]
+[gd_scene format=3 uid="uid://c5ebpy7n55yfh"]
 
-[ext_resource type="Texture2D" uid="uid://de6j78px5p618" path="res://art/tilesets/forest Test.png" id="1_i3rsd"]
+[ext_resource type="Texture2D" uid="uid://dyytytvr8sso1" path="res://art/maps/Parallax Test_World.png" id="1_tjl6x"]
 [ext_resource type="PackedScene" uid="uid://de75vyy5u7wn" path="res://scenes/objects/FallenLog.tscn" id="2_f38oy"]
 [ext_resource type="PackedScene" uid="uid://ds0nibabilemd" path="res://scenes/player/Player.tscn" id="3_m0ivj"]
-[ext_resource type="PackedScene" uid="uid://8eslssy1o847" path="res://scenes/objects/RockLarge.tscn" id="4_obw6i"]
 [ext_resource type="PackedScene" uid="uid://ds673l7rktwi7" path="res://scenes/objects/RedBerries.tscn" id="5_56i7j"]
 [ext_resource type="PackedScene" uid="uid://bbtcp0gd34bl6" path="res://scenes/objects/TriTree.tscn" id="6_1aw3b"]
 [ext_resource type="PackedScene" uid="uid://cgquvit4sidaj" path="res://scenes/enemies/Dawn of Man/slimeman_green.tscn" id="7_gaq8h"]
 
-[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_b1igh"]
-resource_name = "forrest_ground"
-texture = ExtResource("1_i3rsd")
-texture_region_size = Vector2i(32, 32)
-4:5/0 = 0
-2:7/0 = 0
-0:9/0 = 0
-6:9/0 = 0
-4:9/0 = 0
-2:9/0 = 0
-4:7/0 = 0
-6:7/0 = 0
-8:7/0 = 0
-0:7/0 = 0
-0:5/0 = 0
-2:5/0 = 0
-6:5/0 = 0
-8:5/0 = 0
-6:3/0 = 0
-4:3/0 = 0
-2:3/0 = 0
-0:3/0 = 0
-1:0/0 = 0
-4:0/0 = 0
-7:0/0 = 0
-8:3/0 = 0
+[node name="TestWorld" type="Node2D" unique_id=784121060]
 
-[sub_resource type="TileSet" id="TileSet_m42qy"]
-tile_size = Vector2i(32, 32)
-sources/1 = SubResource("TileSetAtlasSource_b1igh")
+[node name="Parallax2D" type="Parallax2D" parent="." unique_id=52794932]
+z_index = -100
 
-[node name="TestWorld_tscn" type="Node2D" unique_id=1879057234]
+[node name="BackgroundSprite" type="Sprite2D" parent="Parallax2D" unique_id=1967778588]
+position = Vector2(545.5, 258.5)
+scale = Vector2(1.4661602, 1.087477)
+texture = ExtResource("1_tjl6x")
 
-[node name="Groundlayer" type="TileMapLayer" parent="." unique_id=2069037765]
-position = Vector2(60, 68)
-tile_map_data = PackedByteArray("AAD8//z/AQABAAAAAAD9//z/AQABAAAAAAD+//z/AQABAAAAAAD///z/AQABAAAAAAAAAPz/AQABAAAAAAABAPz/AQABAAAAAAACAPz/AQABAAAAAAADAPz/AQABAAAAAAADAP3/AQABAAAAAAADAP7/AQABAAAAAAADAP//AQABAAAAAAADAAAAAQABAAAAAAADAAEAAQABAAAAAAADAAIAAQABAAAAAAADAAMAAQABAAAAAAADAAQAAQABAAAAAAACAAQAAQABAAAAAAABAAQAAQABAAAAAAAAAAQAAQABAAAAAAD//wQAAQABAAAAAAD+/wQAAQABAAAAAAD9/wQAAQABAAAAAAD8/wQAAQABAAAAAAD8/wMAAQABAAAAAAD8/wIAAQABAAAAAAD8/wEAAQABAAAAAAD8/wAAAQABAAAAAAD8////AQABAAAAAAD8//7/AQABAAAAAAD8//3/AQABAAAAAAD9//3/AQABAAAAAAD+//3/AQABAAAAAAD///3/AQABAAAAAAAAAP3/AQABAAAAAAABAP3/AQABAAAAAAACAP3/AQABAAAAAAACAP7/AQABAAAAAAACAP//AQABAAAAAAABAP//AQABAAAAAAABAP7/AQABAAAAAAAAAP7/AQABAAAAAAD///7/AQABAAAAAAD+//7/AQABAAAAAAD9//7/AQABAAAAAAD9////AQABAAAAAAD+////AQABAAAAAAD/////AQABAAAAAAAAAP//AQABAAAAAAACAAAAAQABAAAAAAACAAEAAQABAAAAAAACAAIAAQABAAAAAAACAAMAAQABAAAAAAABAAMAAQABAAAAAAAAAAMAAQABAAAAAAD//wMAAQABAAAAAAD//wIAAQABAAAAAAD+/wIAAQABAAAAAAD+/wMAAQABAAAAAAD9/wMAAQABAAAAAAD9/wIAAQABAAAAAAD9/wEAAQABAAAAAAD9/wAAAQABAAAAAAD+/wAAAQABAAAAAAD//wAAAQABAAAAAAAAAAAAAQABAAAAAAABAAAAAQABAAAAAAABAAEAAQABAAAAAAAAAAIAAQABAAAAAAD//wEAAQABAAAAAAD+/wEAAQABAAAAAAAAAAEAAQABAAAAAAABAAIAAQABAAAAAAD4//r/AQABAAAAAAD4//v/AQABAAAAAAD4//z/AQABAAAAAAD4//3/AQABAAAAAAD4//7/AQABAAAAAAD4////AQABAAAAAAD4/wAAAQABAAAAAAD4/wEAAQABAAAAAAD4/wIAAQABAAAAAAD4/wMAAQABAAAAAAD4/wQAAQABAAAAAAD4/wUAAQABAAAAAAD5//r/AQABAAAAAAD5//v/AQABAAAAAAD5//z/AQABAAAAAAD5//3/AQABAAAAAAD5//7/AQABAAAAAAD5////AQABAAAAAAD5/wAAAQABAAAAAAD5/wEAAQABAAAAAAD5/wIAAQABAAAAAAD5/wMAAQABAAAAAAD5/wQAAQABAAAAAAD5/wUAAQABAAAAAAD6//r/AQABAAAAAAD6//v/AQABAAAAAAD6//z/AQABAAAAAAD6//3/AQABAAAAAAD6//7/AQABAAAAAAD6////AQABAAAAAAD6/wAAAQABAAAAAAD6/wEAAQABAAAAAAD6/wIAAQABAAAAAAD6/wMAAQABAAAAAAD6/wQAAQABAAAAAAD6/wUAAQABAAAAAAD7//r/AQABAAAAAAD7//v/AQABAAAAAAD7//z/AQABAAAAAAD7//3/AQABAAAAAAD7//7/AQABAAAAAAD7////AQABAAAAAAD7/wAAAQABAAAAAAD7/wEAAQABAAAAAAD7/wIAAQABAAAAAAD7/wMAAQABAAAAAAD7/wQAAQABAAAAAAD7/wUAAQABAAAAAAD8//r/AQABAAAAAAD8//v/AQABAAAAAAD8/wUAAQABAAAAAAD9//r/AQABAAAAAAD9//v/AQABAAAAAAD9/wUAAQABAAAAAAD+//r/AQABAAAAAAD+//v/AQABAAAAAAD+/wUAAQABAAAAAAD///r/AQABAAAAAAD///v/AQABAAAAAAD//wUAAQABAAAAAAAAAPr/AQABAAAAAAAAAPv/AQABAAAAAAAAAAUAAQABAAAAAAABAPr/AQABAAAAAAABAPv/AQABAAAAAAABAAUAAQABAAAAAAACAPr/AQABAAAAAAACAPv/AQABAAAAAAACAAUAAQABAAAAAAADAPr/AQABAAAAAAADAPv/AQABAAAAAAADAAUAAQABAAAAAAAEAPr/AQABAAAAAAAEAPv/AQABAAAAAAAEAPz/AQABAAAAAAAEAP3/AQABAAAAAAAEAP7/AQABAAAAAAAEAP//AQABAAAAAAAEAAAAAQABAAAAAAAEAAEAAQABAAAAAAAEAAIAAQABAAAAAAAEAAMAAQABAAAAAAAEAAQAAQABAAAAAAAEAAUAAQABAAAAAAAFAPr/AQABAAAAAAAFAPv/AQABAAAAAAAFAPz/AQABAAAAAAAFAP3/AQABAAAAAAAFAP7/AQABAAAAAAAFAP//AQABAAAAAAAFAAAAAQABAAAAAAAFAAEAAQABAAAAAAAFAAIAAQABAAAAAAAFAAMAAQABAAAAAAAFAAQAAQABAAAAAAAFAAUAAQABAAAAAAAGAPr/AQABAAAAAAAGAPv/AQABAAAAAAAGAPz/AQABAAAAAAAGAP3/AQABAAAAAAAGAP7/AQABAAAAAAAGAP//AQABAAAAAAAGAAAAAQABAAAAAAAGAAEAAQABAAAAAAAGAAIAAQABAAAAAAAGAAMAAQABAAAAAAAGAAQAAQABAAAAAAAGAAUAAQABAAAAAAAHAPr/AQABAAAAAAAHAPv/AQABAAAAAAAHAPz/AQABAAAAAAAHAP3/AQABAAAAAAAHAP7/AQABAAAAAAAHAP//AQABAAAAAAAHAAAAAQABAAAAAAAHAAEAAQABAAAAAAAHAAIAAQABAAAAAAAHAAMAAQABAAAAAAAHAAQAAQABAAAAAAAHAAUAAQABAAAAAAA=")
-tile_set = SubResource("TileSet_m42qy")
+[node name="YSortObjects" type="Node2D" parent="Parallax2D" unique_id=617368518]
+z_index = 10
+position = Vector2(545.5, 258.5)
+scale = Vector2(1.4661602, 1.087477)
 
-[node name="YSortObjects" type="Node2D" parent="." unique_id=371510646]
+[node name="Player" parent="Parallax2D/YSortObjects" unique_id=949372820 instance=ExtResource("3_m0ivj")]
 y_sort_enabled = true
+position = Vector2(-421.16815, 228.51056)
+scale = Vector2(0.6820537, 0.91955966)
 
-[node name="FallenLog" parent="YSortObjects" unique_id=529155089 instance=ExtResource("2_f38oy")]
-position = Vector2(221, 155)
-
-[node name="Player" parent="YSortObjects" unique_id=949372820 instance=ExtResource("3_m0ivj")]
-z_index = 1
+[node name="FallenLog" parent="Parallax2D/YSortObjects" unique_id=529155089 instance=ExtResource("2_f38oy")]
 y_sort_enabled = true
-position = Vector2(62.279434, 64.89875)
+position = Vector2(-415.02966, 152.1871)
 
-[node name="RockLarge" parent="YSortObjects" unique_id=1659248713 instance=ExtResource("4_obw6i")]
-position = Vector2(-116, 48)
+[node name="RedBerries" parent="Parallax2D/YSortObjects" unique_id=1951334605 instance=ExtResource("5_56i7j")]
+position = Vector2(-357.73715, 200.00421)
 
-[node name="RedBerries" parent="YSortObjects" unique_id=1951334605 instance=ExtResource("5_56i7j")]
-position = Vector2(-74, 85)
+[node name="TriTree" parent="Parallax2D/YSortObjects" unique_id=377346599 instance=ExtResource("6_1aw3b")]
+y_sort_enabled = true
+position = Vector2(-493.46582, 186.21082)
 
-[node name="TriTree" parent="YSortObjects" unique_id=377346599 instance=ExtResource("6_1aw3b")]
-position = Vector2(-7, 145)
-
-[node name="SlimemanGreen" parent="YSortObjects" unique_id=528529545 instance=ExtResource("7_gaq8h")]
-position = Vector2(123, 176)
+[node name="SlimemanGreen" parent="Parallax2D/YSortObjects" unique_id=528529545 instance=ExtResource("7_gaq8h")]
+y_sort_enabled = true
+position = Vector2(-374.78848, 250.57999)

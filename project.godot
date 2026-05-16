@@ -11,7 +11,7 @@ config_version=5
 [application]
 
 config/name="ages"
-run/main_scene="uid://mocyt6bni57t"
+run/main_scene="uid://c5ebpy7n55yfh"
 config/features=PackedStringArray("4.6", "GL Compatibility")
 config/icon="res://icon.svg"
 
