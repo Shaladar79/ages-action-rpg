@@ -239,11 +239,8 @@ position_smoothing_enabled = true
 
 [node name="AttackArea" type="Area2D" parent="." unique_id=2092656896]
 monitoring = false
+monitorable = false
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="AttackArea" unique_id=432478603]
 shape = SubResource("RectangleShape2D_4kuee")
 disabled = true
-
-[node name="WeaponSprite" type="Sprite2D" parent="." unique_id=220139479]
-visible = false
-z_index = 20

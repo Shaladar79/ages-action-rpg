@@ -11,13 +11,9 @@ config_version=5
 [application]
 
 config/name="ages"
-run/main_scene="uid://c5ebpy7n55yfh"
+run/main_scene="uid://05p1dytgra5q"
 config/features=PackedStringArray("4.6", "GL Compatibility")
 config/icon="res://icon.svg"
-
-[autoload]
-
-GameUi="*uid://bxt5jfm7dnpxq"
 
 [display]
 
