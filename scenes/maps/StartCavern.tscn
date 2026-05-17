@@ -5,6 +5,7 @@
 [ext_resource type="PackedScene" uid="uid://ds0nibabilemd" path="res://scenes/player/Player.tscn" id="2_x5kcs"]
 [ext_resource type="Script" uid="uid://cy6l7hu34gun1" path="res://scripts/events/tutorial_trigger.gd" id="4_3i7qf"]
 [ext_resource type="Script" uid="uid://bs1o060dvtvma" path="res://scripts/ui/tutorial_ui.gd" id="5_yp3sn"]
+[ext_resource type="PackedScene" uid="uid://rs71u43sps4l" path="res://scenes/objects/push_rock.tscn" id="6_kcxuk"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_x5kcs"]
 size = Vector2(45, 43)
@@ -20,11 +21,12 @@ centered = false
 
 [node name="CollisionWalls" type="Node2D" parent="." unique_id=1594235200]
 visible = false
-position = Vector2(7, 11)
+position = Vector2(11, 12)
 
 [node name="Top_Left" type="StaticBody2D" parent="CollisionWalls" unique_id=1588707261]
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="CollisionWalls/Top_Left" unique_id=743370922]
+position = Vector2(-3, -3)
 polygon = PackedVector2Array(249, 8, 247, 145, 329, 277, 379, 313, 415, 429, 400, 484, 323, 498, 253, 487, 225, 452, 251, 418, 246, 373, 197, 338, 160, 337, 113, 332, 92, 363, 113, 393, 119, 415, 92, 401, 110, 423, 104, 434, 127, 452, 165, 451, 184, 456, 217, 511, 262, 538, 309, 548, 358, 545, 372, 592, 0, 597, 3, 33)
 
 [node name="Bot_Left" type="StaticBody2D" parent="CollisionWalls" unique_id=1591317102]
@@ -68,7 +70,6 @@ position = Vector2(158, 371)
 [node name="TutorialTriggers" type="Node2D" parent="." unique_id=2071683125]
 
 [node name="MoveTutorialTrigger" type="Area2D" parent="TutorialTriggers" unique_id=643682077]
-visible = false
 position = Vector2(-98, 420)
 script = ExtResource("4_3i7qf")
 tutorial_id = "movement_intro"
@@ -106,3 +107,11 @@ grow_vertical = 2
 bbcode_enabled = true
 fit_content = true
 scroll_active = false
+
+[node name="PushRock" parent="." unique_id=649356019 instance=ExtResource("6_kcxuk")]
+position = Vector2(400, 534)
+scale = Vector2(0.5, 0.5)
+
+[node name="PushRock2" parent="." unique_id=1677131880 instance=ExtResource("6_kcxuk")]
+position = Vector2(433, 501)
+scale = Vector2(0.5, 0.5)

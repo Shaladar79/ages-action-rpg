@@ -1,0 +1,31 @@
+[gd_scene format=3 uid="uid://rs71u43sps4l"]
+
+[ext_resource type="Script" uid="uid://bmfwjf0tmq6a0" path="res://scripts/interactions/push_object.gd" id="1_8u3cr"]
+[ext_resource type="Texture2D" uid="uid://ikh8kmas8jfy" path="res://art/objects/Push_rock.png" id="2_q66qv"]
+[ext_resource type="Script" uid="uid://fofm132o317v" path="res://scripts/interactions/push_object_interaction.gd" id="3_0rcr8"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_o8qf0"]
+size = Vector2(42, 40)
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_q66qv"]
+radius = 28.79236
+
+[node name="PushRock" type="CharacterBody2D" unique_id=649356019]
+position = Vector2(210, 104)
+script = ExtResource("1_8u3cr")
+
+[node name="BodyCollision" type="CollisionShape2D" parent="." unique_id=564913408]
+position = Vector2(-2, 2)
+shape = SubResource("RectangleShape2D_o8qf0")
+
+[node name="RockSprite" type="Sprite2D" parent="." unique_id=1191144608]
+scale = Vector2(1.5, 1.5)
+texture = ExtResource("2_q66qv")
+
+[node name="InteractionArea" type="Area2D" parent="." unique_id=2073416741]
+script = ExtResource("3_0rcr8")
+interaction_id = "push_rock"
+
+[node name="InteractionCollision" type="CollisionShape2D" parent="InteractionArea" unique_id=1780834897]
+visible = false
+shape = SubResource("CircleShape2D_q66qv")

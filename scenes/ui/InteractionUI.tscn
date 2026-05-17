@@ -1,0 +1,28 @@
+[gd_scene format=3 uid="uid://clg4i2koclxec"]
+
+[ext_resource type="Script" uid="uid://dbk7byfycaefh" path="res://scripts/ui/interaction_prompt_ui.gd" id="1_1h4bl"]
+
+[node name="InteractionUi" type="CanvasLayer" unique_id=1523123328 groups=["interaction_ui"]]
+script = ExtResource("1_1h4bl")
+
+[node name="InteractionPromptPanel" type="Panel" parent="." unique_id=1329536962]
+visible = false
+anchors_preset = -1
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -24.0
+offset_top = -24.0
+offset_right = 24.0
+offset_bottom = 24.0
+
+[node name="InteractionPromptLabel" type="Label" parent="InteractionPromptPanel" unique_id=1161943608]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.0
+anchor_bottom = 1.0
+theme_override_font_sizes/font_size = 28
+text = "E"
+horizontal_alignment = 1
+vertical_alignment = 1

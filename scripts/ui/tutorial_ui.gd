@@ -5,6 +5,7 @@ extends CanvasLayer
 
 var message_active: bool = false
 var movement_tutorial_active: bool = false
+var push_object_tutorial_active: bool = false
 var movement_step_index: int = 0
 
 var movement_steps: Array[Dictionary] = [
@@ -38,6 +39,9 @@ func _unhandled_input(event: InputEvent) -> void:
         _handle_movement_tutorial_input(event)
         return
 
+    if push_object_tutorial_active:
+        return
+
     if not message_active:
         return
 
@@ -48,6 +52,7 @@ func _unhandled_input(event: InputEvent) -> void:
 
 func show_message(message: String) -> void:
     movement_tutorial_active = false
+    push_object_tutorial_active = false
     message_label.text = message
     tutorial_panel.modulate.a = 1.0
     tutorial_panel.visible = true
@@ -58,11 +63,14 @@ func hide_message() -> void:
     tutorial_panel.visible = false
     tutorial_panel.modulate.a = 1.0
     message_active = false
+    movement_tutorial_active = false
+    push_object_tutorial_active = false
 
 
 func start_movement_tutorial() -> void:
     message_active = true
     movement_tutorial_active = true
+    push_object_tutorial_active = false
     movement_step_index = 0
 
     tutorial_panel.modulate.a = 1.0
@@ -108,13 +116,51 @@ func _update_movement_tutorial_text() -> void:
 func _finish_movement_tutorial() -> void:
     movement_tutorial_active = false
     message_active = false
+    _fade_out_tutorial_panel()
 
+
+func show_dialogue_continue_tutorial() -> void:
+    message_active = true
+    movement_tutorial_active = false
+    push_object_tutorial_active = false
+
+    tutorial_panel.modulate.a = 1.0
+    tutorial_panel.visible = true
+
+    message_label.text = "Dialogue appears above your character. Press Enter to continue."
+
+
+func show_push_object_tutorial() -> void:
+    message_active = true
+    movement_tutorial_active = false
+    push_object_tutorial_active = true
+
+    tutorial_panel.modulate.a = 1.0
+    tutorial_panel.visible = true
+
+    message_label.text = (
+		"Some objects can be moved.\n\n"
+        + "When you are next to an object that can be moved, the interact prompt will show.\n\n"
+        + "Press E to interact with the object."
+    )
+
+
+func finish_push_object_tutorial() -> void:
+    if not push_object_tutorial_active:
+        return
+
+    push_object_tutorial_active = false
+    message_active = false
+    _fade_out_tutorial_panel()
+
+
+func _fade_out_tutorial_panel() -> void:
     var tween := create_tween()
     tween.tween_property(tutorial_panel, "modulate:a", 0.0, 0.75)
-    tween.finished.connect(_on_movement_tutorial_fade_finished)
+    tween.finished.connect(_on_tutorial_fade_finished)
 
 
-func _on_movement_tutorial_fade_finished() -> void:
+func _on_tutorial_fade_finished() -> void:
     tutorial_panel.visible = false
     tutorial_panel.modulate.a = 1.0
     message_label.text = ""

@@ -9,12 +9,15 @@ extends CharacterBody2D
 @onready var animated_sprite: AnimatedSprite2D = $AnimatedSprite2D
 @onready var attack_area: Area2D = $AttackArea
 @onready var attack_collision: CollisionShape2D = $AttackArea/CollisionShape2D
+@onready var dialogue_bubble: Node2D = $DialogueBubble
 
 var last_direction: String = "down"
 var is_attacking: bool = false
 var attack_timer: float = 0.0
 var cooldown_timer: float = 0.0
 var hit_targets: Array[Node] = []
+
+var nearby_interactable: Node = null
 
 
 func _ready() -> void:
@@ -27,6 +30,12 @@ func _ready() -> void:
 func _physics_process(delta: float) -> void:
     _update_attack_timers(delta)
 
+    if Input.is_action_just_pressed("ui_accept"):
+        if is_dialogue_active():
+            hide_dialogue()
+            _notify_nearby_interactable_dialogue_closed()
+            return
+
     var input_vector := Vector2.ZERO
 
     input_vector.x = Input.get_action_strength("move_right") - Input.get_action_strength("move_left")
@@ -38,6 +47,9 @@ func _physics_process(delta: float) -> void:
     velocity = input_vector * move_speed
     move_and_slide()
 
+    if Input.is_action_just_pressed("interact"):
+        _try_interact()
+
     if Input.is_action_just_pressed("attack"):
         _try_attack()
 
@@ -47,7 +59,92 @@ func _physics_process(delta: float) -> void:
     _update_animation(input_vector)
 
 
+func show_dialogue(message: String) -> void:
+    if dialogue_bubble == null:
+        return
+
+    if dialogue_bubble.has_method("show_dialogue"):
+        dialogue_bubble.show_dialogue(message)
+
+
+func hide_dialogue() -> void:
+    if dialogue_bubble == null:
+        return
+
+    if dialogue_bubble.has_method("hide_dialogue"):
+        dialogue_bubble.hide_dialogue()
+
+
+func is_dialogue_active() -> bool:
+    if dialogue_bubble == null:
+        return false
+
+    if dialogue_bubble.has_method("is_dialogue_active"):
+        return dialogue_bubble.is_dialogue_active()
+
+    return false
+
+
+func _notify_nearby_interactable_dialogue_closed() -> void:
+    if nearby_interactable == null:
+        return
+
+    if nearby_interactable.has_method("on_player_dialogue_closed"):
+        nearby_interactable.on_player_dialogue_closed(self)
+
+
+func set_nearby_interactable(interactable: Node) -> void:
+    nearby_interactable = interactable
+    print("Nearby interactable: ", interactable.name)
+    _show_interaction_prompt()
+
+
+func clear_nearby_interactable(interactable: Node) -> void:
+    if nearby_interactable != interactable:
+        return
+
+    print("Cleared interactable: ", interactable.name)
+    nearby_interactable = null
+    _hide_interaction_prompt()
+
+
+func _show_interaction_prompt() -> void:
+    var interaction_ui := get_tree().get_first_node_in_group("interaction_ui")
+
+    if interaction_ui == null:
+        push_warning("No node found in group: interaction_ui")
+        return
+
+    if interaction_ui.has_method("show_prompt"):
+        interaction_ui.show_prompt("E")
+
+
+func _hide_interaction_prompt() -> void:
+    var interaction_ui := get_tree().get_first_node_in_group("interaction_ui")
+
+    if interaction_ui == null:
+        return
+
+    if interaction_ui.has_method("hide_prompt"):
+        interaction_ui.hide_prompt()
+
+
+func _try_interact() -> void:
+    if is_dialogue_active():
+        return
+
+    if nearby_interactable == null:
+        print("No nearby interactable.")
+        return
+
+    if nearby_interactable.has_method("interact"):
+        nearby_interactable.interact(self)
+
+
 func _try_attack() -> void:
+    if is_dialogue_active():
+        return
+
     if is_attacking:
         return
 
