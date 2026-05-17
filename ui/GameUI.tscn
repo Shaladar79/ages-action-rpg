@@ -1,0 +1,70 @@
+[gd_scene format=3 uid="uid://bxt5jfm7dnpxq"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_rmwll"]
+
+[node name="GameUi" type="CanvasLayer" unique_id=397137118]
+
+[node name="HUD" type="Control" parent="." unique_id=1229583169]
+layout_mode = 3
+offset_left = 20.0
+offset_top = 20.0
+offset_right = 300.0
+offset_bottom = 120.0
+
+[node name="Health" type="Label" parent="HUD" unique_id=396948228]
+layout_mode = 0
+offset_left = -12.0
+offset_top = -17.0
+offset_right = 96.0
+offset_bottom = 6.0
+text = "Health:  10/10"
+
+[node name="Mana" type="Label" parent="HUD" unique_id=1244037222]
+layout_mode = 0
+offset_left = -10.0
+offset_top = 6.0
+offset_right = 71.0
+offset_bottom = 29.0
+text = "Mana:  5/5"
+
+[node name="InteractionPrompt" type="Control" parent="." unique_id=1983246764]
+visible = false
+layout_mode = 3
+anchor_right = 1.0
+anchor_bottom = 0.95
+
+[node name="InteractionLabel" type="Label" parent="InteractionPrompt" unique_id=1808072959]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "Press E to Interact"
+label_settings = SubResource("LabelSettings_rmwll")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="PauseMenu" type="Control" parent="." unique_id=177807478]
+visible = false
+layout_mode = 3
+anchors_preset = 0
+offset_left = 661.0
+offset_top = 232.0
+offset_right = 701.0
+offset_bottom = 272.0
+
+[node name="Panel" type="Panel" parent="PauseMenu" unique_id=858258006]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="Button" type="Button" parent="PauseMenu/Panel" unique_id=1279082822]
+layout_mode = 0
+offset_right = 8.0
+offset_bottom = 8.0
+
+[node name="Button2" type="Button" parent="PauseMenu/Panel" unique_id=576981056]
+layout_mode = 0
+offset_right = 8.0
+offset_bottom = 8.0

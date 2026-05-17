@@ -15,6 +15,10 @@ run/main_scene="uid://c5ebpy7n55yfh"
 config/features=PackedStringArray("4.6", "GL Compatibility")
 config/icon="res://icon.svg"
 
+[autoload]
+
+GameUi="*uid://bxt5jfm7dnpxq"
+
 [display]
 
 window/size/borderless=true
