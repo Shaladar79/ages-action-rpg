@@ -13,31 +13,38 @@
 z_index = -100
 
 [node name="BackgroundSprite" type="Sprite2D" parent="Parallax2D" unique_id=1967778588]
-position = Vector2(545.5, 258.5)
+position = Vector2(912, 210.00002)
 scale = Vector2(1.4661602, 1.087477)
 texture = ExtResource("1_tjl6x")
 
-[node name="YSortObjects" type="Node2D" parent="Parallax2D" unique_id=617368518]
+[node name="MapCollision" type="Node2D" parent="." unique_id=1568380810]
+
+[node name="Wall1" type="StaticBody2D" parent="MapCollision" unique_id=1375287318]
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="MapCollision/Wall1" unique_id=932395473]
+polygon = PackedVector2Array(239, 160, 255, 130, 311, 111, 350, 116, 383, 100, 440, 98, 473, 118, 437, 105, 380, 107, 350, 124, 309, 118, 259, 135)
+
+[node name="YSortObjects" type="Node2D" parent="." unique_id=617368518]
 z_index = 10
 position = Vector2(545.5, 258.5)
 scale = Vector2(1.4661602, 1.087477)
 
-[node name="Player" parent="Parallax2D/YSortObjects" unique_id=949372820 instance=ExtResource("3_m0ivj")]
+[node name="Player" parent="YSortObjects" unique_id=949372820 instance=ExtResource("3_m0ivj")]
 y_sort_enabled = true
-position = Vector2(-421.16815, 228.51056)
+position = Vector2(-112.87985, 5.0575867)
 scale = Vector2(0.6820537, 0.91955966)
 
-[node name="FallenLog" parent="Parallax2D/YSortObjects" unique_id=529155089 instance=ExtResource("2_f38oy")]
+[node name="FallenLog" parent="YSortObjects" unique_id=529155089 instance=ExtResource("2_f38oy")]
 y_sort_enabled = true
-position = Vector2(-415.02966, 152.1871)
+position = Vector2(-168.12627, 200.9238)
 
-[node name="RedBerries" parent="Parallax2D/YSortObjects" unique_id=1951334605 instance=ExtResource("5_56i7j")]
-position = Vector2(-357.73715, 200.00421)
+[node name="RedBerries" parent="YSortObjects" unique_id=1951334605 instance=ExtResource("5_56i7j")]
+position = Vector2(-136.06975, 132.87637)
 
-[node name="TriTree" parent="Parallax2D/YSortObjects" unique_id=377346599 instance=ExtResource("6_1aw3b")]
+[node name="TriTree" parent="YSortObjects" unique_id=377346599 instance=ExtResource("6_1aw3b")]
 y_sort_enabled = true
-position = Vector2(-493.46582, 186.21082)
+position = Vector2(-226.10083, 204.60204)
 
-[node name="SlimemanGreen" parent="Parallax2D/YSortObjects" unique_id=528529545 instance=ExtResource("7_gaq8h")]
+[node name="SlimemanGreen" parent="YSortObjects" unique_id=528529545 instance=ExtResource("7_gaq8h")]
 y_sort_enabled = true
-position = Vector2(-374.78848, 250.57999)
+position = Vector2(-84.23364, 158.62402)
