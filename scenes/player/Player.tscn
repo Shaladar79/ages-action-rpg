@@ -234,7 +234,11 @@ shape = SubResource("RectangleShape2D_gfjak")
 
 [node name="Camera2D" type="Camera2D" parent="." unique_id=909399435]
 position = Vector2(2, 3)
-zoom = Vector2(3, 3)
+zoom = Vector2(2, 2)
+limit_left = 1
+limit_top = 1
+limit_right = 1448
+limit_bottom = 1086
 position_smoothing_enabled = true
 
 [node name="AttackArea" type="Area2D" parent="." unique_id=2092656896]

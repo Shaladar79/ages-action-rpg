@@ -1,12 +1,14 @@
 [gd_scene format=3 uid="uid://05p1dytgra5q"]
 
 [ext_resource type="Texture2D" uid="uid://dacq3gr5gft46" path="res://art/maps/Parallax_Cavern_Start.png" id="1_6p470"]
+[ext_resource type="Script" uid="uid://by3sbf30mtuip" path="res://scenes/maps/start_cavern.gd" id="1_x5kcs"]
 [ext_resource type="PackedScene" uid="uid://ds0nibabilemd" path="res://scenes/player/Player.tscn" id="2_x5kcs"]
 
 [node name="StartCavern" type="Node2D" unique_id=102575327]
+script = ExtResource("1_x5kcs")
 
 [node name="MapImage" type="Sprite2D" parent="." unique_id=470302150]
-position = Vector2(2, -2)
+position = Vector2(3, -2)
 texture = ExtResource("1_6p470")
 centered = false
 
@@ -50,4 +52,7 @@ polygon = PackedVector2Array(1050, 609, 1052, 641, 1073, 657, 1104, 674, 1117, 6
 polygon = PackedVector2Array(1135, 170, 1149, 169, 1160, 176, 1176, 167, 1194, 188, 1210, 201, 1195, 207, 1192, 218, 1198, 223, 1214, 227, 1229, 232, 1253, 232, 1265, 214, 1281, 204, 1295, 185, 1285, 170, 1285, 147, 1288, 139, 1301, 143, 1315, 139, 1324, 150, 1329, 160, 1334, 173, 1332, 200, 1320, 219, 1311, 229, 1330, 243, 1323, 270, 1306, 275, 1298, 289, 1315, 303, 1342, 298, 1356, 305, 1361, 323, 1366, 334, 1364, 352, 1345, 358, 1340, 377, 1330, 401, 1316, 400, 1302, 417, 1312, 429, 1351, 428, 1351, 443, 1339, 458, 1363, 477, 1367, 497, 1378, 469, 1389, 468, 1393, 490, 1393, 515, 1388, 533, 1381, 549, 1374, 574, 1375, 594, 1361, 643, 1445, 642, 1444, 48, 1133, 64)
 
 [node name="Player" parent="." unique_id=949372820 instance=ExtResource("2_x5kcs")]
-position = Vector2(154, 373)
+position = Vector2(160, 374)
+
+[node name="PlayerSpawn" type="Marker2D" parent="." unique_id=201078554]
+position = Vector2(158, 371)
