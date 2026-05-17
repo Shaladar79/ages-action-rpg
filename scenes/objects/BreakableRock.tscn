@@ -1,0 +1,31 @@
+[gd_scene format=3 uid="uid://bbc8361yvbkxt"]
+
+[ext_resource type="Script" uid="uid://b0u734ajenlyv" path="res://scripts/interactions/breakable_object.gd" id="1_853ie"]
+[ext_resource type="Texture2D" uid="uid://bbie7cdfqqf2" path="res://art/objects/purple_crystal.png" id="2_nfurn"]
+[ext_resource type="Script" uid="uid://brlfbeh6ll8br" path="res://scripts/interactions/breakable_object_interaction.gd" id="3_cnwjm"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_q83p1"]
+size = Vector2(61, 57)
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_1n8uw"]
+radius = 53.15073
+
+[node name="BreakableRock" type="StaticBody2D" unique_id=1719668920]
+scale = Vector2(0.75, 0.75)
+script = ExtResource("1_853ie")
+
+[node name="BodyCollision" type="CollisionShape2D" parent="." unique_id=823390067]
+position = Vector2(-1.5, 0.5)
+shape = SubResource("RectangleShape2D_q83p1")
+
+[node name="RockSprite" type="Sprite2D" parent="." unique_id=1395192022]
+z_index = 10
+scale = Vector2(1.5, 1.5)
+texture = ExtResource("2_nfurn")
+
+[node name="InteractionArea" type="Area2D" parent="." unique_id=572415598]
+script = ExtResource("3_cnwjm")
+interaction_id = "breakable_rock"
+
+[node name="InteractionCollision" type="CollisionShape2D" parent="InteractionArea" unique_id=1606220924]
+shape = SubResource("CircleShape2D_1n8uw")

@@ -1,11 +1,12 @@
 [gd_scene format=3 uid="uid://05p1dytgra5q"]
 
-[ext_resource type="Texture2D" uid="uid://dacq3gr5gft46" path="res://art/maps/Parallax_Cavern_Start.png" id="1_6p470"]
 [ext_resource type="Script" uid="uid://by3sbf30mtuip" path="res://scenes/maps/start_cavern.gd" id="1_x5kcs"]
+[ext_resource type="Texture2D" uid="uid://bbj6po78v6q28" path="res://art/maps/Parallax_StartCavern.png" id="2_rl85u"]
 [ext_resource type="PackedScene" uid="uid://ds0nibabilemd" path="res://scenes/player/Player.tscn" id="2_x5kcs"]
 [ext_resource type="Script" uid="uid://cy6l7hu34gun1" path="res://scripts/events/tutorial_trigger.gd" id="4_3i7qf"]
 [ext_resource type="Script" uid="uid://bs1o060dvtvma" path="res://scripts/ui/tutorial_ui.gd" id="5_yp3sn"]
 [ext_resource type="PackedScene" uid="uid://rs71u43sps4l" path="res://scenes/objects/push_rock.tscn" id="6_kcxuk"]
+[ext_resource type="PackedScene" uid="uid://bbc8361yvbkxt" path="res://scenes/objects/BreakableRock.tscn" id="7_rl85u"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_x5kcs"]
 size = Vector2(45, 43)
@@ -15,12 +16,12 @@ position = Vector2(-7, -11)
 script = ExtResource("1_x5kcs")
 
 [node name="MapImage" type="Sprite2D" parent="." unique_id=470302150]
+z_index = -100
 position = Vector2(9, 9)
-texture = ExtResource("1_6p470")
+texture = ExtResource("2_rl85u")
 centered = false
 
 [node name="CollisionWalls" type="Node2D" parent="." unique_id=1594235200]
-visible = false
 position = Vector2(11, 12)
 
 [node name="Top_Left" type="StaticBody2D" parent="CollisionWalls" unique_id=1588707261]
@@ -70,7 +71,7 @@ position = Vector2(158, 371)
 [node name="TutorialTriggers" type="Node2D" parent="." unique_id=2071683125]
 
 [node name="MoveTutorialTrigger" type="Area2D" parent="TutorialTriggers" unique_id=643682077]
-position = Vector2(-98, 420)
+position = Vector2(-98, 418)
 script = ExtResource("4_3i7qf")
 tutorial_id = "movement_intro"
 
@@ -108,10 +109,11 @@ bbcode_enabled = true
 fit_content = true
 scroll_active = false
 
-[node name="PushRock" parent="." unique_id=649356019 instance=ExtResource("6_kcxuk")]
-position = Vector2(400, 534)
+[node name="Objects" type="Node2D" parent="." unique_id=790765806]
+
+[node name="PushRock" parent="Objects" unique_id=649356019 instance=ExtResource("6_kcxuk")]
+position = Vector2(411, 529)
 scale = Vector2(0.5, 0.5)
 
-[node name="PushRock2" parent="." unique_id=1677131880 instance=ExtResource("6_kcxuk")]
-position = Vector2(433, 501)
-scale = Vector2(0.5, 0.5)
+[node name="BreakableRock" parent="Objects" unique_id=1719668920 instance=ExtResource("7_rl85u")]
+position = Vector2(457, 456)
