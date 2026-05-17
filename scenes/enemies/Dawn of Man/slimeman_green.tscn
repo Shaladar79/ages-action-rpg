@@ -218,6 +218,9 @@ animations = [{
 radius = 12.0
 height = 24.0
 
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_622we"]
+size = Vector2(23, 35)
+
 [node name="SlimemanGreen" type="CharacterBody2D" unique_id=528529545]
 script = ExtResource("1_622we")
 
@@ -230,6 +233,8 @@ frame_progress = 0.64058846
 position = Vector2(0, 8)
 shape = SubResource("CapsuleShape2D_622we")
 
-[node name="Area2D" type="Area2D" parent="." unique_id=1328403141]
+[node name="Hurtbox" type="Area2D" parent="." unique_id=1328403141]
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D" unique_id=361271642]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Hurtbox" unique_id=361271642]
+position = Vector2(-0.5, 1.5)
+shape = SubResource("RectangleShape2D_622we")

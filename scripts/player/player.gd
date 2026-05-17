@@ -1,9 +1,10 @@
 extends CharacterBody2D
 
 @export var move_speed: float = 120.0
-@export var attack_duration: float = 0.15
+@export var attack_duration: float = 0.5
 @export var attack_cooldown: float = 0.35
 @export var attack_offset: float = 24.0
+@export var attack_damage: int = 1
 
 @onready var animated_sprite: AnimatedSprite2D = $AnimatedSprite2D
 @onready var attack_area: Area2D = $AttackArea
@@ -13,10 +14,14 @@ var last_direction: String = "down"
 var is_attacking: bool = false
 var attack_timer: float = 0.0
 var cooldown_timer: float = 0.0
+var hit_targets: Array[Node] = []
 
 
 func _ready() -> void:
     _disable_attack_hitbox()
+
+    if not attack_area.area_entered.is_connected(_on_attack_area_entered):
+        attack_area.area_entered.connect(_on_attack_area_entered)
 
 
 func _physics_process(delta: float) -> void:
@@ -36,6 +41,9 @@ func _physics_process(delta: float) -> void:
     if Input.is_action_just_pressed("attack"):
         _try_attack()
 
+    if is_attacking:
+        _check_attack_overlaps()
+
     _update_animation(input_vector)
 
 
@@ -49,11 +57,13 @@ func _try_attack() -> void:
     is_attacking = true
     attack_timer = attack_duration
     cooldown_timer = attack_cooldown
+    hit_targets.clear()
 
     _position_attack_area()
     _enable_attack_hitbox()
 
     print("Player attack: ", last_direction)
+    print("AttackArea position: ", attack_area.position)
 
 
 func _update_attack_timers(delta: float) -> void:
@@ -94,6 +104,37 @@ func _disable_attack_hitbox() -> void:
     attack_area.monitorable = false
     attack_collision.disabled = true
     attack_area.visible = false
+
+
+func _on_attack_area_entered(area: Area2D) -> void:
+    print("AttackArea entered area: ", area.name)
+    _damage_area_target(area)
+
+
+func _check_attack_overlaps() -> void:
+    var overlapping_areas := attack_area.get_overlapping_areas()
+
+    for area in overlapping_areas:
+        print("AttackArea overlapping: ", area.name)
+        _damage_area_target(area)
+
+
+func _damage_area_target(area: Area2D) -> void:
+    if not is_attacking:
+        return
+
+    var target := area.get_parent()
+
+    if target == null:
+        return
+
+    if hit_targets.has(target):
+        return
+
+    if target.has_method("take_damage"):
+        hit_targets.append(target)
+        target.take_damage(attack_damage)
+        print("Hit target: ", target.name)
 
 
 func _update_animation(input_vector: Vector2) -> void:
