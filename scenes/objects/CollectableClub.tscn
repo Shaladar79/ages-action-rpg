@@ -1,0 +1,23 @@
+[gd_scene format=3 uid="uid://c54peu6mqtky8"]
+
+[ext_resource type="Script" uid="uid://dyiv774f36ila" path="res://scripts/interactions/collectable_object.gd" id="1_4xwd6"]
+[ext_resource type="Texture2D" uid="uid://cgp8rhibrpqu4" path="res://art/weapons/Clubs/T1/stone_club.png" id="2_450hx"]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_4xwd6"]
+height = 36.0
+
+[node name="CollectableClub" type="Area2D" unique_id=524225198]
+script = ExtResource("1_4xwd6")
+item_id = "club"
+item_name = "Stone Club"
+item_type = "weapon"
+pickup_message = "You recieved the Stone Club!"
+show_dialogue_on_collect = true
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1064770694]
+scale = Vector2(0.05, 0.05)
+texture = ExtResource("2_450hx")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=302091843]
+visible = false
+shape = SubResource("CapsuleShape2D_4xwd6")

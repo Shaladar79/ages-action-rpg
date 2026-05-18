@@ -35,13 +35,12 @@ func _ready() -> void:
     if not attack_area.area_entered.is_connected(_on_attack_area_entered):
         attack_area.area_entered.connect(_on_attack_area_entered)
     
-    add_inventory_item("club", "Stone Club")
-    equip_weapon("club")
+
 
 func _physics_process(delta: float) -> void:
     _update_attack_timers(delta)
 
-    if Input.is_action_just_pressed("ui_accept"):
+    if Input.is_action_just_pressed("dialogue_continue"):
         if is_dialogue_active():
             hide_dialogue()
             _notify_nearby_interactable_dialogue_closed()

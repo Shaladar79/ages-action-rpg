@@ -45,7 +45,7 @@ func _unhandled_input(event: InputEvent) -> void:
     if not message_active:
         return
 
-    if event.is_action_pressed("ui_accept"):
+    if event.is_action_pressed("dialogue_continue"):
         hide_message()
         get_viewport().set_input_as_handled()
 
@@ -127,7 +127,7 @@ func show_dialogue_continue_tutorial() -> void:
     tutorial_panel.modulate.a = 1.0
     tutorial_panel.visible = true
 
-    message_label.text = "Dialogue appears above your character. Press Enter to continue."
+    message_label.text = "Dialogue appears above your character. Press Tab to continue."
 
 
 func show_push_object_tutorial() -> void:
@@ -139,7 +139,7 @@ func show_push_object_tutorial() -> void:
     tutorial_panel.visible = true
 
     message_label.text = (
-		"Some objects can be moved.\n\n"
+        "Some objects can be moved.\n\n"
         + "When you are next to an object that can be moved, the interact prompt will show.\n\n"
         + "Press E to interact with the object."
     )
