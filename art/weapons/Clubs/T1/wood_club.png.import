@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bsfs3hi34r3w1"
-path="res://.godot/imported/Club_T1_atk_L.png-02bf05cbc7f2b5e704bdc31e11906916.ctex"
+uid="uid://bmjhjj076i7ia"
+path="res://.godot/imported/wood_club.png-175bc853ba9ffa603a4e7e09825bec03.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://art/weapons/Clubs/T1/Club_T1_atk_L.png"
-dest_files=["res://.godot/imported/Club_T1_atk_L.png-02bf05cbc7f2b5e704bdc31e11906916.ctex"]
+source_file="res://art/weapons/Clubs/T1/wood_club.png"
+dest_files=["res://.godot/imported/wood_club.png-175bc853ba9ffa603a4e7e09825bec03.ctex"]
 
 [params]
 

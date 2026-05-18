@@ -15,6 +15,7 @@ scale = Vector2(0.75, 0.75)
 script = ExtResource("1_853ie")
 
 [node name="BodyCollision" type="CollisionShape2D" parent="." unique_id=823390067]
+visible = false
 position = Vector2(-1.5, 0.5)
 shape = SubResource("RectangleShape2D_q83p1")
 
@@ -24,6 +25,7 @@ scale = Vector2(1.5, 1.5)
 texture = ExtResource("2_nfurn")
 
 [node name="InteractionArea" type="Area2D" parent="." unique_id=572415598]
+visible = false
 script = ExtResource("3_cnwjm")
 interaction_id = "breakable_rock"
 

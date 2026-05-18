@@ -3,6 +3,7 @@
 [ext_resource type="Script" uid="uid://clw4trxet62jj" path="res://scripts/player/player.gd" id="1_gfjak"]
 [ext_resource type="Texture2D" uid="uid://bhsdwkfyygvar" path="res://art/characters/player/hero_primitive_walk_idle.png" id="2_4kuee"]
 [ext_resource type="Script" uid="uid://drrvu6g7hnmpk" path="res://scripts/ui/dialogue_bubble.gd" id="3_4kuee"]
+[ext_resource type="Texture2D" uid="uid://cgp8rhibrpqu4" path="res://art/weapons/Clubs/T1/stone_club.png" id="4_524rm"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_524rm"]
 atlas = ExtResource("2_4kuee")
@@ -222,6 +223,7 @@ size = Vector2(20, 25)
 
 [node name="Player" type="CharacterBody2D" unique_id=949372820]
 script = ExtResource("1_gfjak")
+weapon_visual_scale = Vector2(0.06, 0.06)
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=664127344]
 sprite_frames = SubResource("SpriteFrames_mndc6")
@@ -229,6 +231,7 @@ animation = &"walk_up"
 frame_progress = 0.71346617
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=582978164]
+visible = false
 y_sort_enabled = true
 position = Vector2(0, 5.5)
 shape = SubResource("RectangleShape2D_gfjak")
@@ -243,10 +246,12 @@ limit_bottom = 1086
 position_smoothing_enabled = true
 
 [node name="AttackArea" type="Area2D" parent="." unique_id=2092656896]
+visible = false
 monitoring = false
 monitorable = false
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="AttackArea" unique_id=432478603]
+visible = false
 shape = SubResource("RectangleShape2D_4kuee")
 disabled = true
 
@@ -256,7 +261,6 @@ script = ExtResource("3_4kuee")
 
 [node name="DialoguePanel" type="Panel" parent="DialogueBubble" unique_id=1674102342]
 custom_minimum_size = Vector2(240, 56)
-anchors_preset = -1
 offset_left = 1.0
 offset_right = 41.0
 offset_bottom = 40.0
@@ -274,3 +278,8 @@ theme_override_font_sizes/normal_font_size = 10
 bbcode_enabled = true
 text = "Test"
 scroll_active = false
+
+[node name="WeaponSprite" type="Sprite2D" parent="." unique_id=126568166]
+visible = false
+scale = Vector2(0.2, 0.2)
+texture = ExtResource("4_524rm")

@@ -22,6 +22,7 @@ texture = ExtResource("2_rl85u")
 centered = false
 
 [node name="CollisionWalls" type="Node2D" parent="." unique_id=1594235200]
+visible = false
 position = Vector2(11, 12)
 
 [node name="Top_Left" type="StaticBody2D" parent="CollisionWalls" unique_id=1588707261]
@@ -69,6 +70,7 @@ visible = false
 position = Vector2(158, 371)
 
 [node name="TutorialTriggers" type="Node2D" parent="." unique_id=2071683125]
+visible = false
 
 [node name="MoveTutorialTrigger" type="Area2D" parent="TutorialTriggers" unique_id=643682077]
 position = Vector2(-98, 418)

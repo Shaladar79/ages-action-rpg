@@ -6,10 +6,14 @@ extends CharacterBody2D
 @export var attack_offset: float = 24.0
 @export var attack_damage: int = 1
 
+@export var weapon_visual_offset: float = 22.0
+@export var weapon_visual_scale: Vector2 = Vector2(1.0, 1.0)
+
 @onready var animated_sprite: AnimatedSprite2D = $AnimatedSprite2D
 @onready var attack_area: Area2D = $AttackArea
 @onready var attack_collision: CollisionShape2D = $AttackArea/CollisionShape2D
 @onready var dialogue_bubble: Node2D = $DialogueBubble
+@onready var weapon_sprite: Sprite2D = get_node_or_null("WeaponSprite") as Sprite2D
 
 var last_direction: String = "down"
 var is_attacking: bool = false
@@ -19,13 +23,20 @@ var hit_targets: Array[Node] = []
 
 var nearby_interactable: Node = null
 
+var inventory: Array[Dictionary] = []
+var equipped_weapon_id: String = ""
+var equipped_weapon_name: String = ""
+
 
 func _ready() -> void:
     _disable_attack_hitbox()
+    _hide_weapon_sprite()
 
     if not attack_area.area_entered.is_connected(_on_attack_area_entered):
         attack_area.area_entered.connect(_on_attack_area_entered)
-
+    
+    add_inventory_item("club", "Stone Club")
+    equip_weapon("club")
 
 func _physics_process(delta: float) -> void:
     _update_attack_timers(delta)
@@ -57,6 +68,60 @@ func _physics_process(delta: float) -> void:
         _check_attack_overlaps()
 
     _update_animation(input_vector)
+
+
+func add_inventory_item(item_id: String, item_name: String) -> void:
+    if has_inventory_item(item_id):
+        print("Inventory already has item: ", item_name)
+        return
+
+    inventory.append({
+        "id": item_id,
+        "name": item_name
+    })
+
+    print("Added to inventory: ", item_name)
+
+
+func has_inventory_item(item_id: String) -> bool:
+    for item in inventory:
+        if item.get("id", "") == item_id:
+            return true
+
+    return false
+
+
+func equip_weapon(item_id: String) -> void:
+    for item in inventory:
+        if item.get("id", "") == item_id:
+            equipped_weapon_id = item_id
+            equipped_weapon_name = item.get("name", item_id)
+            print("Equipped weapon: ", equipped_weapon_name)
+            return
+
+    push_warning("Cannot equip weapon. Item not found in inventory: " + item_id)
+
+
+func unequip_weapon() -> void:
+    equipped_weapon_id = ""
+    equipped_weapon_name = ""
+    _hide_weapon_sprite()
+    print("Weapon unequipped.")
+
+
+func has_equipped_weapon() -> bool:
+    return equipped_weapon_id != ""
+
+
+func get_equipped_weapon_name() -> String:
+    if equipped_weapon_name == "":
+        return "None"
+
+    return equipped_weapon_name
+
+
+func get_inventory_items() -> Array[Dictionary]:
+    return inventory
 
 
 func show_dialogue(message: String) -> void:
@@ -157,6 +222,7 @@ func _try_attack() -> void:
     hit_targets.clear()
 
     _position_attack_area()
+    _show_weapon_sprite_for_attack()
     _enable_attack_hitbox()
 
     print("Player attack: ", last_direction)
@@ -175,6 +241,7 @@ func _update_attack_timers(delta: float) -> void:
     if attack_timer <= 0.0:
         is_attacking = false
         _disable_attack_hitbox()
+        _hide_weapon_sprite()
 
 
 func _position_attack_area() -> void:
@@ -187,6 +254,45 @@ func _position_attack_area() -> void:
             attack_area.position = Vector2(-attack_offset, 0)
         "right":
             attack_area.position = Vector2(attack_offset, 0)
+
+
+func _show_weapon_sprite_for_attack() -> void:
+    if weapon_sprite == null:
+        return
+
+    if not has_equipped_weapon():
+        _hide_weapon_sprite()
+        return
+
+    weapon_sprite.visible = true
+    weapon_sprite.scale = weapon_visual_scale
+    weapon_sprite.flip_h = false
+    weapon_sprite.flip_v = false
+
+    match last_direction:
+        "down":
+            weapon_sprite.position = Vector2(0, weapon_visual_offset)
+            weapon_sprite.rotation_degrees = 180.0
+            weapon_sprite.z_index = 10
+        "up":
+            weapon_sprite.position = Vector2(0, -weapon_visual_offset)
+            weapon_sprite.rotation_degrees = 0.0
+            weapon_sprite.z_index = -1
+        "left":
+            weapon_sprite.position = Vector2(-weapon_visual_offset, 0)
+            weapon_sprite.rotation_degrees = -90.0
+            weapon_sprite.z_index = 10
+        "right":
+            weapon_sprite.position = Vector2(weapon_visual_offset, 0)
+            weapon_sprite.rotation_degrees = 90.0
+            weapon_sprite.z_index = 10
+
+
+func _hide_weapon_sprite() -> void:
+    if weapon_sprite == null:
+        return
+
+    weapon_sprite.visible = false
 
 
 func _enable_attack_hitbox() -> void:
