@@ -1,14 +1,23 @@
 extends RefCounted
 class_name CharacterStats
 
+const STARTING_HEALTH_BASE: int = 15
+const HEALTH_PER_TOUGHNESS: int = 10
+
+const DEFAULT_SPEED_STAT: int = 10
+const DEFAULT_ATTACK_SPEED_BONUS_PER_AGILITY: float = 0.01
+
 var character_name: String = "Gene Ambrose"
 
-var level: int = 1
+var level: int = 0
 var xp: int = 0
-var xp_to_next_level: int = 100
+var xp_to_next_level: int = 3
 
-var max_health: int = 10
-var current_health: int = 10
+var stat_points: int = 0
+var ability_points: int = 0
+
+var max_health: int = 0
+var current_health: int = 0
 
 var has_mana_resource: bool = false
 var max_mana: int = 0
@@ -23,7 +32,7 @@ var agility: int = 1
 var toughness: int = 1
 var endurance: int = 1
 var focus: int = 1
-var speed: int = 1
+var speed: int = DEFAULT_SPEED_STAT
 
 var base_attack: int = 0
 var base_defense: int = 0
@@ -38,12 +47,127 @@ var equipped_accessory_id: String = ""
 var equipped_accessory_name: String = "None"
 
 
+func _init() -> void:
+    recalculate_derived_stats(true)
+
+
+func add_xp(amount: int) -> bool:
+    if amount <= 0:
+        return false
+
+    xp += amount
+    print("Gained XP: ", amount)
+    print("XP: ", xp, " / ", xp_to_next_level)
+
+    if xp >= xp_to_next_level:
+        level_up()
+        return true
+
+    return false
+
+
+func level_up() -> void:
+    level += 1
+    xp = 0
+    stat_points += 1
+    ability_points += 1
+    xp_to_next_level = get_xp_required_for_current_level()
+
+    recalculate_derived_stats(true)
+
+    print("Level up! New level: ", level)
+    print("Stat Points: ", stat_points)
+    print("Ability Points: ", ability_points)
+    print("Next Level XP: ", xp_to_next_level)
+
+
+func get_xp_required_for_current_level() -> int:
+    match level:
+        0:
+            return 3
+        1:
+            return 10
+        2:
+            return 25
+        3:
+            return 50
+        4:
+            return 100
+        _:
+            return 100 + ((level - 4) * 75)
+
+
+func spend_stat_point(stat_id: String) -> bool:
+    if stat_points <= 0:
+        print("No stat points available.")
+        return false
+
+    match stat_id:
+        "might":
+            might += 1
+        "agility":
+            agility += 1
+        "toughness":
+            toughness += 1
+        "speed":
+            speed += 1
+        "endurance":
+            endurance += 1
+        "focus":
+            focus += 1
+        _:
+            push_warning("Unknown stat id: " + stat_id)
+            return false
+
+    stat_points -= 1
+    recalculate_derived_stats(true)
+
+    print("Spent stat point on: ", stat_id)
+    print("Remaining Stat Points: ", stat_points)
+
+    return true
+
+
+func recalculate_derived_stats(heal_by_max_health_gain: bool = false) -> void:
+    var old_max_health := max_health
+
+    max_health = get_calculated_max_health()
+
+    if current_health <= 0:
+        current_health = max_health
+        return
+
+    if heal_by_max_health_gain:
+        var health_gain := max_health - old_max_health
+        if health_gain > 0:
+            current_health += health_gain
+
+    current_health = clampi(current_health, 0, max_health)
+
+
+func get_calculated_max_health() -> int:
+    return STARTING_HEALTH_BASE + (HEALTH_PER_TOUGHNESS * toughness) + _get_equipped_health_bonus()
+
+
 func get_attack() -> int:
     return base_attack + might + _get_equipped_weapon_attack_bonus()
 
 
 func get_defense() -> int:
     return base_defense + _get_equipped_armor_defense_bonus()
+
+
+func get_move_speed(base_move_speed: float, move_speed_per_speed_point: float) -> float:
+    return base_move_speed + ((speed - DEFAULT_SPEED_STAT) * move_speed_per_speed_point)
+
+
+func get_attack_cooldown(base_attack_cooldown: float, attack_speed_bonus_per_agility: float = DEFAULT_ATTACK_SPEED_BONUS_PER_AGILITY) -> float:
+    var speed_multiplier := 1.0 + (agility * attack_speed_bonus_per_agility)
+
+    if speed_multiplier <= 0.0:
+        return base_attack_cooldown
+
+    return base_attack_cooldown / speed_multiplier
 
 
 func get_equipped_weapon_name() -> String:
@@ -70,31 +194,37 @@ func get_equipped_accessory_name() -> String:
 func equip_weapon(item_id: String, item_name: String) -> void:
     equipped_weapon_id = item_id
     equipped_weapon_name = item_name
+    recalculate_derived_stats(false)
 
 
 func equip_armor(item_id: String, item_name: String) -> void:
     equipped_armor_id = item_id
     equipped_armor_name = item_name
+    recalculate_derived_stats(true)
 
 
 func equip_accessory(item_id: String, item_name: String) -> void:
     equipped_accessory_id = item_id
     equipped_accessory_name = item_name
+    recalculate_derived_stats(true)
 
 
 func unequip_weapon() -> void:
     equipped_weapon_id = ""
     equipped_weapon_name = "None"
+    recalculate_derived_stats(false)
 
 
 func unequip_armor() -> void:
     equipped_armor_id = ""
     equipped_armor_name = "None"
+    recalculate_derived_stats(false)
 
 
 func unequip_accessory() -> void:
     equipped_accessory_id = ""
     equipped_accessory_name = "None"
+    recalculate_derived_stats(false)
 
 
 func has_equipped_breakable_tool(required_tag: String) -> bool:
@@ -116,3 +246,17 @@ func _get_equipped_armor_defense_bonus() -> int:
         return 0
 
     return ItemDatabase.get_defense_bonus(equipped_armor_id)
+
+
+func _get_equipped_health_bonus() -> int:
+    var health_bonus := 0
+
+    if equipped_armor_id.strip_edges() != "":
+        var armor_data := ItemDatabase.get_item_data(equipped_armor_id)
+        health_bonus += int(armor_data.get("health_bonus", 0))
+
+    if equipped_accessory_id.strip_edges() != "":
+        var accessory_data := ItemDatabase.get_item_data(equipped_accessory_id)
+        health_bonus += int(accessory_data.get("health_bonus", 0))
+
+    return health_bonus

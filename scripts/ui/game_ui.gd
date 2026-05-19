@@ -14,6 +14,8 @@ extends CanvasLayer
 @onready var character_name_label: Label = $CharacterScreen/Panel/CharacterNameLabel
 @onready var level_label: Label = $CharacterScreen/Panel/LevelLabel
 @onready var xp_label: Label = $CharacterScreen/Panel/XpLabel
+@onready var stat_points_label: Label = get_node_or_null("CharacterScreen/Panel/StatPointsLabel") as Label
+@onready var ability_points_label: Label = get_node_or_null("CharacterScreen/Panel/AbilityPointsLabel") as Label
 
 @onready var sheet_health_label: Label = get_node_or_null("CharacterScreen/Panel/Health") as Label
 @onready var sheet_mana_label: Label = get_node_or_null("CharacterScreen/Panel/Mana") as Label
@@ -29,6 +31,14 @@ extends CanvasLayer
 @onready var endurance_label: Label = get_node_or_null("CharacterScreen/Panel/AttributesPanel_base/Attribute_panel_att/Endurance") as Label
 @onready var focus_label: Label = get_node_or_null("CharacterScreen/Panel/AttributesPanel_base/Attribute_panel_att/Focus") as Label
 @onready var speed_label: Label = get_node_or_null("CharacterScreen/Panel/AttributesPanel_base/Attribute_panel_att/Speed") as Label
+
+@onready var add_might_button: Button = get_node_or_null("CharacterScreen/Panel/AttributesPanel_base/Attribute_panel_att/AddMightButton") as Button
+@onready var add_agility_button: Button = get_node_or_null("CharacterScreen/Panel/AttributesPanel_base/Attribute_panel_att/AddAgilityButton") as Button
+@onready var add_toughness_button: Button = get_node_or_null("CharacterScreen/Panel/AttributesPanel_base/Attribute_panel_att/AddToughnessButton") as Button
+@onready var add_speed_button: Button = get_node_or_null("CharacterScreen/Panel/AttributesPanel_base/Attribute_panel_att/AddSpeedButton") as Button
+
+@onready var add_endurance_button: Button = get_node_or_null("CharacterScreen/Panel/AttributesPanel_base/Attribute_panel_att/AddEnduranceButton") as Button
+@onready var add_focus_button: Button = get_node_or_null("CharacterScreen/Panel/AttributesPanel_base/Attribute_panel_att/AddFocusButton") as Button
 
 @onready var weapon_slot_label: Label = $CharacterScreen/Panel/WeaponSlotLabel
 @onready var armor_slot_label: Label = $CharacterScreen/Panel/ArmorSlotLabel
@@ -51,6 +61,7 @@ func _ready() -> void:
     character_screen.visible = false
     interaction_prompt.visible = false
 
+    _hide_locked_resources_and_stats()
     _connect_buttons()
     _update_hud()
     _update_character_screen()
@@ -71,6 +82,12 @@ func hide_prompt() -> void:
     interaction_prompt.visible = false
 
 
+func refresh_character_display() -> void:
+    _refresh_player_reference()
+    _update_hud()
+    _update_character_screen()
+
+
 func toggle_character_screen() -> void:
     character_screen.visible = not character_screen.visible
 
@@ -89,6 +106,25 @@ func close_character_screen() -> void:
     character_screen.visible = false
 
 
+func _hide_locked_resources_and_stats() -> void:
+    if ability_points_label != null:
+        ability_points_label.visible = false
+
+    if endurance_label != null:
+        endurance_label.visible = false
+
+    if focus_label != null:
+        focus_label.visible = false
+
+    if add_endurance_button != null:
+        add_endurance_button.visible = false
+        add_endurance_button.disabled = true
+
+    if add_focus_button != null:
+        add_focus_button.visible = false
+        add_focus_button.disabled = true
+
+
 func _connect_buttons() -> void:
     if not equip_weapon_button.pressed.is_connected(_on_equip_weapon_button_pressed):
         equip_weapon_button.pressed.connect(_on_equip_weapon_button_pressed)
@@ -101,6 +137,18 @@ func _connect_buttons() -> void:
 
     if not close_button.pressed.is_connected(_on_close_button_pressed):
         close_button.pressed.connect(_on_close_button_pressed)
+
+    if add_might_button != null and not add_might_button.pressed.is_connected(_on_add_might_button_pressed):
+        add_might_button.pressed.connect(_on_add_might_button_pressed)
+
+    if add_agility_button != null and not add_agility_button.pressed.is_connected(_on_add_agility_button_pressed):
+        add_agility_button.pressed.connect(_on_add_agility_button_pressed)
+
+    if add_toughness_button != null and not add_toughness_button.pressed.is_connected(_on_add_toughness_button_pressed):
+        add_toughness_button.pressed.connect(_on_add_toughness_button_pressed)
+
+    if add_speed_button != null and not add_speed_button.pressed.is_connected(_on_add_speed_button_pressed):
+        add_speed_button.pressed.connect(_on_add_speed_button_pressed)
 
 
 func _refresh_player_reference() -> void:
@@ -169,6 +217,9 @@ func _update_character_screen() -> void:
         level_label.text = "Level: --"
         xp_label.text = "XP: -- / --"
 
+        if stat_points_label != null:
+            stat_points_label.text = "Stat Points: --"
+
         _clear_sheet_resources()
         _clear_attributes_panel()
         _clear_combat_stats()
@@ -181,11 +232,19 @@ func _update_character_screen() -> void:
         equip_weapon_button.disabled = true
         equip_armor_button.disabled = true
         equip_accessory_button.disabled = true
+        _set_stat_buttons_disabled(true)
         return
 
     character_name_label.text = stats.character_name
     level_label.text = "Level: " + str(stats.level)
     xp_label.text = "XP: %s / %s" % [stats.xp, stats.xp_to_next_level]
+
+    if stat_points_label != null:
+        stat_points_label.text = "Stat Points: " + str(stats.stat_points)
+
+    if ability_points_label != null:
+        ability_points_label.text = "Ability Points: " + str(stats.ability_points)
+        ability_points_label.visible = false
 
     _update_sheet_resources(stats)
     _update_attributes_panel(stats)
@@ -200,6 +259,8 @@ func _update_character_screen() -> void:
     equip_weapon_button.disabled = not _player_has_item("club")
     equip_armor_button.disabled = true
     equip_accessory_button.disabled = true
+
+    _set_stat_buttons_disabled(stats.stat_points <= 0)
 
 
 func _clear_sheet_resources() -> void:
@@ -251,9 +312,11 @@ func _clear_attributes_panel() -> void:
 
     if endurance_label != null:
         endurance_label.text = "Endurance: --"
+        endurance_label.visible = false
 
     if focus_label != null:
         focus_label.text = "Focus: --"
+        focus_label.visible = false
 
     if speed_label != null:
         speed_label.text = "Speed: --"
@@ -274,9 +337,11 @@ func _update_attributes_panel(stats: CharacterStats) -> void:
 
     if endurance_label != null:
         endurance_label.text = "Endurance: " + str(stats.endurance)
+        endurance_label.visible = false
 
     if focus_label != null:
         focus_label.text = "Focus: " + str(stats.focus)
+        focus_label.visible = false
 
     if speed_label != null:
         speed_label.text = "Speed: " + str(stats.speed)
@@ -296,6 +361,28 @@ func _update_combat_stats(stats: CharacterStats) -> void:
 
     if defense_label != null:
         defense_label.text = "Defense: " + str(stats.get_defense())
+
+
+func _set_stat_buttons_disabled(disabled: bool) -> void:
+    if add_might_button != null:
+        add_might_button.disabled = disabled
+
+    if add_agility_button != null:
+        add_agility_button.disabled = disabled
+
+    if add_toughness_button != null:
+        add_toughness_button.disabled = disabled
+
+    if add_speed_button != null:
+        add_speed_button.disabled = disabled
+
+    if add_endurance_button != null:
+        add_endurance_button.disabled = true
+        add_endurance_button.visible = false
+
+    if add_focus_button != null:
+        add_focus_button.disabled = true
+        add_focus_button.visible = false
 
 
 func _get_inventory_text() -> String:
@@ -327,6 +414,36 @@ func _player_has_item(item_id: String) -> bool:
         return false
 
     return player.has_inventory_item(item_id)
+
+
+func _spend_stat_point(stat_id: String) -> void:
+    if player == null:
+        return
+
+    if not player.has_method("spend_stat_point"):
+        return
+
+    var spent: bool = player.spend_stat_point(stat_id)
+
+    if spent:
+        _update_hud()
+        _update_character_screen()
+
+
+func _on_add_might_button_pressed() -> void:
+    _spend_stat_point("might")
+
+
+func _on_add_agility_button_pressed() -> void:
+    _spend_stat_point("agility")
+
+
+func _on_add_toughness_button_pressed() -> void:
+    _spend_stat_point("toughness")
+
+
+func _on_add_speed_button_pressed() -> void:
+    _spend_stat_point("speed")
 
 
 func _on_equip_weapon_button_pressed() -> void:

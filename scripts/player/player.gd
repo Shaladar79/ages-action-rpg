@@ -1,8 +1,11 @@
 extends CharacterBody2D
 
-@export var move_speed: float = 120.0
+@export var base_move_speed: float = 120.0
+@export var move_speed_per_speed_point: float = 4.0
+
 @export var attack_duration: float = 0.5
-@export var attack_cooldown: float = 0.35
+@export var base_attack_cooldown: float = 0.35
+@export var attack_speed_bonus_per_agility: float = 0.01
 @export var attack_offset: float = 24.0
 
 @export var weapon_visual_offset: float = 22.0
@@ -52,7 +55,7 @@ func _physics_process(delta: float) -> void:
     if input_vector.length() > 1.0:
         input_vector = input_vector.normalized()
 
-    velocity = input_vector * move_speed
+    velocity = input_vector * get_current_move_speed()
     move_and_slide()
 
     if Input.is_action_just_pressed("interact"):
@@ -71,6 +74,41 @@ func get_character_stats() -> CharacterStats:
     return character_stats
 
 
+func get_current_move_speed() -> float:
+    return character_stats.get_move_speed(base_move_speed, move_speed_per_speed_point)
+
+
+func get_current_attack_cooldown() -> float:
+    return character_stats.get_attack_cooldown(base_attack_cooldown, attack_speed_bonus_per_agility)
+
+
+func gain_xp(amount: int) -> bool:
+    var leveled_up := character_stats.add_xp(amount)
+
+    _notify_ui_stats_changed()
+
+    if leveled_up:
+        show_dialogue("You gained a level. Open your character sheet and spend your character point.")
+
+    return leveled_up
+
+
+func spend_stat_point(stat_id: String) -> bool:
+    var spent := character_stats.spend_stat_point(stat_id)
+
+    if spent:
+        _notify_ui_stats_changed()
+
+    return spent
+
+
+func _notify_ui_stats_changed() -> void:
+    var game_ui := get_tree().get_first_node_in_group("interaction_ui")
+
+    if game_ui != null and game_ui.has_method("refresh_character_display"):
+        game_ui.refresh_character_display()
+
+
 func add_inventory_item(item_id: String, item_name: String) -> void:
     if has_inventory_item(item_id):
         print("Inventory already has item: ", item_name)
@@ -82,6 +120,7 @@ func add_inventory_item(item_id: String, item_name: String) -> void:
     })
 
     print("Added to inventory: ", item_name)
+    _notify_ui_stats_changed()
 
 
 func has_inventory_item(item_id: String) -> bool:
@@ -109,12 +148,14 @@ func equip_weapon(item_id: String) -> void:
     character_stats.equip_weapon(item_id, item_name)
 
     print("Equipped weapon: ", character_stats.get_equipped_weapon_name())
+    _notify_ui_stats_changed()
 
 
 func unequip_weapon() -> void:
     character_stats.unequip_weapon()
     _hide_weapon_sprite()
     print("Weapon unequipped.")
+    _notify_ui_stats_changed()
 
 
 func has_equipped_weapon() -> bool:
@@ -239,7 +280,7 @@ func _try_attack() -> void:
 
     is_attacking = true
     attack_timer = attack_duration
-    cooldown_timer = attack_cooldown
+    cooldown_timer = get_current_attack_cooldown()
     hit_targets.clear()
 
     _position_attack_area()
@@ -353,6 +394,12 @@ func _damage_area_target(area: Area2D) -> void:
         return
 
     if hit_targets.has(target):
+        return
+
+    if target.has_method("take_damage_from_player"):
+        hit_targets.append(target)
+        target.take_damage_from_player(get_attack_damage(), self)
+        print("Hit target with player-aware damage: ", target.name)
         return
 
     if target.has_method("take_damage"):
