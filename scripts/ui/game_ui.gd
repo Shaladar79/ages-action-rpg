@@ -42,35 +42,6 @@ extends CanvasLayer
 
 var player: Node = null
 
-var character_name: String = "Gene Ambrose"
-var character_level: int = 1
-var character_xp: int = 0
-var character_xp_to_next_level: int = 100
-
-var max_health: int = 10
-var current_health: int = 10
-
-var has_mana_resource: bool = false
-var max_mana: int = 0
-var current_mana: int = 0
-
-var has_stamina_resource: bool = false
-var max_stamina: int = 0
-var current_stamina: int = 0
-
-var might: int = 1
-var agility: int = 1
-var toughness: int = 1
-var endurance: int = 1
-var focus: int = 1
-var speed: int = 1
-
-var attack: int = 1
-var defense: int = 1
-
-var equipped_armor_name: String = "Grass Tunic"
-var equipped_accessory_name: String = "None"
-
 
 func _ready() -> void:
     add_to_group("interaction_ui")
@@ -139,38 +110,90 @@ func _refresh_player_reference() -> void:
     player = get_tree().get_first_node_in_group("player")
 
 
+func _get_stats() -> CharacterStats:
+    _refresh_player_reference()
+
+    if player == null:
+        return null
+
+    if not player.has_method("get_character_stats"):
+        return null
+
+    return player.get_character_stats()
+
+
 func _update_hud() -> void:
+    var stats := _get_stats()
+
+    if stats == null:
+        if hud_health_label != null:
+            hud_health_label.text = "Health: -- / --"
+
+        if hud_mana_label != null:
+            hud_mana_label.visible = false
+            hud_mana_label.text = ""
+
+        if hud_stamina_label != null:
+            hud_stamina_label.visible = false
+            hud_stamina_label.text = ""
+
+        return
+
     if hud_health_label != null:
-        hud_health_label.text = "Health: %s / %s" % [current_health, max_health]
+        hud_health_label.text = "Health: %s / %s" % [stats.current_health, stats.max_health]
 
     if hud_mana_label != null:
-        hud_mana_label.visible = has_mana_resource
-        if has_mana_resource:
-            hud_mana_label.text = "Mana: %s / %s" % [current_mana, max_mana]
+        hud_mana_label.visible = stats.has_mana_resource
+
+        if stats.has_mana_resource:
+            hud_mana_label.text = "Mana: %s / %s" % [stats.current_mana, stats.max_mana]
         else:
             hud_mana_label.text = ""
 
     if hud_stamina_label != null:
-        hud_stamina_label.visible = has_stamina_resource
-        if has_stamina_resource:
-            hud_stamina_label.text = "Stamina: %s / %s" % [current_stamina, max_stamina]
+        hud_stamina_label.visible = stats.has_stamina_resource
+
+        if stats.has_stamina_resource:
+            hud_stamina_label.text = "Stamina: %s / %s" % [stats.current_stamina, stats.max_stamina]
         else:
             hud_stamina_label.text = ""
 
 
 func _update_character_screen() -> void:
+    var stats := _get_stats()
+
     title_label.text = "Character Sheet"
-    character_name_label.text = character_name
-    level_label.text = "Level: " + str(character_level)
-    xp_label.text = "XP: %s / %s" % [character_xp, character_xp_to_next_level]
 
-    _update_sheet_resources()
-    _update_attributes_panel()
-    _update_combat_stats()
+    if stats == null:
+        character_name_label.text = "No Character"
+        level_label.text = "Level: --"
+        xp_label.text = "XP: -- / --"
 
-    weapon_slot_label.text = "Weapon: " + _get_equipped_weapon_name()
-    armor_slot_label.text = "Armor: " + equipped_armor_name
-    accessory_slot_label.text = "Accessory: " + equipped_accessory_name
+        _clear_sheet_resources()
+        _clear_attributes_panel()
+        _clear_combat_stats()
+
+        weapon_slot_label.text = "Weapon: None"
+        armor_slot_label.text = "Armor: None"
+        accessory_slot_label.text = "Accessory: None"
+        inventory_label.text = "Inventory:\nNone"
+
+        equip_weapon_button.disabled = true
+        equip_armor_button.disabled = true
+        equip_accessory_button.disabled = true
+        return
+
+    character_name_label.text = stats.character_name
+    level_label.text = "Level: " + str(stats.level)
+    xp_label.text = "XP: %s / %s" % [stats.xp, stats.xp_to_next_level]
+
+    _update_sheet_resources(stats)
+    _update_attributes_panel(stats)
+    _update_combat_stats(stats)
+
+    weapon_slot_label.text = "Weapon: " + stats.get_equipped_weapon_name()
+    armor_slot_label.text = "Armor: " + stats.get_equipped_armor_name()
+    accessory_slot_label.text = "Accessory: " + stats.get_equipped_accessory_name()
 
     inventory_label.text = _get_inventory_text()
 
@@ -179,64 +202,100 @@ func _update_character_screen() -> void:
     equip_accessory_button.disabled = true
 
 
-func _update_sheet_resources() -> void:
+func _clear_sheet_resources() -> void:
     if sheet_health_label != null:
-        sheet_health_label.text = "Health: %s / %s" % [current_health, max_health]
+        sheet_health_label.text = "Health: -- / --"
 
     if sheet_mana_label != null:
-        sheet_mana_label.visible = has_mana_resource
-        if has_mana_resource:
-            sheet_mana_label.text = "Mana: %s / %s" % [current_mana, max_mana]
+        sheet_mana_label.visible = false
+        sheet_mana_label.text = ""
+
+    if sheet_stamina_label != null:
+        sheet_stamina_label.visible = false
+        sheet_stamina_label.text = ""
+
+
+func _update_sheet_resources(stats: CharacterStats) -> void:
+    if sheet_health_label != null:
+        sheet_health_label.text = "Health: %s / %s" % [stats.current_health, stats.max_health]
+
+    if sheet_mana_label != null:
+        sheet_mana_label.visible = stats.has_mana_resource
+
+        if stats.has_mana_resource:
+            sheet_mana_label.text = "Mana: %s / %s" % [stats.current_mana, stats.max_mana]
         else:
             sheet_mana_label.text = ""
 
     if sheet_stamina_label != null:
-        sheet_stamina_label.visible = has_stamina_resource
-        if has_stamina_resource:
-            sheet_stamina_label.text = "Stamina: %s / %s" % [current_stamina, max_stamina]
+        sheet_stamina_label.visible = stats.has_stamina_resource
+
+        if stats.has_stamina_resource:
+            sheet_stamina_label.text = "Stamina: %s / %s" % [stats.current_stamina, stats.max_stamina]
         else:
             sheet_stamina_label.text = ""
 
 
-func _update_attributes_panel() -> void:
+func _clear_attributes_panel() -> void:
     if attributes_label != null:
         attributes_label.text = "Attributes"
 
     if might_label != null:
-        might_label.text = "Might: " + str(might)
+        might_label.text = "Might: --"
 
     if agility_label != null:
-        agility_label.text = "Agility: " + str(agility)
+        agility_label.text = "Agility: --"
 
     if toughness_label != null:
-        toughness_label.text = "Toughness: " + str(toughness)
+        toughness_label.text = "Toughness: --"
 
     if endurance_label != null:
-        endurance_label.text = "Endurance: " + str(endurance)
+        endurance_label.text = "Endurance: --"
 
     if focus_label != null:
-        focus_label.text = "Focus: " + str(focus)
+        focus_label.text = "Focus: --"
 
     if speed_label != null:
-        speed_label.text = "Speed: " + str(speed)
+        speed_label.text = "Speed: --"
 
 
-func _update_combat_stats() -> void:
+func _update_attributes_panel(stats: CharacterStats) -> void:
+    if attributes_label != null:
+        attributes_label.text = "Attributes"
+
+    if might_label != null:
+        might_label.text = "Might: " + str(stats.might)
+
+    if agility_label != null:
+        agility_label.text = "Agility: " + str(stats.agility)
+
+    if toughness_label != null:
+        toughness_label.text = "Toughness: " + str(stats.toughness)
+
+    if endurance_label != null:
+        endurance_label.text = "Endurance: " + str(stats.endurance)
+
+    if focus_label != null:
+        focus_label.text = "Focus: " + str(stats.focus)
+
+    if speed_label != null:
+        speed_label.text = "Speed: " + str(stats.speed)
+
+
+func _clear_combat_stats() -> void:
     if attack_label != null:
-        attack_label.text = "Attack: " + str(attack)
+        attack_label.text = "Attack: --"
 
     if defense_label != null:
-        defense_label.text = "Defense: " + str(defense)
+        defense_label.text = "Defense: --"
 
 
-func _get_equipped_weapon_name() -> String:
-    if player == null:
-        return "None"
+func _update_combat_stats(stats: CharacterStats) -> void:
+    if attack_label != null:
+        attack_label.text = "Attack: " + str(stats.get_attack())
 
-    if player.has_method("get_equipped_weapon_name"):
-        return player.get_equipped_weapon_name()
-
-    return "None"
+    if defense_label != null:
+        defense_label.text = "Defense: " + str(stats.get_defense())
 
 
 func _get_inventory_text() -> String:
@@ -281,6 +340,7 @@ func _on_equip_weapon_button_pressed() -> void:
         return
 
     player.equip_weapon("club")
+    _update_hud()
     _update_character_screen()
 
 

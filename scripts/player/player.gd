@@ -4,7 +4,6 @@ extends CharacterBody2D
 @export var attack_duration: float = 0.5
 @export var attack_cooldown: float = 0.35
 @export var attack_offset: float = 24.0
-@export var attack_damage: int = 1
 
 @export var weapon_visual_offset: float = 22.0
 @export var weapon_visual_scale: Vector2 = Vector2(1.0, 1.0)
@@ -15,6 +14,8 @@ extends CharacterBody2D
 @onready var dialogue_bubble: Node2D = $DialogueBubble
 @onready var weapon_sprite: Sprite2D = get_node_or_null("WeaponSprite") as Sprite2D
 
+var character_stats: CharacterStats = CharacterStats.new()
+
 var last_direction: String = "down"
 var is_attacking: bool = false
 var attack_timer: float = 0.0
@@ -24,8 +25,6 @@ var hit_targets: Array[Node] = []
 var nearby_interactable: Node = null
 
 var inventory: Array[Dictionary] = []
-var equipped_weapon_id: String = ""
-var equipped_weapon_name: String = ""
 
 
 func _ready() -> void:
@@ -34,7 +33,6 @@ func _ready() -> void:
 
     if not attack_area.area_entered.is_connected(_on_attack_area_entered):
         attack_area.area_entered.connect(_on_attack_area_entered)
-    
 
 
 func _physics_process(delta: float) -> void:
@@ -69,6 +67,10 @@ func _physics_process(delta: float) -> void:
     _update_animation(input_vector)
 
 
+func get_character_stats() -> CharacterStats:
+    return character_stats
+
+
 func add_inventory_item(item_id: String, item_name: String) -> void:
     if has_inventory_item(item_id):
         print("Inventory already has item: ", item_name)
@@ -90,33 +92,53 @@ func has_inventory_item(item_id: String) -> bool:
     return false
 
 
-func equip_weapon(item_id: String) -> void:
+func get_inventory_item_name(item_id: String) -> String:
     for item in inventory:
         if item.get("id", "") == item_id:
-            equipped_weapon_id = item_id
-            equipped_weapon_name = item.get("name", item_id)
-            print("Equipped weapon: ", equipped_weapon_name)
-            return
+            return item.get("name", item_id)
 
-    push_warning("Cannot equip weapon. Item not found in inventory: " + item_id)
+    return item_id
+
+
+func equip_weapon(item_id: String) -> void:
+    if not has_inventory_item(item_id):
+        push_warning("Cannot equip weapon. Item not found in inventory: " + item_id)
+        return
+
+    var item_name := get_inventory_item_name(item_id)
+    character_stats.equip_weapon(item_id, item_name)
+
+    print("Equipped weapon: ", character_stats.get_equipped_weapon_name())
 
 
 func unequip_weapon() -> void:
-    equipped_weapon_id = ""
-    equipped_weapon_name = ""
+    character_stats.unequip_weapon()
     _hide_weapon_sprite()
     print("Weapon unequipped.")
 
 
 func has_equipped_weapon() -> bool:
-    return equipped_weapon_id != ""
+    return character_stats.equipped_weapon_id != ""
 
 
 func get_equipped_weapon_name() -> String:
-    if equipped_weapon_name == "":
-        return "None"
+    return character_stats.get_equipped_weapon_name()
 
-    return equipped_weapon_name
+
+func get_equipped_armor_name() -> String:
+    return character_stats.get_equipped_armor_name()
+
+
+func get_equipped_accessory_name() -> String:
+    return character_stats.get_equipped_accessory_name()
+
+
+func get_attack_damage() -> int:
+    return character_stats.get_attack()
+
+
+func get_defense() -> int:
+    return character_stats.get_defense()
 
 
 func get_inventory_items() -> Array[Dictionary]:
@@ -335,7 +357,7 @@ func _damage_area_target(area: Area2D) -> void:
 
     if target.has_method("take_damage"):
         hit_targets.append(target)
-        target.take_damage(attack_damage)
+        target.take_damage(get_attack_damage())
         print("Hit target: ", target.name)
 
 
