@@ -7,6 +7,13 @@ class_name Monster
 @export var defense: int = 0
 @export var xp_reward: int = 1
 
+@export var move_speed: float = 45.0
+@export var detection_range: float = 140.0
+@export var stop_distance: float = 22.0
+@export var wander_enabled: bool = true
+@export var wander_radius: float = 64.0
+@export var wander_interval: float = 2.0
+
 @export var attack_cooldown: float = 1.25
 @export var can_attack_player: bool = true
 
@@ -23,10 +30,22 @@ var is_dead: bool = false
 
 var attack_timer: float = 0.0
 var player_in_attack_range: Node2D = null
+var player_target: Node2D = null
+
+var spawn_position: Vector2 = Vector2.ZERO
+var wander_target: Vector2 = Vector2.ZERO
+var wander_timer: float = 0.0
+
+var last_direction: String = "down"
 
 
 func _ready() -> void:
     current_hit_points = max_hit_points
+    spawn_position = global_position
+    wander_target = spawn_position
+
+    player_target = get_tree().get_first_node_in_group("player") as Node2D
+
     _start_default_animation()
     _connect_attack_area()
 
@@ -36,36 +55,71 @@ func _physics_process(delta: float) -> void:
         return
 
     _update_attack_timer(delta)
+    _update_movement(delta)
 
     if can_attack_player:
         _try_attack_player()
 
 
-func _start_default_animation() -> void:
-    if animated_sprite_2d == null:
-        return
+func _update_movement(delta: float) -> void:
+    if player_target == null:
+        player_target = get_tree().get_first_node_in_group("player") as Node2D
 
-    if animated_sprite_2d.sprite_frames == null:
-        return
+    var desired_velocity := Vector2.ZERO
 
-    if animated_sprite_2d.sprite_frames.has_animation("idle_down"):
-        animated_sprite_2d.play("idle_down")
-        return
+    if _should_chase_player():
+        desired_velocity = _get_chase_velocity()
+    elif wander_enabled:
+        desired_velocity = _get_wander_velocity(delta)
 
-    if animated_sprite_2d.sprite_frames.has_animation("walk_down"):
-        animated_sprite_2d.play("walk_down")
-        return
+    velocity = desired_velocity
+    move_and_slide()
+
+    _update_animation_from_velocity(velocity)
 
 
-func _connect_attack_area() -> void:
-    if attack_area == null:
-        return
+func _should_chase_player() -> bool:
+    if player_target == null:
+        return false
 
-    if not attack_area.body_entered.is_connected(_on_attack_area_body_entered):
-        attack_area.body_entered.connect(_on_attack_area_body_entered)
+    var distance_to_player := global_position.distance_to(player_target.global_position)
+    return distance_to_player <= detection_range
 
-    if not attack_area.body_exited.is_connected(_on_attack_area_body_exited):
-        attack_area.body_exited.connect(_on_attack_area_body_exited)
+
+func _get_chase_velocity() -> Vector2:
+    if player_target == null:
+        return Vector2.ZERO
+
+    var distance_to_player := global_position.distance_to(player_target.global_position)
+
+    if distance_to_player <= stop_distance:
+        return Vector2.ZERO
+
+    var direction := global_position.direction_to(player_target.global_position)
+    return direction * move_speed
+
+
+func _get_wander_velocity(delta: float) -> Vector2:
+    wander_timer -= delta
+
+    if wander_timer <= 0.0 or global_position.distance_to(wander_target) <= 6.0:
+        _choose_new_wander_target()
+
+    var direction_to_wander := global_position.direction_to(wander_target)
+
+    if global_position.distance_to(wander_target) <= 6.0:
+        return Vector2.ZERO
+
+    return direction_to_wander * (move_speed * 0.5)
+
+
+func _choose_new_wander_target() -> void:
+    wander_timer = wander_interval
+
+    var random_direction := Vector2.RIGHT.rotated(randf_range(0.0, TAU))
+    var random_distance := randf_range(8.0, wander_radius)
+
+    wander_target = spawn_position + (random_direction * random_distance)
 
 
 func _update_attack_timer(delta: float) -> void:
@@ -89,6 +143,17 @@ func _try_attack_player() -> void:
     print(monster_name, " attacked player for base damage: ", attack)
 
 
+func _connect_attack_area() -> void:
+    if attack_area == null:
+        return
+
+    if not attack_area.body_entered.is_connected(_on_attack_area_body_entered):
+        attack_area.body_entered.connect(_on_attack_area_body_entered)
+
+    if not attack_area.body_exited.is_connected(_on_attack_area_body_exited):
+        attack_area.body_exited.connect(_on_attack_area_body_exited)
+
+
 func _on_attack_area_body_entered(body: Node2D) -> void:
     if body == null:
         return
@@ -106,6 +171,64 @@ func _on_attack_area_body_exited(body: Node2D) -> void:
 
     player_in_attack_range = null
     print(monster_name, " lost player attack range.")
+
+
+func _start_default_animation() -> void:
+    if animated_sprite_2d == null:
+        return
+
+    if animated_sprite_2d.sprite_frames == null:
+        return
+
+    if animated_sprite_2d.sprite_frames.has_animation("idle_down"):
+        animated_sprite_2d.play("idle_down")
+        return
+
+    if animated_sprite_2d.sprite_frames.has_animation("walk_down"):
+        animated_sprite_2d.play("walk_down")
+        return
+
+
+func _update_animation_from_velocity(current_velocity: Vector2) -> void:
+    if animated_sprite_2d == null:
+        return
+
+    if animated_sprite_2d.sprite_frames == null:
+        return
+
+    if current_velocity.length() <= 1.0:
+        _play_monster_animation("idle_" + last_direction)
+        return
+
+    if abs(current_velocity.x) > abs(current_velocity.y):
+        if current_velocity.x > 0.0:
+            last_direction = "right"
+        else:
+            last_direction = "left"
+    else:
+        if current_velocity.y > 0.0:
+            last_direction = "down"
+        else:
+            last_direction = "up"
+
+    _play_monster_animation("walk_" + last_direction)
+
+
+func _play_monster_animation(animation_name: String) -> void:
+    if animated_sprite_2d == null:
+        return
+
+    if animated_sprite_2d.sprite_frames == null:
+        return
+
+    if animated_sprite_2d.sprite_frames.has_animation(animation_name):
+        if animated_sprite_2d.animation != animation_name:
+            animated_sprite_2d.play(animation_name)
+        return
+
+    if animated_sprite_2d.sprite_frames.has_animation("walk_down"):
+        if animated_sprite_2d.animation != "walk_down":
+            animated_sprite_2d.play("walk_down")
 
 
 func take_damage_from_player(damage_amount: int, player: Node2D) -> void:
