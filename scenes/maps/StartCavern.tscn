@@ -8,6 +8,7 @@
 [ext_resource type="PackedScene" uid="uid://rs71u43sps4l" path="res://scenes/objects/push_rock.tscn" id="6_kcxuk"]
 [ext_resource type="PackedScene" uid="uid://bbc8361yvbkxt" path="res://scenes/objects/BreakableRock.tscn" id="7_rl85u"]
 [ext_resource type="PackedScene" uid="uid://c54peu6mqtky8" path="res://scenes/objects/CollectableClub.tscn" id="8_o2k4q"]
+[ext_resource type="PackedScene" uid="uid://bpapdn74pq4la" path="res://scenes/enemies/Dawn of Man/StartCavern/Cave Scorp.tscn" id="9_1x8pa"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_x5kcs"]
 size = Vector2(45, 43)
@@ -124,3 +125,12 @@ position = Vector2(457, 456)
 [node name="CollectableClub" parent="Objects" unique_id=524225198 instance=ExtResource("8_o2k4q")]
 z_index = -1
 position = Vector2(378, 722)
+
+[node name="CaveScorp" parent="." unique_id=1655329841 instance=ExtResource("9_1x8pa")]
+position = Vector2(831, 345)
+
+[node name="CaveScorp2" parent="." unique_id=1413827002 instance=ExtResource("9_1x8pa")]
+position = Vector2(764, 514)
+
+[node name="CaveScorp3" parent="." unique_id=685269879 instance=ExtResource("9_1x8pa")]
+position = Vector2(867, 552)

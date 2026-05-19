@@ -107,7 +107,12 @@ func _notify_ui_stats_changed() -> void:
 
     if game_ui != null and game_ui.has_method("refresh_character_display"):
         game_ui.refresh_character_display()
+        return
 
+    var autoload_ui := get_node_or_null("/root/GameUi")
+
+    if autoload_ui != null and autoload_ui.has_method("refresh_character_display"):
+        autoload_ui.refresh_character_display()
 
 func add_inventory_item(item_id: String, item_name: String) -> void:
     if has_inventory_item(item_id):
@@ -425,3 +430,25 @@ func _update_animation(input_vector: Vector2) -> void:
             last_direction = "up"
 
     animated_sprite.play("walk_" + last_direction)
+    
+func take_damage(incoming_damage: int) -> void:
+    if incoming_damage <= 0:
+        return
+
+    var final_damage: int = maxi(1, incoming_damage - get_defense())
+
+    character_stats.current_health -= final_damage
+    character_stats.current_health = maxi(character_stats.current_health, 0)
+
+    print("Player took damage: ", final_damage)
+    print("Player HP: ", character_stats.current_health, " / ", character_stats.max_health)
+
+    _notify_ui_stats_changed()
+
+    if character_stats.current_health <= 0:
+        _on_player_defeated()
+
+
+func _on_player_defeated() -> void:
+    print("Player defeated.")
+    show_dialogue("You have been defeated.")

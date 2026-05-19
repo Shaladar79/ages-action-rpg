@@ -21,8 +21,8 @@ extends CanvasLayer
 @onready var sheet_mana_label: Label = get_node_or_null("CharacterScreen/Panel/Mana") as Label
 @onready var sheet_stamina_label: Label = get_node_or_null("CharacterScreen/Panel/Stamina") as Label
 
-@onready var attack_label: Label = get_node_or_null("CharacterScreen/Panel/atk_lbl") as Label
-@onready var defense_label: Label = get_node_or_null("CharacterScreen/Panel/def_lbl") as Label
+@onready var attack_label: Label = find_child("atk_lbl", true, false) as Label
+@onready var defense_label: Label = find_child("def_lbl", true, false) as Label
 
 @onready var attributes_label: Label = get_node_or_null("CharacterScreen/Panel/AttributesPanel_base/Attribute_panel_att/AttributesLabel") as Label
 @onready var might_label: Label = get_node_or_null("CharacterScreen/Panel/AttributesPanel_base/Attribute_panel_att/Might") as Label

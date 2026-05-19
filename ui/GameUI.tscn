@@ -314,11 +314,11 @@ text = "Speed: "
 
 [node name="AddMightButton" type="Button" parent="CharacterScreen/Panel/AttributesPanel_base/Attribute_panel_att" unique_id=1347572391]
 layout_mode = 0
-offset_left = 101.0
-offset_top = 21.0
-offset_right = 128.0
-offset_bottom = 37.0
-theme_override_font_sizes/font_size = 5
+offset_left = 93.0
+offset_top = 20.0
+offset_right = 130.0
+offset_bottom = 40.0
+theme_override_font_sizes/font_size = 6
 text = "+ Might"
 
 [node name="AddEnduranceButton" type="Button" parent="CharacterScreen/Panel/AttributesPanel_base/Attribute_panel_att" unique_id=343863978]
@@ -343,29 +343,29 @@ text = "+ Focus"
 
 [node name="AddAgilityButton" type="Button" parent="CharacterScreen/Panel/AttributesPanel_base/Attribute_panel_att" unique_id=33668870]
 layout_mode = 0
-offset_left = 101.0
+offset_left = 96.0
 offset_top = 35.0
-offset_right = 128.0
-offset_bottom = 51.0
-theme_override_font_sizes/font_size = 5
+offset_right = 127.0
+offset_bottom = 52.0
+theme_override_font_sizes/font_size = 6
 text = "+ Agility"
 
 [node name="AddToughnessButton" type="Button" parent="CharacterScreen/Panel/AttributesPanel_base/Attribute_panel_att" unique_id=1490826095]
 layout_mode = 0
-offset_left = 90.0
+offset_left = 86.0
 offset_top = 50.0
-offset_right = 129.0
-offset_bottom = 66.0
-theme_override_font_sizes/font_size = 5
+offset_right = 131.0
+offset_bottom = 67.0
+theme_override_font_sizes/font_size = 6
 text = "+ Toughness"
 
 [node name="AddSpeedButton" type="Button" parent="CharacterScreen/Panel/AttributesPanel_base/Attribute_panel_att" unique_id=1688046268]
 layout_mode = 0
-offset_left = 100.0
+offset_left = 96.0
 offset_top = 95.0
 offset_right = 127.0
-offset_bottom = 111.0
-theme_override_font_sizes/font_size = 5
+offset_bottom = 112.0
+theme_override_font_sizes/font_size = 6
 text = "+ Speed"
 
 [node name="StatPointsLabel" type="Label" parent="CharacterScreen/Panel/AttributesPanel_base" unique_id=1621531415]
