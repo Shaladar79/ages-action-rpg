@@ -19,6 +19,7 @@ config/icon="res://icon.svg"
 
 InteractionUi="*uid://clg4i2koclxec"
 GameUi="*uid://bxt5jfm7dnpxq"
+RespawnManager="*uid://2igm5tue23x5"
 
 [display]
 

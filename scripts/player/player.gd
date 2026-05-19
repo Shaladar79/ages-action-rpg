@@ -8,6 +8,8 @@ extends CharacterBody2D
 @export var attack_speed_bonus_per_agility: float = 0.01
 @export var attack_offset: float = 24.0
 
+@export var respawn_delay: float = 1.5
+
 @export var weapon_visual_offset: float = 22.0
 @export var weapon_visual_scale: Vector2 = Vector2(1.0, 1.0)
 
@@ -22,6 +24,7 @@ var character_stats: CharacterStats = CharacterStats.new()
 var last_direction: String = "down"
 var is_attacking: bool = false
 var is_defeated: bool = false
+var is_respawning: bool = false
 var attack_timer: float = 0.0
 var cooldown_timer: float = 0.0
 var hit_targets: Array[Node] = []
@@ -492,6 +495,7 @@ func _on_player_defeated() -> void:
         return
 
     is_defeated = true
+    is_respawning = false
     is_attacking = false
     velocity = Vector2.ZERO
 
@@ -505,3 +509,51 @@ func _on_player_defeated() -> void:
     print("Player defeated.")
     show_dialogue("You have been defeated.")
     _notify_ui_stats_changed()
+
+    _try_start_respawn()
+
+
+func _try_start_respawn() -> void:
+    if is_respawning:
+        return
+
+    if not RespawnManager.can_respawn():
+        print("No active respawn point. Player remains defeated.")
+        return
+
+    is_respawning = true
+    print("Respawning player in ", respawn_delay, " seconds.")
+
+    await get_tree().create_timer(respawn_delay).timeout
+
+    _respawn_player()
+
+
+func _respawn_player() -> void:
+    if not RespawnManager.can_respawn():
+        is_respawning = false
+        return
+
+    global_position = RespawnManager.get_respawn_position()
+    velocity = Vector2.ZERO
+
+    character_stats.current_health = character_stats.max_health
+
+    is_defeated = false
+    is_respawning = false
+    is_attacking = false
+    attack_timer = 0.0
+    cooldown_timer = 0.0
+    hit_targets.clear()
+
+    _disable_attack_hitbox()
+    _hide_weapon_sprite()
+
+    if animated_sprite != null:
+        animated_sprite.visible = true
+        animated_sprite.play("idle_" + last_direction)
+
+    show_dialogue("You return to the totem.")
+    _notify_ui_stats_changed()
+
+    print("Player respawned at: ", global_position)

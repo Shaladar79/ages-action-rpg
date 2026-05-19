@@ -1,0 +1,31 @@
+[gd_scene format=3 uid="uid://pyq76iw1lw5d"]
+
+[ext_resource type="Script" uid="uid://bwhic6ho5x43o" path="res://scripts/interactions/save_point_interactable.gd" id="1_munw7"]
+[ext_resource type="Texture2D" uid="uid://d1gyyw13jdgv6" path="res://art/objects/stone_age_save.png" id="2_vn6hh"]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_munw7"]
+radius = 281.25
+height = 800.0
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_vn6hh"]
+size = Vector2(412.5, 368.75)
+
+[node name="SaveTotem" type="Area2D" unique_id=528667636]
+scale = Vector2(0.08, 0.08)
+script = ExtResource("1_munw7")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1465138126]
+texture = ExtResource("2_vn6hh")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=934806181]
+position = Vector2(-12.5, 87.5)
+shape = SubResource("CapsuleShape2D_munw7")
+
+[node name="RespawnMarker" type="Marker2D" parent="." unique_id=36263352]
+position = Vector2(0, 437.5)
+
+[node name="Body" type="StaticBody2D" parent="." unique_id=1529893124]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Body" unique_id=702531879]
+position = Vector2(0, 175)
+shape = SubResource("RectangleShape2D_vn6hh")

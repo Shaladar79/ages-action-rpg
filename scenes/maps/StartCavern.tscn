@@ -9,6 +9,7 @@
 [ext_resource type="PackedScene" uid="uid://bbc8361yvbkxt" path="res://scenes/objects/BreakableRock.tscn" id="7_rl85u"]
 [ext_resource type="PackedScene" uid="uid://c54peu6mqtky8" path="res://scenes/objects/CollectableClub.tscn" id="8_o2k4q"]
 [ext_resource type="PackedScene" uid="uid://bpapdn74pq4la" path="res://scenes/enemies/Dawn of Man/StartCavern/Cave Scorp.tscn" id="9_1x8pa"]
+[ext_resource type="PackedScene" uid="uid://pyq76iw1lw5d" path="res://scenes/objects/save_totem.tscn" id="10_3573v"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_x5kcs"]
 size = Vector2(45, 43)
@@ -28,6 +29,7 @@ visible = false
 position = Vector2(11, 12)
 
 [node name="Top_Left" type="StaticBody2D" parent="CollisionWalls" unique_id=1588707261]
+position = Vector2(-1, -2)
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="CollisionWalls/Top_Left" unique_id=743370922]
 position = Vector2(-3, -3)
@@ -47,6 +49,7 @@ polygon = PackedVector2Array(372, 997, 424, 1003, 434, 976, 442, 990, 465, 948, 
 [node name="Cen_Top" type="StaticBody2D" parent="CollisionWalls" unique_id=356009182]
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="CollisionWalls/Cen_Top" unique_id=1182363634]
+position = Vector2(-3, -1)
 polygon = PackedVector2Array(318, 263, 365, 301, 408, 266, 427, 245, 447, 227, 475, 208, 501, 193, 510, 181, 471, 157, 475, 147, 489, 128, 513, 127, 526, 133, 525, 146, 532, 163, 552, 170, 568, 171, 594, 164, 620, 174, 641, 178, 653, 179, 664, 168, 705, 149, 736, 125, 758, 114, 777, 102, 803, 91, 825, 85, 861, 84, 858, 3, 251, 3, 250, 145)
 
 [node name="Cen_Strip_R" type="StaticBody2D" parent="CollisionWalls" unique_id=353877332]
@@ -115,22 +118,27 @@ scroll_active = false
 
 [node name="Objects" type="Node2D" parent="." unique_id=790765806]
 
+[node name="CaveScorp3" parent="Objects" unique_id=685269879 instance=ExtResource("9_1x8pa")]
+position = Vector2(745, 786)
+
 [node name="PushRock" parent="Objects" unique_id=649356019 instance=ExtResource("6_kcxuk")]
 position = Vector2(411, 529)
 scale = Vector2(0.5, 0.5)
 
 [node name="BreakableRock" parent="Objects" unique_id=1719668920 instance=ExtResource("7_rl85u")]
-position = Vector2(457, 456)
+position = Vector2(449.00003, 470)
+max_hit_points = 2
 
 [node name="CollectableClub" parent="Objects" unique_id=524225198 instance=ExtResource("8_o2k4q")]
 z_index = -1
-position = Vector2(378, 722)
+position = Vector2(377, 655)
+auto_equip_on_pickup = true
 
-[node name="CaveScorp" parent="." unique_id=1655329841 instance=ExtResource("9_1x8pa")]
-position = Vector2(831, 345)
+[node name="CaveScorp" parent="Objects" unique_id=1655329841 instance=ExtResource("9_1x8pa")]
+position = Vector2(736, 685)
 
-[node name="CaveScorp2" parent="." unique_id=1413827002 instance=ExtResource("9_1x8pa")]
-position = Vector2(764, 514)
+[node name="CaveScorp2" parent="Objects" unique_id=1413827002 instance=ExtResource("9_1x8pa")]
+position = Vector2(830, 702)
 
-[node name="CaveScorp3" parent="." unique_id=685269879 instance=ExtResource("9_1x8pa")]
-position = Vector2(867, 552)
+[node name="SaveTotem" parent="Objects" unique_id=528667636 instance=ExtResource("10_3573v")]
+position = Vector2(867, 76)
