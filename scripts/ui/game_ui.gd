@@ -19,6 +19,9 @@ extends CanvasLayer
 @onready var sheet_mana_label: Label = get_node_or_null("CharacterScreen/Panel/Mana") as Label
 @onready var sheet_stamina_label: Label = get_node_or_null("CharacterScreen/Panel/Stamina") as Label
 
+@onready var attack_label: Label = get_node_or_null("CharacterScreen/Panel/atk_lbl") as Label
+@onready var defense_label: Label = get_node_or_null("CharacterScreen/Panel/def_lbl") as Label
+
 @onready var attributes_label: Label = get_node_or_null("CharacterScreen/Panel/AttributesPanel_base/Attribute_panel_att/AttributesLabel") as Label
 @onready var might_label: Label = get_node_or_null("CharacterScreen/Panel/AttributesPanel_base/Attribute_panel_att/Might") as Label
 @onready var agility_label: Label = get_node_or_null("CharacterScreen/Panel/AttributesPanel_base/Attribute_panel_att/Agility") as Label
@@ -61,6 +64,9 @@ var toughness: int = 1
 var endurance: int = 1
 var focus: int = 1
 var speed: int = 1
+
+var attack: int = 1
+var defense: int = 1
 
 var equipped_armor_name: String = "Grass Tunic"
 var equipped_accessory_name: String = "None"
@@ -160,6 +166,7 @@ func _update_character_screen() -> void:
 
     _update_sheet_resources()
     _update_attributes_panel()
+    _update_combat_stats()
 
     weapon_slot_label.text = "Weapon: " + _get_equipped_weapon_name()
     armor_slot_label.text = "Armor: " + equipped_armor_name
@@ -212,6 +219,14 @@ func _update_attributes_panel() -> void:
 
     if speed_label != null:
         speed_label.text = "Speed: " + str(speed)
+
+
+func _update_combat_stats() -> void:
+    if attack_label != null:
+        attack_label.text = "Attack: " + str(attack)
+
+    if defense_label != null:
+        defense_label.text = "Defense: " + str(defense)
 
 
 func _get_equipped_weapon_name() -> String:

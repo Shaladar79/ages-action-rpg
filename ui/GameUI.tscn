@@ -145,6 +145,22 @@ offset_right = 905.0
 offset_bottom = 64.0
 text = "Experience"
 
+[node name="atk_lbl" type="Label" parent="CharacterScreen/Panel" unique_id=826371130]
+layout_mode = 0
+offset_left = 1.0
+offset_top = 275.0
+offset_right = 51.0
+offset_bottom = 298.0
+text = "Attack:"
+
+[node name="def_lbl" type="Label" parent="CharacterScreen/Panel" unique_id=1323837963]
+layout_mode = 0
+offset_left = 1.0
+offset_top = 297.0
+offset_right = 41.0
+offset_bottom = 320.0
+text = "Defense:"
+
 [node name="WeaponSlotLabel" type="Label" parent="CharacterScreen/Panel" unique_id=1848815701]
 layout_mode = 0
 offset_left = 30.0
