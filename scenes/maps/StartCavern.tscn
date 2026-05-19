@@ -8,6 +8,7 @@
 [ext_resource type="PackedScene" uid="uid://bbc8361yvbkxt" path="res://scenes/objects/BreakableRock.tscn" id="7_rl85u"]
 [ext_resource type="PackedScene" uid="uid://c54peu6mqtky8" path="res://scenes/objects/CollectableClub.tscn" id="8_o2k4q"]
 [ext_resource type="PackedScene" uid="uid://bpapdn74pq4la" path="res://scenes/enemies/Dawn of Man/StartCavern/Cave Scorp.tscn" id="9_1x8pa"]
+[ext_resource type="PackedScene" uid="uid://bas01evmp7jm4" path="res://scenes/objects/trans_area.tscn" id="10_3svxi"]
 [ext_resource type="PackedScene" uid="uid://pyq76iw1lw5d" path="res://scenes/objects/save_totem.tscn" id="10_3573v"]
 
 [node name="StartCavern" type="Node2D" unique_id=102575327]
@@ -19,7 +20,7 @@ script = ExtResource("2_1x8pa")
 
 [node name="MapImage" type="Sprite2D" parent="." unique_id=470302150]
 z_index = -100
-position = Vector2(9, 9)
+position = Vector2(1, 9)
 texture = ExtResource("2_rl85u")
 centered = false
 
@@ -105,3 +106,35 @@ persistent_id = "Cave_Scorp_2"
 
 [node name="SaveTotem" parent="Objects" unique_id=528667636 instance=ExtResource("10_3573v")]
 position = Vector2(867, 76)
+
+[node name="TransitionArea" parent="Objects" unique_id=600252779 instance=ExtResource("10_3svxi")]
+position = Vector2(565, 1074)
+target_marker_path = NodePath("../Marker")
+target_spawn_id = ""
+
+[node name="TransitionArea3" parent="Objects" unique_id=2104861802 instance=ExtResource("10_3svxi")]
+position = Vector2(1046, 647)
+target_marker_path = NodePath("../Marker3")
+target_spawn_id = "Marker3"
+
+[node name="TransitionArea4" parent="Objects" unique_id=1223366586 instance=ExtResource("10_3svxi")]
+position = Vector2(1384, 534)
+target_marker_path = NodePath("../Marker4")
+target_spawn_id = "Marker4"
+
+[node name="TransitionArea2" parent="Objects" unique_id=520088292 instance=ExtResource("10_3svxi")]
+position = Vector2(1403, 729)
+target_marker_path = NodePath("../Marker2")
+target_spawn_id = "Marker2"
+
+[node name="Marker" type="Marker2D" parent="Objects" unique_id=2110216208]
+position = Vector2(1089, 719)
+
+[node name="Marker2" type="Marker2D" parent="Objects" unique_id=240895911]
+position = Vector2(1294, 564)
+
+[node name="Marker3" type="Marker2D" parent="Objects" unique_id=366305337]
+position = Vector2(629, 1001)
+
+[node name="Marker4" type="Marker2D" parent="Objects" unique_id=956483217]
+position = Vector2(1309, 749)

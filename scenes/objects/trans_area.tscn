@@ -1,0 +1,15 @@
+[gd_scene format=3 uid="uid://bas01evmp7jm4"]
+
+[ext_resource type="Script" uid="uid://c5grexcfqjy3i" path="res://scripts/interactions/transition_area.gd" id="1_jh362"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_tj6e3"]
+radius = 64.0
+
+[node name="TransitionArea" type="Area2D" unique_id=600252779]
+collision_mask = 255
+script = ExtResource("1_jh362")
+target_spawn_id = "Marker"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1099914809]
+shape = SubResource("CircleShape2D_tj6e3")
+debug_color = Color(0.8254671, 0.2465918, 0.77744734, 0.41960785)
