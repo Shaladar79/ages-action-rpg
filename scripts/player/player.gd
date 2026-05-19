@@ -41,6 +41,9 @@ func _ready() -> void:
     if not attack_area.area_entered.is_connected(_on_attack_area_entered):
         attack_area.area_entered.connect(_on_attack_area_entered)
 
+    if SaveManager.pending_loaded_data.size() > 0:
+        SaveManager.apply_pending_loaded_data(self)
+
 
 func _physics_process(delta: float) -> void:
     _update_attack_timers(delta)

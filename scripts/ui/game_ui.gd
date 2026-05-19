@@ -50,7 +50,13 @@ extends CanvasLayer
 @onready var equip_accessory_button: Button = $CharacterScreen/Panel/EquipAccessoryButton
 @onready var close_button: Button = $CharacterScreen/Panel/CloseButton
 
+@onready var save_prompt: Control = get_node_or_null("SavePrompt") as Control
+@onready var save_prompt_message_label: Label = get_node_or_null("SavePrompt/Panel/MessageLabel") as Label
+@onready var save_yes_button: Button = get_node_or_null("SavePrompt/Panel/YesButton") as Button
+@onready var save_no_button: Button = get_node_or_null("SavePrompt/Panel/NoButton") as Button
+
 var player: Node = null
+var pending_save_player: Node = null
 
 
 func _ready() -> void:
@@ -61,6 +67,9 @@ func _ready() -> void:
     character_screen.visible = false
     interaction_prompt.visible = false
 
+    if save_prompt != null:
+        save_prompt.visible = false
+
     _hide_locked_resources_and_stats()
     _connect_buttons()
     _update_hud()
@@ -68,6 +77,9 @@ func _ready() -> void:
 
 
 func _unhandled_input(event: InputEvent) -> void:
+    if save_prompt != null and save_prompt.visible:
+        return
+
     if event.is_action_pressed("character_screen"):
         toggle_character_screen()
         get_viewport().set_input_as_handled()
@@ -88,7 +100,32 @@ func refresh_character_display() -> void:
     _update_character_screen()
 
 
+func show_save_prompt(save_player: Node, message: String = "Do you want to save your game?") -> void:
+    pending_save_player = save_player
+
+    if save_prompt == null:
+        print("Save prompt UI is missing.")
+        return
+
+    if save_prompt_message_label != null:
+        save_prompt_message_label.text = message
+
+    character_screen.visible = false
+    interaction_prompt.visible = false
+    save_prompt.visible = true
+
+
+func hide_save_prompt() -> void:
+    pending_save_player = null
+
+    if save_prompt != null:
+        save_prompt.visible = false
+
+
 func toggle_character_screen() -> void:
+    if save_prompt != null and save_prompt.visible:
+        return
+
     character_screen.visible = not character_screen.visible
 
     if character_screen.visible:
@@ -97,6 +134,9 @@ func toggle_character_screen() -> void:
 
 
 func open_character_screen() -> void:
+    if save_prompt != null and save_prompt.visible:
+        return
+
     character_screen.visible = true
     _refresh_player_reference()
     _update_character_screen()
@@ -149,6 +189,12 @@ func _connect_buttons() -> void:
 
     if add_speed_button != null and not add_speed_button.pressed.is_connected(_on_add_speed_button_pressed):
         add_speed_button.pressed.connect(_on_add_speed_button_pressed)
+
+    if save_yes_button != null and not save_yes_button.pressed.is_connected(_on_save_yes_button_pressed):
+        save_yes_button.pressed.connect(_on_save_yes_button_pressed)
+
+    if save_no_button != null and not save_no_button.pressed.is_connected(_on_save_no_button_pressed):
+        save_no_button.pressed.connect(_on_save_no_button_pressed)
 
 
 func _refresh_player_reference() -> void:
@@ -471,3 +517,24 @@ func _on_equip_accessory_button_pressed() -> void:
 
 func _on_close_button_pressed() -> void:
     close_character_screen()
+
+
+func _on_save_yes_button_pressed() -> void:
+    if pending_save_player == null:
+        hide_save_prompt()
+        return
+
+    var saved := SaveManager.save_game(pending_save_player)
+
+    if saved:
+        if pending_save_player.has_method("show_dialogue"):
+            pending_save_player.show_dialogue("Game saved.")
+    else:
+        if pending_save_player.has_method("show_dialogue"):
+            pending_save_player.show_dialogue("Save failed.")
+
+    hide_save_prompt()
+
+
+func _on_save_no_button_pressed() -> void:
+    hide_save_prompt()

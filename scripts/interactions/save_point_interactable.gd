@@ -4,6 +4,7 @@ class_name SavePointInteractable
 @export var respawn_id: String = "start_cavern_totem"
 @export var activated_message: String = "Respawn point activated."
 @export var already_active_message: String = "This respawn point is already active."
+@export var save_prompt_message: String = "Do you want to save your game?"
 
 @export var respawn_marker_path: NodePath = NodePath("RespawnMarker")
 
@@ -31,6 +32,31 @@ func _on_interact(player: Node2D) -> void:
     else:
         is_activated = true
         _show_or_print_message(player, activated_message)
+
+    _show_save_prompt(player)
+
+
+func _show_save_prompt(player: Node2D) -> void:
+    print("Trying to show save prompt...")
+
+    var game_ui := get_node_or_null("/root/GameUi")
+
+    if game_ui == null:
+        print("No /root/GameUi found. Trying interaction_ui group.")
+        game_ui = get_tree().get_first_node_in_group("interaction_ui")
+
+    if game_ui == null:
+        push_warning("No GameUi found. Cannot show save prompt.")
+        return
+
+    print("Found UI node: ", game_ui.name)
+
+    if not game_ui.has_method("show_save_prompt"):
+        push_warning("Found UI node does not have show_save_prompt(): " + game_ui.name)
+        return
+
+    print("Calling GameUi.show_save_prompt().")
+    game_ui.show_save_prompt(player, save_prompt_message)
 
 
 func _get_respawn_position() -> Vector2:
