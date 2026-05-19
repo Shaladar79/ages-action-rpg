@@ -18,6 +18,7 @@ script = ExtResource("1_munw7")
 texture = ExtResource("2_vn6hh")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=934806181]
+visible = false
 position = Vector2(-12.5, 87.5)
 shape = SubResource("CapsuleShape2D_munw7")
 
@@ -27,5 +28,6 @@ position = Vector2(0, 437.5)
 [node name="Body" type="StaticBody2D" parent="." unique_id=1529893124]
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Body" unique_id=702531879]
+visible = false
 position = Vector2(0, 175)
 shape = SubResource("RectangleShape2D_vn6hh")

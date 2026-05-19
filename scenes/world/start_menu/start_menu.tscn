@@ -1,0 +1,62 @@
+[gd_scene format=3 uid="uid://b58okvlqcbhcw"]
+
+[ext_resource type="Script" uid="uid://74d35g036jf5" path="res://scripts/ui/start_menu.gd" id="1_3mfri"]
+[ext_resource type="Texture2D" uid="uid://ccq40q52fyo0r" path="res://art/images/title_background.png" id="1_qxams"]
+
+[node name="StartMenu" type="Control" unique_id=221117006]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_3mfri")
+new_game_scene_path = "uid://05p1dytgra5q"
+
+[node name="Background" type="TextureRect" parent="." unique_id=131001546]
+z_index = -100
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -4.0
+offset_top = -1.0
+offset_right = 68.0
+offset_bottom = 40.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("1_qxams")
+expand_mode = 1
+stretch_mode = 6
+
+[node name="MenuPanel" type="Panel" parent="." unique_id=2124682630]
+layout_mode = 0
+offset_left = 666.0
+offset_top = 401.0
+offset_right = 1006.0
+offset_bottom = 632.0
+
+[node name="TitleLabel" type="Label" parent="MenuPanel" unique_id=280847263]
+visible = false
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 23.0
+
+[node name="NewGameButton" type="Button" parent="MenuPanel" unique_id=21678906]
+layout_mode = 0
+offset_left = 114.0
+offset_top = 22.0
+offset_right = 238.0
+offset_bottom = 49.0
+text = "New Game"
+
+[node name="LoadGameButton" type="Button" parent="MenuPanel" unique_id=1598354401]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 0.024
+anchor_bottom = 0.035
+offset_left = 114.0
+offset_top = 59.0
+offset_right = 228.84
+offset_bottom = 79.915
+text = "Load Game"
