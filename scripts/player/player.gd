@@ -21,6 +21,7 @@ var character_stats: CharacterStats = CharacterStats.new()
 
 var last_direction: String = "down"
 var is_attacking: bool = false
+var is_defeated: bool = false
 var attack_timer: float = 0.0
 var cooldown_timer: float = 0.0
 var hit_targets: Array[Node] = []
@@ -46,6 +47,11 @@ func _physics_process(delta: float) -> void:
             hide_dialogue()
             _notify_nearby_interactable_dialogue_closed()
             return
+
+    if is_defeated:
+        velocity = Vector2.ZERO
+        move_and_slide()
+        return
 
     var input_vector := Vector2.ZERO
 
@@ -83,6 +89,9 @@ func get_current_attack_cooldown() -> float:
 
 
 func gain_xp(amount: int) -> bool:
+    if is_defeated:
+        return false
+
     var leveled_up := character_stats.add_xp(amount)
 
     _notify_ui_stats_changed()
@@ -94,6 +103,9 @@ func gain_xp(amount: int) -> bool:
 
 
 func spend_stat_point(stat_id: String) -> bool:
+    if is_defeated:
+        return false
+
     var spent := character_stats.spend_stat_point(stat_id)
 
     if spent:
@@ -114,7 +126,11 @@ func _notify_ui_stats_changed() -> void:
     if autoload_ui != null and autoload_ui.has_method("refresh_character_display"):
         autoload_ui.refresh_character_display()
 
+
 func add_inventory_item(item_id: String, item_name: String) -> void:
+    if is_defeated:
+        return
+
     if has_inventory_item(item_id):
         print("Inventory already has item: ", item_name)
         return
@@ -145,6 +161,9 @@ func get_inventory_item_name(item_id: String) -> String:
 
 
 func equip_weapon(item_id: String) -> void:
+    if is_defeated:
+        return
+
     if not has_inventory_item(item_id):
         push_warning("Cannot equip weapon. Item not found in inventory: " + item_id)
         return
@@ -226,6 +245,9 @@ func _notify_nearby_interactable_dialogue_closed() -> void:
 
 
 func set_nearby_interactable(interactable: Node) -> void:
+    if is_defeated:
+        return
+
     nearby_interactable = interactable
     print("Nearby interactable: ", interactable.name)
     _show_interaction_prompt()
@@ -262,6 +284,9 @@ func _hide_interaction_prompt() -> void:
 
 
 func _try_interact() -> void:
+    if is_defeated:
+        return
+
     if is_dialogue_active():
         return
 
@@ -274,6 +299,9 @@ func _try_interact() -> void:
 
 
 func _try_attack() -> void:
+    if is_defeated:
+        return
+
     if is_dialogue_active():
         return
 
@@ -390,6 +418,9 @@ func _check_attack_overlaps() -> void:
 
 
 func _damage_area_target(area: Area2D) -> void:
+    if is_defeated:
+        return
+
     if not is_attacking:
         return
 
@@ -414,6 +445,9 @@ func _damage_area_target(area: Area2D) -> void:
 
 
 func _update_animation(input_vector: Vector2) -> void:
+    if is_defeated:
+        return
+
     if input_vector == Vector2.ZERO:
         animated_sprite.play("idle_" + last_direction)
         return
@@ -430,8 +464,12 @@ func _update_animation(input_vector: Vector2) -> void:
             last_direction = "up"
 
     animated_sprite.play("walk_" + last_direction)
-    
+
+
 func take_damage(incoming_damage: int) -> void:
+    if is_defeated:
+        return
+
     if incoming_damage <= 0:
         return
 
@@ -450,5 +488,20 @@ func take_damage(incoming_damage: int) -> void:
 
 
 func _on_player_defeated() -> void:
+    if is_defeated:
+        return
+
+    is_defeated = true
+    is_attacking = false
+    velocity = Vector2.ZERO
+
+    _disable_attack_hitbox()
+    _hide_weapon_sprite()
+    _hide_interaction_prompt()
+
+    if animated_sprite != null:
+        animated_sprite.visible = false
+
     print("Player defeated.")
     show_dialogue("You have been defeated.")
+    _notify_ui_stats_changed()
