@@ -25,8 +25,8 @@ var endurance: int = 1
 var focus: int = 1
 var speed: int = 1
 
-var base_attack: int = 1
-var base_defense: int = 1
+var base_attack: int = 0
+var base_defense: int = 0
 
 var equipped_weapon_id: String = ""
 var equipped_weapon_name: String = "None"
@@ -39,11 +39,11 @@ var equipped_accessory_name: String = "None"
 
 
 func get_attack() -> int:
-    return base_attack
+    return base_attack + might + _get_equipped_weapon_attack_bonus()
 
 
 func get_defense() -> int:
-    return base_defense
+    return base_defense + _get_equipped_armor_defense_bonus()
 
 
 func get_equipped_weapon_name() -> String:
@@ -95,3 +95,24 @@ func unequip_armor() -> void:
 func unequip_accessory() -> void:
     equipped_accessory_id = ""
     equipped_accessory_name = "None"
+
+
+func has_equipped_breakable_tool(required_tag: String) -> bool:
+    if equipped_weapon_id.strip_edges() == "":
+        return false
+
+    return ItemDatabase.item_has_breakable_tool_tag(equipped_weapon_id, required_tag)
+
+
+func _get_equipped_weapon_attack_bonus() -> int:
+    if equipped_weapon_id.strip_edges() == "":
+        return 0
+
+    return ItemDatabase.get_attack_bonus(equipped_weapon_id)
+
+
+func _get_equipped_armor_defense_bonus() -> int:
+    if equipped_armor_id.strip_edges() == "":
+        return 0
+
+    return ItemDatabase.get_defense_bonus(equipped_armor_id)
