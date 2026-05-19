@@ -1,6 +1,8 @@
 extends Interactable
 class_name CollectableObject
 
+@export var persistent_id: String = ""
+
 @export var item_id: String = ""
 @export var item_name: String = ""
 @export var item_type: String = "misc"
@@ -17,11 +19,26 @@ class_name CollectableObject
 
 
 func _ready() -> void:
+    if _should_remove_because_collected_in_save():
+        queue_free()
+        return
+
     interaction_id = item_id
     interaction_prompt = pickup_prompt
     one_shot = destroy_on_collect
 
     super._ready()
+
+
+func _should_remove_because_collected_in_save() -> bool:
+    if persistent_id.strip_edges() == "":
+        return false
+
+    if not SaveManager.is_collectable_collected(persistent_id):
+        return false
+
+    print("Collectable removed because already collected: ", persistent_id)
+    return true
 
 
 func _on_interact(player: Node2D) -> void:
@@ -45,6 +62,9 @@ func _on_interact(player: Node2D) -> void:
         return
 
     player.add_inventory_item(item_id, item_name)
+
+    if persistent_id.strip_edges() != "":
+        SaveManager.mark_collectable_collected(persistent_id)
 
     if auto_equip_on_pickup:
         _try_auto_equip(player)

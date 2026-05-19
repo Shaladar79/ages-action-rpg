@@ -1,6 +1,8 @@
 extends StaticBody2D
 class_name BreakableObject
 
+@export var persistent_id: String = ""
+
 @export var max_hit_points: int = 3
 @export var required_tool_tag: String = "club"
 @export var broken_sprite_visible: bool = false
@@ -13,6 +15,20 @@ var is_broken: bool = false
 
 func _ready() -> void:
     current_hit_points = max_hit_points
+
+    if _should_start_broken_from_save():
+        _set_broken_state(false)
+
+
+func _should_start_broken_from_save() -> bool:
+    if persistent_id.strip_edges() == "":
+        return false
+
+    if not SaveManager.is_breakable_broken(persistent_id):
+        return false
+
+    print("Breakable object loaded as already broken: ", persistent_id)
+    return true
 
 
 func can_be_damaged_by(player: Node2D) -> bool:
@@ -67,7 +83,15 @@ func break_object() -> void:
     if is_broken:
         return
 
+    if persistent_id.strip_edges() != "":
+        SaveManager.mark_breakable_broken(persistent_id)
+
+    _set_broken_state(true)
+
+
+func _set_broken_state(print_message: bool = true) -> void:
     is_broken = true
+    current_hit_points = 0
 
     _disable_all_collision_shapes(self)
 
@@ -78,7 +102,8 @@ func break_object() -> void:
     if object_sprite != null:
         object_sprite.visible = broken_sprite_visible
 
-    print("Breakable object broken. Collision layer/mask disabled.")
+    if print_message:
+        print("Breakable object broken. Collision layer/mask disabled.")
 
 
 func _disable_all_collision_shapes(node: Node) -> void:

@@ -3,7 +3,12 @@ extends Node
 const SAVE_FILE_PATH: String = "user://savegame.json"
 
 var pending_loaded_data: Dictionary = {}
+
 var defeated_monster_ids: Array[String] = []
+var collected_collectable_ids: Array[String] = []
+var broken_breakable_ids: Array[String] = []
+var activated_save_point_ids: Array[String] = []
+var persistent_object_positions: Dictionary = {}
 
 
 func has_save_file() -> bool:
@@ -24,6 +29,10 @@ func get_save_display_name() -> String:
 
 func clear_runtime_world_state() -> void:
     defeated_monster_ids.clear()
+    collected_collectable_ids.clear()
+    broken_breakable_ids.clear()
+    activated_save_point_ids.clear()
+    persistent_object_positions.clear()
 
 
 func mark_monster_defeated(monster_persistent_id: String) -> void:
@@ -42,6 +51,92 @@ func is_monster_defeated(monster_persistent_id: String) -> bool:
         return false
 
     return defeated_monster_ids.has(monster_persistent_id)
+
+
+func mark_collectable_collected(collectable_persistent_id: String) -> void:
+    if collectable_persistent_id.strip_edges() == "":
+        return
+
+    if collected_collectable_ids.has(collectable_persistent_id):
+        return
+
+    collected_collectable_ids.append(collectable_persistent_id)
+    print("Marked collectable collected: ", collectable_persistent_id)
+
+
+func is_collectable_collected(collectable_persistent_id: String) -> bool:
+    if collectable_persistent_id.strip_edges() == "":
+        return false
+
+    return collected_collectable_ids.has(collectable_persistent_id)
+
+
+func mark_breakable_broken(breakable_persistent_id: String) -> void:
+    if breakable_persistent_id.strip_edges() == "":
+        return
+
+    if broken_breakable_ids.has(breakable_persistent_id):
+        return
+
+    broken_breakable_ids.append(breakable_persistent_id)
+    print("Marked breakable broken: ", breakable_persistent_id)
+
+
+func is_breakable_broken(breakable_persistent_id: String) -> bool:
+    if breakable_persistent_id.strip_edges() == "":
+        return false
+
+    return broken_breakable_ids.has(breakable_persistent_id)
+
+
+func mark_save_point_activated(save_point_id: String) -> void:
+    if save_point_id.strip_edges() == "":
+        return
+
+    if activated_save_point_ids.has(save_point_id):
+        return
+
+    activated_save_point_ids.append(save_point_id)
+    print("Marked save point activated: ", save_point_id)
+
+
+func is_save_point_activated(save_point_id: String) -> bool:
+    if save_point_id.strip_edges() == "":
+        return false
+
+    return activated_save_point_ids.has(save_point_id)
+
+
+func set_persistent_object_position(object_id: String, object_position: Vector2) -> void:
+    if object_id.strip_edges() == "":
+        return
+
+    persistent_object_positions[object_id] = {
+        "x": object_position.x,
+        "y": object_position.y
+    }
+
+
+func has_persistent_object_position(object_id: String) -> bool:
+    if object_id.strip_edges() == "":
+        return false
+
+    return persistent_object_positions.has(object_id)
+
+
+func get_persistent_object_position(object_id: String, fallback_position: Vector2) -> Vector2:
+    if not has_persistent_object_position(object_id):
+        return fallback_position
+
+    var position_data: Dictionary = persistent_object_positions.get(object_id, {})
+
+    if position_data.is_empty():
+        return fallback_position
+
+    return Vector2(
+        float(position_data.get("x", fallback_position.x)),
+        float(position_data.get("y", fallback_position.y))
+    )
 
 
 func save_game(player: Node) -> bool:
@@ -241,7 +336,11 @@ func _build_respawn_data() -> Dictionary:
 
 func _build_world_state_data() -> Dictionary:
     return {
-        "defeated_monster_ids": defeated_monster_ids.duplicate()
+        "defeated_monster_ids": defeated_monster_ids.duplicate(),
+        "collected_collectable_ids": collected_collectable_ids.duplicate(),
+        "broken_breakable_ids": broken_breakable_ids.duplicate(),
+        "activated_save_point_ids": activated_save_point_ids.duplicate(),
+        "persistent_object_positions": persistent_object_positions.duplicate(true)
     }
 
 
@@ -343,7 +442,7 @@ func _apply_respawn_data(save_data: Dictionary) -> void:
 
 
 func _apply_world_state_data(save_data: Dictionary) -> void:
-    defeated_monster_ids.clear()
+    clear_runtime_world_state()
 
     var world_state: Dictionary = save_data.get("world_state", {})
 
@@ -351,17 +450,41 @@ func _apply_world_state_data(save_data: Dictionary) -> void:
         return
 
     var saved_defeated_monsters: Array = world_state.get("defeated_monster_ids", [])
-
     for monster_id in saved_defeated_monsters:
-        var id_string := str(monster_id)
+        _append_unique_string(defeated_monster_ids, monster_id)
 
-        if id_string.strip_edges() == "":
-            continue
+    var saved_collected_collectables: Array = world_state.get("collected_collectable_ids", [])
+    for collectable_id in saved_collected_collectables:
+        _append_unique_string(collected_collectable_ids, collectable_id)
 
-        if not defeated_monster_ids.has(id_string):
-            defeated_monster_ids.append(id_string)
+    var saved_broken_breakables: Array = world_state.get("broken_breakable_ids", [])
+    for breakable_id in saved_broken_breakables:
+        _append_unique_string(broken_breakable_ids, breakable_id)
+
+    var saved_activated_save_points: Array = world_state.get("activated_save_point_ids", [])
+    for save_point_id in saved_activated_save_points:
+        _append_unique_string(activated_save_point_ids, save_point_id)
+
+    var saved_positions: Dictionary = world_state.get("persistent_object_positions", {})
+    persistent_object_positions = saved_positions.duplicate(true)
 
     print("Loaded defeated monster count: ", defeated_monster_ids.size())
+    print("Loaded collected collectable count: ", collected_collectable_ids.size())
+    print("Loaded broken breakable count: ", broken_breakable_ids.size())
+    print("Loaded activated save point count: ", activated_save_point_ids.size())
+    print("Loaded persistent object position count: ", persistent_object_positions.size())
+
+
+func _append_unique_string(target_array: Array[String], value) -> void:
+    var id_string := str(value)
+
+    if id_string.strip_edges() == "":
+        return
+
+    if target_array.has(id_string):
+        return
+
+    target_array.append(id_string)
 
 
 func _get_current_age_name(scene_path: String) -> String:

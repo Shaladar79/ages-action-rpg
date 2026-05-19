@@ -82,14 +82,17 @@ persistent_id = "Cave_Scorp_3"
 [node name="PushRock" parent="Objects" unique_id=649356019 instance=ExtResource("6_kcxuk")]
 position = Vector2(411, 529)
 scale = Vector2(0.5, 0.5)
+persistent_id = "PushRock"
 
 [node name="BreakableRock" parent="Objects" unique_id=1719668920 instance=ExtResource("7_rl85u")]
 position = Vector2(449.00003, 470)
+persistent_id = "BreakRock"
 max_hit_points = 2
 
 [node name="CollectableClub" parent="Objects" unique_id=524225198 instance=ExtResource("8_o2k4q")]
 z_index = -1
 position = Vector2(413, 684)
+persistent_id = "Stone_Club"
 auto_equip_on_pickup = true
 
 [node name="CaveScorp" parent="Objects" unique_id=1655329841 instance=ExtResource("9_1x8pa")]
