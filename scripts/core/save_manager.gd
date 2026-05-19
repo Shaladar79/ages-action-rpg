@@ -3,6 +3,7 @@ extends Node
 const SAVE_FILE_PATH: String = "user://savegame.json"
 
 var pending_loaded_data: Dictionary = {}
+var defeated_monster_ids: Array[String] = []
 
 
 func has_save_file() -> bool:
@@ -19,6 +20,28 @@ func get_save_display_name() -> String:
         return "No Save Found"
 
     return save_data.get("save_display_name", "Saved Game")
+
+
+func clear_runtime_world_state() -> void:
+    defeated_monster_ids.clear()
+
+
+func mark_monster_defeated(monster_persistent_id: String) -> void:
+    if monster_persistent_id.strip_edges() == "":
+        return
+
+    if defeated_monster_ids.has(monster_persistent_id):
+        return
+
+    defeated_monster_ids.append(monster_persistent_id)
+    print("Marked monster defeated: ", monster_persistent_id)
+
+
+func is_monster_defeated(monster_persistent_id: String) -> bool:
+    if monster_persistent_id.strip_edges() == "":
+        return false
+
+    return defeated_monster_ids.has(monster_persistent_id)
 
 
 func save_game(player: Node) -> bool:
@@ -42,8 +65,8 @@ func save_game(player: Node) -> bool:
     if current_scene != null:
         scene_path = current_scene.scene_file_path
 
-    var age_name := "Stone Age"
-    var map_name := _get_map_name_from_scene_path(scene_path)
+    var age_name := _get_current_age_name(scene_path)
+    var map_name := _get_current_map_name(scene_path)
     var character_name := stats.character_name
     var level_text := "Lv" + str(stats.level)
 
@@ -65,7 +88,8 @@ func save_game(player: Node) -> bool:
         },
         "character_stats": _build_character_stats_data(stats),
         "inventory": _get_player_inventory(player),
-        "respawn": _build_respawn_data()
+        "respawn": _build_respawn_data(),
+        "world_state": _build_world_state_data()
     }
 
     var file := FileAccess.open(SAVE_FILE_PATH, FileAccess.WRITE)
@@ -113,6 +137,7 @@ func load_game_from_menu() -> void:
         return
 
     pending_loaded_data = save_data
+    _apply_world_state_data(save_data)
 
     var scene_path: String = save_data.get("scene_path", "")
 
@@ -142,6 +167,7 @@ func apply_pending_loaded_data(player: Node) -> void:
     _apply_character_stats(player, pending_loaded_data)
     _apply_inventory(player, pending_loaded_data)
     _apply_respawn_data(pending_loaded_data)
+    _apply_world_state_data(pending_loaded_data)
 
     pending_loaded_data = {}
 
@@ -213,6 +239,12 @@ func _build_respawn_data() -> Dictionary:
     }
 
 
+func _build_world_state_data() -> Dictionary:
+    return {
+        "defeated_monster_ids": defeated_monster_ids.duplicate()
+    }
+
+
 func _apply_player_position(player: Node, save_data: Dictionary) -> void:
     var position_data: Dictionary = save_data.get("player_position", {})
 
@@ -280,8 +312,11 @@ func _apply_character_stats(player: Node, save_data: Dictionary) -> void:
 func _apply_inventory(player: Node, save_data: Dictionary) -> void:
     var saved_inventory: Array = save_data.get("inventory", [])
 
-    if "inventory" in player:
-        player.inventory = saved_inventory
+    if player.has_method("set_inventory_items"):
+        player.set_inventory_items(saved_inventory)
+        return
+
+    push_warning("Player does not have set_inventory_items(). Inventory was not loaded.")
 
 
 func _apply_respawn_data(save_data: Dictionary) -> void:
@@ -305,6 +340,55 @@ func _apply_respawn_data(save_data: Dictionary) -> void:
         respawn_data.get("active_scene_path", ""),
         pos
     )
+
+
+func _apply_world_state_data(save_data: Dictionary) -> void:
+    defeated_monster_ids.clear()
+
+    var world_state: Dictionary = save_data.get("world_state", {})
+
+    if world_state.is_empty():
+        return
+
+    var saved_defeated_monsters: Array = world_state.get("defeated_monster_ids", [])
+
+    for monster_id in saved_defeated_monsters:
+        var id_string := str(monster_id)
+
+        if id_string.strip_edges() == "":
+            continue
+
+        if not defeated_monster_ids.has(id_string):
+            defeated_monster_ids.append(id_string)
+
+    print("Loaded defeated monster count: ", defeated_monster_ids.size())
+
+
+func _get_current_age_name(scene_path: String) -> String:
+    var settings := _get_current_map_settings()
+
+    if settings != null:
+        return settings.age_name
+
+    return "Stone Age"
+
+
+func _get_current_map_name(scene_path: String) -> String:
+    var settings := _get_current_map_settings()
+
+    if settings != null:
+        return settings.map_name
+
+    return _get_map_name_from_scene_path(scene_path)
+
+
+func _get_current_map_settings() -> MapSettings:
+    var current_scene := get_tree().current_scene
+
+    if current_scene == null:
+        return null
+
+    return current_scene.find_child("MapSettings", true, false) as MapSettings
 
 
 func _get_map_name_from_scene_path(scene_path: String) -> String:

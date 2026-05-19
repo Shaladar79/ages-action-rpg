@@ -1,6 +1,15 @@
 extends CharacterBody2D
 class_name Monster
 
+enum RespawnMode {
+    USE_MAP_DEFAULT,
+    ALWAYS_RESPAWN,
+    NEVER_RESPAWN
+}
+
+@export var persistent_id: String = ""
+@export var respawn_mode: RespawnMode = RespawnMode.USE_MAP_DEFAULT
+
 @export var monster_name: String = "Monster"
 @export var max_hit_points: int = 3
 @export var attack: int = 1
@@ -40,6 +49,10 @@ var last_direction: String = "down"
 
 
 func _ready() -> void:
+    if _should_remove_because_defeated_in_save():
+        queue_free()
+        return
+
     current_hit_points = max_hit_points
     spawn_position = global_position
     wander_target = spawn_position
@@ -59,6 +72,17 @@ func _physics_process(delta: float) -> void:
 
     if can_attack_player:
         _try_attack_player()
+
+
+func _should_remove_because_defeated_in_save() -> bool:
+    if persistent_id.strip_edges() == "":
+        return false
+
+    if not SaveManager.is_monster_defeated(persistent_id):
+        return false
+
+    print(monster_name, " removed because persistent monster is already defeated: ", persistent_id)
+    return true
 
 
 func _update_movement(delta: float) -> void:
@@ -269,6 +293,9 @@ func die(player: Node2D = null) -> void:
 
     print(monster_name, " defeated. XP reward: ", xp_reward)
 
+    if _should_save_defeat_state():
+        SaveManager.mark_monster_defeated(persistent_id)
+
     if player != null and player.has_method("gain_xp"):
         player.gain_xp(xp_reward)
 
@@ -286,6 +313,37 @@ func die(player: Node2D = null) -> void:
 
     if destroy_on_death:
         queue_free()
+
+
+func _should_save_defeat_state() -> bool:
+    if persistent_id.strip_edges() == "":
+        return false
+
+    match respawn_mode:
+        RespawnMode.ALWAYS_RESPAWN:
+            return false
+
+        RespawnMode.NEVER_RESPAWN:
+            return true
+
+        RespawnMode.USE_MAP_DEFAULT:
+            return not _get_map_monsters_respawn_by_default()
+
+    return false
+
+
+func _get_map_monsters_respawn_by_default() -> bool:
+    var current_scene := get_tree().current_scene
+
+    if current_scene == null:
+        return false
+
+    var map_settings := current_scene.find_child("MapSettings", true, false) as MapSettings
+
+    if map_settings == null:
+        return false
+
+    return map_settings.monsters_respawn_by_default
 
 
 func _disable_all_collision_shapes(node: Node) -> void:

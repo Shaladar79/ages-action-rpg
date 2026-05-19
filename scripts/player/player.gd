@@ -41,9 +41,15 @@ func _ready() -> void:
     if not attack_area.area_entered.is_connected(_on_attack_area_entered):
         attack_area.area_entered.connect(_on_attack_area_entered)
 
-    if SaveManager.pending_loaded_data.size() > 0:
-        SaveManager.apply_pending_loaded_data(self)
+    call_deferred("_apply_pending_save_if_needed")
 
+func _apply_pending_save_if_needed() -> void:
+    if SaveManager.pending_loaded_data.is_empty():
+        print("No pending save data to apply.")
+        return
+
+    print("Applying pending save data to player.")
+    SaveManager.apply_pending_loaded_data(self)
 
 func _physics_process(delta: float) -> void:
     _update_attack_timers(delta)
@@ -215,6 +221,26 @@ func get_defense() -> int:
 func get_inventory_items() -> Array[Dictionary]:
     return inventory
 
+func set_inventory_items(saved_inventory: Array) -> void:
+    inventory.clear()
+
+    for item in saved_inventory:
+        if typeof(item) != TYPE_DICTIONARY:
+            continue
+
+        var item_id: String = str(item.get("id", ""))
+        var item_name: String = str(item.get("name", item_id))
+
+        if item_id.strip_edges() == "":
+            continue
+
+        inventory.append({
+            "id": item_id,
+            "name": item_name
+        })
+
+    print("Inventory loaded. Item count: ", inventory.size())
+    _notify_ui_stats_changed()
 
 func show_dialogue(message: String) -> void:
     if dialogue_bubble == null:

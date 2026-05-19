@@ -84,7 +84,6 @@ offset_right = 8.0
 offset_bottom = 8.0
 
 [node name="CharacterScreen" type="Control" parent="." unique_id=1158254083]
-visible = false
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -405,7 +404,6 @@ theme_override_font_sizes/font_size = 10
 text = "Defense:"
 
 [node name="SavePrompt" type="Control" parent="." unique_id=677553481]
-visible = false
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -419,16 +417,16 @@ grow_vertical = 2
 
 [node name="Panel" type="Panel" parent="SavePrompt" unique_id=1694234600]
 layout_mode = 0
-offset_left = 445.0
-offset_top = 296.0
-offset_right = 775.0
-offset_bottom = 366.0
+offset_left = 611.0
+offset_top = 377.0
+offset_right = 941.0
+offset_bottom = 447.0
 
 [node name="MessageLabel" type="Label" parent="SavePrompt/Panel" unique_id=1744091169]
 layout_mode = 0
-offset_left = 8.0
+offset_left = 9.0
 offset_top = 7.0
-offset_right = 321.0
+offset_right = 322.0
 offset_bottom = 44.0
 theme_override_font_sizes/font_size = 20
 text = "Do you want to save your game?"

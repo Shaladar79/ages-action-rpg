@@ -66,6 +66,7 @@ radius = 25.179358
 
 [node name="CaveScorp" type="CharacterBody2D" unique_id=1655329841]
 script = ExtResource("1_4ibsn")
+persistent_id = "Cave_Scorp_"
 attack = 2
 xp_reward = 2
 
