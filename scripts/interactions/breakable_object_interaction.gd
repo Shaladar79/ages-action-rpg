@@ -1,6 +1,7 @@
 extends Interactable
 
 @export_multiline var blocked_message: String = "This rock is cracked, but I need something heavy to break it."
+@export_multiline var ready_message: String = "This rock looks breakable. I should attack it with the right tool."
 
 
 func _on_interact(player: Node2D) -> void:
@@ -9,15 +10,22 @@ func _on_interact(player: Node2D) -> void:
     if breakable_object == null:
         return
 
-    if not breakable_object.has_method("try_break"):
-        print("Breakable object parent does not have try_break().")
+    if not breakable_object.has_method("can_be_damaged_by"):
+        print("Breakable object parent does not have can_be_damaged_by().")
         return
 
-    if breakable_object.has_method("can_break") and not breakable_object.can_break(player):
-        if player.has_method("show_dialogue"):
-            player.show_dialogue(blocked_message)
-        else:
-            print(blocked_message)
+    if not breakable_object.can_be_damaged_by(player):
+        _show_or_print_message(player, blocked_message)
         return
 
-    breakable_object.try_break(player)
+    _show_or_print_message(player, ready_message)
+
+
+func _show_or_print_message(player: Node2D, message: String) -> void:
+    if message.strip_edges() == "":
+        return
+
+    if player != null and player.has_method("show_dialogue"):
+        player.show_dialogue(message)
+    else:
+        print(message)

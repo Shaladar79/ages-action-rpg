@@ -13,6 +13,7 @@ radius = 53.15073
 [node name="BreakableRock" type="StaticBody2D" unique_id=1719668920]
 scale = Vector2(0.75, 0.75)
 script = ExtResource("1_853ie")
+max_hit_points = 5
 
 [node name="BodyCollision" type="CollisionShape2D" parent="." unique_id=823390067]
 visible = false
