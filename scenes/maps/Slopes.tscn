@@ -1,0 +1,65 @@
+[gd_scene format=3 uid="uid://chph8q00qw2nc"]
+
+[ext_resource type="Script" uid="uid://dgyphpqc2hcty" path="res://scripts/core/map_settings.gd" id="1_ilf6c"]
+[ext_resource type="Texture2D" uid="uid://ca76o3hgd8iyg" path="res://art/maps/cayon_bridge.png" id="2_440q3"]
+[ext_resource type="PackedScene" uid="uid://d2qyxdpcmw4x0" path="res://scenes/objects/map_spawn_point.tscn" id="3_1p2iq"]
+[ext_resource type="PackedScene" uid="uid://pyq76iw1lw5d" path="res://scenes/objects/save_totem.tscn" id="3_440q3"]
+[ext_resource type="PackedScene" uid="uid://ds0nibabilemd" path="res://scenes/player/Player.tscn" id="4_4prd7"]
+[ext_resource type="PackedScene" uid="uid://cihgogaol4td8" path="res://scenes/objects/map_transition_area.tscn" id="5_5obdd"]
+
+[node name="SlopesOfMountChonos" type="Node2D" unique_id=924677795]
+
+[node name="MapSettings" type="Node2D" parent="." unique_id=417426612]
+script = ExtResource("1_ilf6c")
+map_name = "Canyon_No_bridge"
+monsters_respawn_by_default = true
+
+[node name="MapImage" type="Sprite2D" parent="." unique_id=520401794]
+position = Vector2(722, 529)
+texture = ExtResource("2_440q3")
+
+[node name="SaveTotem" parent="." unique_id=528667636 instance=ExtResource("3_440q3")]
+position = Vector2(283, 176)
+
+[node name="Mapspawns" type="Node2D" parent="." unique_id=1546651547]
+
+[node name="From_Start_Cavern" parent="Mapspawns" unique_id=366895598 instance=ExtResource("3_1p2iq")]
+z_index = -100
+position = Vector2(193, 173)
+
+[node name="Player" parent="." unique_id=949372820 instance=ExtResource("4_4prd7")]
+position = Vector2(188, 174)
+
+[node name="MapChange" type="Node2D" parent="." unique_id=1212440118]
+
+[node name="ToSummit" parent="MapChange" unique_id=1344752193 instance=ExtResource("5_5obdd")]
+position = Vector2(424, 19)
+
+[node name="ToFoothills" parent="MapChange" unique_id=555040427 instance=ExtResource("5_5obdd")]
+position = Vector2(690, 1090)
+target_scene_path = "uid://2j7r845rkdbh"
+target_spawn_id = "FromSlopes"
+
+[node name="MapCollisions" type="Node2D" parent="." unique_id=802038249]
+
+[node name="LeftCorner" type="StaticBody2D" parent="MapCollisions" unique_id=1037109170]
+
+[node name="Left_Corner" type="CollisionPolygon2D" parent="MapCollisions/LeftCorner" unique_id=740450244]
+position = Vector2(-4, -3)
+polygon = PackedVector2Array(211, 161, 284, 186, 341, 145, 414, 128, 415, 120, 410, 116, 413, 98, 405, 88, 400, 96, 392, 93, 389, 59, 388, 0, 2, 19, 3, 601, 51, 605, 58, 577, 81, 560, 93, 541, 87, 518, 77, 491, 87, 516, 104, 498, 109, 473, 142, 464, 125, 441, 107, 423, 117, 395, 122, 342, 115, 285, 124, 245, 147, 213, 126, 247, 116, 283, 165, 287, 197, 226, 148, 199, 143, 161, 153, 167, 159, 153, 155, 138, 153, 121, 155, 98, 166, 87, 173, 80, 192, 81, 208, 96, 217, 112, 222, 129, 222, 150)
+
+[node name="Top" type="StaticBody2D" parent="MapCollisions" unique_id=103562674]
+
+[node name="Top" type="CollisionPolygon2D" parent="MapCollisions/Top" unique_id=234024346]
+polygon = PackedVector2Array(449, 1, 448, 70, 445, 115, 457, 89, 470, 73, 499, 63, 519, 50, 533, 39, 576, 31, 612, 33, 654, 46, 686, 65, 709, 97, 711, 136, 708, 98, 699, 149, 676, 171, 648, 186, 630, 205, 618, 223, 626, 242, 637, 249, 655, 282, 669, 302, 734, 286, 787, 267, 836, 245, 904, 214, 901, 164, 887, 129, 867, 115, 838, 94, 825, 94, 821, 107, 806, 125, 792, 137, 778, 145, 741, 136, 717, 131, 718, 92, 718, 78, 721, 57, 739, 49, 767, 57, 779, 68, 790, 52, 797, 41, 818, 55, 826, 66, 836, 62, 856, 69, 874, 84, 901, 89, 929, 83, 947, 68, 923, 56, 904, 43, 927, 26, 969, 21, 1001, 36, 1014, 48, 1037, 51, 1063, 50, 1084, 49, 1061, 49, 1033, 49, 1013, 48, 1044, 68, 1072, 80, 1092, 91, 1102, 120, 1101, 136, 1089, 167, 1096, 177, 1121, 183, 1133, 172, 1143, 154, 1165, 148, 1190, 155, 1217, 168, 1241, 165, 1261, 175, 1271, 198, 1285, 223, 1299, 249, 1291, 284, 1271, 312, 1268, 324, 1278, 343, 1299, 369, 1325, 384, 1356, 389, 1414, 392, 1445, 393, 1438, 170, 1271, 4, 759, 10)
+
+[node name="Island1" type="StaticBody2D" parent="MapCollisions" unique_id=365564355]
+
+[node name="Island1" type="CollisionPolygon2D" parent="MapCollisions/Island1" unique_id=500317520]
+position = Vector2(-120, 58)
+polygon = PackedVector2Array(238, 245, 193, 331, 217, 344, 228, 388, 238, 403, 266, 396, 291, 401, 324, 414, 337, 430, 356, 434, 375, 420, 422, 417, 448, 419, 465, 420, 484, 408, 483, 363, 469, 344, 412, 330, 366, 328, 337, 319, 314, 290, 302, 273, 289, 254)
+
+[node name="Island2" type="StaticBody2D" parent="MapCollisions" unique_id=2114848107]
+
+[node name="Island2" type="CollisionPolygon2D" parent="MapCollisions/Island2" unique_id=1019144095]
+polygon = PackedVector2Array(393, 160, 375, 171, 372, 185, 356, 195, 351, 210, 347, 222, 345, 241, 347, 255, 354, 267, 365, 279, 378, 290, 395, 296, 418, 298, 433, 300, 449, 304, 475, 309, 487, 316, 495, 326, 503, 331, 509, 339, 518, 354, 519, 363, 523, 373, 527, 393, 573, 380, 600, 376, 618, 373, 632, 359, 623, 326, 605, 290, 588, 265, 566, 243, 544, 233, 527, 229, 510, 237, 499, 258, 489, 274, 481, 290, 470, 296, 452, 288, 437, 264, 438, 251, 451, 244, 462, 238, 468, 212, 447, 185, 426, 171, 403, 164)

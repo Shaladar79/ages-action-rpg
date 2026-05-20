@@ -1,0 +1,15 @@
+[gd_scene format=3 uid="uid://cihgogaol4td8"]
+
+[ext_resource type="Script" uid="uid://c5grexcfqjy3i" path="res://scripts/interactions/transition_area.gd" id="1_qi0j5"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_w21we"]
+radius = 40.112343
+
+[node name="MapTransitionArea" type="Area2D" unique_id=1344752193]
+script = ExtResource("1_qi0j5")
+transition_type = 1
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=415017085]
+visibility_layer = 1023
+shape = SubResource("CircleShape2D_w21we")
+debug_color = Color(0.1359978, 0.556889, 0.06631172, 0.41960785)

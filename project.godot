@@ -21,6 +21,7 @@ InteractionUi="*uid://clg4i2koclxec"
 GameUi="*uid://bxt5jfm7dnpxq"
 RespawnManager="*uid://2igm5tue23x5"
 SaveManager="*uid://pxolsc0gtgmm"
+SceneTransitionManager="*uid://cc1eyfq00es7s"
 
 [display]
 

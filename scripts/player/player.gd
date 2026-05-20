@@ -41,7 +41,64 @@ func _ready() -> void:
     if not attack_area.area_entered.is_connected(_on_attack_area_entered):
         attack_area.area_entered.connect(_on_attack_area_entered)
 
-    call_deferred("_apply_pending_save_if_needed")
+    call_deferred("_apply_startup_position_if_needed")
+
+
+func _apply_startup_position_if_needed() -> void:
+    if not SaveManager.pending_loaded_data.is_empty():
+        print("Applying pending save data to player.")
+        SaveManager.apply_pending_loaded_data(self)
+        return
+
+    if SceneTransitionManager.has_pending_player_data():
+        SceneTransitionManager.apply_player_data(self)
+
+    if SceneTransitionManager.has_pending_spawn():
+        var spawn_id: String = SceneTransitionManager.consume_pending_spawn()
+        _move_to_map_spawn(spawn_id)
+        return
+
+    print("No pending save data or map spawn to apply.")
+
+func _move_to_map_spawn(spawn_id: String) -> void:
+    if spawn_id.strip_edges() == "":
+        return
+
+    var current_scene := get_tree().current_scene
+
+    if current_scene == null:
+        push_warning("Cannot move player to map spawn. Current scene is null.")
+        return
+
+    var spawn_point := _find_map_spawn_point(current_scene, spawn_id)
+
+    if spawn_point == null:
+        push_warning("No MapSpawnPoint found with spawn_id: " + spawn_id)
+        return
+
+    global_position = spawn_point.global_position
+    velocity = Vector2.ZERO
+
+    print("Player moved to map spawn: ", spawn_id, " at ", global_position)
+
+
+func _find_map_spawn_point(node: Node, spawn_id: String) -> Node2D:
+    if node == null:
+        return null
+
+    if node is MapSpawnPoint:
+        var map_spawn := node as MapSpawnPoint
+
+        if map_spawn.spawn_id == spawn_id:
+            return map_spawn
+
+    for child in node.get_children():
+        var found := _find_map_spawn_point(child, spawn_id)
+
+        if found != null:
+            return found
+
+    return null
 
 func _apply_pending_save_if_needed() -> void:
     if SaveManager.pending_loaded_data.is_empty():

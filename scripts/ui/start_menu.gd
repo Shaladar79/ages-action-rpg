@@ -57,6 +57,7 @@ func _on_new_game_button_pressed() -> void:
     RespawnManager.clear_respawn_point()
     SaveManager.clear_pending_loaded_data()
     SaveManager.clear_runtime_world_state()
+    SceneTransitionManager.clear_all_transition_data()
 
     _show_game_ui_autoload()
     get_tree().change_scene_to_file(new_game_scene_path)
