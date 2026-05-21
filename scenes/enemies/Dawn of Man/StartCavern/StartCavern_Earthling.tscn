@@ -1,0 +1,104 @@
+[gd_scene format=3 uid="uid://bpapdn74pq4la"]
+
+[ext_resource type="Script" uid="uid://piqrssdi1ltw" path="res://scripts/enemies/monster.gd" id="1_4ibsn"]
+[ext_resource type="Texture2D" uid="uid://bf4trwjoc6xk5" path="res://art/Assets/RPG Monsters Mega Pack/Monsters/TB_Monster_024/TB_Monster_024_C.png" id="2_tvnbh"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_43j8e"]
+atlas = ExtResource("2_tvnbh")
+region = Rect2(0, 0, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_skgk4"]
+atlas = ExtResource("2_tvnbh")
+region = Rect2(64, 0, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_0p3vv"]
+atlas = ExtResource("2_tvnbh")
+region = Rect2(128, 0, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_es0ac"]
+atlas = ExtResource("2_tvnbh")
+region = Rect2(192, 0, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_7sm3n"]
+atlas = ExtResource("2_tvnbh")
+region = Rect2(256, 0, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_d8v8v"]
+atlas = ExtResource("2_tvnbh")
+region = Rect2(320, 0, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_gbfvy"]
+atlas = ExtResource("2_tvnbh")
+region = Rect2(384, 0, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_e45jv"]
+atlas = ExtResource("2_tvnbh")
+region = Rect2(448, 0, 64, 64)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_oxsjp"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_43j8e")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_skgk4")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_0p3vv")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_es0ac")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_7sm3n")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_d8v8v")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_gbfvy")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_e45jv")
+}],
+"loop": true,
+"name": &"walk_down",
+"speed": 5.0
+}]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_cpsp6"]
+radius = 18.0
+height = 40.0
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_x2c5x"]
+radius = 19.0
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_tvnbh"]
+radius = 25.179358
+
+[node name="StartCavern Earthling" type="CharacterBody2D" unique_id=1655329841]
+script = ExtResource("1_4ibsn")
+attack = 2
+
+[node name="Sprite2D" type="AnimatedSprite2D" parent="." unique_id=1860368712]
+sprite_frames = SubResource("SpriteFrames_oxsjp")
+animation = &"walk_down"
+frame = 2
+frame_progress = 0.46287748
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=294619965]
+visible = false
+shape = SubResource("CapsuleShape2D_cpsp6")
+
+[node name="Hurtbox" type="Area2D" parent="." unique_id=1653611088]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Hurtbox" unique_id=159763767]
+visible = false
+shape = SubResource("CircleShape2D_x2c5x")
+
+[node name="AttackArea" type="Area2D" parent="." unique_id=309378921]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="AttackArea" unique_id=801893888]
+visible = false
+shape = SubResource("CircleShape2D_tvnbh")

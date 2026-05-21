@@ -8,7 +8,7 @@ radius = 281.25
 height = 800.0
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_vn6hh"]
-size = Vector2(412.5, 368.75)
+size = Vector2(412.5, 50)
 
 [node name="SaveTotem" type="Area2D" unique_id=528667636]
 scale = Vector2(0.08, 0.08)
@@ -29,5 +29,5 @@ position = Vector2(0, 437.5)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Body" unique_id=702531879]
 visible = false
-position = Vector2(0, 175)
+position = Vector2(0, 237.5)
 shape = SubResource("RectangleShape2D_vn6hh")

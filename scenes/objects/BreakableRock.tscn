@@ -5,30 +5,36 @@
 [ext_resource type="Script" uid="uid://brlfbeh6ll8br" path="res://scripts/interactions/breakable_object_interaction.gd" id="3_cnwjm"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_q83p1"]
-size = Vector2(61, 57)
+size = Vector2(69.333336, 78.66667)
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_1n8uw"]
-radius = 53.15073
+radius = 61.333336
 
 [node name="BreakableRock" type="StaticBody2D" unique_id=1719668920]
 scale = Vector2(0.75, 0.75)
 script = ExtResource("1_853ie")
-max_hit_points = 5
 
 [node name="BodyCollision" type="CollisionShape2D" parent="." unique_id=823390067]
 visible = false
-position = Vector2(-1.5, 0.5)
+position = Vector2(-9.536743e-07, 8.666666)
 shape = SubResource("RectangleShape2D_q83p1")
 
 [node name="RockSprite" type="Sprite2D" parent="." unique_id=1395192022]
 z_index = 10
+position = Vector2(0, 4.7683716e-07)
 scale = Vector2(1.5, 1.5)
 texture = ExtResource("2_nfurn")
 
 [node name="InteractionArea" type="Area2D" parent="." unique_id=572415598]
-visible = false
 script = ExtResource("3_cnwjm")
 interaction_id = "breakable_rock"
 
 [node name="InteractionCollision" type="CollisionShape2D" parent="InteractionArea" unique_id=1606220924]
+visible = false
 shape = SubResource("CircleShape2D_1n8uw")
+debug_color = Color(0.89831895, 0.273252, 0.4112588, 0.41960785)
+
+[node name="InteractionCollision2" type="CollisionShape2D" parent="InteractionArea" unique_id=881098872]
+visible = false
+shape = SubResource("CircleShape2D_1n8uw")
+debug_color = Color(0.89831895, 0.273252, 0.4112588, 0.41960785)
