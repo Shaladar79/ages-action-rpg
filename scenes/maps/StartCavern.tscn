@@ -11,6 +11,7 @@
 [ext_resource type="Script" uid="uid://cn6mnuf1x8vbq" path="res://scripts/enemies/BossMonster.gd" id="8_svhj1"]
 [ext_resource type="PackedScene" uid="uid://bas01evmp7jm4" path="res://scenes/objects/trans_area.tscn" id="10_3svxi"]
 [ext_resource type="PackedScene" uid="uid://pyq76iw1lw5d" path="res://scenes/objects/save_totem.tscn" id="10_3573v"]
+[ext_resource type="PackedScene" uid="uid://d0sha3ho6ifgm" path="res://scenes/items/Consumables/Healing_Tonic.tscn" id="10_csk6f"]
 [ext_resource type="PackedScene" uid="uid://cihgogaol4td8" path="res://scenes/objects/map_transition_area.tscn" id="11_3svxi"]
 [ext_resource type="PackedScene" uid="uid://bpapdn74pq4la" path="res://scenes/enemies/StartCavern/StartCavern_Earthling.tscn" id="11_gd1mq"]
 
@@ -41,7 +42,7 @@ polygon = PackedVector2Array(249, 8, 247, 145, 329, 277, 379, 313, 421, 441, 386
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="CollisionWalls/Bot_Left" unique_id=1044849009]
 position = Vector2(2, -1)
-polygon = PackedVector2Array(368, 587, 371, 621, 369, 637, 340, 670, 331, 704, 301, 712, 271, 718, 262, 735, 249, 722, 235, 717, 212, 716, 199, 724, 186, 730, 184, 736, 167, 735, 157, 740, 156, 743, 140, 753, 116, 753, 107, 760, 100, 769, 91, 782, 75, 792, 54, 786, 63, 803, 81, 841, 86, 869, 108, 875, 112, 882, 118, 897, 133, 906, 148, 910, 168, 910, 176, 918, 186, 917, 196, 921, 201, 942, 211, 948, 224, 948, 238, 941, 257, 952, 290, 976, 299, 979, 304, 960, 311, 969, 313, 985, 323, 994, 356, 991, 364, 964, 373, 990, 373, 1082, 1, 1084, 2, 596)
+polygon = PackedVector2Array(368, 587, 371, 621, 369, 637, 340, 670, 331, 704, 301, 712, 271, 718, 262, 735, 249, 722, 235, 717, 212, 716, 199, 724, 186, 730, 184, 736, 167, 735, 157, 740, 156, 743, 140, 753, 116, 753, 107, 760, 100, 769, 77, 770, 69, 777, 54, 786, 63, 803, 81, 841, 86, 869, 108, 875, 112, 882, 148, 868, 176, 863, 191, 873, 206, 901, 198, 914, 208, 920, 207, 932, 210, 937, 216, 944, 224, 948, 238, 941, 257, 952, 290, 976, 299, 979, 304, 960, 311, 969, 313, 985, 323, 994, 356, 991, 364, 964, 373, 990, 373, 1082, 1, 1084, 2, 596)
 
 [node name="Cen_Strip_L" type="StaticBody2D" parent="CollisionWalls" unique_id=1177781128]
 
@@ -103,13 +104,8 @@ position = Vector2(391.00003, 732)
 scale = Vector2(0.9, 0.9)
 persistent_id = "PushRock"
 
-[node name="PushRock4" parent="Objects" unique_id=1926003872 instance=ExtResource("6_kcxuk")]
-position = Vector2(255.00002, 879)
-scale = Vector2(0.9, 0.9)
-persistent_id = "PushRock"
-
 [node name="PushRock5" parent="Objects" unique_id=387110213 instance=ExtResource("6_kcxuk")]
-position = Vector2(211, 797.00006)
+position = Vector2(227, 830)
 scale = Vector2(0.9, 0.9)
 persistent_id = "PushRock"
 
@@ -280,6 +276,9 @@ position = Vector2(1269, 381)
 persistent_id = "SCEarth3"
 monster_name = "Monster"
 defense = 0
+
+[node name="HealingTonic" parent="Monsters" unique_id=1005442685 instance=ExtResource("10_csk6f")]
+position = Vector2(137, 807)
 
 [node name="YSortWorld" type="Node2D" parent="." unique_id=965274766]
 y_sort_enabled = true

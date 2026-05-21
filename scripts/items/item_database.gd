@@ -1,6 +1,12 @@
 extends RefCounted
 class_name ItemDatabase
 
+const EQUIPMENT_SLOT_NONE: String = ""
+const EQUIPMENT_SLOT_MELEE_WEAPON: String = "melee_weapon"
+const EQUIPMENT_SLOT_RANGED_WEAPON: String = "ranged_weapon"
+const EQUIPMENT_SLOT_ARMOR: String = "armor"
+const EQUIPMENT_SLOT_ACCESSORY: String = "accessory"
+
 
 static func get_item_data(item_id: String) -> Dictionary:
     var item_data := WeaponDatabase.get_item_data(item_id)
@@ -9,6 +15,11 @@ static func get_item_data(item_id: String) -> Dictionary:
         return item_data
 
     item_data = ArmorDatabase.get_item_data(item_id)
+
+    if not item_data.is_empty():
+        return item_data
+
+    item_data = AccessoryDatabase.get_item_data(item_id)
 
     if not item_data.is_empty():
         return item_data
@@ -47,6 +58,57 @@ static func get_item_type(item_id: String) -> String:
         return ""
 
     return item_data.get("type", "")
+
+
+static func get_item_tags(item_id: String) -> Array:
+    var item_data := get_item_data(item_id)
+
+    if item_data.is_empty():
+        return []
+
+    return item_data.get("item_tags", [])
+
+
+static func item_has_tag(item_id: String, tag: String) -> bool:
+    var tags := get_item_tags(item_id)
+
+    for item_tag in tags:
+        if str(item_tag) == tag:
+            return true
+
+    return false
+
+
+static func get_equipment_slot(item_id: String) -> String:
+    var item_data := get_item_data(item_id)
+
+    if item_data.is_empty():
+        return EQUIPMENT_SLOT_NONE
+
+    return str(item_data.get("equipment_slot", EQUIPMENT_SLOT_NONE))
+
+
+static func can_equip_in_slot(item_id: String, equipment_slot: String) -> bool:
+    if item_id.strip_edges() == "":
+        return false
+
+    return get_equipment_slot(item_id) == equipment_slot
+
+
+static func is_melee_weapon(item_id: String) -> bool:
+    return get_equipment_slot(item_id) == EQUIPMENT_SLOT_MELEE_WEAPON
+
+
+static func is_ranged_weapon(item_id: String) -> bool:
+    return get_equipment_slot(item_id) == EQUIPMENT_SLOT_RANGED_WEAPON
+
+
+static func is_armor(item_id: String) -> bool:
+    return get_equipment_slot(item_id) == EQUIPMENT_SLOT_ARMOR
+
+
+static func is_accessory(item_id: String) -> bool:
+    return get_equipment_slot(item_id) == EQUIPMENT_SLOT_ACCESSORY
 
 
 static func is_consumable(item_id: String) -> bool:

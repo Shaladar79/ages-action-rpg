@@ -37,14 +37,20 @@ var speed: int = DEFAULT_SPEED_STAT
 var base_attack: int = 0
 var base_defense: int = 0
 
-var equipped_weapon_id: String = ""
-var equipped_weapon_name: String = "None"
+var equipped_melee_weapon_id: String = ""
+var equipped_melee_weapon_name: String = "None"
+
+var equipped_ranged_weapon_id: String = ""
+var equipped_ranged_weapon_name: String = "None"
 
 var equipped_armor_id: String = "grass_tunic"
 var equipped_armor_name: String = "Grass Tunic"
 
-var equipped_accessory_id: String = ""
-var equipped_accessory_name: String = "None"
+var equipped_accessory_1_id: String = ""
+var equipped_accessory_1_name: String = "None"
+
+var equipped_accessory_2_id: String = ""
+var equipped_accessory_2_name: String = "None"
 
 
 func _init() -> void:
@@ -150,7 +156,15 @@ func get_calculated_max_health() -> int:
 
 
 func get_attack() -> int:
-    return base_attack + might + _get_equipped_weapon_attack_bonus()
+    return get_melee_attack()
+
+
+func get_melee_attack() -> int:
+    return base_attack + might + _get_equipped_melee_weapon_attack_bonus()
+
+
+func get_ranged_attack() -> int:
+    return base_attack + agility + _get_equipped_ranged_weapon_attack_bonus()
 
 
 func get_defense() -> int:
@@ -170,11 +184,18 @@ func get_attack_cooldown(base_attack_cooldown: float, attack_speed_bonus_per_agi
     return base_attack_cooldown / speed_multiplier
 
 
-func get_equipped_weapon_name() -> String:
-    if equipped_weapon_name.strip_edges() == "":
+func get_equipped_melee_weapon_name() -> String:
+    if equipped_melee_weapon_name.strip_edges() == "":
         return "None"
 
-    return equipped_weapon_name
+    return equipped_melee_weapon_name
+
+
+func get_equipped_ranged_weapon_name() -> String:
+    if equipped_ranged_weapon_name.strip_edges() == "":
+        return "None"
+
+    return equipped_ranged_weapon_name
 
 
 func get_equipped_armor_name() -> String:
@@ -184,18 +205,44 @@ func get_equipped_armor_name() -> String:
     return equipped_armor_name
 
 
-func get_equipped_accessory_name() -> String:
-    if equipped_accessory_name.strip_edges() == "":
+func get_equipped_accessory_1_name() -> String:
+    if equipped_accessory_1_name.strip_edges() == "":
         return "None"
 
-    return equipped_accessory_name
+    return equipped_accessory_1_name
+
+
+func get_equipped_accessory_2_name() -> String:
+    if equipped_accessory_2_name.strip_edges() == "":
+        return "None"
+
+    return equipped_accessory_2_name
+
+
+func get_equipped_weapon_name() -> String:
+    return get_equipped_melee_weapon_name()
+
+
+func get_equipped_accessory_name() -> String:
+    return get_equipped_accessory_1_name()
+
+
+func get_equipped_melee_weapon_damage_types() -> int:
+    if equipped_melee_weapon_id.strip_edges() == "":
+        return DamageTypes.NONE
+
+    return ItemDatabase.get_damage_types(equipped_melee_weapon_id)
+
+
+func get_equipped_ranged_weapon_damage_types() -> int:
+    if equipped_ranged_weapon_id.strip_edges() == "":
+        return DamageTypes.NONE
+
+    return ItemDatabase.get_damage_types(equipped_ranged_weapon_id)
 
 
 func get_equipped_weapon_damage_types() -> int:
-    if equipped_weapon_id.strip_edges() == "":
-        return DamageTypes.NONE
-
-    return ItemDatabase.get_damage_types(equipped_weapon_id)
+    return get_equipped_melee_weapon_damage_types()
 
 
 func get_equipped_armor_damage_resistances() -> int:
@@ -212,49 +259,133 @@ func get_equipped_armor_damage_weaknesses() -> int:
     return ItemDatabase.get_damage_weaknesses(equipped_armor_id)
 
 
-func get_equipped_accessory_damage_resistances() -> int:
-    if equipped_accessory_id.strip_edges() == "":
+func get_equipped_accessory_1_damage_resistances() -> int:
+    if equipped_accessory_1_id.strip_edges() == "":
         return DamageTypes.NONE
 
-    return ItemDatabase.get_damage_resistances(equipped_accessory_id)
+    return ItemDatabase.get_damage_resistances(equipped_accessory_1_id)
+
+
+func get_equipped_accessory_1_damage_weaknesses() -> int:
+    if equipped_accessory_1_id.strip_edges() == "":
+        return DamageTypes.NONE
+
+    return ItemDatabase.get_damage_weaknesses(equipped_accessory_1_id)
+
+
+func get_equipped_accessory_2_damage_resistances() -> int:
+    if equipped_accessory_2_id.strip_edges() == "":
+        return DamageTypes.NONE
+
+    return ItemDatabase.get_damage_resistances(equipped_accessory_2_id)
+
+
+func get_equipped_accessory_2_damage_weaknesses() -> int:
+    if equipped_accessory_2_id.strip_edges() == "":
+        return DamageTypes.NONE
+
+    return ItemDatabase.get_damage_weaknesses(equipped_accessory_2_id)
+
+
+func get_equipped_accessory_damage_resistances() -> int:
+    return get_equipped_accessory_1_damage_resistances()
 
 
 func get_equipped_accessory_damage_weaknesses() -> int:
-    if equipped_accessory_id.strip_edges() == "":
-        return DamageTypes.NONE
-
-    return ItemDatabase.get_damage_weaknesses(equipped_accessory_id)
+    return get_equipped_accessory_1_damage_weaknesses()
 
 
 func get_total_damage_resistances() -> int:
-    return get_equipped_armor_damage_resistances() | get_equipped_accessory_damage_resistances()
+    return (
+        get_equipped_armor_damage_resistances()
+        | get_equipped_accessory_1_damage_resistances()
+        | get_equipped_accessory_2_damage_resistances()
+    )
 
 
 func get_total_damage_weaknesses() -> int:
-    return get_equipped_armor_damage_weaknesses() | get_equipped_accessory_damage_weaknesses()
+    return (
+        get_equipped_armor_damage_weaknesses()
+        | get_equipped_accessory_1_damage_weaknesses()
+        | get_equipped_accessory_2_damage_weaknesses()
+    )
 
 
-func equip_weapon(item_id: String, item_name: String) -> void:
-    equipped_weapon_id = item_id
-    equipped_weapon_name = item_name
+func equip_melee_weapon(item_id: String, item_name: String) -> bool:
+    if item_id.strip_edges() != "" and not ItemDatabase.can_equip_in_slot(item_id, ItemDatabase.EQUIPMENT_SLOT_MELEE_WEAPON):
+        push_warning("Item cannot be equipped in melee weapon slot: " + item_id)
+        return false
+
+    equipped_melee_weapon_id = item_id
+    equipped_melee_weapon_name = _get_clean_equipped_name(item_name)
+    recalculate_derived_stats(false)
+    return true
+
+
+func equip_ranged_weapon(item_id: String, item_name: String) -> bool:
+    if item_id.strip_edges() != "" and not ItemDatabase.can_equip_in_slot(item_id, ItemDatabase.EQUIPMENT_SLOT_RANGED_WEAPON):
+        push_warning("Item cannot be equipped in ranged weapon slot: " + item_id)
+        return false
+
+    equipped_ranged_weapon_id = item_id
+    equipped_ranged_weapon_name = _get_clean_equipped_name(item_name)
+    recalculate_derived_stats(false)
+    return true
+
+
+func equip_armor(item_id: String, item_name: String) -> bool:
+    if item_id.strip_edges() != "" and not ItemDatabase.can_equip_in_slot(item_id, ItemDatabase.EQUIPMENT_SLOT_ARMOR):
+        push_warning("Item cannot be equipped in armor slot: " + item_id)
+        return false
+
+    equipped_armor_id = item_id
+    equipped_armor_name = _get_clean_equipped_name(item_name)
+    recalculate_derived_stats(true)
+    return true
+
+
+func equip_accessory_1(item_id: String, item_name: String) -> bool:
+    if item_id.strip_edges() != "" and not ItemDatabase.can_equip_in_slot(item_id, ItemDatabase.EQUIPMENT_SLOT_ACCESSORY):
+        push_warning("Item cannot be equipped in accessory 1 slot: " + item_id)
+        return false
+
+    equipped_accessory_1_id = item_id
+    equipped_accessory_1_name = _get_clean_equipped_name(item_name)
+    recalculate_derived_stats(true)
+    return true
+
+
+func equip_accessory_2(item_id: String, item_name: String) -> bool:
+    if item_id.strip_edges() != "" and not ItemDatabase.can_equip_in_slot(item_id, ItemDatabase.EQUIPMENT_SLOT_ACCESSORY):
+        push_warning("Item cannot be equipped in accessory 2 slot: " + item_id)
+        return false
+
+    equipped_accessory_2_id = item_id
+    equipped_accessory_2_name = _get_clean_equipped_name(item_name)
+    recalculate_derived_stats(true)
+    return true
+
+
+func equip_accessory(item_id: String, item_name: String) -> bool:
+    return equip_accessory_1(item_id, item_name)
+
+
+func equip_weapon(item_id: String, item_name: String) -> bool:
+    if ItemDatabase.can_equip_in_slot(item_id, ItemDatabase.EQUIPMENT_SLOT_RANGED_WEAPON):
+        return equip_ranged_weapon(item_id, item_name)
+
+    return equip_melee_weapon(item_id, item_name)
+
+
+func unequip_melee_weapon() -> void:
+    equipped_melee_weapon_id = ""
+    equipped_melee_weapon_name = "None"
     recalculate_derived_stats(false)
 
 
-func equip_armor(item_id: String, item_name: String) -> void:
-    equipped_armor_id = item_id
-    equipped_armor_name = item_name
-    recalculate_derived_stats(true)
-
-
-func equip_accessory(item_id: String, item_name: String) -> void:
-    equipped_accessory_id = item_id
-    equipped_accessory_name = item_name
-    recalculate_derived_stats(true)
-
-
-func unequip_weapon() -> void:
-    equipped_weapon_id = ""
-    equipped_weapon_name = "None"
+func unequip_ranged_weapon() -> void:
+    equipped_ranged_weapon_id = ""
+    equipped_ranged_weapon_name = "None"
     recalculate_derived_stats(false)
 
 
@@ -264,24 +395,54 @@ func unequip_armor() -> void:
     recalculate_derived_stats(false)
 
 
-func unequip_accessory() -> void:
-    equipped_accessory_id = ""
-    equipped_accessory_name = "None"
+func unequip_accessory_1() -> void:
+    equipped_accessory_1_id = ""
+    equipped_accessory_1_name = "None"
     recalculate_derived_stats(false)
 
 
-func has_equipped_breakable_tool(required_tag: String) -> bool:
-    if equipped_weapon_id.strip_edges() == "":
-        return false
+func unequip_accessory_2() -> void:
+    equipped_accessory_2_id = ""
+    equipped_accessory_2_name = "None"
+    recalculate_derived_stats(false)
 
-    return ItemDatabase.item_has_breakable_tool_tag(equipped_weapon_id, required_tag)
+
+func unequip_weapon() -> void:
+    unequip_melee_weapon()
+
+
+func unequip_accessory() -> void:
+    unequip_accessory_1()
+
+
+func has_equipped_breakable_tool(required_tag: String) -> bool:
+    if equipped_melee_weapon_id.strip_edges() != "":
+        if ItemDatabase.item_has_breakable_tool_tag(equipped_melee_weapon_id, required_tag):
+            return true
+
+    if equipped_ranged_weapon_id.strip_edges() != "":
+        if ItemDatabase.item_has_breakable_tool_tag(equipped_ranged_weapon_id, required_tag):
+            return true
+
+    return false
+
+
+func _get_equipped_melee_weapon_attack_bonus() -> int:
+    if equipped_melee_weapon_id.strip_edges() == "":
+        return 0
+
+    return ItemDatabase.get_attack_bonus(equipped_melee_weapon_id)
+
+
+func _get_equipped_ranged_weapon_attack_bonus() -> int:
+    if equipped_ranged_weapon_id.strip_edges() == "":
+        return 0
+
+    return ItemDatabase.get_attack_bonus(equipped_ranged_weapon_id)
 
 
 func _get_equipped_weapon_attack_bonus() -> int:
-    if equipped_weapon_id.strip_edges() == "":
-        return 0
-
-    return ItemDatabase.get_attack_bonus(equipped_weapon_id)
+    return _get_equipped_melee_weapon_attack_bonus()
 
 
 func _get_equipped_armor_defense_bonus() -> int:
@@ -298,8 +459,19 @@ func _get_equipped_health_bonus() -> int:
         var armor_data := ItemDatabase.get_item_data(equipped_armor_id)
         health_bonus += int(armor_data.get("health_bonus", 0))
 
-    if equipped_accessory_id.strip_edges() != "":
-        var accessory_data := ItemDatabase.get_item_data(equipped_accessory_id)
-        health_bonus += int(accessory_data.get("health_bonus", 0))
+    if equipped_accessory_1_id.strip_edges() != "":
+        var accessory_1_data := ItemDatabase.get_item_data(equipped_accessory_1_id)
+        health_bonus += int(accessory_1_data.get("health_bonus", 0))
+
+    if equipped_accessory_2_id.strip_edges() != "":
+        var accessory_2_data := ItemDatabase.get_item_data(equipped_accessory_2_id)
+        health_bonus += int(accessory_2_data.get("health_bonus", 0))
 
     return health_bonus
+
+
+func _get_clean_equipped_name(item_name: String) -> String:
+    if item_name.strip_edges() == "":
+        return "None"
+
+    return item_name

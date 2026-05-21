@@ -17,6 +17,7 @@ enum AttackStyle {
 @export var respawn_mode: RespawnMode = RespawnMode.USE_MAP_DEFAULT
 
 @export var monster_name: String = "Monster"
+@export var monster_level: int = 0
 @export var max_hit_points: int = 3
 
 # Kept for backward compatibility. New monsters should mainly use Melee Damage / Ranged Damage.
@@ -24,6 +25,7 @@ enum AttackStyle {
 
 @export var defense: int = 0
 @export var xp_reward: int = 1
+@export var xp_level_cutoff_below_player: int = 5
 
 @export_flags(
     "Bashing",
@@ -477,8 +479,7 @@ func die(player: Node2D = null) -> void:
     if _should_save_defeat_state():
         SaveManager.mark_monster_defeated(persistent_id)
 
-    if player != null and player.has_method("gain_xp"):
-        player.gain_xp(xp_reward)
+    _award_xp_to_player_if_eligible(player)
 
     if disable_collision_on_death:
         _disable_all_collision_shapes(self)
@@ -494,6 +495,47 @@ func die(player: Node2D = null) -> void:
 
     if destroy_on_death:
         queue_free()
+
+
+func _award_xp_to_player_if_eligible(player: Node2D) -> void:
+    if player == null:
+        return
+
+    if not player.has_method("gain_xp"):
+        return
+
+    var player_level: int = _get_player_level(player)
+    var lowest_xp_level: int = player_level - xp_level_cutoff_below_player
+
+    if monster_level < lowest_xp_level:
+        print(
+            monster_name,
+            " gave no XP. Monster level ",
+            monster_level,
+            " is below XP cutoff level ",
+            lowest_xp_level,
+            " for player level ",
+            player_level,
+			"."
+        )
+        return
+
+    player.gain_xp(xp_reward)
+
+
+func _get_player_level(player: Node2D) -> int:
+    if player == null:
+        return 0
+
+    if not player.has_method("get_character_stats"):
+        return 0
+
+    var stats: CharacterStats = player.get_character_stats()
+
+    if stats == null:
+        return 0
+
+    return stats.level
 
 
 func _should_save_defeat_state() -> bool:

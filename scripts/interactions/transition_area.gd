@@ -66,7 +66,7 @@ func _try_transition(player: Node2D) -> void:
             _transition_same_map(player)
 
         TransitionType.CHANGE_SCENE:
-            _transition_to_scene(player)
+            _transition_to_scene()
 
 
 func _transition_same_map(player: Node2D) -> void:
@@ -86,7 +86,7 @@ func _transition_same_map(player: Node2D) -> void:
     can_transition = true
 
 
-func _transition_to_scene(player: Node2D) -> void:
+func _transition_to_scene() -> void:
     if target_scene_path.strip_edges() == "":
         push_warning("TransitionArea target_scene_path is blank: " + name)
         return
@@ -97,7 +97,12 @@ func _transition_to_scene(player: Node2D) -> void:
 
     can_transition = false
 
-    SceneTransitionManager.store_player_data(player)
+    if player_in_area != null:
+        SceneTransitionManager.store_player_data(player_in_area)
+    else:
+        var player := get_tree().get_first_node_in_group("player")
+        if player != null:
+            SceneTransitionManager.store_player_data(player)
 
     if target_spawn_id.strip_edges() != "":
         SceneTransitionManager.set_pending_spawn(target_spawn_id)

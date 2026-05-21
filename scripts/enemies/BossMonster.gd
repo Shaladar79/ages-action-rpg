@@ -13,6 +13,8 @@ enum BossSpecialChoice {
 @export var lock_movement_during_special: bool = true
 @export var telegraph_polygon_sides: int = 48
 @export var telegraph_z_index: int = 200
+@export var telegraph_impact_flash_time: float = 0.12
+@export var telegraph_impact_flash_color: Color = Color(1.0, 0.0, 0.0, 0.85)
 
 @export_group("AOE Special")
 @export var aoe_enabled: bool = true
@@ -64,6 +66,12 @@ var aoe_special_timer: float = 0.0
 var slam_special_timer: float = 0.0
 var special_global_timer: float = 0.0
 
+var active_telegraphs: Array[Polygon2D] = []
+
+
+func _exit_tree() -> void:
+    _clear_active_telegraphs()
+
 
 func _physics_process(delta: float) -> void:
     if is_dead:
@@ -82,6 +90,12 @@ func _physics_process(delta: float) -> void:
         return
 
     super._physics_process(delta)
+
+
+func die(player: Node2D = null) -> void:
+    _clear_active_telegraphs()
+    is_using_special_attack = false
+    super.die(player)
 
 
 func _update_boss_special_timers(delta: float) -> void:
@@ -151,10 +165,15 @@ func _start_aoe_special() -> void:
     await get_tree().create_timer(aoe_windup_time).timeout
 
     if not is_inside_tree():
+        _clear_active_telegraphs()
         return
 
-    if is_instance_valid(telegraph):
-        telegraph.queue_free()
+    if is_dead:
+        _clear_active_telegraphs()
+        is_using_special_attack = false
+        return
+
+    await _flash_and_clear_telegraph(telegraph)
 
     if is_dead:
         is_using_special_attack = false
@@ -188,10 +207,15 @@ func _start_slam_special() -> void:
     await get_tree().create_timer(slam_windup_time).timeout
 
     if not is_inside_tree():
+        _clear_active_telegraphs()
         return
 
-    if is_instance_valid(telegraph):
-        telegraph.queue_free()
+    if is_dead:
+        _clear_active_telegraphs()
+        is_using_special_attack = false
+        return
+
+    await _flash_and_clear_telegraph(telegraph)
 
     if is_dead:
         is_using_special_attack = false
@@ -208,6 +232,45 @@ func _start_slam_special() -> void:
     )
 
     is_using_special_attack = false
+
+
+func _flash_and_clear_telegraph(telegraph: Polygon2D) -> void:
+    if not is_instance_valid(telegraph):
+        _remove_telegraph_from_active_list(telegraph)
+        return
+
+    telegraph.color = telegraph_impact_flash_color
+
+    if telegraph_impact_flash_time > 0.0:
+        await get_tree().create_timer(telegraph_impact_flash_time).timeout
+
+    if is_instance_valid(telegraph):
+        _remove_telegraph_from_active_list(telegraph)
+        telegraph.queue_free()
+
+
+func _clear_active_telegraphs() -> void:
+    for telegraph in active_telegraphs:
+        if is_instance_valid(telegraph):
+            telegraph.queue_free()
+
+    active_telegraphs.clear()
+
+
+func _track_telegraph(telegraph: Polygon2D) -> void:
+    if telegraph == null:
+        return
+
+    active_telegraphs.append(telegraph)
+
+
+func _remove_telegraph_from_active_list(telegraph: Polygon2D) -> void:
+    if telegraph == null:
+        return
+
+    for index in range(active_telegraphs.size() - 1, -1, -1):
+        if active_telegraphs[index] == telegraph:
+            active_telegraphs.remove_at(index)
 
 
 func _get_direction_to_player() -> Vector2:
@@ -319,6 +382,8 @@ func _create_circle_telegraph(center_position: Vector2, radius: float, telegraph
     else:
         add_child(telegraph)
 
+    _track_telegraph(telegraph)
+
     return telegraph
 
 
@@ -344,6 +409,8 @@ func _create_rectangle_telegraph(
         current_scene.add_child(telegraph)
     else:
         add_child(telegraph)
+
+    _track_telegraph(telegraph)
 
     return telegraph
 

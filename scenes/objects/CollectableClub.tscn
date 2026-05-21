@@ -12,7 +12,6 @@ item_id = "club"
 item_name = "Stone Club"
 item_type = "weapon"
 pickup_message = "You recieved the Stone Club!"
-show_dialogue_on_collect = true
 
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=1064770694]
 scale = Vector2(0.05, 0.05)

@@ -1,6 +1,7 @@
 extends CharacterBody2D
 
 const HOTBAR_SLOT_COUNT: int = 5
+const STARTING_ARMOR_ID: String = "grass_tunic"
 
 @export var base_move_speed: float = 120.0
 @export var move_speed_per_speed_point: float = 4.0
@@ -39,6 +40,7 @@ var hotbar_slots: Array[Dictionary] = []
 
 func _ready() -> void:
     _initialize_hotbar_slots()
+    _ensure_starting_equipment()
     _disable_attack_hitbox()
     _hide_weapon_sprite()
 
@@ -61,6 +63,17 @@ func _initialize_hotbar_slots() -> void:
             "item_type": "",
             "cooldown_remaining": 0.0
         })
+
+
+func _ensure_starting_equipment() -> void:
+    if not has_inventory_item(STARTING_ARMOR_ID):
+        inventory.append({
+            "id": STARTING_ARMOR_ID,
+            "name": ItemDatabase.get_item_name(STARTING_ARMOR_ID)
+        })
+
+    if character_stats.equipped_armor_id.strip_edges() == "":
+        character_stats.equip_armor(STARTING_ARMOR_ID, ItemDatabase.get_item_name(STARTING_ARMOR_ID))
 
 
 func _apply_startup_position_if_needed() -> void:
@@ -239,6 +252,7 @@ func remove_inventory_item(item_id: String) -> bool:
             inventory.remove_at(index)
             print("Removed from inventory: ", item_id)
             _clear_hotbar_slots_for_missing_item(item_id)
+            _unequip_missing_item_if_needed(item_id)
             _notify_ui_stats_changed()
             return true
 
@@ -259,52 +273,6 @@ func get_inventory_item_name(item_id: String) -> String:
             return item.get("name", item_id)
 
     return item_id
-
-
-func equip_weapon(item_id: String) -> void:
-    if is_defeated:
-        return
-
-    if not has_inventory_item(item_id):
-        push_warning("Cannot equip weapon. Item not found in inventory: " + item_id)
-        return
-
-    var item_name := get_inventory_item_name(item_id)
-    character_stats.equip_weapon(item_id, item_name)
-
-    print("Equipped weapon: ", character_stats.get_equipped_weapon_name())
-    _notify_ui_stats_changed()
-
-
-func unequip_weapon() -> void:
-    character_stats.unequip_weapon()
-    _hide_weapon_sprite()
-    print("Weapon unequipped.")
-    _notify_ui_stats_changed()
-
-
-func has_equipped_weapon() -> bool:
-    return character_stats.equipped_weapon_id != ""
-
-
-func get_equipped_weapon_name() -> String:
-    return character_stats.get_equipped_weapon_name()
-
-
-func get_equipped_armor_name() -> String:
-    return character_stats.get_equipped_armor_name()
-
-
-func get_equipped_accessory_name() -> String:
-    return character_stats.get_equipped_accessory_name()
-
-
-func get_attack_damage() -> int:
-    return character_stats.get_attack()
-
-
-func get_defense() -> int:
-    return character_stats.get_defense()
 
 
 func get_inventory_items() -> Array[Dictionary]:
@@ -329,8 +297,276 @@ func set_inventory_items(saved_inventory: Array) -> void:
             "name": item_name
         })
 
+    _ensure_starting_equipment()
+    _validate_equipment_after_inventory_load()
     print("Inventory loaded. Item count: ", inventory.size())
     _notify_ui_stats_changed()
+
+
+func equip_melee_weapon(item_id: String) -> bool:
+    return _equip_item_to_slot(item_id, ItemDatabase.EQUIPMENT_SLOT_MELEE_WEAPON)
+
+
+func equip_ranged_weapon(item_id: String) -> bool:
+    return _equip_item_to_slot(item_id, ItemDatabase.EQUIPMENT_SLOT_RANGED_WEAPON)
+
+
+func equip_armor(item_id: String) -> bool:
+    return _equip_item_to_slot(item_id, ItemDatabase.EQUIPMENT_SLOT_ARMOR)
+
+
+func equip_accessory_1(item_id: String) -> bool:
+    return _equip_item_to_slot(item_id, "accessory_1")
+
+
+func equip_accessory_2(item_id: String) -> bool:
+    return _equip_item_to_slot(item_id, "accessory_2")
+
+
+func equip_weapon(item_id: String) -> void:
+    _equip_weapon_compat(item_id)
+
+
+func equip_accessory(item_id: String) -> void:
+    equip_accessory_1(item_id)
+
+
+func _equip_weapon_compat(item_id: String) -> bool:
+    if item_id.strip_edges() == "":
+        unequip_melee_weapon()
+        return true
+
+    var equipment_slot := ItemDatabase.get_equipment_slot(item_id)
+
+    if equipment_slot == ItemDatabase.EQUIPMENT_SLOT_RANGED_WEAPON:
+        return equip_ranged_weapon(item_id)
+
+    return equip_melee_weapon(item_id)
+
+
+func _equip_item_to_slot(item_id: String, target_slot: String) -> bool:
+    if is_defeated:
+        return false
+
+    if item_id.strip_edges() == "":
+        _unequip_slot(target_slot)
+        return true
+
+    if not has_inventory_item(item_id):
+        push_warning("Cannot equip item. Item not found in inventory: " + item_id)
+        return false
+
+    var item_name := get_inventory_item_name(item_id)
+    var item_equipment_slot := ItemDatabase.get_equipment_slot(item_id)
+
+    match target_slot:
+        ItemDatabase.EQUIPMENT_SLOT_MELEE_WEAPON:
+            if item_equipment_slot != ItemDatabase.EQUIPMENT_SLOT_MELEE_WEAPON:
+                push_warning("Item is not a melee weapon: " + item_id)
+                return false
+
+            var equipped := character_stats.equip_melee_weapon(item_id, item_name)
+
+            if equipped:
+                print("Equipped melee weapon: ", character_stats.get_equipped_melee_weapon_name())
+                _notify_ui_stats_changed()
+
+            return equipped
+
+        ItemDatabase.EQUIPMENT_SLOT_RANGED_WEAPON:
+            if item_equipment_slot != ItemDatabase.EQUIPMENT_SLOT_RANGED_WEAPON:
+                push_warning("Item is not a ranged weapon: " + item_id)
+                return false
+
+            var equipped := character_stats.equip_ranged_weapon(item_id, item_name)
+
+            if equipped:
+                print("Equipped ranged weapon: ", character_stats.get_equipped_ranged_weapon_name())
+                _notify_ui_stats_changed()
+
+            return equipped
+
+        ItemDatabase.EQUIPMENT_SLOT_ARMOR:
+            if item_equipment_slot != ItemDatabase.EQUIPMENT_SLOT_ARMOR:
+                push_warning("Item is not armor: " + item_id)
+                return false
+
+            var equipped := character_stats.equip_armor(item_id, item_name)
+
+            if equipped:
+                print("Equipped armor: ", character_stats.get_equipped_armor_name())
+                _notify_ui_stats_changed()
+
+            return equipped
+
+        "accessory_1":
+            if item_equipment_slot != ItemDatabase.EQUIPMENT_SLOT_ACCESSORY:
+                push_warning("Item is not an accessory: " + item_id)
+                return false
+
+            var equipped := character_stats.equip_accessory_1(item_id, item_name)
+
+            if equipped:
+                print("Equipped accessory 1: ", character_stats.get_equipped_accessory_1_name())
+                _notify_ui_stats_changed()
+
+            return equipped
+
+        "accessory_2":
+            if item_equipment_slot != ItemDatabase.EQUIPMENT_SLOT_ACCESSORY:
+                push_warning("Item is not an accessory: " + item_id)
+                return false
+
+            var equipped := character_stats.equip_accessory_2(item_id, item_name)
+
+            if equipped:
+                print("Equipped accessory 2: ", character_stats.get_equipped_accessory_2_name())
+                _notify_ui_stats_changed()
+
+            return equipped
+
+        _:
+            push_warning("Unknown equipment slot: " + target_slot)
+            return false
+
+
+func _unequip_slot(target_slot: String) -> void:
+    match target_slot:
+        ItemDatabase.EQUIPMENT_SLOT_MELEE_WEAPON:
+            unequip_melee_weapon()
+        ItemDatabase.EQUIPMENT_SLOT_RANGED_WEAPON:
+            unequip_ranged_weapon()
+        ItemDatabase.EQUIPMENT_SLOT_ARMOR:
+            unequip_armor()
+        "accessory_1":
+            unequip_accessory_1()
+        "accessory_2":
+            unequip_accessory_2()
+
+
+func unequip_melee_weapon() -> void:
+    character_stats.unequip_melee_weapon()
+    _hide_weapon_sprite()
+    print("Melee weapon unequipped.")
+    _notify_ui_stats_changed()
+
+
+func unequip_ranged_weapon() -> void:
+    character_stats.unequip_ranged_weapon()
+    print("Ranged weapon unequipped.")
+    _notify_ui_stats_changed()
+
+
+func unequip_armor() -> void:
+    character_stats.unequip_armor()
+    print("Armor unequipped.")
+    _notify_ui_stats_changed()
+
+
+func unequip_accessory_1() -> void:
+    character_stats.unequip_accessory_1()
+    print("Accessory 1 unequipped.")
+    _notify_ui_stats_changed()
+
+
+func unequip_accessory_2() -> void:
+    character_stats.unequip_accessory_2()
+    print("Accessory 2 unequipped.")
+    _notify_ui_stats_changed()
+
+
+func unequip_weapon() -> void:
+    unequip_melee_weapon()
+
+
+func unequip_accessory() -> void:
+    unequip_accessory_1()
+
+
+func has_equipped_weapon() -> bool:
+    return character_stats.equipped_melee_weapon_id.strip_edges() != ""
+
+
+func has_equipped_melee_weapon() -> bool:
+    return character_stats.equipped_melee_weapon_id.strip_edges() != ""
+
+
+func has_equipped_ranged_weapon() -> bool:
+    return character_stats.equipped_ranged_weapon_id.strip_edges() != ""
+
+
+func get_equipped_weapon_name() -> String:
+    return character_stats.get_equipped_weapon_name()
+
+
+func get_equipped_melee_weapon_name() -> String:
+    return character_stats.get_equipped_melee_weapon_name()
+
+
+func get_equipped_ranged_weapon_name() -> String:
+    return character_stats.get_equipped_ranged_weapon_name()
+
+
+func get_equipped_armor_name() -> String:
+    return character_stats.get_equipped_armor_name()
+
+
+func get_equipped_accessory_name() -> String:
+    return character_stats.get_equipped_accessory_name()
+
+
+func get_equipped_accessory_1_name() -> String:
+    return character_stats.get_equipped_accessory_1_name()
+
+
+func get_equipped_accessory_2_name() -> String:
+    return character_stats.get_equipped_accessory_2_name()
+
+
+func get_attack_damage() -> int:
+    return character_stats.get_attack()
+
+
+func get_ranged_attack_damage() -> int:
+    return character_stats.get_ranged_attack()
+
+
+func get_defense() -> int:
+    return character_stats.get_defense()
+
+
+func _unequip_missing_item_if_needed(item_id: String) -> void:
+    if character_stats.equipped_melee_weapon_id == item_id:
+        character_stats.unequip_melee_weapon()
+
+    if character_stats.equipped_ranged_weapon_id == item_id:
+        character_stats.unequip_ranged_weapon()
+
+    if character_stats.equipped_armor_id == item_id:
+        character_stats.unequip_armor()
+
+    if character_stats.equipped_accessory_1_id == item_id:
+        character_stats.unequip_accessory_1()
+
+    if character_stats.equipped_accessory_2_id == item_id:
+        character_stats.unequip_accessory_2()
+
+
+func _validate_equipment_after_inventory_load() -> void:
+    if character_stats.equipped_melee_weapon_id.strip_edges() != "" and not has_inventory_item(character_stats.equipped_melee_weapon_id):
+        character_stats.unequip_melee_weapon()
+
+    if character_stats.equipped_ranged_weapon_id.strip_edges() != "" and not has_inventory_item(character_stats.equipped_ranged_weapon_id):
+        character_stats.unequip_ranged_weapon()
+
+    if character_stats.equipped_armor_id.strip_edges() != "" and not has_inventory_item(character_stats.equipped_armor_id):
+        character_stats.unequip_armor()
+
+    if character_stats.equipped_accessory_1_id.strip_edges() != "" and not has_inventory_item(character_stats.equipped_accessory_1_id):
+        character_stats.unequip_accessory_1()
+
+    if character_stats.equipped_accessory_2_id.strip_edges() != "" and not has_inventory_item(character_stats.equipped_accessory_2_id):
+        character_stats.unequip_accessory_2()
 
 
 func get_hotbar_slots() -> Array[Dictionary]:

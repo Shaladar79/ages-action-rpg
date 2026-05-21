@@ -183,6 +183,7 @@ func save_game(player: Node) -> bool:
         },
         "character_stats": _build_character_stats_data(stats),
         "inventory": _get_player_inventory(player),
+        "hotbar_slots": _get_player_hotbar_slots(player),
         "respawn": _build_respawn_data(),
         "world_state": _build_world_state_data()
     }
@@ -261,6 +262,7 @@ func apply_pending_loaded_data(player: Node) -> void:
     _apply_player_position(player, pending_loaded_data)
     _apply_character_stats(player, pending_loaded_data)
     _apply_inventory(player, pending_loaded_data)
+    _apply_hotbar_slots(player, pending_loaded_data)
     _apply_respawn_data(pending_loaded_data)
     _apply_world_state_data(pending_loaded_data)
 
@@ -306,18 +308,39 @@ func _build_character_stats_data(stats: CharacterStats) -> Dictionary:
         "base_attack": stats.base_attack,
         "base_defense": stats.base_defense,
 
-        "equipped_weapon_id": stats.equipped_weapon_id,
-        "equipped_weapon_name": stats.equipped_weapon_name,
+        "equipped_melee_weapon_id": stats.equipped_melee_weapon_id,
+        "equipped_melee_weapon_name": stats.equipped_melee_weapon_name,
+
+        "equipped_ranged_weapon_id": stats.equipped_ranged_weapon_id,
+        "equipped_ranged_weapon_name": stats.equipped_ranged_weapon_name,
+
         "equipped_armor_id": stats.equipped_armor_id,
         "equipped_armor_name": stats.equipped_armor_name,
-        "equipped_accessory_id": stats.equipped_accessory_id,
-        "equipped_accessory_name": stats.equipped_accessory_name
+
+        "equipped_accessory_1_id": stats.equipped_accessory_1_id,
+        "equipped_accessory_1_name": stats.equipped_accessory_1_name,
+
+        "equipped_accessory_2_id": stats.equipped_accessory_2_id,
+        "equipped_accessory_2_name": stats.equipped_accessory_2_name,
+
+        # Legacy aliases for old save compatibility/debug readability.
+        "equipped_weapon_id": stats.equipped_melee_weapon_id,
+        "equipped_weapon_name": stats.equipped_melee_weapon_name,
+        "equipped_accessory_id": stats.equipped_accessory_1_id,
+        "equipped_accessory_name": stats.equipped_accessory_1_name
     }
 
 
 func _get_player_inventory(player: Node) -> Array:
     if player.has_method("get_inventory_items"):
         return player.get_inventory_items()
+
+    return []
+
+
+func _get_player_hotbar_slots(player: Node) -> Array:
+    if player.has_method("get_hotbar_slots"):
+        return player.get_hotbar_slots()
 
     return []
 
@@ -398,12 +421,32 @@ func _apply_character_stats(player: Node, save_data: Dictionary) -> void:
     stats.base_attack = int(stats_data.get("base_attack", stats.base_attack))
     stats.base_defense = int(stats_data.get("base_defense", stats.base_defense))
 
-    stats.equipped_weapon_id = stats_data.get("equipped_weapon_id", stats.equipped_weapon_id)
-    stats.equipped_weapon_name = stats_data.get("equipped_weapon_name", stats.equipped_weapon_name)
-    stats.equipped_armor_id = stats_data.get("equipped_armor_id", stats.equipped_armor_id)
-    stats.equipped_armor_name = stats_data.get("equipped_armor_name", stats.equipped_armor_name)
-    stats.equipped_accessory_id = stats_data.get("equipped_accessory_id", stats.equipped_accessory_id)
-    stats.equipped_accessory_name = stats_data.get("equipped_accessory_name", stats.equipped_accessory_name)
+    stats.equipped_melee_weapon_id = str(stats_data.get(
+        "equipped_melee_weapon_id",
+        stats_data.get("equipped_weapon_id", stats.equipped_melee_weapon_id)
+    ))
+    stats.equipped_melee_weapon_name = str(stats_data.get(
+        "equipped_melee_weapon_name",
+        stats_data.get("equipped_weapon_name", stats.equipped_melee_weapon_name)
+    ))
+
+    stats.equipped_ranged_weapon_id = str(stats_data.get("equipped_ranged_weapon_id", stats.equipped_ranged_weapon_id))
+    stats.equipped_ranged_weapon_name = str(stats_data.get("equipped_ranged_weapon_name", stats.equipped_ranged_weapon_name))
+
+    stats.equipped_armor_id = str(stats_data.get("equipped_armor_id", stats.equipped_armor_id))
+    stats.equipped_armor_name = str(stats_data.get("equipped_armor_name", stats.equipped_armor_name))
+
+    stats.equipped_accessory_1_id = str(stats_data.get(
+        "equipped_accessory_1_id",
+        stats_data.get("equipped_accessory_id", stats.equipped_accessory_1_id)
+    ))
+    stats.equipped_accessory_1_name = str(stats_data.get(
+        "equipped_accessory_1_name",
+        stats_data.get("equipped_accessory_name", stats.equipped_accessory_1_name)
+    ))
+
+    stats.equipped_accessory_2_id = str(stats_data.get("equipped_accessory_2_id", stats.equipped_accessory_2_id))
+    stats.equipped_accessory_2_name = str(stats_data.get("equipped_accessory_2_name", stats.equipped_accessory_2_name))
 
     stats.recalculate_derived_stats(false)
 
@@ -416,6 +459,19 @@ func _apply_inventory(player: Node, save_data: Dictionary) -> void:
         return
 
     push_warning("Player does not have set_inventory_items(). Inventory was not loaded.")
+
+
+func _apply_hotbar_slots(player: Node, save_data: Dictionary) -> void:
+    var saved_hotbar_slots: Array = save_data.get("hotbar_slots", [])
+
+    if saved_hotbar_slots.is_empty():
+        return
+
+    if player.has_method("set_hotbar_slots"):
+        player.set_hotbar_slots(saved_hotbar_slots)
+        return
+
+    push_warning("Player does not have set_hotbar_slots(). Hotbar was not loaded.")
 
 
 func _apply_respawn_data(save_data: Dictionary) -> void:
