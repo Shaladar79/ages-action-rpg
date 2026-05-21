@@ -60,6 +60,7 @@ func _apply_startup_position_if_needed() -> void:
 
     print("No pending save data or map spawn to apply.")
 
+
 func _move_to_map_spawn(spawn_id: String) -> void:
     if spawn_id.strip_edges() == "":
         return
@@ -100,13 +101,6 @@ func _find_map_spawn_point(node: Node, spawn_id: String) -> Node2D:
 
     return null
 
-func _apply_pending_save_if_needed() -> void:
-    if SaveManager.pending_loaded_data.is_empty():
-        print("No pending save data to apply.")
-        return
-
-    print("Applying pending save data to player.")
-    SaveManager.apply_pending_loaded_data(self)
 
 func _physics_process(delta: float) -> void:
     _update_attack_timers(delta)
@@ -278,6 +272,7 @@ func get_defense() -> int:
 func get_inventory_items() -> Array[Dictionary]:
     return inventory
 
+
 func set_inventory_items(saved_inventory: Array) -> void:
     inventory.clear()
 
@@ -298,6 +293,7 @@ func set_inventory_items(saved_inventory: Array) -> void:
 
     print("Inventory loaded. Item count: ", inventory.size())
     _notify_ui_stats_changed()
+
 
 func show_dialogue(message: String) -> void:
     if dialogue_bubble == null:
@@ -556,24 +552,73 @@ func _update_animation(input_vector: Vector2) -> void:
 
 
 func take_damage(incoming_damage: int) -> void:
+    take_damage_with_types(incoming_damage, DamageTypes.NONE)
+
+
+func take_damage_with_types(incoming_damage: int, incoming_damage_types: int = DamageTypes.NONE) -> void:
     if is_defeated:
         return
 
     if incoming_damage <= 0:
         return
 
-    var final_damage: int = maxi(1, incoming_damage - get_defense())
+    var final_damage: int = _calculate_incoming_damage(incoming_damage, incoming_damage_types)
 
     character_stats.current_health -= final_damage
     character_stats.current_health = maxi(character_stats.current_health, 0)
 
     print("Player took damage: ", final_damage)
+
+    if incoming_damage_types != DamageTypes.NONE:
+        print("Incoming damage types: ", DamageTypes.get_damage_type_names(incoming_damage_types))
+
     print("Player HP: ", character_stats.current_health, " / ", character_stats.max_health)
 
     _notify_ui_stats_changed()
 
     if character_stats.current_health <= 0:
         _on_player_defeated()
+
+
+func _calculate_incoming_damage(incoming_damage: int, incoming_damage_types: int) -> int:
+    var final_damage: int = maxi(1, incoming_damage - get_defense())
+
+    if incoming_damage_types == DamageTypes.NONE:
+        return final_damage
+
+    if _is_resistant_to_damage_types(incoming_damage_types):
+        final_damage = maxi(1, int(floor(float(final_damage) * 0.5)))
+        print("Armor resistance applied.")
+
+    if _is_weak_to_damage_types(incoming_damage_types):
+        final_damage = maxi(1, int(ceil(float(final_damage) * 1.5)))
+        print("Armor weakness applied.")
+
+    return final_damage
+
+
+func _is_resistant_to_damage_types(incoming_damage_types: int) -> bool:
+    if incoming_damage_types == DamageTypes.NONE:
+        return false
+
+    var resistance_types := character_stats.get_total_damage_resistances()
+
+    if resistance_types == DamageTypes.NONE:
+        return false
+
+    return DamageTypes.damage_types_overlap(incoming_damage_types, resistance_types)
+
+
+func _is_weak_to_damage_types(incoming_damage_types: int) -> bool:
+    if incoming_damage_types == DamageTypes.NONE:
+        return false
+
+    var weakness_types := character_stats.get_total_damage_weaknesses()
+
+    if weakness_types == DamageTypes.NONE:
+        return false
+
+    return DamageTypes.damage_types_overlap(incoming_damage_types, weakness_types)
 
 
 func _on_player_defeated() -> void:

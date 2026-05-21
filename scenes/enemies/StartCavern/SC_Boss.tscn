@@ -1,3 +1,39 @@
 [gd_scene format=3 uid="uid://0vcalfqbsnfl"]
 
+[ext_resource type="Script" uid="uid://piqrssdi1ltw" path="res://scripts/enemies/monster.gd" id="1_puln3"]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_wvnhs"]
+
 [node name="ScBoss" type="CharacterBody2D" unique_id=1453354898]
+script = ExtResource("1_puln3")
+persistent_id = "SC Boss"
+respawn_mode = null
+monster_name = null
+max_hit_points = 25
+attack = 5
+defense = 2
+xp_reward = 10
+move_speed = null
+detection_range = null
+stop_distance = null
+wander_enabled = null
+wander_radius = null
+wander_interval = null
+attack_cooldown = null
+can_attack_player = null
+destroy_on_death = null
+hide_sprite_on_death = null
+disable_collision_on_death = null
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=199466056]
+sprite_frames = SubResource("SpriteFrames_wvnhs")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=423550328]
+
+[node name="Hurtbox" type="Area2D" parent="." unique_id=1988651777]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Hurtbox" unique_id=1506836940]
+
+[node name="AttackArea" type="Area2D" parent="." unique_id=1103521465]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="AttackArea" unique_id=1259175337]

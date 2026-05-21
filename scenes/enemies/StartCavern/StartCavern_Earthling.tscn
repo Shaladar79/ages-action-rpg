@@ -272,12 +272,17 @@ radius = 27.018513
 
 [node name="StartCavern Earthling" type="CharacterBody2D" unique_id=1655329841]
 script = ExtResource("1_4ibsn")
+persistent_id = null
+monster_name = null
+max_hit_points = 2
 attack = 2
+defense = null
+weakness_types = 1
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=1158242322]
 sprite_frames = SubResource("SpriteFrames_oxsjp")
 animation = &"attack"
-frame_progress = 0.21222825
+frame_progress = 0.36908332
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=294619965]
 visible = false

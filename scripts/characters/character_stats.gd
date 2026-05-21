@@ -191,6 +191,49 @@ func get_equipped_accessory_name() -> String:
     return equipped_accessory_name
 
 
+func get_equipped_weapon_damage_types() -> int:
+    if equipped_weapon_id.strip_edges() == "":
+        return DamageTypes.NONE
+
+    return ItemDatabase.get_damage_types(equipped_weapon_id)
+
+
+func get_equipped_armor_damage_resistances() -> int:
+    if equipped_armor_id.strip_edges() == "":
+        return DamageTypes.NONE
+
+    return ItemDatabase.get_damage_resistances(equipped_armor_id)
+
+
+func get_equipped_armor_damage_weaknesses() -> int:
+    if equipped_armor_id.strip_edges() == "":
+        return DamageTypes.NONE
+
+    return ItemDatabase.get_damage_weaknesses(equipped_armor_id)
+
+
+func get_equipped_accessory_damage_resistances() -> int:
+    if equipped_accessory_id.strip_edges() == "":
+        return DamageTypes.NONE
+
+    return ItemDatabase.get_damage_resistances(equipped_accessory_id)
+
+
+func get_equipped_accessory_damage_weaknesses() -> int:
+    if equipped_accessory_id.strip_edges() == "":
+        return DamageTypes.NONE
+
+    return ItemDatabase.get_damage_weaknesses(equipped_accessory_id)
+
+
+func get_total_damage_resistances() -> int:
+    return get_equipped_armor_damage_resistances() | get_equipped_accessory_damage_resistances()
+
+
+func get_total_damage_weaknesses() -> int:
+    return get_equipped_armor_damage_weaknesses() | get_equipped_accessory_damage_weaknesses()
+
+
 func equip_weapon(item_id: String, item_name: String) -> void:
     equipped_weapon_id = item_id
     equipped_weapon_name = item_name

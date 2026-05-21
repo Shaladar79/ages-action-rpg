@@ -16,6 +16,36 @@ enum RespawnMode {
 @export var defense: int = 0
 @export var xp_reward: int = 1
 
+@export_flags(
+    "Bashing",
+    "Slashing",
+    "Chopping",
+    "Piercing",
+    "Fire",
+    "Ice",
+    "Lightning",
+    "Acid",
+    "Light",
+	"Shadow"
+)
+var weakness_types: int = DamageTypes.NONE
+
+@export_flags(
+    "Bashing",
+    "Slashing",
+    "Chopping",
+    "Piercing",
+    "Fire",
+    "Ice",
+    "Lightning",
+    "Acid",
+    "Light",
+	"Shadow"
+)
+var damage_types: int = DamageTypes.BASHING
+
+@export var weakness_damage_multiplier: float = 1.5
+
 @export var move_speed: float = 45.0
 @export var detection_range: float = 140.0
 @export var stop_distance: float = 22.0
@@ -158,10 +188,13 @@ func _try_attack_player() -> void:
     if attack_timer > 0.0:
         return
 
-    if not player_in_attack_range.has_method("take_damage"):
+    if player_in_attack_range.has_method("take_damage_with_types"):
+        player_in_attack_range.take_damage_with_types(attack, damage_types)
+    elif player_in_attack_range.has_method("take_damage"):
+        player_in_attack_range.take_damage(attack)
+    else:
         return
 
-    player_in_attack_range.take_damage(attack)
     attack_timer = attack_cooldown
 
     print(monster_name, " attacked player for base damage: ", attack)
@@ -259,22 +292,37 @@ func take_damage_from_player(damage_amount: int, player: Node2D) -> void:
     if is_dead:
         return
 
-    var final_damage: int = maxi(1, damage_amount - defense)
+    var incoming_damage_types := DamageTypes.NONE
 
-    current_hit_points -= final_damage
+    if player != null and player.has_method("get_character_stats"):
+        var stats: CharacterStats = player.get_character_stats()
 
-    print(monster_name, " took damage: ", final_damage)
-    print(monster_name, " HP: ", current_hit_points, " / ", max_hit_points)
+        if stats != null:
+            incoming_damage_types = stats.get_equipped_weapon_damage_types()
 
-    if current_hit_points <= 0:
-        die(player)
+    _apply_damage(damage_amount, incoming_damage_types, player)
 
 
 func take_damage(damage_amount: int) -> void:
     if is_dead:
         return
 
+    _apply_damage(damage_amount, DamageTypes.NONE, null)
+
+
+func take_damage_with_types(damage_amount: int, incoming_damage_types: int, attacker: Node2D = null) -> void:
+    if is_dead:
+        return
+
+    _apply_damage(damage_amount, incoming_damage_types, attacker)
+
+
+func _apply_damage(damage_amount: int, incoming_damage_types: int, attacker: Node2D = null) -> void:
     var final_damage: int = maxi(1, damage_amount - defense)
+
+    if _is_weak_to_damage_types(incoming_damage_types):
+        final_damage = maxi(1, int(ceil(float(final_damage) * weakness_damage_multiplier)))
+        print(monster_name, " weakness hit! Damage types: ", DamageTypes.get_damage_type_names(incoming_damage_types))
 
     current_hit_points -= final_damage
 
@@ -282,7 +330,17 @@ func take_damage(damage_amount: int) -> void:
     print(monster_name, " HP: ", current_hit_points, " / ", max_hit_points)
 
     if current_hit_points <= 0:
-        die(null)
+        die(attacker)
+
+
+func _is_weak_to_damage_types(incoming_damage_types: int) -> bool:
+    if incoming_damage_types == DamageTypes.NONE:
+        return false
+
+    if weakness_types == DamageTypes.NONE:
+        return false
+
+    return DamageTypes.damage_types_overlap(incoming_damage_types, weakness_types)
 
 
 func die(player: Node2D = null) -> void:
