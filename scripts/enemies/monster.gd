@@ -7,12 +7,21 @@ enum RespawnMode {
     NEVER_RESPAWN
 }
 
+enum AttackStyle {
+    MELEE_ONLY,
+    RANGED_ONLY,
+    MIXED
+}
+
 @export var persistent_id: String = ""
 @export var respawn_mode: RespawnMode = RespawnMode.USE_MAP_DEFAULT
 
 @export var monster_name: String = "Monster"
 @export var max_hit_points: int = 3
+
+# Kept for backward compatibility. New monsters should mainly use Melee Damage / Ranged Damage.
 @export var attack: int = 1
+
 @export var defense: int = 0
 @export var xp_reward: int = 1
 
@@ -30,6 +39,7 @@ enum RespawnMode {
 )
 var weakness_types: int = DamageTypes.NONE
 
+# Kept for backward compatibility. New monsters should mainly use Melee Damage Types / Ranged Damage Types.
 @export_flags(
     "Bashing",
     "Slashing",
@@ -46,6 +56,7 @@ var damage_types: int = DamageTypes.BASHING
 
 @export var weakness_damage_multiplier: float = 1.5
 
+@export_group("Movement")
 @export var move_speed: float = 45.0
 @export var detection_range: float = 140.0
 @export var stop_distance: float = 22.0
@@ -53,9 +64,47 @@ var damage_types: int = DamageTypes.BASHING
 @export var wander_radius: float = 64.0
 @export var wander_interval: float = 2.0
 
-@export var attack_cooldown: float = 1.25
+@export_group("Attack Style")
+@export var attack_style: AttackStyle = AttackStyle.MELEE_ONLY
 @export var can_attack_player: bool = true
 
+@export_group("Melee Attack")
+@export var melee_damage: int = 1
+@export_flags(
+    "Bashing",
+    "Slashing",
+    "Chopping",
+    "Piercing",
+    "Fire",
+    "Ice",
+    "Lightning",
+    "Acid",
+    "Light",
+	"Shadow"
+)
+var melee_damage_types: int = DamageTypes.BASHING
+@export var melee_cooldown: float = 1.25
+
+@export_group("Ranged Attack")
+@export var ranged_damage: int = 1
+@export_flags(
+    "Bashing",
+    "Slashing",
+    "Chopping",
+    "Piercing",
+    "Fire",
+    "Ice",
+    "Lightning",
+    "Acid",
+    "Light",
+	"Shadow"
+)
+var ranged_damage_types: int = DamageTypes.PIERCING
+@export var ranged_range: float = 180.0
+@export var ranged_cooldown: float = 1.75
+@export var ranged_stop_distance: float = 96.0
+
+@export_group("Death")
 @export var destroy_on_death: bool = true
 @export var hide_sprite_on_death: bool = true
 @export var disable_collision_on_death: bool = true
@@ -67,7 +116,9 @@ var damage_types: int = DamageTypes.BASHING
 var current_hit_points: int = 0
 var is_dead: bool = false
 
-var attack_timer: float = 0.0
+var melee_attack_timer: float = 0.0
+var ranged_attack_timer: float = 0.0
+
 var player_in_attack_range: Node2D = null
 var player_target: Node2D = null
 
@@ -87,6 +138,8 @@ func _ready() -> void:
     spawn_position = global_position
     wander_target = spawn_position
 
+    _apply_legacy_attack_defaults()
+
     player_target = get_tree().get_first_node_in_group("player") as Node2D
 
     _start_default_animation()
@@ -97,11 +150,19 @@ func _physics_process(delta: float) -> void:
     if is_dead:
         return
 
-    _update_attack_timer(delta)
+    _update_attack_timers(delta)
     _update_movement(delta)
 
     if can_attack_player:
         _try_attack_player()
+
+
+func _apply_legacy_attack_defaults() -> void:
+    if melee_damage <= 0:
+        melee_damage = attack
+
+    if damage_types != DamageTypes.NONE:
+        melee_damage_types = damage_types
 
 
 func _should_remove_because_defeated_in_save() -> bool:
@@ -145,12 +206,25 @@ func _get_chase_velocity() -> Vector2:
         return Vector2.ZERO
 
     var distance_to_player := global_position.distance_to(player_target.global_position)
+    var desired_stop_distance := _get_desired_stop_distance()
 
-    if distance_to_player <= stop_distance:
+    if distance_to_player <= desired_stop_distance:
         return Vector2.ZERO
 
     var direction := global_position.direction_to(player_target.global_position)
     return direction * move_speed
+
+
+func _get_desired_stop_distance() -> float:
+    match attack_style:
+        AttackStyle.RANGED_ONLY:
+            return ranged_stop_distance
+
+        AttackStyle.MIXED:
+            if _is_player_in_ranged_range() and not _is_player_in_melee_range():
+                return ranged_stop_distance
+
+    return stop_distance
 
 
 func _get_wander_velocity(delta: float) -> Vector2:
@@ -176,28 +250,77 @@ func _choose_new_wander_target() -> void:
     wander_target = spawn_position + (random_direction * random_distance)
 
 
-func _update_attack_timer(delta: float) -> void:
-    if attack_timer > 0.0:
-        attack_timer -= delta
+func _update_attack_timers(delta: float) -> void:
+    if melee_attack_timer > 0.0:
+        melee_attack_timer -= delta
+
+    if ranged_attack_timer > 0.0:
+        ranged_attack_timer -= delta
 
 
 func _try_attack_player() -> void:
+    match attack_style:
+        AttackStyle.MELEE_ONLY:
+            _try_melee_attack_player()
+
+        AttackStyle.RANGED_ONLY:
+            _try_ranged_attack_player()
+
+        AttackStyle.MIXED:
+            if _is_player_in_melee_range():
+                _try_melee_attack_player()
+            else:
+                _try_ranged_attack_player()
+
+
+func _try_melee_attack_player() -> void:
     if player_in_attack_range == null:
         return
 
-    if attack_timer > 0.0:
+    if melee_attack_timer > 0.0:
         return
 
-    if player_in_attack_range.has_method("take_damage_with_types"):
-        player_in_attack_range.take_damage_with_types(attack, damage_types)
-    elif player_in_attack_range.has_method("take_damage"):
-        player_in_attack_range.take_damage(attack)
-    else:
+    _damage_player(player_in_attack_range, melee_damage, melee_damage_types)
+
+    melee_attack_timer = melee_cooldown
+    print(monster_name, " used melee attack for base damage: ", melee_damage)
+
+
+func _try_ranged_attack_player() -> void:
+    if player_target == null:
         return
 
-    attack_timer = attack_cooldown
+    if ranged_attack_timer > 0.0:
+        return
 
-    print(monster_name, " attacked player for base damage: ", attack)
+    if not _is_player_in_ranged_range():
+        return
+
+    _damage_player(player_target, ranged_damage, ranged_damage_types)
+
+    ranged_attack_timer = ranged_cooldown
+    print(monster_name, " used ranged attack for base damage: ", ranged_damage)
+
+
+func _damage_player(player: Node2D, damage_amount: int, attack_damage_types: int) -> void:
+    if player == null:
+        return
+
+    if player.has_method("take_damage_with_types"):
+        player.take_damage_with_types(damage_amount, attack_damage_types)
+    elif player.has_method("take_damage"):
+        player.take_damage(damage_amount)
+
+
+func _is_player_in_melee_range() -> bool:
+    return player_in_attack_range != null
+
+
+func _is_player_in_ranged_range() -> bool:
+    if player_target == null:
+        return false
+
+    return global_position.distance_to(player_target.global_position) <= ranged_range
 
 
 func _connect_attack_area() -> void:

@@ -1,5 +1,7 @@
 extends CanvasLayer
 
+const HOTBAR_SLOT_COUNT: int = 5
+
 @onready var hud_health_label: Label = get_node_or_null("HUD/Health") as Label
 @onready var hud_mana_label: Label = get_node_or_null("HUD/Mana") as Label
 @onready var hud_stamina_label: Label = get_node_or_null("HUD/Stamina") as Label
@@ -58,6 +60,14 @@ extends CanvasLayer
 var player: Node = null
 var pending_save_player: Node = null
 
+var hud_hotbar_layer: Control = null
+var hud_hotbar_container: HBoxContainer = null
+var hud_hotbar_buttons: Array[Button] = []
+
+var sheet_hotbar_container: VBoxContainer = null
+var sheet_hotbar_option_buttons: Array[OptionButton] = []
+var sheet_hotbar_clear_buttons: Array[Button] = []
+
 
 func _ready() -> void:
     add_to_group("interaction_ui")
@@ -70,6 +80,8 @@ func _ready() -> void:
     if save_prompt != null:
         save_prompt.visible = false
 
+    _create_hotbar_hud()
+    _create_hotbar_assignment_panel()
     _hide_locked_resources_and_stats()
     _connect_buttons()
     _update_hud()
@@ -146,6 +158,115 @@ func close_character_screen() -> void:
     character_screen.visible = false
 
 
+func _create_hotbar_hud() -> void:
+    if hud_hotbar_container != null:
+        return
+
+    hud_hotbar_layer = Control.new()
+    hud_hotbar_layer.name = "HotbarHudLayer"
+    hud_hotbar_layer.anchor_left = 0.0
+    hud_hotbar_layer.anchor_right = 1.0
+    hud_hotbar_layer.anchor_top = 0.0
+    hud_hotbar_layer.anchor_bottom = 1.0
+    hud_hotbar_layer.offset_left = 0.0
+    hud_hotbar_layer.offset_right = 0.0
+    hud_hotbar_layer.offset_top = 0.0
+    hud_hotbar_layer.offset_bottom = 0.0
+    hud_hotbar_layer.mouse_filter = Control.MOUSE_FILTER_IGNORE
+
+    add_child(hud_hotbar_layer)
+
+    hud_hotbar_container = HBoxContainer.new()
+    hud_hotbar_container.name = "HotbarPanel"
+
+    hud_hotbar_container.anchor_left = 0.0
+    hud_hotbar_container.anchor_right = 0.0
+    hud_hotbar_container.anchor_top = 1.0
+    hud_hotbar_container.anchor_bottom = 1.0
+
+    hud_hotbar_container.offset_left = 16.0
+    hud_hotbar_container.offset_right = 396.0
+    hud_hotbar_container.offset_top = -72.0
+    hud_hotbar_container.offset_bottom = -16.0
+
+    hud_hotbar_container.alignment = BoxContainer.ALIGNMENT_BEGIN
+    hud_hotbar_container.mouse_filter = Control.MOUSE_FILTER_STOP
+
+    hud_hotbar_layer.add_child(hud_hotbar_container)
+
+    hud_hotbar_buttons.clear()
+
+    for slot_number in range(1, HOTBAR_SLOT_COUNT + 1):
+        var button := Button.new()
+        button.name = "HotbarSlot" + str(slot_number)
+        button.custom_minimum_size = Vector2(68.0, 52.0)
+        button.text = str(slot_number) + "\nEmpty"
+        button.focus_mode = Control.FOCUS_NONE
+        button.pressed.connect(_on_hud_hotbar_button_pressed.bind(slot_number))
+
+        hud_hotbar_container.add_child(button)
+        hud_hotbar_buttons.append(button)
+
+
+func _create_hotbar_assignment_panel() -> void:
+    if sheet_hotbar_container != null:
+        return
+
+    if character_panel == null:
+        return
+
+    sheet_hotbar_container = VBoxContainer.new()
+    sheet_hotbar_container.name = "HotbarAssignmentPanel"
+
+    sheet_hotbar_container.anchor_left = 1.0
+    sheet_hotbar_container.anchor_right = 1.0
+    sheet_hotbar_container.anchor_top = 1.0
+    sheet_hotbar_container.anchor_bottom = 1.0
+
+    sheet_hotbar_container.offset_left = -320.0
+    sheet_hotbar_container.offset_right = -16.0
+    sheet_hotbar_container.offset_top = -210.0
+    sheet_hotbar_container.offset_bottom = -16.0
+
+    sheet_hotbar_container.custom_minimum_size = Vector2(300.0, 190.0)
+
+    var title := Label.new()
+    title.name = "HotbarAssignmentTitle"
+    title.text = "Hotbar Assignment"
+    sheet_hotbar_container.add_child(title)
+
+    sheet_hotbar_option_buttons.clear()
+    sheet_hotbar_clear_buttons.clear()
+
+    for slot_number in range(1, HOTBAR_SLOT_COUNT + 1):
+        var row := HBoxContainer.new()
+        row.name = "HotbarAssignRow" + str(slot_number)
+
+        var slot_label := Label.new()
+        slot_label.text = str(slot_number) + ":"
+        slot_label.custom_minimum_size = Vector2(24.0, 24.0)
+        row.add_child(slot_label)
+
+        var option_button := OptionButton.new()
+        option_button.name = "HotbarAssignOption" + str(slot_number)
+        option_button.custom_minimum_size = Vector2(200.0, 24.0)
+        option_button.item_selected.connect(_on_hotbar_assignment_selected.bind(slot_number))
+        row.add_child(option_button)
+
+        var clear_button := Button.new()
+        clear_button.name = "HotbarClearButton" + str(slot_number)
+        clear_button.text = "Clear"
+        clear_button.focus_mode = Control.FOCUS_NONE
+        clear_button.pressed.connect(_on_hotbar_clear_button_pressed.bind(slot_number))
+        row.add_child(clear_button)
+
+        sheet_hotbar_container.add_child(row)
+        sheet_hotbar_option_buttons.append(option_button)
+        sheet_hotbar_clear_buttons.append(clear_button)
+
+    character_panel.add_child(sheet_hotbar_container)
+
+
 func _hide_locked_resources_and_stats() -> void:
     if ability_points_label != null:
         ability_points_label.visible = false
@@ -198,10 +319,14 @@ func _connect_buttons() -> void:
 
 
 func _refresh_player_reference() -> void:
-    if player != null:
+    var current_player := get_tree().get_first_node_in_group("player")
+
+    if current_player != null:
+        player = current_player
         return
 
-    player = get_tree().get_first_node_in_group("player")
+    if player != null and not is_instance_valid(player):
+        player = null
 
 
 func _get_stats() -> CharacterStats:
@@ -231,6 +356,7 @@ func _update_hud() -> void:
             hud_stamina_label.visible = false
             hud_stamina_label.text = ""
 
+        _update_hotbar_hud()
         return
 
     if hud_health_label != null:
@@ -251,6 +377,8 @@ func _update_hud() -> void:
             hud_stamina_label.text = "Stamina: %s / %s" % [stats.current_stamina, stats.max_stamina]
         else:
             hud_stamina_label.text = ""
+
+    _update_hotbar_hud()
 
 
 func _update_character_screen() -> void:
@@ -279,6 +407,7 @@ func _update_character_screen() -> void:
         equip_armor_button.disabled = true
         equip_accessory_button.disabled = true
         _set_stat_buttons_disabled(true)
+        _update_hotbar_assignment_panel()
         return
 
     character_name_label.text = stats.character_name
@@ -307,6 +436,121 @@ func _update_character_screen() -> void:
     equip_accessory_button.disabled = true
 
     _set_stat_buttons_disabled(stats.stat_points <= 0)
+    _update_hotbar_assignment_panel()
+
+
+func _update_hotbar_hud() -> void:
+    if hud_hotbar_buttons.is_empty():
+        return
+
+    _refresh_player_reference()
+
+    var slots: Array = []
+
+    if player != null and player.has_method("get_hotbar_slots"):
+        slots = player.get_hotbar_slots()
+
+    for index in range(HOTBAR_SLOT_COUNT):
+        var button: Button = hud_hotbar_buttons[index]
+
+        if index >= slots.size():
+            button.text = str(index + 1) + "\nEmpty"
+            button.disabled = true
+            continue
+
+        var slot: Dictionary = slots[index]
+        var item_id: String = str(slot.get("item_id", ""))
+        var cooldown_remaining: float = float(slot.get("cooldown_remaining", 0.0))
+
+        if item_id.strip_edges() == "":
+            button.text = str(index + 1) + "\nEmpty"
+            button.disabled = true
+            continue
+
+        var item_name: String = ItemDatabase.get_item_name(item_id)
+
+        if cooldown_remaining > 0.0:
+            button.text = str(index + 1) + "\n" + item_name + "\n" + str(snappedf(cooldown_remaining, 0.1)) + "s"
+            button.disabled = true
+        else:
+            button.text = str(index + 1) + "\n" + item_name
+            button.disabled = false
+
+
+func _update_hotbar_assignment_panel() -> void:
+    if sheet_hotbar_option_buttons.is_empty():
+        return
+
+    _refresh_player_reference()
+
+    var owned_hotbar_items: Array[Dictionary] = _get_owned_hotbar_usable_items()
+    var slots: Array = []
+
+    if player != null and player.has_method("get_hotbar_slots"):
+        slots = player.get_hotbar_slots()
+
+    for index in range(HOTBAR_SLOT_COUNT):
+        var option_button: OptionButton = sheet_hotbar_option_buttons[index]
+        option_button.clear()
+        option_button.add_item("Empty")
+        option_button.set_item_metadata(0, "")
+
+        for item in owned_hotbar_items:
+            var item_id: String = str(item.get("id", ""))
+            var item_name: String = str(item.get("name", item_id))
+
+            option_button.add_item(item_name)
+            option_button.set_item_metadata(option_button.item_count - 1, item_id)
+
+        var selected_item_id: String = ""
+
+        if index < slots.size():
+            var slot: Dictionary = slots[index]
+            selected_item_id = str(slot.get("item_id", ""))
+
+        var selected_index: int = 0
+
+        if selected_item_id.strip_edges() != "":
+            for option_index in range(option_button.item_count):
+                var metadata: Variant = option_button.get_item_metadata(option_index)
+
+                if str(metadata) == selected_item_id:
+                    selected_index = option_index
+                    break
+
+        option_button.select(selected_index)
+
+
+func _get_owned_hotbar_usable_items() -> Array[Dictionary]:
+    var usable_items: Array[Dictionary] = []
+
+    if player == null:
+        return usable_items
+
+    if not player.has_method("get_inventory_items"):
+        return usable_items
+
+    var items: Array = player.get_inventory_items()
+
+    for item in items:
+        if typeof(item) != TYPE_DICTIONARY:
+            continue
+
+        var item_id: String = str(item.get("id", ""))
+        var item_name: String = str(item.get("name", item_id))
+
+        if item_id.strip_edges() == "":
+            continue
+
+        if not ItemDatabase.is_hotbar_usable(item_id):
+            continue
+
+        usable_items.append({
+            "id": item_id,
+            "name": item_name
+        })
+
+    return usable_items
 
 
 func _clear_sheet_resources() -> void:
@@ -474,6 +718,57 @@ func _spend_stat_point(stat_id: String) -> void:
     if spent:
         _update_hud()
         _update_character_screen()
+
+
+func _on_hud_hotbar_button_pressed(slot_number: int) -> void:
+    _refresh_player_reference()
+
+    if player == null:
+        return
+
+    if not player.has_method("use_hotbar_slot"):
+        return
+
+    player.use_hotbar_slot(slot_number)
+    _update_hud()
+    _update_character_screen()
+
+
+func _on_hotbar_assignment_selected(selected_index: int, slot_number: int) -> void:
+    _refresh_player_reference()
+
+    if player == null:
+        return
+
+    if slot_number < 1 or slot_number > HOTBAR_SLOT_COUNT:
+        return
+
+    var option_button: OptionButton = sheet_hotbar_option_buttons[slot_number - 1]
+    var metadata: Variant = option_button.get_item_metadata(selected_index)
+    var item_id: String = str(metadata)
+
+    if item_id.strip_edges() == "":
+        if player.has_method("clear_hotbar_slot"):
+            player.clear_hotbar_slot(slot_number)
+    else:
+        if player.has_method("assign_hotbar_slot"):
+            player.assign_hotbar_slot(slot_number, item_id)
+
+    _update_hud()
+    _update_character_screen()
+
+
+func _on_hotbar_clear_button_pressed(slot_number: int) -> void:
+    _refresh_player_reference()
+
+    if player == null:
+        return
+
+    if player.has_method("clear_hotbar_slot"):
+        player.clear_hotbar_slot(slot_number)
+
+    _update_hud()
+    _update_character_screen()
 
 
 func _on_add_might_button_pressed() -> void:

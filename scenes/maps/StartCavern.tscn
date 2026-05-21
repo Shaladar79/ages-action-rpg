@@ -5,8 +5,10 @@
 [ext_resource type="Texture2D" uid="uid://bbj6po78v6q28" path="res://art/maps/Parallax_StartCavern.png" id="2_rl85u"]
 [ext_resource type="PackedScene" uid="uid://ds0nibabilemd" path="res://scenes/player/Player.tscn" id="2_x5kcs"]
 [ext_resource type="PackedScene" uid="uid://rs71u43sps4l" path="res://scenes/objects/push_rock.tscn" id="6_kcxuk"]
+[ext_resource type="PackedScene" uid="uid://0vcalfqbsnfl" path="res://scenes/enemies/StartCavern/SC_Boss.tscn" id="7_gd1mq"]
 [ext_resource type="PackedScene" uid="uid://bbc8361yvbkxt" path="res://scenes/objects/BreakableRock.tscn" id="7_rl85u"]
 [ext_resource type="PackedScene" uid="uid://c54peu6mqtky8" path="res://scenes/objects/CollectableClub.tscn" id="8_o2k4q"]
+[ext_resource type="Script" uid="uid://cn6mnuf1x8vbq" path="res://scripts/enemies/BossMonster.gd" id="8_svhj1"]
 [ext_resource type="PackedScene" uid="uid://bas01evmp7jm4" path="res://scenes/objects/trans_area.tscn" id="10_3svxi"]
 [ext_resource type="PackedScene" uid="uid://pyq76iw1lw5d" path="res://scenes/objects/save_totem.tscn" id="10_3573v"]
 [ext_resource type="PackedScene" uid="uid://cihgogaol4td8" path="res://scenes/objects/map_transition_area.tscn" id="11_3svxi"]
@@ -188,37 +190,96 @@ max_hit_points = 2
 
 [node name="Monsters" type="Node2D" parent="." unique_id=1278830268]
 
+[node name="ScBoss" parent="Monsters" unique_id=1453354898 instance=ExtResource("7_gd1mq")]
+position = Vector2(1211, 296)
+script = ExtResource("8_svhj1")
+special_attacks_enabled = true
+special_global_cooldown = 1.0
+lock_movement_during_special = true
+telegraph_polygon_sides = 48
+telegraph_z_index = 200
+aoe_enabled = true
+aoe_damage = 2
+aoe_damage_types = 1
+aoe_radius = 72.0
+aoe_trigger_range = 160.0
+aoe_windup_time = 1.25
+aoe_cooldown = 5.0
+aoe_telegraph_color = Color(1, 0.25, 0.05, 0.35)
+slam_enabled = true
+slam_damage = 5
+slam_damage_types = 1
+slam_length = 82.0
+slam_width = 36.0
+slam_trigger_range = 72.0
+slam_windup_time = 0.8
+slam_cooldown = 3.5
+slam_telegraph_color = Color(1, 0, 0, 0.45)
+persistent_id = "SCBoss"
+monster_name = "Monster"
+defense = 1
+xp_reward = 6
+melee_damage = 3
+
 [node name="StartCavern Earthling" parent="Monsters" unique_id=1655329841 instance=ExtResource("11_gd1mq")]
 position = Vector2(829, 441)
 persistent_id = "SCEarth1"
+monster_name = "Monster"
+defense = 0
 
 [node name="StartCavern Earthling2" parent="Monsters" unique_id=1629732996 instance=ExtResource("11_gd1mq")]
 position = Vector2(741, 578)
 persistent_id = "SCEarth2"
+monster_name = "Monster"
+defense = 0
 
 [node name="StartCavern Earthling3" parent="Monsters" unique_id=1093796272 instance=ExtResource("11_gd1mq")]
 position = Vector2(861, 647)
 persistent_id = "SCEarth3"
+monster_name = "Monster"
+defense = 0
 
 [node name="StartCavern Earthling4" parent="Monsters" unique_id=810886055 instance=ExtResource("11_gd1mq")]
 position = Vector2(759, 697)
 persistent_id = "SCEarth3"
+monster_name = "Monster"
+defense = 0
 
 [node name="StartCavern Earthling5" parent="Monsters" unique_id=14868799 instance=ExtResource("11_gd1mq")]
 position = Vector2(1212, 706)
 persistent_id = "SCEarth3"
+monster_name = "Monster"
+defense = 0
 
 [node name="StartCavern Earthling6" parent="Monsters" unique_id=1366198870 instance=ExtResource("11_gd1mq")]
 position = Vector2(1170, 584)
 persistent_id = "SCEarth3"
+monster_name = "Monster"
+defense = 0
 
 [node name="StartCavern Earthling7" parent="Monsters" unique_id=235897523 instance=ExtResource("11_gd1mq")]
 position = Vector2(1278, 509)
 persistent_id = "SCEarth3"
+monster_name = "Monster"
+defense = 0
 
 [node name="StartCavern Earthling8" parent="Monsters" unique_id=798555463 instance=ExtResource("11_gd1mq")]
 position = Vector2(1181, 520)
 persistent_id = "SCEarth3"
+monster_name = "Monster"
+defense = 0
+
+[node name="StartCavern Earthling9" parent="Monsters" unique_id=328998222 instance=ExtResource("11_gd1mq")]
+position = Vector2(1135, 368)
+persistent_id = "SCEarth3"
+monster_name = "Monster"
+defense = 0
+
+[node name="StartCavern Earthling10" parent="Monsters" unique_id=2013640142 instance=ExtResource("11_gd1mq")]
+position = Vector2(1269, 381)
+persistent_id = "SCEarth3"
+monster_name = "Monster"
+defense = 0
 
 [node name="YSortWorld" type="Node2D" parent="." unique_id=965274766]
 y_sort_enabled = true
