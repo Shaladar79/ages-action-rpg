@@ -1,32 +1,19 @@
 extends RefCounted
 class_name ItemDatabase
 
-const ITEM_STONE_CLUB: String = "club"
-const ITEM_GRASS_TUNIC: String = "grass_tunic"
-
 
 static func get_item_data(item_id: String) -> Dictionary:
-    match item_id:
-        ITEM_STONE_CLUB:
-            return {
-                "id": ITEM_STONE_CLUB,
-                "name": "Stone Club",
-                "type": "weapon",
-                "attack_bonus": 1,
-                "required_for_breakables": true,
-                "breakable_tool_tag": "club"
-            }
+    var item_data := WeaponDatabase.get_item_data(item_id)
 
-        ITEM_GRASS_TUNIC:
-            return {
-                "id": ITEM_GRASS_TUNIC,
-                "name": "Grass Tunic",
-                "type": "armor",
-                "defense_bonus": 1
-            }
+    if not item_data.is_empty():
+        return item_data
 
-        _:
-            return {}
+    item_data = ArmorDatabase.get_item_data(item_id)
+
+    if not item_data.is_empty():
+        return item_data
+
+    return {}
 
 
 static func get_item_name(item_id: String) -> String:
@@ -63,6 +50,37 @@ static func get_defense_bonus(item_id: String) -> int:
         return 0
 
     return int(item_data.get("defense_bonus", 0))
+
+
+static func get_damage_types(item_id: String) -> int:
+    var item_data := get_item_data(item_id)
+
+    if item_data.is_empty():
+        return DamageTypes.NONE
+
+    return int(item_data.get("damage_types", DamageTypes.NONE))
+
+
+static func get_damage_resistances(item_id: String) -> int:
+    var item_data := get_item_data(item_id)
+
+    if item_data.is_empty():
+        return DamageTypes.NONE
+
+    return int(item_data.get("damage_resistances", DamageTypes.NONE))
+
+
+static func get_damage_weaknesses(item_id: String) -> int:
+    var item_data := get_item_data(item_id)
+
+    if item_data.is_empty():
+        return DamageTypes.NONE
+
+    return int(item_data.get("damage_weaknesses", DamageTypes.NONE))
+
+
+static func damage_types_overlap(first_damage_types: int, second_damage_types: int) -> bool:
+    return (first_damage_types & second_damage_types) != 0
 
 
 static func item_has_breakable_tool_tag(item_id: String, required_tag: String) -> bool:
