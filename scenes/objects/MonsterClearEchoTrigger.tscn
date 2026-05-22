@@ -1,0 +1,14 @@
+[gd_scene format=3 uid="uid://c1p4pdy1arniu"]
+
+[ext_resource type="Script" uid="uid://rclglctjljwd" path="res://scripts/story/MonsterClearEchoTrigger.gd" id="1_rj85d"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_hdgdj"]
+radius = 105.546196
+
+[node name="MonsterClearEchoTrigger" type="Area2D" unique_id=1642328376]
+script = ExtResource("1_rj85d")
+story_flag = ""
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1154432842]
+shape = SubResource("CircleShape2D_hdgdj")
+debug_color = Color(0.97790104, 0.9818372, 0.99776226, 0.41960785)

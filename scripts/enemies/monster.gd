@@ -480,6 +480,7 @@ func die(player: Node2D = null) -> void:
         SaveManager.mark_monster_defeated(persistent_id)
 
     _award_xp_to_player_if_eligible(player)
+    _show_first_monster_defeated_lesson(player)
 
     if disable_collision_on_death:
         _disable_all_collision_shapes(self)
@@ -495,7 +496,47 @@ func die(player: Node2D = null) -> void:
 
     if destroy_on_death:
         queue_free()
+func _show_first_monster_defeated_lesson(player: Node2D) -> void:
+    if player == null:
+        return
 
+    if SaveManager.is_flag_set("first_monster_defeated"):
+        return
+
+    SaveManager.set_flag("first_monster_defeated", true)
+
+    var dialogue_lines: Array[String] = [
+        "You felt it, did you not?",
+        "Mezoria answers struggle with growth.",
+        "Defeating creatures grants experience.",
+        "Enough experience will strengthen you.",
+        "But do not become careless.",
+        "Growth is useful only to the living."
+    ]
+
+    var game_ui := _get_game_ui()
+
+    if game_ui != null and game_ui.has_method("show_story_dialogue"):
+        game_ui.show_story_dialogue(dialogue_lines, "Echo Spirit")
+        return
+
+    if player.has_method("show_dialogue"):
+        player.show_dialogue("You gained experience from defeating the creature.")
+
+
+func _get_game_ui() -> Node:
+    var group_nodes := get_tree().get_nodes_in_group("interaction_ui")
+
+    for ui_node in group_nodes:
+        if ui_node != null and ui_node.has_method("show_story_dialogue"):
+            return ui_node
+
+    var autoload_ui := get_node_or_null("/root/GameUi")
+
+    if autoload_ui != null and autoload_ui.has_method("show_story_dialogue"):
+        return autoload_ui
+
+    return null
 
 func _award_xp_to_player_if_eligible(player: Node2D) -> void:
     if player == null:

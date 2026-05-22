@@ -13,6 +13,7 @@
 [ext_resource type="PackedScene" uid="uid://pyq76iw1lw5d" path="res://scenes/objects/save_totem.tscn" id="10_3573v"]
 [ext_resource type="PackedScene" uid="uid://d0sha3ho6ifgm" path="res://scenes/items/Consumables/Healing_Tonic.tscn" id="10_csk6f"]
 [ext_resource type="PackedScene" uid="uid://cihgogaol4td8" path="res://scenes/objects/map_transition_area.tscn" id="11_3svxi"]
+[ext_resource type="PackedScene" uid="uid://c1p4pdy1arniu" path="res://scenes/objects/MonsterClearEchoTrigger.tscn" id="11_btgmq"]
 [ext_resource type="PackedScene" uid="uid://bpapdn74pq4la" path="res://scenes/enemies/StartCavern/StartCavern_Earthling.tscn" id="11_gd1mq"]
 [ext_resource type="PackedScene" uid="uid://corrah5u0halh" path="res://scenes/objects/EchoDialogueTrigger.tscn" id="15_b8m33"]
 [ext_resource type="PackedScene" uid="uid://bql24l7sa24cp" path="res://scenes/objects/PuzzleResetStone.tscn" id="16_ru4hj"]
@@ -31,6 +32,7 @@ texture = ExtResource("2_rl85u")
 centered = false
 
 [node name="CollisionWalls" type="Node2D" parent="." unique_id=1594235200]
+visible = false
 position = Vector2(11, 12)
 
 [node name="Top_Left" type="StaticBody2D" parent="CollisionWalls" unique_id=1588707261]
@@ -293,6 +295,18 @@ defense = 0
 position = Vector2(137, 807)
 persistent_id = "HealingTonic1"
 
+[node name="MonsterClearEchoTrigger" parent="Monsters" unique_id=1642328376 instance=ExtResource("11_btgmq")]
+position = Vector2(1212, 558)
+required_defeated_monster_ids = Array[String](["SCEarth1", "SCEarth2", "SCEarth3", "SCEarth4", "SCEarth5", "SCEarth6", "SCEarth7", "SCEarth8"])
+dialogue_text = "The path grows still.
+The lesser creatures behind you have fallen.
+Beyond this point waits something stronger.
+Boss arenas are bound by old forces and violent will.
+Once you enter, the way forward will not open while the guardian still lives.
+Watch the ground.
+Greater enemies often warn where their strongest attacks will land.
+When the arena speaks, move."
+
 [node name="YSortWorld" type="Node2D" parent="." unique_id=965274766]
 y_sort_enabled = true
 
@@ -319,6 +333,7 @@ target_scene_path = "uid://chph8q00qw2nc"
 target_spawn_id = "From_Start_Cavern"
 
 [node name="EchoIntroTrigger" parent="." unique_id=280110426 instance=ExtResource("15_b8m33")]
+visible = false
 position = Vector2(213, 477.00003)
 scale = Vector2(0.7, 0.7)
 trigger_id = "echo_intro_awakening"
@@ -335,6 +350,7 @@ But survival comes before destiny.
 Move, listen, and learn."
 
 [node name="EchoPushRockTrigger" parent="." unique_id=1741898381 instance=ExtResource("15_b8m33")]
+visible = false
 position = Vector2(314.00003, 541)
 scale = Vector2(0.7, 0.7)
 trigger_id = "echo_push_rock_lesson"
@@ -349,6 +365,7 @@ If the way becomes sealed, seek the reset."
 required_flag = "intro_spirit_met"
 
 [node name="EchoBreakableRockTrigger" parent="." unique_id=20013153 instance=ExtResource("15_b8m33")]
+visible = false
 position = Vector2(433.00003, 493.00003)
 scale = Vector2(0.6, 0.6)
 trigger_id = "echo_breakable_rock_lesson"
@@ -363,6 +380,7 @@ Use it against the cracked rock and open the way."
 required_flag = "equipment_lesson_seen"
 
 [node name="EchoSaveTotemTrigger" parent="." unique_id=846468557 instance=ExtResource("15_b8m33")]
+visible = false
 position = Vector2(793, 138)
 scale = Vector2(0.8, 0.8)
 trigger_id = "echo_save_totem"
@@ -377,6 +395,7 @@ Some places in Mezoria will not be so forgiving."
 required_flag = "breakable_lesson_seen"
 
 [node name="EchoHealingTonicTrigger" parent="." unique_id=1199151662 instance=ExtResource("15_b8m33")]
+visible = false
 position = Vector2(107, 798)
 trigger_id = "echo_healing_tonic_lesson"
 story_flag = "hotbar_lesson_seen"
@@ -389,6 +408,7 @@ Then you may call on it with keys one through five.
 A prepared hand survives what a desperate hand cannot."
 
 [node name="EchoStoneClubTrigger" parent="." unique_id=1471645559 instance=ExtResource("15_b8m33")]
+visible = false
 position = Vector2(410, 968)
 trigger_id = "echo_stone_club_lesson"
 story_flag = "equipment_lesson_seen"

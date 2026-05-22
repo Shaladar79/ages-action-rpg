@@ -196,15 +196,59 @@ func gain_xp(amount: int) -> bool:
     if is_defeated:
         return false
 
+    var previous_level: int = character_stats.level
     var leveled_up := character_stats.add_xp(amount)
+    var current_level: int = character_stats.level
 
     _notify_ui_stats_changed()
 
     if leveled_up:
-        show_dialogue("You gained a level. Open your character sheet and spend your character point.")
+        print("Player leveled up from ", previous_level, " to ", current_level)
+
+        if not SaveManager.is_flag_set("level_up_lesson_seen"):
+            _show_first_level_up_lesson()
+        else:
+            print("Level-up lesson already seen. Skipping repeated level-up dialogue.")
 
     return leveled_up
 
+
+func _show_first_level_up_lesson() -> void:
+    if SaveManager.is_flag_set("level_up_lesson_seen"):
+        return
+
+    SaveManager.set_flag("level_up_lesson_seen", true)
+
+    var dialogue_lines: Array[String] = [
+        "Your body is changing.",
+        "Mezoria has begun to recognize you.",
+        "This is growth, Gene Ambrose.",
+        "When you grow stronger, open your character screen.",
+        "There you may shape what you become.",
+        "Strength, endurance, precision, will — each path leaves a mark."
+    ]
+
+    var game_ui := _get_game_ui()
+
+    if game_ui != null and game_ui.has_method("show_story_dialogue"):
+        game_ui.show_story_dialogue(dialogue_lines, "Echo Spirit")
+        return
+
+    show_dialogue("You gained a level. Open your character sheet and spend your character point.")
+
+func _get_game_ui() -> Node:
+    var group_nodes := get_tree().get_nodes_in_group("interaction_ui")
+
+    for ui_node in group_nodes:
+        if ui_node != null and ui_node.has_method("show_story_dialogue"):
+            return ui_node
+
+    var autoload_ui := get_node_or_null("/root/GameUi")
+
+    if autoload_ui != null and autoload_ui.has_method("show_story_dialogue"):
+        return autoload_ui
+
+    return null
 
 func spend_stat_point(stat_id: String) -> bool:
     if is_defeated:
