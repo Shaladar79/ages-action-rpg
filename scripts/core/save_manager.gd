@@ -10,6 +10,14 @@ var broken_breakable_ids: Array[String] = []
 var activated_save_point_ids: Array[String] = []
 var persistent_object_positions: Dictionary = {}
 
+# Story flags are simple true/false progress markers.
+# Examples:
+# intro_spirit_met
+# push_rock_lesson_seen
+# healing_tonic_collected
+# intro_boss_defeated
+var story_flags: Dictionary = {}
+
 
 func has_save_file() -> bool:
     return FileAccess.file_exists(SAVE_FILE_PATH)
@@ -33,6 +41,7 @@ func clear_runtime_world_state() -> void:
     broken_breakable_ids.clear()
     activated_save_point_ids.clear()
     persistent_object_positions.clear()
+    story_flags.clear()
 
 
 func mark_monster_defeated(monster_persistent_id: String) -> void:
@@ -137,6 +146,71 @@ func get_persistent_object_position(object_id: String, fallback_position: Vector
         float(position_data.get("x", fallback_position.x)),
         float(position_data.get("y", fallback_position.y))
     )
+
+
+func set_story_flag(flag_name: String, value: bool = true) -> void:
+    var clean_flag_name := flag_name.strip_edges()
+
+    if clean_flag_name == "":
+        return
+
+    story_flags[clean_flag_name] = value
+    print("Story flag set: ", clean_flag_name, " = ", value)
+
+
+func is_story_flag_set(flag_name: String) -> bool:
+    var clean_flag_name := flag_name.strip_edges()
+
+    if clean_flag_name == "":
+        return false
+
+    return bool(story_flags.get(clean_flag_name, false))
+
+
+func clear_story_flag(flag_name: String) -> void:
+    var clean_flag_name := flag_name.strip_edges()
+
+    if clean_flag_name == "":
+        return
+
+    if not story_flags.has(clean_flag_name):
+        return
+
+    story_flags.erase(clean_flag_name)
+    print("Story flag cleared: ", clean_flag_name)
+
+
+func get_story_flags() -> Dictionary:
+    return story_flags.duplicate(true)
+
+
+func load_story_flags(saved_story_flags: Dictionary) -> void:
+    story_flags.clear()
+
+    for flag_name in saved_story_flags.keys():
+        var clean_flag_name := str(flag_name).strip_edges()
+
+        if clean_flag_name == "":
+            continue
+
+        story_flags[clean_flag_name] = bool(saved_story_flags.get(flag_name, false))
+
+
+func clear_story_flags() -> void:
+    story_flags.clear()
+
+
+# Short aliases for later story/dialogue scripts.
+func set_flag(flag_name: String, value: bool = true) -> void:
+    set_story_flag(flag_name, value)
+
+
+func is_flag_set(flag_name: String) -> bool:
+    return is_story_flag_set(flag_name)
+
+
+func clear_flag(flag_name: String) -> void:
+    clear_story_flag(flag_name)
 
 
 func save_game(player: Node) -> bool:
@@ -363,7 +437,8 @@ func _build_world_state_data() -> Dictionary:
         "collected_collectable_ids": collected_collectable_ids.duplicate(),
         "broken_breakable_ids": broken_breakable_ids.duplicate(),
         "activated_save_point_ids": activated_save_point_ids.duplicate(),
-        "persistent_object_positions": persistent_object_positions.duplicate(true)
+        "persistent_object_positions": persistent_object_positions.duplicate(true),
+        "story_flags": story_flags.duplicate(true)
     }
 
 
@@ -524,11 +599,15 @@ func _apply_world_state_data(save_data: Dictionary) -> void:
     var saved_positions: Dictionary = world_state.get("persistent_object_positions", {})
     persistent_object_positions = saved_positions.duplicate(true)
 
+    var saved_story_flags: Dictionary = world_state.get("story_flags", {})
+    load_story_flags(saved_story_flags)
+
     print("Loaded defeated monster count: ", defeated_monster_ids.size())
     print("Loaded collected collectable count: ", collected_collectable_ids.size())
     print("Loaded broken breakable count: ", broken_breakable_ids.size())
     print("Loaded activated save point count: ", activated_save_point_ids.size())
     print("Loaded persistent object position count: ", persistent_object_positions.size())
+    print("Loaded story flag count: ", story_flags.size())
 
 
 func _append_unique_string(target_array: Array[String], value) -> void:

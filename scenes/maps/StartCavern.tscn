@@ -29,6 +29,7 @@ texture = ExtResource("2_rl85u")
 centered = false
 
 [node name="CollisionWalls" type="Node2D" parent="." unique_id=1594235200]
+visible = false
 position = Vector2(11, 12)
 
 [node name="Top_Left" type="StaticBody2D" parent="CollisionWalls" unique_id=1588707261]
@@ -60,7 +61,7 @@ polygon = PackedVector2Array(318, 263, 352, 276, 398, 225, 377, 172, 423, 135, 4
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="CollisionWalls/Cen_Strip_R" unique_id=1013739510]
 position = Vector2(-3, -5)
-polygon = PackedVector2Array(860, 6, 860, 6, 864, 86, 879, 86, 885, 89, 892, 94, 894, 107, 903, 108, 914, 115, 925, 123, 925, 132, 912, 137, 914, 142, 923, 145, 936, 158, 936, 180, 926, 191, 926, 201, 921, 221, 909, 230, 905, 244, 917, 252, 908, 259, 901, 268, 896, 266, 889, 269, 889, 274, 884, 278, 882, 288, 900, 288, 902, 314, 891, 314, 889, 301, 881, 325, 873, 351, 875, 366, 888, 369, 893, 377, 889, 379, 883, 386, 873, 387, 864, 389, 862, 395, 869, 397, 876, 401, 878, 411, 870, 423, 877, 430, 899, 436, 912, 440, 920, 448, 933, 454, 932, 466, 927, 484, 926, 491, 919, 496, 918, 503, 920, 518, 917, 525, 924, 531, 927, 539, 927, 553, 921, 567, 913, 562, 903, 571, 910, 577, 921, 584, 921, 591, 912, 641, 905, 653, 903, 665, 882, 687, 900, 701, 897, 713, 889, 725, 888, 734, 896, 741, 903, 746, 899, 754, 891, 759, 887, 768, 905, 775, 902, 788, 904, 805, 907, 816, 896, 851, 890, 881, 874, 891, 857, 898, 851, 888, 841, 918, 832, 920, 815, 922, 785, 952, 768, 960, 744, 973, 736, 951, 726, 987, 709, 998, 697, 991, 692, 980, 685, 993, 681, 1007, 661, 1022, 649, 1035, 639, 1052, 626, 1082, 549, 1085, 1038, 1083, 1045, 836, 1007, 802, 1005, 770, 1007, 733, 1022, 684, 1032, 669, 1022, 634, 1026, 610, 1037, 606, 1055, 613, 1065, 564, 1060, 539, 1054, 506, 1047, 528, 1035, 520, 1032, 497, 1016, 452, 1047, 466, 1067, 469, 1066, 446, 1057, 414, 1019, 420, 1004, 398, 997, 372, 1017, 374, 1037, 387, 1059, 398, 1075, 402, 1092, 390, 1092, 367, 1063, 355, 1047, 333, 1036, 348, 1011, 328, 1036, 313, 1037, 299, 1049, 286, 1050, 263, 1065, 251, 1073, 249, 1072, 240, 1068, 210, 1103, 204, 1109, 193, 1120, 181, 1135, 169, 1130, 2)
+polygon = PackedVector2Array(860, 6, 860, 6, 864, 86, 879, 86, 885, 89, 892, 94, 894, 107, 903, 108, 914, 115, 925, 123, 925, 132, 912, 137, 914, 142, 923, 145, 936, 158, 936, 180, 926, 191, 926, 201, 921, 221, 909, 230, 905, 244, 917, 252, 908, 259, 901, 268, 896, 266, 889, 269, 889, 274, 884, 278, 882, 288, 900, 288, 902, 314, 891, 314, 889, 301, 881, 325, 873, 351, 875, 366, 888, 369, 893, 377, 889, 379, 883, 386, 873, 387, 864, 389, 862, 395, 869, 397, 876, 401, 878, 411, 870, 423, 877, 430, 899, 436, 912, 440, 920, 448, 933, 454, 932, 466, 927, 484, 926, 491, 919, 496, 918, 503, 920, 518, 917, 525, 924, 531, 927, 539, 927, 553, 921, 567, 913, 562, 903, 571, 910, 577, 921, 584, 921, 591, 912, 641, 905, 653, 903, 665, 882, 687, 900, 701, 897, 713, 889, 725, 888, 734, 896, 741, 903, 746, 899, 754, 891, 759, 887, 768, 905, 775, 902, 788, 904, 805, 907, 816, 896, 851, 890, 881, 874, 891, 857, 898, 851, 888, 841, 918, 832, 920, 815, 922, 785, 952, 768, 960, 744, 973, 736, 951, 726, 987, 709, 998, 697, 991, 692, 980, 685, 993, 681, 1007, 661, 1022, 649, 1035, 639, 1052, 626, 1082, 549, 1085, 1038, 1083, 1045, 836, 1007, 802, 1005, 770, 1007, 733, 1022, 684, 1032, 669, 1022, 634, 1026, 610, 1037, 606, 1055, 613, 1065, 564, 1060, 539, 1054, 506, 1047, 528, 1035, 520, 1032, 497, 1016, 452, 1047, 466, 1077, 463, 1066, 446, 1057, 414, 1025, 405, 1004, 398, 1049, 407, 1017, 374, 1051, 401, 1059, 398, 1075, 402, 1092, 390, 1092, 367, 1063, 355, 1047, 333, 1036, 348, 1041, 325, 1036, 313, 1037, 299, 1049, 286, 1050, 263, 1065, 251, 1073, 249, 1072, 240, 1068, 210, 1103, 204, 1109, 193, 1120, 181, 1135, 169, 1130, 2)
 
 [node name="Bot_Right" type="StaticBody2D" parent="CollisionWalls" unique_id=1846326013]
 
@@ -70,7 +71,7 @@ polygon = PackedVector2Array(1050, 609, 1052, 641, 1073, 657, 1104, 674, 1117, 6
 [node name="Topo_Right" type="StaticBody2D" parent="CollisionWalls" unique_id=2120503843]
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="CollisionWalls/Topo_Right" unique_id=1352843626]
-polygon = PackedVector2Array(1135, 170, 1149, 169, 1160, 176, 1176, 167, 1194, 188, 1210, 201, 1195, 207, 1192, 218, 1198, 223, 1214, 227, 1229, 232, 1253, 232, 1265, 214, 1281, 204, 1295, 185, 1285, 170, 1285, 147, 1288, 139, 1301, 143, 1315, 139, 1324, 150, 1329, 160, 1334, 173, 1332, 200, 1320, 219, 1311, 229, 1330, 243, 1323, 270, 1306, 275, 1298, 289, 1315, 303, 1342, 298, 1356, 305, 1361, 323, 1366, 334, 1364, 352, 1345, 358, 1340, 377, 1330, 401, 1316, 400, 1302, 417, 1312, 429, 1351, 428, 1351, 443, 1339, 458, 1363, 477, 1367, 497, 1378, 469, 1389, 468, 1393, 490, 1393, 515, 1388, 533, 1381, 549, 1374, 574, 1375, 594, 1361, 643, 1445, 642, 1444, 48, 1133, 64)
+polygon = PackedVector2Array(1135, 170, 1149, 169, 1160, 176, 1176, 167, 1194, 188, 1210, 201, 1195, 207, 1192, 218, 1198, 223, 1214, 227, 1229, 232, 1253, 232, 1265, 214, 1281, 204, 1295, 185, 1285, 170, 1285, 147, 1288, 139, 1301, 143, 1315, 139, 1324, 150, 1329, 160, 1334, 173, 1332, 200, 1320, 219, 1311, 229, 1330, 243, 1323, 270, 1306, 275, 1298, 289, 1315, 303, 1342, 298, 1356, 305, 1361, 323, 1366, 334, 1364, 352, 1345, 358, 1340, 377, 1330, 401, 1316, 400, 1286, 416, 1302, 443, 1318, 453, 1329, 457, 1339, 458, 1363, 477, 1367, 497, 1378, 469, 1389, 468, 1393, 490, 1393, 515, 1388, 533, 1381, 549, 1374, 574, 1375, 594, 1361, 643, 1445, 642, 1444, 48, 1133, 64)
 
 [node name="PlayerSpawn" type="Marker2D" parent="." unique_id=201078554]
 visible = false
@@ -102,22 +103,22 @@ persistent_id = "PushRock"
 [node name="PushRock3" parent="Objects" unique_id=171120929 instance=ExtResource("6_kcxuk")]
 position = Vector2(391.00003, 732)
 scale = Vector2(0.9, 0.9)
-persistent_id = "PushRock"
+persistent_id = "PushRock3"
 
 [node name="PushRock5" parent="Objects" unique_id=387110213 instance=ExtResource("6_kcxuk")]
 position = Vector2(227, 830)
 scale = Vector2(0.9, 0.9)
-persistent_id = "PushRock"
+persistent_id = "PushRock3"
 
 [node name="PushRock2" parent="Objects" unique_id=1334004705 instance=ExtResource("6_kcxuk")]
 position = Vector2(459, 240)
 scale = Vector2(0.9, 0.9)
-persistent_id = "PushRock"
+persistent_id = "PushRock4"
 
 [node name="PushRock6" parent="Objects" unique_id=572963818 instance=ExtResource("6_kcxuk")]
 position = Vector2(1077, 714.00006)
 scale = Vector2(0.9, 0.9)
-persistent_id = "PushRock"
+persistent_id = "PushRock5"
 
 [node name="BreakableRock" parent="Objects" unique_id=1719668920 instance=ExtResource("7_rl85u")]
 position = Vector2(449.00003, 432.00003)
@@ -126,62 +127,62 @@ max_hit_points = 2
 
 [node name="BreakableRock2" parent="Objects" unique_id=309177355 instance=ExtResource("7_rl85u")]
 position = Vector2(424.00003, 339.00003)
-persistent_id = "BreakRock"
+persistent_id = "BreakRock2"
 max_hit_points = 2
 
 [node name="BreakableRock3" parent="Objects" unique_id=989234372 instance=ExtResource("7_rl85u")]
 position = Vector2(549, 215.00002)
-persistent_id = "BreakRock"
+persistent_id = "BreakRock3"
 max_hit_points = 2
 
 [node name="BreakableRock4" parent="Objects" unique_id=731841295 instance=ExtResource("7_rl85u")]
 position = Vector2(638, 201)
-persistent_id = "BreakRock"
+persistent_id = "BreakRock4"
 max_hit_points = 2
 
 [node name="BreakableRock5" parent="Objects" unique_id=276393617 instance=ExtResource("7_rl85u")]
 position = Vector2(685, 910.00006)
-persistent_id = "BreakRock"
+persistent_id = "BreakRock5"
 max_hit_points = 2
 
 [node name="BreakableRock6" parent="Objects" unique_id=1133455491 instance=ExtResource("7_rl85u")]
 position = Vector2(738, 938.00006)
-persistent_id = "BreakRock"
+persistent_id = "BreakRock6"
 max_hit_points = 2
 
 [node name="BreakableRock7" parent="Objects" unique_id=50061366 instance=ExtResource("7_rl85u")]
 position = Vector2(681, 954)
-persistent_id = "BreakRock"
+persistent_id = "BreakRock7"
 max_hit_points = 2
 
 [node name="BreakableRock8" parent="Objects" unique_id=364065125 instance=ExtResource("7_rl85u")]
 position = Vector2(1147, 717)
-persistent_id = "BreakRock"
+persistent_id = "BreakRock8"
 max_hit_points = 2
 
 [node name="BreakableRock9" parent="Objects" unique_id=2133566474 instance=ExtResource("7_rl85u")]
 position = Vector2(1292, 719)
-persistent_id = "BreakRock"
+persistent_id = "BreakRock9"
 max_hit_points = 2
 
 [node name="BreakableRock10" parent="Objects" unique_id=1004047280 instance=ExtResource("7_rl85u")]
 position = Vector2(1111, 462)
-persistent_id = "BreakRock"
+persistent_id = "BreakRock10"
 max_hit_points = 2
 
 [node name="BreakableRock11" parent="Objects" unique_id=114512878 instance=ExtResource("7_rl85u")]
 position = Vector2(1173, 444)
-persistent_id = "BreakRock"
+persistent_id = "BreakRock11"
 max_hit_points = 2
 
 [node name="BreakableRock12" parent="Objects" unique_id=260304288 instance=ExtResource("7_rl85u")]
 position = Vector2(1223, 470)
-persistent_id = "BreakRock"
+persistent_id = "BreakRock12"
 max_hit_points = 2
 
 [node name="BreakableRock13" parent="Objects" unique_id=88982035 instance=ExtResource("7_rl85u")]
 position = Vector2(1269, 442)
-persistent_id = "BreakRock"
+persistent_id = "BreakRock13"
 max_hit_points = 2
 
 [node name="Monsters" type="Node2D" parent="." unique_id=1278830268]
@@ -238,48 +239,49 @@ defense = 0
 
 [node name="StartCavern Earthling4" parent="Monsters" unique_id=810886055 instance=ExtResource("11_gd1mq")]
 position = Vector2(759, 697)
-persistent_id = "SCEarth3"
+persistent_id = "SCEarth4"
 monster_name = "Monster"
 defense = 0
 
 [node name="StartCavern Earthling5" parent="Monsters" unique_id=14868799 instance=ExtResource("11_gd1mq")]
 position = Vector2(1212, 706)
-persistent_id = "SCEarth3"
+persistent_id = "SCEarth5"
 monster_name = "Monster"
 defense = 0
 
 [node name="StartCavern Earthling6" parent="Monsters" unique_id=1366198870 instance=ExtResource("11_gd1mq")]
 position = Vector2(1170, 584)
-persistent_id = "SCEarth3"
+persistent_id = "SCEarth6"
 monster_name = "Monster"
 defense = 0
 
 [node name="StartCavern Earthling7" parent="Monsters" unique_id=235897523 instance=ExtResource("11_gd1mq")]
 position = Vector2(1278, 509)
-persistent_id = "SCEarth3"
+persistent_id = "SCEarth7"
 monster_name = "Monster"
 defense = 0
 
 [node name="StartCavern Earthling8" parent="Monsters" unique_id=798555463 instance=ExtResource("11_gd1mq")]
 position = Vector2(1181, 520)
-persistent_id = "SCEarth3"
+persistent_id = "SCEarth8"
 monster_name = "Monster"
 defense = 0
 
 [node name="StartCavern Earthling9" parent="Monsters" unique_id=328998222 instance=ExtResource("11_gd1mq")]
 position = Vector2(1135, 368)
-persistent_id = "SCEarth3"
+persistent_id = "SCEarth9"
 monster_name = "Monster"
 defense = 0
 
 [node name="StartCavern Earthling10" parent="Monsters" unique_id=2013640142 instance=ExtResource("11_gd1mq")]
 position = Vector2(1269, 381)
-persistent_id = "SCEarth3"
+persistent_id = "SCEarth10"
 monster_name = "Monster"
 defense = 0
 
 [node name="HealingTonic" parent="Monsters" unique_id=1005442685 instance=ExtResource("10_csk6f")]
 position = Vector2(137, 807)
+persistent_id = "HealingTonic1"
 
 [node name="YSortWorld" type="Node2D" parent="." unique_id=965274766]
 y_sort_enabled = true
@@ -290,7 +292,7 @@ position = Vector2(144, 371)
 [node name="CollectableClub" parent="YSortWorld" unique_id=524225198 instance=ExtResource("8_o2k4q")]
 z_index = -1
 position = Vector2(412, 973)
-persistent_id = "Stone_Club"
+persistent_id = "Stone_Club1"
 auto_equip_on_pickup = true
 
 [node name="SaveTotem" parent="YSortWorld" unique_id=528667636 instance=ExtResource("10_3573v")]
