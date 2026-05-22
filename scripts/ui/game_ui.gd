@@ -85,12 +85,19 @@ var story_dialogue_index: int = 0
 var story_dialogue_speaker_name: String = ""
 var story_dialogue_active: bool = false
 
+var manual_pause_active: bool = false
+var character_screen_pause_active: bool = false
+var story_dialogue_pause_active: bool = false
+var save_prompt_pause_active: bool = false
+
 func _ready() -> void:
     add_to_group("interaction_ui")
     print("GameUi ready. Script path: ", get_script().resource_path)
     print("GameUi has show_story_dialogue: ", has_method("show_story_dialogue"))
+    process_mode = Node.PROCESS_MODE_ALWAYS
     player = get_tree().get_first_node_in_group("player")
-
+    _ensure_pause_input_action()
+    
     character_screen.visible = false
     interaction_prompt.visible = false
 
@@ -106,7 +113,7 @@ func _ready() -> void:
     _connect_buttons()
     _update_hud()
     _update_character_screen()
-
+   
     
 
 
@@ -120,13 +127,24 @@ func _process(delta: float) -> void:
     _refresh_player_reference()
     _update_hud()
 
-func _unhandled_input(event: InputEvent) -> void:
+func _input(event: InputEvent) -> void:
+    if _event_is_pause_pressed(event):
+        _toggle_manual_pause()
+        get_viewport().set_input_as_handled()
+        return
+
     if story_dialogue_active:
-        if event.is_action_pressed("dialogue_continue") or event.is_action_pressed("interact"):
+        if event is InputEventKey:
+            var key_event := event as InputEventKey
+
+            if key_event.pressed and not key_event.echo:
+                print("Story dialogue key pressed: ", key_event.keycode)
+
+        if _event_is_dialogue_continue_pressed(event):
+            print("Advancing story dialogue.")
             _advance_story_dialogue()
             get_viewport().set_input_as_handled()
-
-        return
+            return
 
     if save_prompt != null and save_prompt.visible:
         return
@@ -134,6 +152,98 @@ func _unhandled_input(event: InputEvent) -> void:
     if event.is_action_pressed("character_screen"):
         toggle_character_screen()
         get_viewport().set_input_as_handled()
+        return
+
+func _event_is_pause_pressed(event: InputEvent) -> bool:
+    if event.is_action_pressed("pause_game"):
+        return true
+
+    if event is InputEventKey:
+        var key_event := event as InputEventKey
+
+        if not key_event.pressed or key_event.echo:
+            return false
+
+        return key_event.keycode == KEY_P or key_event.physical_keycode == KEY_P
+
+    return false
+
+
+func _event_is_dialogue_continue_pressed(event: InputEvent) -> bool:
+    if event.is_action_pressed("dialogue_continue"):
+        return true
+
+    if event.is_action_pressed("interact"):
+        return true
+
+    if event.is_action_pressed("ui_accept"):
+        return true
+
+    if event is InputEventKey:
+        var key_event := event as InputEventKey
+
+        if not key_event.pressed or key_event.echo:
+            return false
+
+        if key_event.keycode == KEY_E or key_event.physical_keycode == KEY_E:
+            return true
+
+        if key_event.keycode == KEY_ENTER or key_event.keycode == KEY_KP_ENTER:
+            return true
+
+        if key_event.keycode == KEY_SPACE:
+            return true
+
+    return false
+
+func _ensure_pause_input_action() -> void:
+    if InputMap.has_action("pause_game"):
+        return
+
+    InputMap.add_action("pause_game")
+
+    var pause_key := InputEventKey.new()
+    pause_key.physical_keycode = KEY_P
+
+    InputMap.action_add_event("pause_game", pause_key)
+
+    print("Created missing input action: pause_game bound to P")
+
+
+func _toggle_manual_pause() -> void:
+    manual_pause_active = not manual_pause_active
+    _refresh_pause_state()
+
+    if manual_pause_active:
+        print("Game manually paused.")
+    else:
+        print("Manual pause cleared.")
+
+
+func _refresh_pause_state() -> void:
+    var should_pause := manual_pause_active \
+        or character_screen_pause_active \
+        or story_dialogue_pause_active \
+        or save_prompt_pause_active
+
+    get_tree().paused = should_pause
+    print("Pause state refreshed. Paused: ", should_pause)
+
+
+func _set_character_screen_pause(active: bool) -> void:
+    character_screen_pause_active = active
+    _refresh_pause_state()
+
+
+func _set_story_dialogue_pause(active: bool) -> void:
+    story_dialogue_pause_active = active
+    _refresh_pause_state()
+
+
+func _set_save_prompt_pause(active: bool) -> void:
+    save_prompt_pause_active = active
+    _refresh_pause_state()
+
 
 
 func show_prompt(key_text: String = "E") -> void:
@@ -168,9 +278,13 @@ func show_story_dialogue(lines: Array, speaker_name: String = "Echo Spirit") -> 
     story_dialogue_speaker_name = speaker_name
     story_dialogue_index = 0
     story_dialogue_active = true
+    _set_story_dialogue_pause(true)
+
+    print("Story dialogue opened. Line count: ", story_dialogue_lines.size())
 
     if character_screen != null:
         character_screen.visible = false
+        _set_character_screen_pause(false)
 
     if interaction_prompt != null:
         interaction_prompt.visible = false
@@ -190,6 +304,10 @@ func hide_story_dialogue() -> void:
     if story_dialogue_layer != null:
         story_dialogue_layer.visible = false
 
+    _set_story_dialogue_pause(false)
+
+    print("Story dialogue closed.")
+    
 func _create_story_dialogue_panel() -> void:
     if story_dialogue_layer != null:
         return
@@ -321,20 +439,21 @@ func show_save_prompt(save_player: Node, message: String = "Do you want to save 
     character_screen.visible = false
     interaction_prompt.visible = false
     save_prompt.visible = true
-
+    _set_save_prompt_pause(true)
 
 func hide_save_prompt() -> void:
     pending_save_player = null
 
     if save_prompt != null:
         save_prompt.visible = false
-
+        _set_save_prompt_pause(false)
 
 func toggle_character_screen() -> void:
     if save_prompt != null and save_prompt.visible:
         return
 
     character_screen.visible = not character_screen.visible
+    _set_character_screen_pause(character_screen.visible)
 
     if character_screen.visible:
         _refresh_player_reference()
@@ -346,12 +465,15 @@ func open_character_screen() -> void:
         return
 
     character_screen.visible = true
+    _set_character_screen_pause(true)
     _refresh_player_reference()
     _update_character_screen()
 
 
 func close_character_screen() -> void:
     character_screen.visible = false
+    _set_character_screen_pause(false)
+
 
 
 func _create_hotbar_hud() -> void:
