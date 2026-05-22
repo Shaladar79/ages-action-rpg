@@ -8,7 +8,7 @@
 [ext_resource type="PackedScene" uid="uid://0vcalfqbsnfl" path="res://scenes/enemies/StartCavern/SC_Boss.tscn" id="7_gd1mq"]
 [ext_resource type="PackedScene" uid="uid://bbc8361yvbkxt" path="res://scenes/objects/BreakableRock.tscn" id="7_rl85u"]
 [ext_resource type="PackedScene" uid="uid://c54peu6mqtky8" path="res://scenes/objects/CollectableClub.tscn" id="8_o2k4q"]
-[ext_resource type="Script" path="res://scripts/enemies/BossMonster.gd" id="8_svhj1"]
+[ext_resource type="Script" uid="uid://cn6mnuf1x8vbq" path="res://scripts/enemies/BossMonster.gd" id="8_svhj1"]
 [ext_resource type="PackedScene" uid="uid://bas01evmp7jm4" path="res://scenes/objects/trans_area.tscn" id="10_3svxi"]
 [ext_resource type="PackedScene" uid="uid://pyq76iw1lw5d" path="res://scenes/objects/save_totem.tscn" id="10_3573v"]
 [ext_resource type="PackedScene" uid="uid://d0sha3ho6ifgm" path="res://scenes/items/Consumables/Healing_Tonic.tscn" id="10_csk6f"]
@@ -33,7 +33,6 @@ texture = ExtResource("2_rl85u")
 centered = false
 
 [node name="CollisionWalls" type="Node2D" parent="." unique_id=1594235200]
-visible = false
 position = Vector2(11, 12)
 
 [node name="Top_Left" type="StaticBody2D" parent="CollisionWalls" unique_id=1588707261]
@@ -46,14 +45,14 @@ polygon = PackedVector2Array(249, 8, 247, 145, 329, 277, 379, 313, 421, 441, 386
 [node name="Bot_Left" type="StaticBody2D" parent="CollisionWalls" unique_id=1591317102]
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="CollisionWalls/Bot_Left" unique_id=1044849009]
-position = Vector2(-3, -2)
-polygon = PackedVector2Array(368, 587, 371, 621, 369, 637, 340, 670, 331, 704, 301, 712, 271, 718, 262, 735, 245, 752, 241, 732, 227, 717, 204, 714, 184, 715, 168, 722, 157, 729, 150, 738, 144, 742, 129, 746, 116, 753, 107, 760, 100, 769, 77, 770, 69, 777, 54, 786, 125, 829, 81, 841, 95, 854, 102, 864, 118, 859, 130, 868, 122, 931, 170, 959, 188, 955, 204, 949, 206, 951, 209, 947, 216, 946, 213, 908, 230, 905, 238, 941, 257, 952, 290, 976, 299, 979, 304, 960, 311, 969, 313, 985, 323, 994, 356, 991, 364, 964, 373, 990, 373, 1082, 1, 1084, 2, 596)
+position = Vector2(-1, 4)
+polygon = PackedVector2Array(368, 587, 371, 621, 369, 637, 340, 670, 331, 704, 301, 712, 271, 718, 262, 735, 245, 752, 241, 732, 227, 717, 204, 714, 184, 715, 168, 722, 160, 717, 146, 722, 132, 729, 129, 746, 116, 753, 107, 760, 100, 769, 77, 770, 69, 777, 54, 786, 119, 839, 114, 849, 115, 854, 115, 864, 118, 859, 130, 868, 122, 931, 170, 959, 188, 955, 204, 949, 206, 951, 209, 947, 216, 946, 213, 908, 230, 905, 238, 941, 257, 952, 290, 976, 299, 979, 304, 960, 311, 969, 313, 985, 323, 994, 356, 991, 364, 964, 373, 990, 373, 1082, 1, 1084, 2, 596)
 
 [node name="Cen_Strip_L" type="StaticBody2D" parent="CollisionWalls" unique_id=1177781128]
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="CollisionWalls/Cen_Strip_L" unique_id=1287960065]
 position = Vector2(-1, 1)
-polygon = PackedVector2Array(372, 997, 424, 1003, 434, 976, 442, 990, 465, 948, 453, 920, 433, 914, 407, 904, 384, 912, 370, 901, 356, 900, 334, 891, 284, 919, 283, 901, 289, 881, 291, 872, 322, 834, 327, 767, 337, 830, 438, 798, 442, 768, 431, 712, 438, 713, 449, 701, 452, 688, 434, 678, 446, 658, 445, 625, 429, 606, 414, 578, 477, 571, 491, 509, 480, 490, 470, 471, 467, 441, 487, 428, 470, 414, 483, 384, 462, 361, 444, 343, 440, 325, 443, 305, 449, 290, 462, 288, 476, 282, 485, 278, 498, 264, 507, 264, 524, 254, 533, 239, 542, 231, 565, 221, 582, 217, 599, 225, 613, 231, 632, 230, 660, 220, 677, 212, 697, 209, 703, 204, 724, 181, 739, 183, 747, 185, 757, 178, 762, 173, 766, 166, 775, 163, 787, 153, 805, 143, 814, 137, 826, 122, 838, 123, 849, 127, 854, 143, 865, 169, 875, 191, 867, 207, 862, 225, 848, 239, 826, 253, 819, 265, 801, 273, 784, 287, 761, 280, 740, 282, 735, 303, 740, 320, 729, 342, 723, 359, 709, 362, 707, 383, 681, 394, 682, 425, 692, 465, 691, 525, 700, 595, 680, 622, 660, 662, 649, 708, 625, 729, 617, 749, 619, 775, 609, 797, 616, 823, 627, 860, 622, 885, 635, 895, 645, 917, 607, 974, 579, 1004, 556, 1046, 547, 1084, 372, 1082)
+polygon = PackedVector2Array(372, 997, 424, 1003, 434, 976, 442, 990, 465, 948, 453, 920, 433, 914, 407, 904, 384, 912, 370, 901, 356, 900, 334, 891, 284, 919, 283, 901, 289, 881, 291, 872, 322, 834, 332, 766, 357, 790, 428, 776, 426, 747, 431, 712, 438, 713, 449, 701, 452, 688, 434, 678, 446, 658, 445, 625, 429, 606, 414, 578, 477, 571, 491, 509, 480, 490, 470, 471, 467, 441, 487, 428, 470, 414, 483, 384, 462, 361, 444, 343, 440, 325, 443, 305, 449, 290, 462, 288, 476, 282, 485, 278, 498, 264, 507, 264, 524, 254, 533, 239, 542, 231, 565, 221, 582, 217, 599, 225, 613, 231, 632, 230, 660, 220, 677, 212, 697, 209, 703, 204, 724, 181, 739, 183, 747, 185, 757, 178, 762, 173, 766, 166, 775, 163, 787, 153, 805, 143, 814, 137, 826, 122, 838, 123, 849, 127, 854, 143, 865, 169, 875, 191, 867, 207, 862, 225, 848, 239, 826, 253, 819, 265, 801, 273, 784, 287, 761, 280, 740, 282, 735, 303, 740, 320, 729, 342, 723, 359, 709, 362, 707, 383, 681, 394, 682, 425, 692, 465, 691, 525, 700, 595, 680, 622, 660, 662, 649, 708, 625, 729, 617, 749, 619, 775, 609, 797, 616, 823, 627, 860, 622, 885, 635, 895, 645, 917, 607, 974, 579, 1004, 556, 1046, 547, 1084, 372, 1082)
 
 [node name="Cen_Top" type="StaticBody2D" parent="CollisionWalls" unique_id=356009182]
 
@@ -114,7 +113,7 @@ scale = Vector2(0.9, 0.9)
 persistent_id = "PushRock3"
 
 [node name="PushRock5" parent="Objects" unique_id=387110213 instance=ExtResource("6_kcxuk")]
-position = Vector2(209, 772)
+position = Vector2(204, 789)
 scale = Vector2(0.8, 0.8)
 persistent_id = "PushRock3"
 
@@ -235,65 +234,45 @@ xp_reward = 6
 [node name="StartCavern Earthling" parent="Monsters" unique_id=1655329841 instance=ExtResource("11_gd1mq")]
 position = Vector2(829, 441)
 persistent_id = "SCEarth1"
-monster_name = "Monster"
-defense = 0
 
 [node name="StartCavern Earthling2" parent="Monsters" unique_id=1629732996 instance=ExtResource("11_gd1mq")]
 position = Vector2(741, 578)
 persistent_id = "SCEarth2"
-monster_name = "Monster"
-defense = 0
 
 [node name="StartCavern Earthling3" parent="Monsters" unique_id=1093796272 instance=ExtResource("11_gd1mq")]
 position = Vector2(861, 647)
 persistent_id = "SCEarth3"
-monster_name = "Monster"
-defense = 0
 
 [node name="StartCavern Earthling4" parent="Monsters" unique_id=810886055 instance=ExtResource("11_gd1mq")]
 position = Vector2(759, 697)
 persistent_id = "SCEarth4"
-monster_name = "Monster"
-defense = 0
 
 [node name="StartCavern Earthling5" parent="Monsters" unique_id=14868799 instance=ExtResource("11_gd1mq")]
 position = Vector2(1212, 706)
 persistent_id = "SCEarth5"
-monster_name = "Monster"
-defense = 0
 
 [node name="StartCavern Earthling6" parent="Monsters" unique_id=1366198870 instance=ExtResource("11_gd1mq")]
 position = Vector2(1170, 584)
 persistent_id = "SCEarth6"
-monster_name = "Monster"
-defense = 0
 
 [node name="StartCavern Earthling7" parent="Monsters" unique_id=235897523 instance=ExtResource("11_gd1mq")]
 position = Vector2(1278, 509)
 persistent_id = "SCEarth7"
-monster_name = "Monster"
-defense = 0
 
 [node name="StartCavern Earthling8" parent="Monsters" unique_id=798555463 instance=ExtResource("11_gd1mq")]
 position = Vector2(1181, 520)
 persistent_id = "SCEarth8"
-monster_name = "Monster"
-defense = 0
 
 [node name="StartCavern Earthling9" parent="Monsters" unique_id=328998222 instance=ExtResource("11_gd1mq")]
 position = Vector2(1135, 368)
 persistent_id = "SCEarth9"
-monster_name = "Monster"
-defense = 0
 
 [node name="StartCavern Earthling10" parent="Monsters" unique_id=2013640142 instance=ExtResource("11_gd1mq")]
 position = Vector2(1269, 381)
 persistent_id = "SCEarth10"
-monster_name = "Monster"
-defense = 0
 
 [node name="HealingTonic" parent="Monsters" unique_id=1005442685 instance=ExtResource("10_csk6f")]
-position = Vector2(137, 807)
+position = Vector2(135, 817)
 persistent_id = "HealingTonic1"
 
 [node name="YSortWorld" type="Node2D" parent="." unique_id=965274766]
@@ -440,3 +419,4 @@ required_flag = "save_totem_lesson_seen"
 
 [node name="BossGateBlocker" parent="." unique_id=2096925575 instance=ExtResource("18_gi0ji")]
 position = Vector2(1299, 199)
+rotation = -0.009365366

@@ -64,6 +64,11 @@ var hud_hotbar_layer: Control = null
 var hud_hotbar_container: HBoxContainer = null
 var hud_hotbar_buttons: Array[Button] = []
 
+var hud_info_panel: VBoxContainer = null
+var hud_name_label: Label = null
+var hud_level_label: Label = null
+var hud_resource_row: HBoxContainer = null
+
 var equipment_slot_container: VBoxContainer = null
 var equipment_slot_option_buttons: Dictionary = {}
 
@@ -105,6 +110,7 @@ func _ready() -> void:
         save_prompt.visible = false
 
     _create_hotbar_hud()
+    _create_hud_info_panel()
     _create_story_dialogue_panel()
     _create_equipment_slot_panel()
     _create_hotbar_assignment_panel()
@@ -525,7 +531,72 @@ func _create_hotbar_hud() -> void:
         hud_hotbar_container.add_child(button)
         hud_hotbar_buttons.append(button)
 
+func _create_hud_info_panel() -> void:
+    if hud_info_panel != null:
+        return
 
+    var hud_parent := get_node_or_null("HUD") as Control
+
+    if hud_parent == null:
+        push_warning("Cannot create HUD info panel. HUD node is missing.")
+        return
+
+    hud_info_panel = VBoxContainer.new()
+    hud_info_panel.name = "HudInfoPanel"
+
+    hud_info_panel.anchor_left = 0.0
+    hud_info_panel.anchor_right = 0.0
+    hud_info_panel.anchor_top = 0.0
+    hud_info_panel.anchor_bottom = 0.0
+
+    hud_info_panel.offset_left = 16.0
+    hud_info_panel.offset_top = 12.0
+    hud_info_panel.offset_right = 520.0
+    hud_info_panel.offset_bottom = 120.0
+
+    hud_info_panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
+
+    hud_parent.add_child(hud_info_panel)
+
+    hud_name_label = Label.new()
+    hud_name_label.name = "HudNameLabel"
+    hud_name_label.text = "Gene Ambrose"
+    hud_name_label.add_theme_font_size_override("font_size", 18)
+    hud_info_panel.add_child(hud_name_label)
+
+    hud_level_label = Label.new()
+    hud_level_label.name = "HudLevelLabel"
+    hud_level_label.text = "Level 0"
+    hud_level_label.add_theme_font_size_override("font_size", 14)
+    hud_info_panel.add_child(hud_level_label)
+
+    hud_resource_row = HBoxContainer.new()
+    hud_resource_row.name = "HudResourceRow"
+    hud_resource_row.mouse_filter = Control.MOUSE_FILTER_IGNORE
+    hud_info_panel.add_child(hud_resource_row)
+
+    _move_existing_resource_label_to_hud_row(hud_health_label)
+    _move_existing_resource_label_to_hud_row(hud_mana_label)
+    _move_existing_resource_label_to_hud_row(hud_stamina_label)
+
+
+func _move_existing_resource_label_to_hud_row(label: Label) -> void:
+    if label == null:
+        return
+
+    if hud_resource_row == null:
+        return
+
+    var current_parent := label.get_parent()
+
+    if current_parent != null:
+        current_parent.remove_child(label)
+
+    label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+    label.custom_minimum_size = Vector2(130.0, 24.0)
+
+    hud_resource_row.add_child(label)
+    
 func _create_equipment_slot_panel() -> void:
     if equipment_slot_container != null:
         return
@@ -735,6 +806,12 @@ func _update_hud() -> void:
     var stats := _get_stats()
 
     if stats == null:
+        if hud_name_label != null:
+            hud_name_label.text = "No Character"
+
+        if hud_level_label != null:
+            hud_level_label.text = "Level --"
+
         if hud_health_label != null:
             hud_health_label.text = "Health: -- / --"
 
@@ -749,7 +826,14 @@ func _update_hud() -> void:
         _update_hotbar_hud()
         return
 
+    if hud_name_label != null:
+        hud_name_label.text = stats.character_name
+
+    if hud_level_label != null:
+        hud_level_label.text = "Level " + str(stats.level)
+
     if hud_health_label != null:
+        hud_health_label.visible = true
         hud_health_label.text = "Health: %s / %s" % [stats.current_health, stats.max_health]
 
     if hud_mana_label != null:
