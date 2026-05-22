@@ -362,11 +362,11 @@ Your Stone Club carries Bashing force.
 Use it against the cracked rock and open the way."
 required_flag = "equipment_lesson_seen"
 
-[node name="EchoPuzzleResetTrigger" parent="." unique_id=846468557 instance=ExtResource("15_b8m33")]
+[node name="EchoSaveTotemTrigger" parent="." unique_id=846468557 instance=ExtResource("15_b8m33")]
 position = Vector2(793, 138)
 scale = Vector2(0.8, 0.8)
-trigger_id = "echo_puzzle_reset_lesson"
-story_flag = "puzzle_reset_lesson_seen"
+trigger_id = "echo_save_totem"
+story_flag = "save_totem_lesson_seen"
 dialogue_text = "Look there, Gene.
 That stone bears a different mark from the others.
 It is not a path forward, but a way to begin again.
@@ -400,3 +400,17 @@ This weapon strikes with Bashing force.
 Remember that.
 Some things break only when struck the right way."
 required_flag = "push_rock_lesson_seen"
+
+[node name="EchoCombatLessonTrigger" parent="." unique_id=253619871 instance=ExtResource("15_b8m33")]
+position = Vector2(866, 288)
+trigger_id = "echo_first_combat_lesson"
+story_flag = "combat_lesson_seen"
+dialogue_text = "The corruption twists even small things.
+These creatures are not great threats, but they are not harmless.
+Keep your weapon ready.
+Strike when there is an opening.
+Move when danger closes.
+Each enemy has its own habits.
+Learn them, and you will live longer.
+Do not let fear root you in place."
+required_flag = "save_totem_lesson_seen"
