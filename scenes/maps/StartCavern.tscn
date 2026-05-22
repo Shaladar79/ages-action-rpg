@@ -14,10 +14,8 @@
 [ext_resource type="PackedScene" uid="uid://d0sha3ho6ifgm" path="res://scenes/items/Consumables/Healing_Tonic.tscn" id="10_csk6f"]
 [ext_resource type="PackedScene" uid="uid://cihgogaol4td8" path="res://scenes/objects/map_transition_area.tscn" id="11_3svxi"]
 [ext_resource type="PackedScene" uid="uid://bpapdn74pq4la" path="res://scenes/enemies/StartCavern/StartCavern_Earthling.tscn" id="11_gd1mq"]
-[ext_resource type="Script" uid="uid://b51e5pck0ma24" path="res://scripts/story/EchoDialogueTrigger.gd" id="15_b8m33"]
-
-[sub_resource type="CircleShape2D" id="CircleShape2D_b8m33"]
-radius = 37.01351
+[ext_resource type="PackedScene" uid="uid://corrah5u0halh" path="res://scenes/objects/EchoDialogueTrigger.tscn" id="15_b8m33"]
+[ext_resource type="PackedScene" uid="uid://bql24l7sa24cp" path="res://scenes/objects/PuzzleResetStone.tscn" id="16_ru4hj"]
 
 [node name="StartCavern" type="Node2D" unique_id=102575327]
 position = Vector2(-7, -11)
@@ -28,26 +26,25 @@ script = ExtResource("2_1x8pa")
 
 [node name="MapImage" type="Sprite2D" parent="." unique_id=470302150]
 z_index = -100
-position = Vector2(1, 9)
+position = Vector2(10, 12)
 texture = ExtResource("2_rl85u")
 centered = false
 
 [node name="CollisionWalls" type="Node2D" parent="." unique_id=1594235200]
-visible = false
 position = Vector2(11, 12)
 
 [node name="Top_Left" type="StaticBody2D" parent="CollisionWalls" unique_id=1588707261]
 position = Vector2(-1, -2)
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="CollisionWalls/Top_Left" unique_id=743370922]
-position = Vector2(-4, 10)
+position = Vector2(-5, 6)
 polygon = PackedVector2Array(249, 8, 247, 145, 329, 277, 379, 313, 421, 441, 386, 454, 357, 488, 253, 487, 225, 452, 251, 418, 246, 373, 197, 338, 160, 337, 113, 332, 92, 363, 113, 393, 119, 415, 92, 401, 110, 423, 104, 434, 127, 452, 165, 451, 184, 456, 217, 511, 262, 538, 309, 548, 361, 553, 377, 576, 0, 597, 3, 33)
 
 [node name="Bot_Left" type="StaticBody2D" parent="CollisionWalls" unique_id=1591317102]
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="CollisionWalls/Bot_Left" unique_id=1044849009]
-position = Vector2(2, -1)
-polygon = PackedVector2Array(368, 587, 371, 621, 369, 637, 340, 670, 331, 704, 301, 712, 271, 718, 262, 735, 249, 722, 235, 717, 212, 716, 199, 724, 186, 730, 184, 736, 167, 735, 157, 740, 156, 743, 140, 753, 116, 753, 107, 760, 100, 769, 77, 770, 69, 777, 54, 786, 63, 803, 81, 841, 86, 869, 108, 875, 112, 882, 148, 868, 176, 863, 191, 873, 206, 901, 198, 914, 208, 920, 207, 932, 210, 937, 216, 944, 224, 948, 238, 941, 257, 952, 290, 976, 299, 979, 304, 960, 311, 969, 313, 985, 323, 994, 356, 991, 364, 964, 373, 990, 373, 1082, 1, 1084, 2, 596)
+position = Vector2(-3, -2)
+polygon = PackedVector2Array(368, 587, 371, 621, 369, 637, 340, 670, 331, 704, 301, 712, 271, 718, 262, 735, 245, 752, 241, 732, 227, 717, 204, 714, 184, 715, 168, 722, 157, 729, 150, 738, 144, 742, 129, 746, 116, 753, 107, 760, 100, 769, 77, 770, 69, 777, 54, 786, 125, 829, 81, 841, 95, 854, 102, 864, 118, 859, 130, 868, 122, 931, 170, 959, 188, 955, 204, 949, 206, 951, 209, 947, 216, 946, 213, 908, 230, 905, 238, 941, 257, 952, 290, 976, 299, 979, 304, 960, 311, 969, 313, 985, 323, 994, 356, 991, 364, 964, 373, 990, 373, 1082, 1, 1084, 2, 596)
 
 [node name="Cen_Strip_L" type="StaticBody2D" parent="CollisionWalls" unique_id=1177781128]
 
@@ -84,19 +81,23 @@ position = Vector2(158, 371)
 [node name="Objects" type="Node2D" parent="." unique_id=790765806]
 
 [node name="TransitionArea" parent="Objects" unique_id=600252779 instance=ExtResource("10_3svxi")]
+visible = false
 position = Vector2(565, 1074)
 target_marker_path = NodePath("../Marker")
 target_spawn_id = ""
 
 [node name="TransitionArea2" parent="Objects" unique_id=520088292 instance=ExtResource("10_3svxi")]
+visible = false
 position = Vector2(1403, 729)
 target_marker_path = NodePath("../Marker2")
 target_spawn_id = "Marker2"
 
 [node name="Marker" type="Marker2D" parent="Objects" unique_id=2110216208]
+visible = false
 position = Vector2(1089, 719)
 
 [node name="Marker2" type="Marker2D" parent="Objects" unique_id=240895911]
+visible = false
 position = Vector2(1294, 564)
 
 [node name="PushRock" parent="Objects" unique_id=649356019 instance=ExtResource("6_kcxuk")]
@@ -110,9 +111,14 @@ scale = Vector2(0.9, 0.9)
 persistent_id = "PushRock3"
 
 [node name="PushRock5" parent="Objects" unique_id=387110213 instance=ExtResource("6_kcxuk")]
-position = Vector2(227, 830)
-scale = Vector2(0.9, 0.9)
+position = Vector2(209, 772)
+scale = Vector2(0.8, 0.8)
 persistent_id = "PushRock3"
+
+[node name="PushRock7" parent="Objects" unique_id=1554864028 instance=ExtResource("6_kcxuk")]
+position = Vector2(232, 846)
+scale = Vector2(0.8, 0.8)
+persistent_id = "PushRock7"
 
 [node name="PushRock2" parent="Objects" unique_id=1334004705 instance=ExtResource("6_kcxuk")]
 position = Vector2(459, 240)
@@ -302,9 +308,20 @@ auto_equip_on_pickup = true
 [node name="SaveTotem" parent="YSortWorld" unique_id=528667636 instance=ExtResource("10_3573v")]
 position = Vector2(870, 80)
 
-[node name="EchoIntroTrigger" type="Area2D" parent="YSortWorld" unique_id=776824944]
-script = ExtResource("15_b8m33")
-trigger_id = "exho_intro_awakening"
+[node name="PuzzleResetStone" parent="YSortWorld" unique_id=244382430 instance=ExtResource("16_ru4hj")]
+position = Vector2(289, 734)
+scale = Vector2(0.2, 0.2)
+push_object_paths = Array[NodePath]([NodePath("../../Objects/PushRock5"), NodePath("../../Objects/PushRock7")])
+
+[node name="MapTransitionArea" parent="." unique_id=1344752193 instance=ExtResource("11_3svxi")]
+position = Vector2(1299, 198)
+target_scene_path = "uid://chph8q00qw2nc"
+target_spawn_id = "From_Start_Cavern"
+
+[node name="EchoIntroTrigger" parent="." unique_id=280110426 instance=ExtResource("15_b8m33")]
+position = Vector2(213, 477.00003)
+scale = Vector2(0.7, 0.7)
+trigger_id = "echo_intro_awakening"
 story_flag = "intro_spirit_met"
 dialogue_text = "Awaken, Gene Ambrose.
 Your second life begins in shadow.
@@ -317,12 +334,69 @@ The corruption has roots older than kingdoms, older than names.
 But survival comes before destiny.
 Move, listen, and learn."
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="YSortWorld/EchoIntroTrigger" unique_id=2019499681]
-position = Vector2(211, 468)
-shape = SubResource("CircleShape2D_b8m33")
-debug_color = Color(0.96466786, 0.98131984, 0.99001664, 0.41960785)
+[node name="EchoPushRockTrigger" parent="." unique_id=1741898381 instance=ExtResource("15_b8m33")]
+position = Vector2(314.00003, 541)
+scale = Vector2(0.7, 0.7)
+trigger_id = "echo_push_rock_lesson"
+story_flag = "push_rock_lesson_seen"
+dialogue_text = "Some stones in this cavern are loose enough to move.
+Push against them, and they may yield.
+But take care.
+A stone moved without thought may block the path ahead.
+The old builders knew this.
+When a puzzle may trap itself, they often placed a reset stone nearby.
+If the way becomes sealed, seek the reset."
+required_flag = "intro_spirit_met"
 
-[node name="MapTransitionArea" parent="." unique_id=1344752193 instance=ExtResource("11_3svxi")]
-position = Vector2(1299, 198)
-target_scene_path = "uid://chph8q00qw2nc"
-target_spawn_id = "From_Start_Cavern"
+[node name="EchoBreakableRockTrigger" parent="." unique_id=20013153 instance=ExtResource("15_b8m33")]
+position = Vector2(433.00003, 493.00003)
+scale = Vector2(0.6, 0.6)
+trigger_id = "echo_breakable_rock_lesson"
+story_flag = "breakable_lesson_seen"
+dialogue_text = "Look closely at that stone, Gene.
+The cracks are not decoration.
+They are weakness.
+Not every obstacle falls to every strike.
+Some barriers demand the right kind of force.
+Your Stone Club carries Bashing force.
+Use it against the cracked rock and open the way."
+required_flag = "equipment_lesson_seen"
+
+[node name="EchoPuzzleResetTrigger" parent="." unique_id=846468557 instance=ExtResource("15_b8m33")]
+position = Vector2(793, 138)
+scale = Vector2(0.8, 0.8)
+trigger_id = "echo_puzzle_reset_lesson"
+story_flag = "puzzle_reset_lesson_seen"
+dialogue_text = "Look there, Gene.
+That stone bears a different mark from the others.
+It is not a path forward, but a way to begin again.
+If a moved stone traps the puzzle, touch the reset stone.
+The loose stones nearby will return to where they first rested.
+Use it when the path is sealed, but do not grow careless.
+Some places in Mezoria will not be so forgiving."
+required_flag = "breakable_lesson_seen"
+
+[node name="EchoHealingTonicTrigger" parent="." unique_id=1199151662 instance=ExtResource("15_b8m33")]
+position = Vector2(107, 798)
+trigger_id = "echo_healing_tonic_lesson"
+story_flag = "hotbar_lesson_seen"
+dialogue_text = "That vial is a Healing Tonic.
+Crude medicine, but useful when pain comes quickly.
+Carrying it is not enough.
+Prepare it before you need it.
+Open your character screen and place the tonic on one of your hotkeys.
+Then you may call on it with keys one through five.
+A prepared hand survives what a desperate hand cannot."
+
+[node name="EchoStoneClubTrigger" parent="." unique_id=1471645559 instance=ExtResource("15_b8m33")]
+position = Vector2(410, 968)
+trigger_id = "echo_stone_club_lesson"
+story_flag = "equipment_lesson_seen"
+dialogue_text = "A Stone Club.
+Primitive, heavy, and honest.
+It will not help you from inside your pack.
+Open your character screen and equip it in your Melee Weapon slot.
+This weapon strikes with Bashing force.
+Remember that.
+Some things break only when struck the right way."
+required_flag = "push_rock_lesson_seen"

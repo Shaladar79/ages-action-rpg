@@ -1,0 +1,20 @@
+[gd_scene format=3 uid="uid://bql24l7sa24cp"]
+
+[ext_resource type="Script" uid="uid://bbsmeecf58jwx" path="res://scripts/story/PuzzleResetStone.gd" id="1_agl20"]
+[ext_resource type="Texture2D" uid="uid://duhgax513jdin" path="res://art/objects/reset_ped.png" id="2_vin34"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_5b183"]
+radius = 89.08984
+
+[node name="PuzzleResetStone" type="Area2D" unique_id=244382430]
+script = ExtResource("1_agl20")
+reset_id = "reset_SC_puz"
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=2066939542]
+position = Vector2(57, -50)
+scale = Vector2(3, 3)
+texture = ExtResource("2_vin34")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1470745193]
+position = Vector2(0, 3.8146973e-06)
+shape = SubResource("CircleShape2D_5b183")

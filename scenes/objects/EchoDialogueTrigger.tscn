@@ -1,0 +1,13 @@
+[gd_scene format=3 uid="uid://corrah5u0halh"]
+
+[ext_resource type="Script" uid="uid://b51e5pck0ma24" path="res://scripts/story/EchoDialogueTrigger.gd" id="1_ueu5c"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_r6teo"]
+radius = 56.0357
+
+[node name="EchoDialogueTrigger" type="Area2D" unique_id=280110426]
+script = ExtResource("1_ueu5c")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1417911536]
+shape = SubResource("CircleShape2D_r6teo")
+debug_color = Color(0.96982616, 0.97169465, 0.99607664, 0.41960785)

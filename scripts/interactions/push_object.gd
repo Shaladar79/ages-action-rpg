@@ -7,9 +7,11 @@ class_name PushObject
 @export var push_duration: float = 0.18
 
 var is_being_pushed: bool = false
+var starting_position: Vector2 = Vector2.ZERO
 
 
 func _ready() -> void:
+    starting_position = global_position
     _apply_saved_position_if_needed()
 
 
@@ -50,6 +52,24 @@ func push_from_player(player: Node2D) -> void:
     print("Push object moved: ", push_direction)
 
 
+func reset_to_starting_position() -> void:
+    if is_being_pushed:
+        return
+
+    global_position = starting_position
+    save_current_position()
+
+    print("Push object reset to starting position: ", name, " ", global_position)
+
+
+func save_current_position() -> void:
+    if persistent_id.strip_edges() == "":
+        return
+
+    SaveManager.set_persistent_object_position(persistent_id, global_position)
+    print("Saved push object position: ", persistent_id, " ", global_position)
+
+
 func _get_push_direction_from_player(player: Node2D) -> Vector2:
     var difference := global_position - player.global_position
 
@@ -67,7 +87,4 @@ func _get_push_direction_from_player(player: Node2D) -> Vector2:
 
 func _on_push_finished() -> void:
     is_being_pushed = false
-
-    if persistent_id.strip_edges() != "":
-        SaveManager.set_persistent_object_position(persistent_id, global_position)
-        print("Saved push object position: ", persistent_id, " ", global_position)
+    save_current_position()
