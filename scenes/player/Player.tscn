@@ -231,7 +231,6 @@ animation = &"walk_up"
 frame_progress = 0.71346617
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=582978164]
-visible = false
 y_sort_enabled = true
 position = Vector2(0, 11.25)
 shape = SubResource("RectangleShape2D_gfjak")
@@ -246,12 +245,10 @@ limit_bottom = 1086
 position_smoothing_enabled = true
 
 [node name="AttackArea" type="Area2D" parent="." unique_id=2092656896]
-visible = false
 monitoring = false
 monitorable = false
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="AttackArea" unique_id=432478603]
-visible = false
 shape = SubResource("RectangleShape2D_4kuee")
 disabled = true
 

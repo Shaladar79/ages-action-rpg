@@ -87,7 +87,8 @@ var story_dialogue_active: bool = false
 
 func _ready() -> void:
     add_to_group("interaction_ui")
-
+    print("GameUi ready. Script path: ", get_script().resource_path)
+    print("GameUi has show_story_dialogue: ", has_method("show_story_dialogue"))
     player = get_tree().get_first_node_in_group("player")
 
     character_screen.visible = false
@@ -106,10 +107,8 @@ func _ready() -> void:
     _update_hud()
     _update_character_screen()
 
-    call_deferred("show_story_dialogue", [
-    "Awaken, Gene Ambrose.",
-    "Your second life begins in shadow."
-], "Echo Spirit")
+    
+
 
 func _process(delta: float) -> void:
     hud_refresh_timer -= delta

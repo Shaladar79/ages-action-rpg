@@ -45,7 +45,7 @@ func _ready() -> void:
     _ensure_starting_equipment()
     _disable_attack_hitbox()
     _hide_weapon_sprite()
-
+    
     if not attack_area.area_entered.is_connected(_on_attack_area_entered):
         attack_area.area_entered.connect(_on_attack_area_entered)
 

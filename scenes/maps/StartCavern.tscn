@@ -14,6 +14,10 @@
 [ext_resource type="PackedScene" uid="uid://d0sha3ho6ifgm" path="res://scenes/items/Consumables/Healing_Tonic.tscn" id="10_csk6f"]
 [ext_resource type="PackedScene" uid="uid://cihgogaol4td8" path="res://scenes/objects/map_transition_area.tscn" id="11_3svxi"]
 [ext_resource type="PackedScene" uid="uid://bpapdn74pq4la" path="res://scenes/enemies/StartCavern/StartCavern_Earthling.tscn" id="11_gd1mq"]
+[ext_resource type="Script" uid="uid://b51e5pck0ma24" path="res://scripts/story/EchoDialogueTrigger.gd" id="15_b8m33"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_b8m33"]
+radius = 37.01351
 
 [node name="StartCavern" type="Node2D" unique_id=102575327]
 position = Vector2(-7, -11)
@@ -297,6 +301,26 @@ auto_equip_on_pickup = true
 
 [node name="SaveTotem" parent="YSortWorld" unique_id=528667636 instance=ExtResource("10_3573v")]
 position = Vector2(870, 80)
+
+[node name="EchoIntroTrigger" type="Area2D" parent="YSortWorld" unique_id=776824944]
+script = ExtResource("15_b8m33")
+trigger_id = "exho_intro_awakening"
+story_flag = "intro_spirit_met"
+dialogue_text = "Awaken, Gene Ambrose.
+Your second life begins in shadow.
+Do not fear the cavern.
+Fear only standing still when the world asks you to move.
+I am an Echo, a memory given shape.
+I was allowed to remain, to guide the one sent by the stars beyond death.
+Mezoria is wounded.
+The corruption has roots older than kingdoms, older than names.
+But survival comes before destiny.
+Move, listen, and learn."
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="YSortWorld/EchoIntroTrigger" unique_id=2019499681]
+position = Vector2(211, 468)
+shape = SubResource("CircleShape2D_b8m33")
+debug_color = Color(0.96466786, 0.98131984, 0.99001664, 0.41960785)
 
 [node name="MapTransitionArea" parent="." unique_id=1344752193 instance=ExtResource("11_3svxi")]
 position = Vector2(1299, 198)
