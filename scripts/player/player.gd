@@ -39,6 +39,8 @@ var hotbar_slots: Array[Dictionary] = []
 
 
 func _ready() -> void:
+    add_to_group("player")
+
     _initialize_hotbar_slots()
     _ensure_starting_equipment()
     _disable_attack_hitbox()
@@ -80,6 +82,7 @@ func _apply_startup_position_if_needed() -> void:
     if not SaveManager.pending_loaded_data.is_empty():
         print("Applying pending save data to player.")
         SaveManager.apply_pending_loaded_data(self)
+        _notify_ui_stats_changed()
         return
 
     if SceneTransitionManager.has_pending_player_data():
@@ -88,8 +91,10 @@ func _apply_startup_position_if_needed() -> void:
     if SceneTransitionManager.has_pending_spawn():
         var spawn_id: String = SceneTransitionManager.consume_pending_spawn()
         _move_to_map_spawn(spawn_id)
+        _notify_ui_stats_changed()
         return
 
+    _notify_ui_stats_changed()
     print("No pending save data or map spawn to apply.")
 
 

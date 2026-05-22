@@ -8,7 +8,7 @@
 [ext_resource type="PackedScene" uid="uid://0vcalfqbsnfl" path="res://scenes/enemies/StartCavern/SC_Boss.tscn" id="7_gd1mq"]
 [ext_resource type="PackedScene" uid="uid://bbc8361yvbkxt" path="res://scenes/objects/BreakableRock.tscn" id="7_rl85u"]
 [ext_resource type="PackedScene" uid="uid://c54peu6mqtky8" path="res://scenes/objects/CollectableClub.tscn" id="8_o2k4q"]
-[ext_resource type="Script" uid="uid://cn6mnuf1x8vbq" path="res://scripts/enemies/BossMonster.gd" id="8_svhj1"]
+[ext_resource type="Script" path="res://scripts/enemies/BossMonster.gd" id="8_svhj1"]
 [ext_resource type="PackedScene" uid="uid://bas01evmp7jm4" path="res://scenes/objects/trans_area.tscn" id="10_3svxi"]
 [ext_resource type="PackedScene" uid="uid://pyq76iw1lw5d" path="res://scenes/objects/save_totem.tscn" id="10_3573v"]
 [ext_resource type="PackedScene" uid="uid://d0sha3ho6ifgm" path="res://scenes/items/Consumables/Healing_Tonic.tscn" id="10_csk6f"]
@@ -194,6 +194,8 @@ special_global_cooldown = 1.0
 lock_movement_during_special = true
 telegraph_polygon_sides = 48
 telegraph_z_index = 200
+telegraph_impact_flash_time = 0.12
+telegraph_impact_flash_color = Color(1, 0, 0, 0.85)
 aoe_enabled = true
 aoe_damage = 2
 aoe_damage_types = 1
@@ -215,7 +217,6 @@ persistent_id = "SCBoss"
 monster_name = "Monster"
 defense = 1
 xp_reward = 6
-melee_damage = 3
 
 [node name="StartCavern Earthling" parent="Monsters" unique_id=1655329841 instance=ExtResource("11_gd1mq")]
 position = Vector2(829, 441)

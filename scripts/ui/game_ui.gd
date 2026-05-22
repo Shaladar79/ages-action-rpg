@@ -71,6 +71,9 @@ var sheet_hotbar_container: VBoxContainer = null
 var sheet_hotbar_option_buttons: Array[OptionButton] = []
 var sheet_hotbar_clear_buttons: Array[Button] = []
 
+var hud_refresh_timer: float = 0.0
+var hud_refresh_interval: float = 0.25
+
 
 func _ready() -> void:
     add_to_group("interaction_ui")
@@ -92,6 +95,16 @@ func _ready() -> void:
     _update_hud()
     _update_character_screen()
 
+
+func _process(delta: float) -> void:
+    hud_refresh_timer -= delta
+
+    if hud_refresh_timer > 0.0:
+        return
+
+    hud_refresh_timer = hud_refresh_interval
+    _refresh_player_reference()
+    _update_hud()
 
 func _unhandled_input(event: InputEvent) -> void:
     if save_prompt != null and save_prompt.visible:
