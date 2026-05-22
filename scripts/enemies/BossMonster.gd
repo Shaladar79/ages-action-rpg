@@ -93,6 +93,12 @@ func _physics_process(delta: float) -> void:
 
 
 func die(player: Node2D = null) -> void:
+    if is_dead:
+        return
+
+    SaveManager.set_flag("intro_boss_defeated", true)
+    print("Boss defeated flag set: intro_boss_defeated")
+
     _clear_active_telegraphs()
     is_using_special_attack = false
     super.die(player)

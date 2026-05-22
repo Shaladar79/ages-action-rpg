@@ -296,16 +296,19 @@ animation = &"walk_up"
 frame_progress = 0.3718339
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=423550328]
+visible = false
 position = Vector2(0.5, 1.5)
 shape = SubResource("RectangleShape2D_jo1i2")
 
 [node name="Hurtbox" type="Area2D" parent="." unique_id=1988651777]
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Hurtbox" unique_id=1506836940]
+visible = false
 position = Vector2(1, 2)
 shape = SubResource("RectangleShape2D_8ojwj")
 
 [node name="AttackArea" type="Area2D" parent="." unique_id=1103521465]
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="AttackArea" unique_id=1259175337]
+visible = false
 shape = SubResource("CircleShape2D_8e6si")

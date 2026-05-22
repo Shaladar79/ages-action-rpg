@@ -17,6 +17,7 @@
 [ext_resource type="PackedScene" uid="uid://bpapdn74pq4la" path="res://scenes/enemies/StartCavern/StartCavern_Earthling.tscn" id="11_gd1mq"]
 [ext_resource type="PackedScene" uid="uid://corrah5u0halh" path="res://scenes/objects/EchoDialogueTrigger.tscn" id="15_b8m33"]
 [ext_resource type="PackedScene" uid="uid://bql24l7sa24cp" path="res://scenes/objects/PuzzleResetStone.tscn" id="16_ru4hj"]
+[ext_resource type="PackedScene" uid="uid://c22k78g2y6kpn" path="res://scenes/objects/BossGateBlocker.tscn" id="18_gi0ji"]
 
 [node name="StartCavern" type="Node2D" unique_id=102575327]
 position = Vector2(-7, -11)
@@ -295,18 +296,6 @@ defense = 0
 position = Vector2(137, 807)
 persistent_id = "HealingTonic1"
 
-[node name="MonsterClearEchoTrigger" parent="Monsters" unique_id=1642328376 instance=ExtResource("11_btgmq")]
-position = Vector2(1212, 558)
-required_defeated_monster_ids = Array[String](["SCEarth1", "SCEarth2", "SCEarth3", "SCEarth4", "SCEarth5", "SCEarth6", "SCEarth7", "SCEarth8"])
-dialogue_text = "The path grows still.
-The lesser creatures behind you have fallen.
-Beyond this point waits something stronger.
-Boss arenas are bound by old forces and violent will.
-Once you enter, the way forward will not open while the guardian still lives.
-Watch the ground.
-Greater enemies often warn where their strongest attacks will land.
-When the arena speaks, move."
-
 [node name="YSortWorld" type="Node2D" parent="." unique_id=965274766]
 y_sort_enabled = true
 
@@ -331,6 +320,19 @@ push_object_paths = Array[NodePath]([NodePath("../../Objects/PushRock5"), NodePa
 position = Vector2(1299, 198)
 target_scene_path = "uid://chph8q00qw2nc"
 target_spawn_id = "From_Start_Cavern"
+
+[node name="MonsterClearEchoTrigger" parent="." unique_id=1642328376 instance=ExtResource("11_btgmq")]
+visible = false
+position = Vector2(1212, 558)
+required_defeated_monster_ids = Array[String](["SCEarth1", "SCEarth2", "SCEarth3", "SCEarth4", "SCEarth5", "SCEarth6", "SCEarth7", "SCEarth8"])
+dialogue_text = "The path grows still.
+The lesser creatures behind you have fallen.
+Beyond this point waits something stronger.
+Boss arenas are bound by old forces and violent will.
+Once you enter, the way forward will not open while the guardian still lives.
+Watch the ground.
+Greater enemies often warn where their strongest attacks will land.
+When the arena speaks, move."
 
 [node name="EchoIntroTrigger" parent="." unique_id=280110426 instance=ExtResource("15_b8m33")]
 visible = false
@@ -422,6 +424,7 @@ Some things break only when struck the right way."
 required_flag = "push_rock_lesson_seen"
 
 [node name="EchoCombatLessonTrigger" parent="." unique_id=253619871 instance=ExtResource("15_b8m33")]
+visible = false
 position = Vector2(866, 288)
 trigger_id = "echo_first_combat_lesson"
 story_flag = "combat_lesson_seen"
@@ -434,3 +437,6 @@ Each enemy has its own habits.
 Learn them, and you will live longer.
 Do not let fear root you in place."
 required_flag = "save_totem_lesson_seen"
+
+[node name="BossGateBlocker" parent="." unique_id=2096925575 instance=ExtResource("18_gi0ji")]
+position = Vector2(1299, 199)

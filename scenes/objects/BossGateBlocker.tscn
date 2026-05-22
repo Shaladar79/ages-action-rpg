@@ -1,0 +1,22 @@
+[gd_scene format=3 uid="uid://c22k78g2y6kpn"]
+
+[ext_resource type="Script" uid="uid://brsmyc0c431b7" path="res://scripts/story/BossGateBlocker.gd" id="1_c3tnd"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_n5v3k"]
+radius = 41.04875
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_5nsqm"]
+radius = 62.03225
+
+[node name="BossGateBlocker" type="StaticBody2D" unique_id=2096925575]
+script = ExtResource("1_c3tnd")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1430022875]
+shape = SubResource("CircleShape2D_n5v3k")
+debug_color = Color(0.84069186, 0.22401246, 0.34936944, 0.41960785)
+
+[node name="MessageArea" type="Area2D" parent="." unique_id=279364993]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="MessageArea" unique_id=795164170]
+shape = SubResource("CircleShape2D_5nsqm")
+debug_color = Color(0.43093884, 0.3406119, 0.8766923, 0.41960785)
