@@ -74,6 +74,16 @@ var sheet_hotbar_clear_buttons: Array[Button] = []
 var hud_refresh_timer: float = 0.0
 var hud_refresh_interval: float = 0.25
 
+var story_dialogue_layer: Control = null
+var story_dialogue_panel: Panel = null
+var story_dialogue_speaker_label: Label = null
+var story_dialogue_message_label: Label = null
+var story_dialogue_continue_label: Label = null
+
+var story_dialogue_lines: Array[String] = []
+var story_dialogue_index: int = 0
+var story_dialogue_speaker_name: String = ""
+var story_dialogue_active: bool = false
 
 func _ready() -> void:
     add_to_group("interaction_ui")
@@ -87,6 +97,7 @@ func _ready() -> void:
         save_prompt.visible = false
 
     _create_hotbar_hud()
+    _create_story_dialogue_panel()
     _create_equipment_slot_panel()
     _create_hotbar_assignment_panel()
     _hide_old_equipment_controls()
@@ -95,6 +106,10 @@ func _ready() -> void:
     _update_hud()
     _update_character_screen()
 
+    call_deferred("show_story_dialogue", [
+    "Awaken, Gene Ambrose.",
+    "Your second life begins in shadow."
+], "Echo Spirit")
 
 func _process(delta: float) -> void:
     hud_refresh_timer -= delta
@@ -107,6 +122,13 @@ func _process(delta: float) -> void:
     _update_hud()
 
 func _unhandled_input(event: InputEvent) -> void:
+    if story_dialogue_active:
+        if event.is_action_pressed("dialogue_continue") or event.is_action_pressed("interact"):
+            _advance_story_dialogue()
+            get_viewport().set_input_as_handled()
+
+        return
+
     if save_prompt != null and save_prompt.visible:
         return
 
@@ -123,6 +145,163 @@ func show_prompt(key_text: String = "E") -> void:
 func hide_prompt() -> void:
     interaction_prompt.visible = false
 
+func show_story_message(message: String, speaker_name: String = "Echo Spirit") -> void:
+    show_story_dialogue([message], speaker_name)
+
+
+func show_story_dialogue(lines: Array, speaker_name: String = "Echo Spirit") -> void:
+    if save_prompt != null and save_prompt.visible:
+        return
+
+    story_dialogue_lines.clear()
+
+    for line in lines:
+        var clean_line := str(line).strip_edges()
+
+        if clean_line == "":
+            continue
+
+        story_dialogue_lines.append(clean_line)
+
+    if story_dialogue_lines.is_empty():
+        return
+
+    story_dialogue_speaker_name = speaker_name
+    story_dialogue_index = 0
+    story_dialogue_active = true
+
+    if character_screen != null:
+        character_screen.visible = false
+
+    if interaction_prompt != null:
+        interaction_prompt.visible = false
+
+    if story_dialogue_layer != null:
+        story_dialogue_layer.visible = true
+
+    _display_current_story_dialogue_line()
+
+
+func hide_story_dialogue() -> void:
+    story_dialogue_active = false
+    story_dialogue_lines.clear()
+    story_dialogue_index = 0
+    story_dialogue_speaker_name = ""
+
+    if story_dialogue_layer != null:
+        story_dialogue_layer.visible = false
+
+func _create_story_dialogue_panel() -> void:
+    if story_dialogue_layer != null:
+        return
+
+    story_dialogue_layer = Control.new()
+    story_dialogue_layer.name = "StoryDialogueLayer"
+    story_dialogue_layer.anchor_left = 0.0
+    story_dialogue_layer.anchor_right = 1.0
+    story_dialogue_layer.anchor_top = 0.0
+    story_dialogue_layer.anchor_bottom = 1.0
+    story_dialogue_layer.offset_left = 0.0
+    story_dialogue_layer.offset_right = 0.0
+    story_dialogue_layer.offset_top = 0.0
+    story_dialogue_layer.offset_bottom = 0.0
+    story_dialogue_layer.mouse_filter = Control.MOUSE_FILTER_STOP
+    story_dialogue_layer.visible = false
+
+    add_child(story_dialogue_layer)
+
+    story_dialogue_panel = Panel.new()
+    story_dialogue_panel.name = "StoryDialoguePanel"
+
+    story_dialogue_panel.anchor_left = 0.5
+    story_dialogue_panel.anchor_right = 0.5
+    story_dialogue_panel.anchor_top = 1.0
+    story_dialogue_panel.anchor_bottom = 1.0
+
+    story_dialogue_panel.offset_left = -360.0
+    story_dialogue_panel.offset_right = 360.0
+    story_dialogue_panel.offset_top = -180.0
+    story_dialogue_panel.offset_bottom = -32.0
+
+    story_dialogue_panel.custom_minimum_size = Vector2(720.0, 148.0)
+    story_dialogue_panel.mouse_filter = Control.MOUSE_FILTER_STOP
+
+    story_dialogue_layer.add_child(story_dialogue_panel)
+
+    var margin := MarginContainer.new()
+    margin.name = "StoryDialogueMargin"
+    margin.anchor_left = 0.0
+    margin.anchor_right = 1.0
+    margin.anchor_top = 0.0
+    margin.anchor_bottom = 1.0
+    margin.offset_left = 16.0
+    margin.offset_right = -16.0
+    margin.offset_top = 12.0
+    margin.offset_bottom = -12.0
+
+    story_dialogue_panel.add_child(margin)
+
+    var vbox := VBoxContainer.new()
+    vbox.name = "StoryDialogueVBox"
+    margin.add_child(vbox)
+
+    story_dialogue_speaker_label = Label.new()
+    story_dialogue_speaker_label.name = "SpeakerLabel"
+    story_dialogue_speaker_label.text = "Echo Spirit"
+    story_dialogue_speaker_label.add_theme_font_size_override("font_size", 18)
+    vbox.add_child(story_dialogue_speaker_label)
+
+    story_dialogue_message_label = Label.new()
+    story_dialogue_message_label.name = "MessageLabel"
+    story_dialogue_message_label.text = ""
+    story_dialogue_message_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+    story_dialogue_message_label.custom_minimum_size = Vector2(680.0, 72.0)
+    story_dialogue_message_label.add_theme_font_size_override("font_size", 16)
+    vbox.add_child(story_dialogue_message_label)
+
+    story_dialogue_continue_label = Label.new()
+    story_dialogue_continue_label.name = "ContinueLabel"
+    story_dialogue_continue_label.text = "Press E to continue"
+    story_dialogue_continue_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+    story_dialogue_continue_label.add_theme_font_size_override("font_size", 12)
+    vbox.add_child(story_dialogue_continue_label)
+
+func is_story_dialogue_active() -> bool:
+    return story_dialogue_active
+
+
+func _advance_story_dialogue() -> void:
+    if not story_dialogue_active:
+        return
+
+    story_dialogue_index += 1
+
+    if story_dialogue_index >= story_dialogue_lines.size():
+        hide_story_dialogue()
+        return
+
+    _display_current_story_dialogue_line()
+
+
+func _display_current_story_dialogue_line() -> void:
+    if not story_dialogue_active:
+        return
+
+    if story_dialogue_index < 0 or story_dialogue_index >= story_dialogue_lines.size():
+        hide_story_dialogue()
+        return
+
+    if story_dialogue_speaker_label != null:
+        story_dialogue_speaker_label.text = story_dialogue_speaker_name
+
+    if story_dialogue_message_label != null:
+        story_dialogue_message_label.text = story_dialogue_lines[story_dialogue_index]
+
+    if story_dialogue_continue_label != null:
+        if story_dialogue_index >= story_dialogue_lines.size() - 1:
+            story_dialogue_continue_label.text = "Press E to close"
+        else:
+            story_dialogue_continue_label.text = "Press E to continue"
 
 func refresh_character_display() -> void:
     _refresh_player_reference()
