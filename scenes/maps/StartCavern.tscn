@@ -271,11 +271,11 @@ position = Vector2(1181, 520)
 persistent_id = "SCEarth8"
 
 [node name="StartCavern Earthling9" parent="Monsters" unique_id=328998222 instance=ExtResource("11_gd1mq")]
-position = Vector2(1135, 368)
+position = Vector2(1333, 559)
 persistent_id = "SCEarth9"
 
 [node name="StartCavern Earthling10" parent="Monsters" unique_id=2013640142 instance=ExtResource("11_gd1mq")]
-position = Vector2(1269, 381)
+position = Vector2(1095, 516)
 persistent_id = "SCEarth10"
 
 [node name="HealingTonic" parent="Monsters" unique_id=1005442685 instance=ExtResource("10_csk6f")]
@@ -303,6 +303,7 @@ scale = Vector2(0.2, 0.2)
 push_object_paths = Array[NodePath]([NodePath("../../Objects/PushRock5"), NodePath("../../Objects/PushRock7")])
 
 [node name="MapTransitionArea" parent="." unique_id=1344752193 instance=ExtResource("11_3svxi")]
+visible = false
 position = Vector2(1299, 198)
 target_scene_path = "uid://chph8q00qw2nc"
 target_spawn_id = "From_Start_Cavern"
@@ -310,7 +311,8 @@ target_spawn_id = "From_Start_Cavern"
 [node name="MonsterClearEchoTrigger" parent="." unique_id=1642328376 instance=ExtResource("11_btgmq")]
 visible = false
 position = Vector2(1212, 558)
-required_defeated_monster_ids = Array[String](["SCEarth1", "SCEarth2", "SCEarth3", "SCEarth4", "SCEarth5", "SCEarth6", "SCEarth7", "SCEarth8"])
+trigger_id = "SCBoss_fgt"
+required_defeated_monster_ids = Array[String](["SCEarth1", "SCEarth2", "SCEarth3", "SCEarth4", "SCEarth5", "SCEarth6", "SCEarth7", "SCEarth8", "SCEarth9", "SCEarth10"])
 dialogue_text = "The path grows still.
 The lesser creatures behind you have fallen.
 Beyond this point waits something stronger.
@@ -339,7 +341,7 @@ Move, listen, and learn."
 
 [node name="EchoPushRockTrigger" parent="." unique_id=1741898381 instance=ExtResource("15_b8m33")]
 visible = false
-position = Vector2(314.00003, 541)
+position = Vector2(390, 536.00006)
 scale = Vector2(0.7, 0.7)
 trigger_id = "echo_push_rock_lesson"
 story_flag = "push_rock_lesson_seen"
@@ -354,7 +356,7 @@ required_flag = "intro_spirit_met"
 
 [node name="EchoBreakableRockTrigger" parent="." unique_id=20013153 instance=ExtResource("15_b8m33")]
 visible = false
-position = Vector2(433.00003, 493.00003)
+position = Vector2(451, 465)
 scale = Vector2(0.6, 0.6)
 trigger_id = "echo_breakable_rock_lesson"
 story_flag = "breakable_lesson_seen"
@@ -369,7 +371,7 @@ required_flag = "equipment_lesson_seen"
 
 [node name="EchoSaveTotemTrigger" parent="." unique_id=846468557 instance=ExtResource("15_b8m33")]
 visible = false
-position = Vector2(793, 138)
+position = Vector2(867, 117)
 scale = Vector2(0.8, 0.8)
 trigger_id = "echo_save_totem"
 story_flag = "save_totem_lesson_seen"
@@ -384,7 +386,8 @@ required_flag = "breakable_lesson_seen"
 
 [node name="EchoHealingTonicTrigger" parent="." unique_id=1199151662 instance=ExtResource("15_b8m33")]
 visible = false
-position = Vector2(107, 798)
+position = Vector2(132, 815.99994)
+scale = Vector2(0.7, 0.7)
 trigger_id = "echo_healing_tonic_lesson"
 story_flag = "hotbar_lesson_seen"
 dialogue_text = "That vial is a Healing Tonic.
@@ -398,6 +401,7 @@ A prepared hand survives what a desperate hand cannot."
 [node name="EchoStoneClubTrigger" parent="." unique_id=1471645559 instance=ExtResource("15_b8m33")]
 visible = false
 position = Vector2(410, 968)
+scale = Vector2(0.7, 0.7)
 trigger_id = "echo_stone_club_lesson"
 story_flag = "equipment_lesson_seen"
 dialogue_text = "A Stone Club.
@@ -411,7 +415,7 @@ required_flag = "push_rock_lesson_seen"
 
 [node name="EchoCombatLessonTrigger" parent="." unique_id=253619871 instance=ExtResource("15_b8m33")]
 visible = false
-position = Vector2(866, 288)
+position = Vector2(859, 284)
 trigger_id = "echo_first_combat_lesson"
 story_flag = "combat_lesson_seen"
 dialogue_text = "The corruption twists even small things.
@@ -425,5 +429,6 @@ Do not let fear root you in place."
 required_flag = "save_totem_lesson_seen"
 
 [node name="BossGateBlocker" parent="." unique_id=2096925575 instance=ExtResource("18_gi0ji")]
+visible = false
 position = Vector2(1299, 199)
 rotation = -0.009365366

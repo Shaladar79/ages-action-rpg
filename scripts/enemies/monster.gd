@@ -117,6 +117,11 @@ var ranged_damage_types: int = DamageTypes.PIERCING
 @export var ranged_range: float = 180.0
 @export var ranged_cooldown: float = 1.75
 @export var ranged_stop_distance: float = 96.0
+@export var ranged_attack_icon_texture: Texture2D = null
+@export var ranged_attack_icon_scale: Vector2 = Vector2(1.0, 1.0)
+@export var ranged_attack_icon_speed: float = 260.0
+@export var ranged_attack_icon_lifetime: float = 0.8
+@export var ranged_attack_icon_z_index: int = 20
 
 @export_group("Death")
 @export var destroy_on_death: bool = true
@@ -310,11 +315,84 @@ func _try_ranged_attack_player() -> void:
     if not _is_player_in_ranged_range():
         return
 
+    _show_ranged_attack_icon(player_target)
     _damage_player(player_target, ranged_damage, ranged_damage_types)
 
     ranged_attack_timer = ranged_cooldown
     print(monster_name, " used ranged attack for base damage: ", ranged_damage)
 
+func _show_ranged_attack_icon(target: Node2D) -> void:
+    if target == null:
+        return
+
+    if ranged_attack_icon_texture == null:
+        _show_default_ranged_attack_icon(target)
+        return
+
+    var icon := Sprite2D.new()
+    icon.name = "RangedAttackIcon"
+    icon.texture = ranged_attack_icon_texture
+    icon.scale = ranged_attack_icon_scale
+    icon.z_index = ranged_attack_icon_z_index
+    icon.global_position = global_position
+
+    var current_scene := get_tree().current_scene
+
+    if current_scene != null:
+        current_scene.add_child(icon)
+    else:
+        add_child(icon)
+
+    var target_position := target.global_position
+    var travel_distance := icon.global_position.distance_to(target_position)
+    var travel_time := ranged_attack_icon_lifetime
+
+    if ranged_attack_icon_speed > 0.0:
+        travel_time = travel_distance / ranged_attack_icon_speed
+        travel_time = clampf(travel_time, 0.08, ranged_attack_icon_lifetime)
+
+    var direction := icon.global_position.direction_to(target_position)
+
+    if direction != Vector2.ZERO:
+        icon.rotation = direction.angle()
+
+    var tween := icon.create_tween()
+    tween.tween_property(icon, "global_position", target_position, travel_time)
+    tween.tween_property(icon, "modulate:a", 0.0, 0.12)
+    tween.finished.connect(icon.queue_free)
+
+
+func _show_default_ranged_attack_icon(target: Node2D) -> void:
+    if target == null:
+        return
+
+    var icon := ColorRect.new()
+    icon.name = "DefaultRangedAttackIcon"
+    icon.size = Vector2(8.0, 8.0)
+    icon.pivot_offset = icon.size * 0.5
+    icon.color = Color(1.0, 0.85, 0.25, 1.0)
+    icon.z_index = ranged_attack_icon_z_index
+    icon.global_position = global_position
+
+    var current_scene := get_tree().current_scene
+
+    if current_scene != null:
+        current_scene.add_child(icon)
+    else:
+        add_child(icon)
+
+    var target_position := target.global_position
+    var travel_distance := icon.global_position.distance_to(target_position)
+    var travel_time := ranged_attack_icon_lifetime
+
+    if ranged_attack_icon_speed > 0.0:
+        travel_time = travel_distance / ranged_attack_icon_speed
+        travel_time = clampf(travel_time, 0.08, ranged_attack_icon_lifetime)
+
+    var tween := icon.create_tween()
+    tween.tween_property(icon, "global_position", target_position, travel_time)
+    tween.tween_property(icon, "modulate:a", 0.0, 0.12)
+    tween.finished.connect(icon.queue_free)
 
 func _damage_player(player: Node2D, damage_amount: int, attack_damage_types: int) -> void:
     if player == null:

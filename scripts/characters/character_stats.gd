@@ -168,7 +168,12 @@ func get_ranged_attack() -> int:
 
 
 func get_defense() -> int:
-    return base_defense + _get_equipped_armor_defense_bonus()
+    return (
+        base_defense
+        + _get_equipped_armor_defense_bonus()
+        + _get_equipped_accessory_1_defense_bonus()
+        + _get_equipped_accessory_2_defense_bonus()
+    )
 
 
 func get_move_speed(base_move_speed: float, move_speed_per_speed_point: float) -> float:
@@ -448,6 +453,22 @@ func _get_equipped_weapon_attack_bonus() -> int:
 func _get_equipped_armor_defense_bonus() -> int:
     if equipped_armor_id.strip_edges() == "":
         return 0
+
+    return ItemDatabase.get_defense_bonus(equipped_armor_id)
+
+
+func _get_equipped_accessory_1_defense_bonus() -> int:
+    if equipped_accessory_1_id.strip_edges() == "":
+        return 0
+
+    return ItemDatabase.get_defense_bonus(equipped_accessory_1_id)
+
+
+func _get_equipped_accessory_2_defense_bonus() -> int:
+    if equipped_accessory_2_id.strip_edges() == "":
+        return 0
+
+    return ItemDatabase.get_defense_bonus(equipped_accessory_2_id)
 
     return ItemDatabase.get_defense_bonus(equipped_armor_id)
 
