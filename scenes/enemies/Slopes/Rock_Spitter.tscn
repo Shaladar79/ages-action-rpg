@@ -266,18 +266,21 @@ ranged_damage_types = 1
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=1026028676]
 sprite_frames = SubResource("SpriteFrames_fvuhv")
 animation = &"attack"
-frame_progress = 0.30717108
+frame_progress = 0.035687216
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1834996112]
+visible = false
 shape = SubResource("CircleShape2D_y112c")
 
 [node name="Hurtbox" type="Area2D" parent="." unique_id=1989481142]
+visible = false
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Hurtbox" unique_id=1919857365]
 position = Vector2(0.5, 0)
 shape = SubResource("RectangleShape2D_853ht")
 
 [node name="AttackArea" type="Area2D" parent="." unique_id=1236585486]
+visible = false
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="AttackArea" unique_id=1442215314]
 shape = SubResource("CircleShape2D_bgjfe")

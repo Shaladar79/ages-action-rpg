@@ -7,6 +7,7 @@
 [ext_resource type="PackedScene" uid="uid://ds0nibabilemd" path="res://scenes/player/Player.tscn" id="4_4prd7"]
 [ext_resource type="PackedScene" uid="uid://cihgogaol4td8" path="res://scenes/objects/map_transition_area.tscn" id="5_5obdd"]
 [ext_resource type="PackedScene" uid="uid://diepcak1mm2tn" path="res://scenes/enemies/Slopes/Rock_Spitter.tscn" id="7_4prd7"]
+[ext_resource type="PackedScene" uid="uid://corrah5u0halh" path="res://scenes/objects/EchoDialogueTrigger.tscn" id="7_5obdd"]
 [ext_resource type="PackedScene" uid="uid://o8j2dacnrsjb" path="res://scenes/enemies/Slopes/Earthling.tscn" id="8_5obdd"]
 
 [node name="SlopesOfMountChonos" type="Node2D" unique_id=924677795]
@@ -20,41 +21,19 @@ monsters_respawn_by_default = true
 position = Vector2(723, 549)
 texture = ExtResource("2_440q3")
 
-[node name="SaveTotem" parent="." unique_id=528667636 instance=ExtResource("3_440q3")]
-position = Vector2(305, 157)
-
-[node name="Mapspawns" type="Node2D" parent="." unique_id=1546651547]
-
-[node name="From_Start_Cavern" parent="Mapspawns" unique_id=366895598 instance=ExtResource("3_1p2iq")]
-z_index = -100
-position = Vector2(193, 173)
-
-[node name="Player" parent="." unique_id=949372820 instance=ExtResource("4_4prd7")]
-position = Vector2(201, 174)
-
-[node name="MapChange" type="Node2D" parent="." unique_id=1212440118]
-
-[node name="ToSummit" parent="MapChange" unique_id=1344752193 instance=ExtResource("5_5obdd")]
-position = Vector2(424, 19)
-
-[node name="ToFoothills" parent="MapChange" unique_id=555040427 instance=ExtResource("5_5obdd")]
-position = Vector2(690, 1090)
-target_scene_path = "uid://2j7r845rkdbh"
-target_spawn_id = "FromSlopes"
-
 [node name="MapCollisions_Top" type="Node2D" parent="." unique_id=802038249]
 
 [node name="LeftCorner" type="StaticBody2D" parent="MapCollisions_Top" unique_id=1037109170]
 
 [node name="Left_Corner" type="CollisionPolygon2D" parent="MapCollisions_Top/LeftCorner" unique_id=740450244]
-position = Vector2(-4, -3)
-polygon = PackedVector2Array(211, 161, 284, 186, 341, 145, 414, 128, 415, 120, 410, 116, 413, 98, 405, 88, 400, 96, 392, 93, 389, 59, 388, 0, 2, 19, 3, 601, 51, 605, 58, 577, 81, 560, 93, 541, 87, 518, 77, 491, 87, 516, 104, 498, 109, 473, 142, 464, 168, 436, 162, 417, 140, 390, 135, 342, 115, 285, 124, 245, 147, 213, 126, 247, 116, 283, 165, 287, 197, 226, 148, 199, 143, 161, 153, 167, 159, 153, 155, 138, 153, 121, 155, 98, 166, 87, 173, 80, 192, 81, 208, 96, 217, 112, 222, 129, 222, 150)
+position = Vector2(-5, 8)
+polygon = PackedVector2Array(211, 161, 284, 186, 341, 145, 405, 127, 415, 120, 410, 116, 413, 98, 405, 88, 400, 96, 392, 93, 389, 59, 388, 0, 2, 19, 3, 601, 51, 605, 58, 577, 81, 560, 93, 541, 87, 518, 77, 491, 87, 516, 104, 498, 109, 473, 142, 464, 168, 436, 162, 417, 140, 390, 135, 342, 115, 285, 124, 245, 147, 213, 126, 247, 116, 283, 165, 287, 197, 226, 148, 199, 143, 161, 153, 167, 159, 153, 155, 138, 153, 121, 155, 98, 166, 87, 173, 80, 192, 81, 208, 96, 217, 112, 222, 129, 222, 150)
 
 [node name="Top" type="StaticBody2D" parent="MapCollisions_Top" unique_id=103562674]
 
 [node name="Top" type="CollisionPolygon2D" parent="MapCollisions_Top/Top" unique_id=234024346]
-position = Vector2(-4, -1)
-polygon = PackedVector2Array(449, 1, 448, 70, 445, 115, 457, 89, 470, 73, 499, 63, 519, 50, 533, 39, 571, 26, 612, 27, 654, 46, 686, 65, 709, 97, 711, 136, 708, 98, 699, 149, 676, 171, 648, 186, 630, 205, 618, 223, 626, 242, 637, 249, 655, 282, 669, 302, 734, 286, 787, 267, 836, 245, 904, 214, 901, 164, 887, 129, 867, 115, 841, 115, 826, 107, 819, 114, 806, 125, 792, 137, 778, 145, 741, 136, 717, 131, 718, 92, 718, 78, 721, 57, 739, 49, 767, 57, 779, 68, 790, 52, 797, 41, 818, 55, 826, 66, 836, 62, 856, 69, 874, 84, 901, 89, 929, 83, 947, 68, 923, 56, 904, 43, 927, 26, 969, 21, 1001, 36, 1014, 48, 1037, 51, 1063, 50, 1084, 49, 1061, 49, 1033, 49, 1013, 48, 1044, 68, 1072, 80, 1092, 91, 1102, 120, 1101, 136, 1089, 167, 1096, 177, 1121, 183, 1133, 172, 1143, 154, 1165, 148, 1190, 155, 1217, 168, 1241, 165, 1261, 175, 1271, 198, 1285, 223, 1299, 249, 1291, 284, 1271, 312, 1268, 324, 1278, 343, 1299, 369, 1325, 384, 1344, 406, 1372, 448, 1438, 500, 1438, 170, 1271, 4, 759, 10)
+position = Vector2(6, 3)
+polygon = PackedVector2Array(449, 1, 448, 70, 445, 115, 457, 89, 470, 73, 499, 63, 519, 50, 533, 39, 571, 26, 612, 27, 654, 46, 686, 65, 709, 97, 711, 136, 708, 98, 699, 149, 676, 171, 648, 186, 630, 205, 618, 223, 626, 242, 637, 249, 655, 282, 669, 302, 734, 286, 787, 267, 836, 245, 904, 214, 901, 164, 881, 137, 865, 121, 841, 115, 826, 107, 819, 114, 806, 125, 792, 137, 778, 145, 741, 136, 717, 131, 718, 92, 718, 78, 721, 57, 739, 49, 767, 57, 779, 68, 790, 52, 797, 41, 818, 55, 826, 66, 836, 62, 856, 69, 879, 77, 903, 79, 929, 83, 929, 70, 923, 56, 904, 43, 927, 26, 969, 21, 1001, 36, 1014, 48, 1037, 51, 1063, 50, 1084, 49, 1061, 49, 1033, 49, 1013, 48, 1044, 68, 1072, 80, 1092, 91, 1102, 120, 1101, 136, 1089, 167, 1096, 177, 1121, 183, 1133, 172, 1143, 154, 1165, 148, 1190, 155, 1217, 168, 1241, 165, 1261, 175, 1271, 198, 1285, 223, 1299, 249, 1291, 284, 1271, 312, 1268, 324, 1278, 343, 1299, 369, 1325, 384, 1344, 406, 1372, 448, 1438, 500, 1438, 170, 1271, 4, 759, 10)
 
 [node name="Island1" type="StaticBody2D" parent="MapCollisions_Top" unique_id=365564355]
 
@@ -65,7 +44,8 @@ polygon = PackedVector2Array(238, 245, 193, 331, 217, 344, 228, 388, 238, 403, 2
 [node name="Island2" type="StaticBody2D" parent="MapCollisions_Top" unique_id=2114848107]
 
 [node name="Island2" type="CollisionPolygon2D" parent="MapCollisions_Top/Island2" unique_id=1019144095]
-polygon = PackedVector2Array(393, 160, 375, 171, 372, 185, 356, 195, 351, 210, 347, 222, 345, 241, 347, 255, 354, 267, 365, 279, 378, 290, 395, 296, 418, 298, 433, 300, 449, 304, 475, 309, 487, 316, 495, 326, 503, 331, 509, 339, 518, 354, 519, 363, 523, 373, 527, 393, 573, 380, 600, 376, 618, 373, 632, 359, 623, 326, 605, 290, 588, 265, 566, 243, 544, 233, 527, 229, 510, 237, 499, 258, 489, 274, 481, 290, 470, 296, 452, 288, 437, 264, 438, 251, 451, 244, 462, 238, 468, 212, 447, 185, 426, 171, 403, 164)
+position = Vector2(7, 12)
+polygon = PackedVector2Array(395, 184, 383, 186, 372, 185, 356, 195, 351, 210, 347, 222, 345, 241, 347, 255, 354, 267, 365, 279, 378, 290, 395, 296, 418, 298, 433, 300, 449, 304, 475, 309, 487, 316, 495, 326, 503, 331, 509, 339, 518, 354, 519, 363, 523, 373, 527, 393, 573, 380, 600, 376, 618, 373, 632, 359, 618, 331, 599, 295, 584, 270, 561, 249, 544, 233, 527, 229, 510, 237, 499, 258, 489, 274, 481, 290, 470, 296, 452, 288, 437, 264, 438, 251, 451, 244, 462, 238, 468, 212, 447, 185, 426, 171, 403, 164)
 
 [node name="Island3" type="StaticBody2D" parent="MapCollisions_Top" unique_id=1138973199]
 
@@ -75,7 +55,7 @@ polygon = PackedVector2Array(506, 89, 483, 114, 470, 148, 486, 164, 504, 176, 52
 [node name="Island4" type="StaticBody2D" parent="MapCollisions_Top" unique_id=1785578709]
 
 [node name="Island4" type="CollisionPolygon2D" parent="MapCollisions_Top/Island4" unique_id=1423012244]
-polygon = PackedVector2Array(556, 73, 587, 60, 608, 66, 621, 84, 635, 96, 649, 116, 651, 131, 647, 140, 631, 145, 618, 129, 614, 109, 600, 100, 582, 95)
+polygon = PackedVector2Array(556, 73, 587, 60, 608, 66, 621, 84, 635, 96, 649, 116, 651, 131, 647, 140, 631, 145, 614, 132, 608, 121, 592, 107, 582, 95)
 
 [node name="Island 5" type="StaticBody2D" parent="MapCollisions_Top" unique_id=432719422]
 
@@ -102,6 +82,7 @@ polygon = PackedVector2Array(971, 98, 946, 114, 953, 137, 968, 157, 962, 180, 94
 [node name="Island 7" type="StaticBody2D" parent="MapCollisions_Top" unique_id=690583217]
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="MapCollisions_Top/Island 7" unique_id=111549585]
+position = Vector2(8, 4)
 polygon = PackedVector2Array(846, 273, 814, 292, 792, 302, 778, 311, 761, 324, 750, 343, 726, 341, 705, 348, 684, 356, 677, 371, 680, 391, 694, 404, 718, 421, 745, 407, 767, 396, 784, 377, 798, 371, 827, 359, 848, 350, 865, 342, 875, 327, 875, 305, 867, 291)
 
 [node name="Island 8" type="StaticBody2D" parent="MapCollisions_Top" unique_id=466238440]
@@ -122,7 +103,7 @@ polygon = PackedVector2Array(1199, 356, 1182, 372, 1191, 386, 1213, 403, 1233, 4
 [node name="Isaland 11" type="StaticBody2D" parent="MapCollisions_Top" unique_id=603043811]
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="MapCollisions_Top/Isaland 11" unique_id=1523123560]
-polygon = PackedVector2Array(875, 378, 856, 399, 872, 414, 894, 422, 902, 414, 898, 397)
+polygon = PackedVector2Array(882, 379, 863, 400, 879, 415, 901, 423, 909, 415, 905, 398)
 
 [node name="MapCollision_Bottom" type="Node2D" parent="." unique_id=2023870786]
 visible = false
@@ -183,37 +164,92 @@ polygon = PackedVector2Array(1303, 596, 1236, 564, 1206, 598, 1188, 616, 1188, 6
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="MapCollision_Bottom/right_island5" unique_id=661009136]
 polygon = PackedVector2Array(1123, 679, 1086, 701, 1058, 718, 1045, 736, 1038, 765, 1048, 773, 1062, 785, 1073, 805, 1070, 825, 1058, 840, 1037, 849, 1049, 873, 1086, 896, 1134, 902, 1169, 901, 1185, 890, 1201, 872, 1209, 843, 1222, 805, 1209, 748, 1174, 704)
 
-[node name="RockSpitter" parent="." unique_id=165711745 instance=ExtResource("7_4prd7")]
+[node name="Ysort" type="Node2D" parent="." unique_id=19330989]
+y_sort_enabled = true
+
+[node name="SaveTotem" parent="Ysort" unique_id=528667636 instance=ExtResource("3_440q3")]
+position = Vector2(158, 157)
+
+[node name="Player" parent="Ysort" unique_id=949372820 instance=ExtResource("4_4prd7")]
+position = Vector2(201, 174)
+
+[node name="Mapspawns" type="Node2D" parent="." unique_id=1546651547]
+
+[node name="From_Start_Cavern" parent="Mapspawns" unique_id=366895598 instance=ExtResource("3_1p2iq")]
+z_index = -100
+position = Vector2(193, 173)
+
+[node name="MapChange" type="Node2D" parent="." unique_id=1212440118]
+
+[node name="ToSummit" parent="MapChange" unique_id=1344752193 instance=ExtResource("5_5obdd")]
+position = Vector2(424, 19)
+
+[node name="ToFoothills" parent="MapChange" unique_id=555040427 instance=ExtResource("5_5obdd")]
+position = Vector2(690, 1090)
+target_scene_path = "uid://2j7r845rkdbh"
+target_spawn_id = "FromSlopes"
+
+[node name="EchoRangedLesson1" parent="." unique_id=280110426 instance=ExtResource("7_5obdd")]
+visible = false
+position = Vector2(312, 228)
+trigger_id = "echo_slopes_ranged_lesson"
+story_flag = "slopes_ranged_lesson_seen"
+dialogue_text = "The creatures ahead are different.
+Some will not wait for you to come close.
+They strike from a distance and force you to move.
+Watch the space between you and your enemy.
+A ranged attacker is most dangerous when you stand still.
+Close the gap, dodge the shot, then strike when you can.
+You do not yet have a weapon to answer them from afar.
+For now, your feet are your shield."
+
+[node name="EchoRangedLesson2" parent="." unique_id=793020127 instance=ExtResource("7_5obdd")]
+visible = false
+position = Vector2(189, 278)
+trigger_id = "echo_slopes_ranged_lesson"
+story_flag = "slopes_ranged_lesson_seen"
+dialogue_text = "The creatures ahead are different.
+Some will not wait for you to come close.
+They strike from a distance and force you to move.
+Watch the space between you and your enemy.
+A ranged attacker is most dangerous when you stand still.
+Close the gap, dodge the shot, then strike when you can.
+You do not yet have a weapon to answer them from afar.
+For now, your feet are your shield."
+
+[node name="Monsters" type="Node2D" parent="." unique_id=209942388]
+
+[node name="RockSpitter" parent="Monsters" unique_id=165711745 instance=ExtResource("7_4prd7")]
 position = Vector2(584, 223)
 
-[node name="StartCavern Earthling" parent="." unique_id=1655329841 instance=ExtResource("8_5obdd")]
-position = Vector2(340, 288)
-
-[node name="StartCavern Earthling2" parent="." unique_id=216314616 instance=ExtResource("8_5obdd")]
-position = Vector2(405, 152)
-
-[node name="StartCavern Earthling3" parent="." unique_id=1134797703 instance=ExtResource("8_5obdd")]
-position = Vector2(429, 502)
-
-[node name="RockSpitter2" parent="." unique_id=412149953 instance=ExtResource("7_4prd7")]
+[node name="RockSpitter2" parent="Monsters" unique_id=412149953 instance=ExtResource("7_4prd7")]
 position = Vector2(295, 586)
 
-[node name="StartCavern Earthling4" parent="." unique_id=649889750 instance=ExtResource("8_5obdd")]
-position = Vector2(142, 482)
-
-[node name="RockSpitter3" parent="." unique_id=1552881211 instance=ExtResource("7_4prd7")]
+[node name="RockSpitter3" parent="Monsters" unique_id=1552881211 instance=ExtResource("7_4prd7")]
 position = Vector2(925, 369)
 
-[node name="StartCavern Earthling5" parent="." unique_id=1401040897 instance=ExtResource("8_5obdd")]
-position = Vector2(973, 78)
-
-[node name="StartCavern Earthling6" parent="." unique_id=271601789 instance=ExtResource("8_5obdd")]
-position = Vector2(1240, 317)
-
-[node name="RockSpitter4" parent="." unique_id=343713712 instance=ExtResource("7_4prd7")]
+[node name="RockSpitter4" parent="Monsters" unique_id=343713712 instance=ExtResource("7_4prd7")]
 position = Vector2(1285, 402)
 
-[node name="StartCavern Earthling7" parent="." unique_id=576321855 instance=ExtResource("8_5obdd")]
+[node name="StartCavern Earthling" parent="Monsters" unique_id=1655329841 instance=ExtResource("8_5obdd")]
+position = Vector2(340, 288)
+
+[node name="StartCavern Earthling2" parent="Monsters" unique_id=216314616 instance=ExtResource("8_5obdd")]
+position = Vector2(405, 152)
+
+[node name="StartCavern Earthling3" parent="Monsters" unique_id=1134797703 instance=ExtResource("8_5obdd")]
+position = Vector2(429, 502)
+
+[node name="StartCavern Earthling4" parent="Monsters" unique_id=649889750 instance=ExtResource("8_5obdd")]
+position = Vector2(148, 498)
+
+[node name="StartCavern Earthling5" parent="Monsters" unique_id=1401040897 instance=ExtResource("8_5obdd")]
+position = Vector2(973, 78)
+
+[node name="StartCavern Earthling6" parent="Monsters" unique_id=271601789 instance=ExtResource("8_5obdd")]
+position = Vector2(1240, 317)
+
+[node name="StartCavern Earthling7" parent="Monsters" unique_id=576321855 instance=ExtResource("8_5obdd")]
 position = Vector2(1107, 207)
 monster_level = 1
 drop_currency_chance_percent = 60.4
