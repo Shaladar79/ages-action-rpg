@@ -3,6 +3,26 @@ extends CharacterBody2D
 const HOTBAR_SLOT_COUNT: int = 5
 const STARTING_ARMOR_ID: String = "grass_tunic"
 
+const CURRENCY_SHINES: String = "shines"
+const CURRENCY_FIRE_ESSENCE: String = "fire_essence"
+const CURRENCY_ICE_ESSENCE: String = "ice_essence"
+const CURRENCY_LIGHTNING_ESSENCE: String = "lightning_essence"
+const CURRENCY_ACID_ESSENCE: String = "acid_essence"
+const CURRENCY_LIGHT_ESSENCE: String = "light_essence"
+const CURRENCY_SHADOW_ESSENCE: String = "shadow_essence"
+const CURRENCY_PRIMAL_ESSENCE: String = "primal_essence"
+
+const CURRENCY_DISPLAY_NAMES: Dictionary = {
+    CURRENCY_SHINES: "Shines",
+    CURRENCY_FIRE_ESSENCE: "Fire Essence",
+    CURRENCY_ICE_ESSENCE: "Ice Essence",
+    CURRENCY_LIGHTNING_ESSENCE: "Lightning Essence",
+    CURRENCY_ACID_ESSENCE: "Acid Essence",
+    CURRENCY_LIGHT_ESSENCE: "Light Essence",
+    CURRENCY_SHADOW_ESSENCE: "Shadow Essence",
+    CURRENCY_PRIMAL_ESSENCE: "Primal Essence"
+}
+
 @export var base_move_speed: float = 120.0
 @export var move_speed_per_speed_point: float = 4.0
 
@@ -37,11 +57,15 @@ var nearby_interactable: Node = null
 var inventory: Array[Dictionary] = []
 var hotbar_slots: Array[Dictionary] = []
 
+var currencies: Dictionary = {}
+var discovered_currency_ids: Array[String] = []
+
 
 func _ready() -> void:
     add_to_group("player")
 
     _initialize_hotbar_slots()
+    _initialize_currencies()
     _ensure_starting_equipment()
     _disable_attack_hitbox()
     _hide_weapon_sprite()
@@ -351,6 +375,170 @@ func set_inventory_items(saved_inventory: Array) -> void:
     print("Inventory loaded. Item count: ", inventory.size())
     _notify_ui_stats_changed()
 
+func _initialize_currencies() -> void:
+    for currency_id in CURRENCY_DISPLAY_NAMES.keys():
+        var clean_currency_id := str(currency_id)
+
+        if not currencies.has(clean_currency_id):
+            currencies[clean_currency_id] = 0
+
+
+func get_currency_display_name(currency_id: String) -> String:
+    var clean_currency_id := currency_id.strip_edges()
+
+    if CURRENCY_DISPLAY_NAMES.has(clean_currency_id):
+        return str(CURRENCY_DISPLAY_NAMES.get(clean_currency_id))
+
+    return clean_currency_id.capitalize()
+
+
+func add_currency(currency_id: String, amount: int) -> bool:
+    if is_defeated:
+        return false
+
+    var clean_currency_id := currency_id.strip_edges()
+
+    if clean_currency_id == "":
+        return false
+
+    if amount <= 0:
+        return false
+
+    _initialize_currencies()
+
+    var current_amount: int = int(currencies.get(clean_currency_id, 0))
+    currencies[clean_currency_id] = current_amount + amount
+
+    _discover_currency(clean_currency_id)
+
+    print("Added currency: ", get_currency_display_name(clean_currency_id), " +", amount)
+    print("Currency total: ", currencies[clean_currency_id])
+
+    _notify_ui_stats_changed()
+
+    return true
+
+
+func spend_currency(currency_id: String, amount: int) -> bool:
+    var clean_currency_id := currency_id.strip_edges()
+
+    if clean_currency_id == "":
+        return false
+
+    if amount <= 0:
+        return false
+
+    _initialize_currencies()
+
+    var current_amount: int = int(currencies.get(clean_currency_id, 0))
+
+    if current_amount < amount:
+        return false
+
+    currencies[clean_currency_id] = current_amount - amount
+    _discover_currency(clean_currency_id)
+
+    print("Spent currency: ", get_currency_display_name(clean_currency_id), " -", amount)
+    print("Currency total: ", currencies[clean_currency_id])
+
+    _notify_ui_stats_changed()
+
+    return true
+
+
+func get_currency_amount(currency_id: String) -> int:
+    var clean_currency_id := currency_id.strip_edges()
+
+    if clean_currency_id == "":
+        return 0
+
+    _initialize_currencies()
+
+    return int(currencies.get(clean_currency_id, 0))
+
+
+func is_currency_discovered(currency_id: String) -> bool:
+    var clean_currency_id := currency_id.strip_edges()
+
+    if clean_currency_id == "":
+        return false
+
+    return discovered_currency_ids.has(clean_currency_id)
+
+
+func _discover_currency(currency_id: String) -> void:
+    var clean_currency_id := currency_id.strip_edges()
+
+    if clean_currency_id == "":
+        return
+
+    if discovered_currency_ids.has(clean_currency_id):
+        return
+
+    discovered_currency_ids.append(clean_currency_id)
+    print("Currency discovered: ", get_currency_display_name(clean_currency_id))
+
+
+func get_discovered_currency_rows() -> Array[Dictionary]:
+    _initialize_currencies()
+
+    var rows: Array[Dictionary] = []
+
+    for currency_id in CURRENCY_DISPLAY_NAMES.keys():
+        var clean_currency_id := str(currency_id)
+
+        if not discovered_currency_ids.has(clean_currency_id):
+            continue
+
+        rows.append({
+            "id": clean_currency_id,
+            "name": get_currency_display_name(clean_currency_id),
+            "amount": int(currencies.get(clean_currency_id, 0))
+        })
+
+    return rows
+
+
+func get_currency_save_data() -> Dictionary:
+    _initialize_currencies()
+
+    return {
+        "currencies": currencies.duplicate(true),
+        "discovered_currency_ids": discovered_currency_ids.duplicate()
+    }
+
+
+func set_currency_save_data(saved_currency_data: Dictionary) -> void:
+    currencies.clear()
+    discovered_currency_ids.clear()
+
+    _initialize_currencies()
+
+    var saved_currencies: Dictionary = saved_currency_data.get("currencies", {})
+
+    for currency_id in saved_currencies.keys():
+        var clean_currency_id := str(currency_id).strip_edges()
+
+        if clean_currency_id == "":
+            continue
+
+        currencies[clean_currency_id] = int(saved_currencies.get(currency_id, 0))
+
+    var saved_discovered_currency_ids: Array = saved_currency_data.get("discovered_currency_ids", [])
+
+    for currency_id in saved_discovered_currency_ids:
+        var clean_currency_id := str(currency_id).strip_edges()
+
+        if clean_currency_id == "":
+            continue
+
+        if discovered_currency_ids.has(clean_currency_id):
+            continue
+
+        discovered_currency_ids.append(clean_currency_id)
+
+    print("Currency save data loaded. Discovered count: ", discovered_currency_ids.size())
+    _notify_ui_stats_changed()
 
 func equip_melee_weapon(item_id: String) -> bool:
     return _equip_item_to_slot(item_id, ItemDatabase.EQUIPMENT_SLOT_MELEE_WEAPON)

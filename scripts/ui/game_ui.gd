@@ -38,7 +38,6 @@ const HOTBAR_SLOT_COUNT: int = 5
 @onready var add_agility_button: Button = get_node_or_null("CharacterScreen/Panel/AttributesPanel_base/Attribute_panel_att/AddAgilityButton") as Button
 @onready var add_toughness_button: Button = get_node_or_null("CharacterScreen/Panel/AttributesPanel_base/Attribute_panel_att/AddToughnessButton") as Button
 @onready var add_speed_button: Button = get_node_or_null("CharacterScreen/Panel/AttributesPanel_base/Attribute_panel_att/AddSpeedButton") as Button
-
 @onready var add_endurance_button: Button = get_node_or_null("CharacterScreen/Panel/AttributesPanel_base/Attribute_panel_att/AddEnduranceButton") as Button
 @onready var add_focus_button: Button = get_node_or_null("CharacterScreen/Panel/AttributesPanel_base/Attribute_panel_att/AddFocusButton") as Button
 
@@ -76,6 +75,17 @@ var sheet_hotbar_container: VBoxContainer = null
 var sheet_hotbar_option_buttons: Array[OptionButton] = []
 var sheet_hotbar_clear_buttons: Array[Button] = []
 
+var sheet_list_button_container: HBoxContainer = null
+var inventory_list_button: Button = null
+var currency_list_button: Button = null
+var faction_list_button: Button = null
+var active_sheet_list_title: String = ""
+
+var sheet_list_panel: Panel = null
+var sheet_list_title_label: Label = null
+var sheet_list_content_label: Label = null
+var sheet_list_close_button: Button = null
+
 var hud_refresh_timer: float = 0.0
 var hud_refresh_interval: float = 0.25
 
@@ -95,32 +105,35 @@ var character_screen_pause_active: bool = false
 var story_dialogue_pause_active: bool = false
 var save_prompt_pause_active: bool = false
 
+
 func _ready() -> void:
     add_to_group("interaction_ui")
     print("GameUi ready. Script path: ", get_script().resource_path)
     print("GameUi has show_story_dialogue: ", has_method("show_story_dialogue"))
+
     process_mode = Node.PROCESS_MODE_ALWAYS
     player = get_tree().get_first_node_in_group("player")
     _ensure_pause_input_action()
-    
+
     character_screen.visible = false
     interaction_prompt.visible = false
 
     if save_prompt != null:
-        save_prompt.visible = false
+       save_prompt.visible = false
 
-    _create_hotbar_hud()
-    _create_hud_info_panel()
-    _create_story_dialogue_panel()
-    _create_equipment_slot_panel()
-    _create_hotbar_assignment_panel()
-    _hide_old_equipment_controls()
-    _hide_locked_resources_and_stats()
-    _connect_buttons()
-    _update_hud()
-    _update_character_screen()
-   
-    
+       _create_hotbar_hud()
+       _create_hud_info_panel()
+       _create_story_dialogue_panel()
+       _create_equipment_slot_panel()
+       _create_hotbar_assignment_panel()
+       _create_character_sheet_list_buttons()
+       _create_character_sheet_list_panel()
+       _position_character_sheet_header_labels()
+       _hide_old_equipment_controls()
+       _hide_locked_resources_and_stats()
+       _connect_buttons()
+       _update_hud()
+       _update_character_screen()
 
 
 func _process(delta: float) -> void:
@@ -132,6 +145,7 @@ func _process(delta: float) -> void:
     hud_refresh_timer = hud_refresh_interval
     _refresh_player_reference()
     _update_hud()
+
 
 func _input(event: InputEvent) -> void:
     if _event_is_pause_pressed(event):
@@ -159,6 +173,7 @@ func _input(event: InputEvent) -> void:
         toggle_character_screen()
         get_viewport().set_input_as_handled()
         return
+
 
 func _event_is_pause_pressed(event: InputEvent) -> bool:
     if event.is_action_pressed("pause_game"):
@@ -201,6 +216,38 @@ func _event_is_dialogue_continue_pressed(event: InputEvent) -> bool:
             return true
 
     return false
+
+func _position_character_sheet_header_labels() -> void:
+    if character_name_label != null:
+        character_name_label.anchor_left = 0.0
+        character_name_label.anchor_right = 0.0
+        character_name_label.anchor_top = 0.0
+        character_name_label.anchor_bottom = 0.0
+        character_name_label.offset_left = 16.0
+        character_name_label.offset_right = 260.0
+        character_name_label.offset_top = 20.0
+        character_name_label.offset_bottom = 46.0
+
+    if level_label != null:
+        level_label.anchor_left = 0.0
+        level_label.anchor_right = 0.0
+        level_label.anchor_top = 0.0
+        level_label.anchor_bottom = 0.0
+        level_label.offset_left = 270.0
+        level_label.offset_right = 390.0
+        level_label.offset_top = 20.0
+        level_label.offset_bottom = 46.0
+
+    if xp_label != null:
+        xp_label.anchor_left = 0.0
+        xp_label.anchor_right = 0.0
+        xp_label.anchor_top = 0.0
+        xp_label.anchor_bottom = 0.0
+        xp_label.offset_left = 400.0
+        xp_label.offset_right = 560.0
+        xp_label.offset_top = 20.0
+        xp_label.offset_bottom = 46.0
+        
 
 func _ensure_pause_input_action() -> void:
     if InputMap.has_action("pause_game"):
@@ -251,7 +298,6 @@ func _set_save_prompt_pause(active: bool) -> void:
     _refresh_pause_state()
 
 
-
 func show_prompt(key_text: String = "E") -> void:
     interaction_label.text = key_text
     interaction_prompt.visible = true
@@ -259,6 +305,7 @@ func show_prompt(key_text: String = "E") -> void:
 
 func hide_prompt() -> void:
     interaction_prompt.visible = false
+
 
 func show_story_message(message: String, speaker_name: String = "Echo Spirit") -> void:
     show_story_dialogue([message], speaker_name)
@@ -313,7 +360,8 @@ func hide_story_dialogue() -> void:
     _set_story_dialogue_pause(false)
 
     print("Story dialogue closed.")
-    
+
+
 func _create_story_dialogue_panel() -> void:
     if story_dialogue_layer != null:
         return
@@ -389,6 +437,7 @@ func _create_story_dialogue_panel() -> void:
     story_dialogue_continue_label.add_theme_font_size_override("font_size", 12)
     vbox.add_child(story_dialogue_continue_label)
 
+
 func is_story_dialogue_active() -> bool:
     return story_dialogue_active
 
@@ -426,6 +475,7 @@ func _display_current_story_dialogue_line() -> void:
         else:
             story_dialogue_continue_label.text = "Press E to continue"
 
+
 func refresh_character_display() -> void:
     _refresh_player_reference()
     _update_hud()
@@ -443,16 +493,21 @@ func show_save_prompt(save_player: Node, message: String = "Do you want to save 
         save_prompt_message_label.text = message
 
     character_screen.visible = false
+    _set_character_screen_pause(false)
+
     interaction_prompt.visible = false
     save_prompt.visible = true
     _set_save_prompt_pause(true)
+
 
 func hide_save_prompt() -> void:
     pending_save_player = null
 
     if save_prompt != null:
         save_prompt.visible = false
-        _set_save_prompt_pause(false)
+
+    _set_save_prompt_pause(false)
+
 
 func toggle_character_screen() -> void:
     if save_prompt != null and save_prompt.visible:
@@ -464,6 +519,8 @@ func toggle_character_screen() -> void:
     if character_screen.visible:
         _refresh_player_reference()
         _update_character_screen()
+    else:
+        _hide_sheet_list()
 
 
 func open_character_screen() -> void:
@@ -478,8 +535,8 @@ func open_character_screen() -> void:
 
 func close_character_screen() -> void:
     character_screen.visible = false
+    _hide_sheet_list()
     _set_character_screen_pause(false)
-
 
 
 func _create_hotbar_hud() -> void:
@@ -530,6 +587,7 @@ func _create_hotbar_hud() -> void:
 
         hud_hotbar_container.add_child(button)
         hud_hotbar_buttons.append(button)
+
 
 func _create_hud_info_panel() -> void:
     if hud_info_panel != null:
@@ -596,7 +654,8 @@ func _move_existing_resource_label_to_hud_row(label: Label) -> void:
     label.custom_minimum_size = Vector2(130.0, 24.0)
 
     hud_resource_row.add_child(label)
-    
+
+
 func _create_equipment_slot_panel() -> void:
     if equipment_slot_container != null:
         return
@@ -607,7 +666,6 @@ func _create_equipment_slot_panel() -> void:
     equipment_slot_container = VBoxContainer.new()
     equipment_slot_container.name = "EquipmentSlotPanel"
 
-    # Bottom-left of the character screen panel
     equipment_slot_container.anchor_left = 0.0
     equipment_slot_container.anchor_right = 0.0
     equipment_slot_container.anchor_top = 1.0
@@ -712,6 +770,196 @@ func _create_hotbar_assignment_panel() -> void:
         sheet_hotbar_clear_buttons.append(clear_button)
 
     character_panel.add_child(sheet_hotbar_container)
+
+
+func _create_character_sheet_list_buttons() -> void:
+    if sheet_list_button_container != null:
+        return
+
+    if character_panel == null:
+        return
+
+    sheet_list_button_container = HBoxContainer.new()
+    sheet_list_button_container.name = "SheetListButtonPanel"
+
+    # Top of the right-side panel area.
+    sheet_list_button_container.anchor_left = 1.0
+    sheet_list_button_container.anchor_right = 1.0
+    sheet_list_button_container.anchor_top = 0.0
+    sheet_list_button_container.anchor_bottom = 0.0
+
+    sheet_list_button_container.offset_left = -360.0
+    sheet_list_button_container.offset_right = -40.0
+    sheet_list_button_container.offset_top = 72.0
+    sheet_list_button_container.offset_bottom = 112.0
+
+    sheet_list_button_container.custom_minimum_size = Vector2(320.0, 36.0)
+
+    inventory_list_button = Button.new()
+    inventory_list_button.name = "InventoryListButton"
+    inventory_list_button.text = "Inventory"
+    inventory_list_button.custom_minimum_size = Vector2(100.0, 32.0)
+    inventory_list_button.focus_mode = Control.FOCUS_NONE
+    inventory_list_button.pressed.connect(_on_inventory_list_button_pressed)
+    sheet_list_button_container.add_child(inventory_list_button)
+
+    currency_list_button = Button.new()
+    currency_list_button.name = "CurrencyListButton"
+    currency_list_button.text = "Currency"
+    currency_list_button.custom_minimum_size = Vector2(100.0, 32.0)
+    currency_list_button.focus_mode = Control.FOCUS_NONE
+    currency_list_button.pressed.connect(_on_currency_list_button_pressed)
+    sheet_list_button_container.add_child(currency_list_button)
+
+    faction_list_button = Button.new()
+    faction_list_button.name = "FactionListButton"
+    faction_list_button.text = "Faction"
+    faction_list_button.custom_minimum_size = Vector2(100.0, 32.0)
+    faction_list_button.focus_mode = Control.FOCUS_NONE
+    faction_list_button.visible = false
+    faction_list_button.disabled = true
+    sheet_list_button_container.add_child(faction_list_button)
+
+    character_panel.add_child(sheet_list_button_container)
+
+
+func _create_character_sheet_list_panel() -> void:
+    if sheet_list_panel != null:
+        return
+
+    if character_panel == null:
+        return
+
+    sheet_list_panel = Panel.new()
+    sheet_list_panel.name = "SheetListPanel"
+
+    sheet_list_panel.anchor_left = 1.0
+    sheet_list_panel.anchor_right = 1.0
+    sheet_list_panel.anchor_top = 0.0
+    sheet_list_panel.anchor_bottom = 0.0
+
+    # Right-side shared list area.
+    # Starts under the Inventory/Currency/Faction buttons.
+    # Ends above the Hotbar Assignment title.
+    sheet_list_panel.offset_left = -360.0
+    sheet_list_panel.offset_right = -40.0
+    sheet_list_panel.offset_top = 116.0
+    sheet_list_panel.offset_bottom = 455.0
+
+    sheet_list_panel.visible = false
+    sheet_list_panel.custom_minimum_size = Vector2(320.0, 330.0)
+
+    character_panel.add_child(sheet_list_panel)
+
+    var margin := MarginContainer.new()
+    margin.name = "SheetListMargin"
+    margin.anchor_left = 0.0
+    margin.anchor_right = 1.0
+    margin.anchor_top = 0.0
+    margin.anchor_bottom = 1.0
+    margin.offset_left = 10.0
+    margin.offset_right = -10.0
+    margin.offset_top = 10.0
+    margin.offset_bottom = -10.0
+    sheet_list_panel.add_child(margin)
+
+    var vbox := VBoxContainer.new()
+    vbox.name = "SheetListVBox"
+    margin.add_child(vbox)
+
+    sheet_list_title_label = Label.new()
+    sheet_list_title_label.name = "SheetListTitleLabel"
+    sheet_list_title_label.text = "List"
+    sheet_list_title_label.add_theme_font_size_override("font_size", 16)
+    vbox.add_child(sheet_list_title_label)
+
+    var scroll := ScrollContainer.new()
+    scroll.name = "SheetListScroll"
+    scroll.custom_minimum_size = Vector2(290.0, 255.0)
+    vbox.add_child(scroll)
+
+    sheet_list_content_label = Label.new()
+    sheet_list_content_label.name = "SheetListContentLabel"
+    sheet_list_content_label.text = ""
+    sheet_list_content_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+    sheet_list_content_label.custom_minimum_size = Vector2(270.0, 245.0)
+    scroll.add_child(sheet_list_content_label)
+
+    sheet_list_close_button = Button.new()
+    sheet_list_close_button.name = "SheetListCloseButton"
+    sheet_list_close_button.text = "Close"
+    sheet_list_close_button.focus_mode = Control.FOCUS_NONE
+    sheet_list_close_button.pressed.connect(_on_sheet_list_close_button_pressed)
+    vbox.add_child(sheet_list_close_button)
+
+
+func _show_sheet_list(title: String, content: String) -> void:
+    if sheet_list_panel == null:
+        return
+
+    active_sheet_list_title = title
+
+    if sheet_list_title_label != null:
+        sheet_list_title_label.text = title
+
+    if sheet_list_content_label != null:
+        sheet_list_content_label.text = content
+
+    sheet_list_panel.visible = true
+
+
+func _hide_sheet_list() -> void:
+    active_sheet_list_title = ""
+
+    if sheet_list_panel != null:
+        sheet_list_panel.visible = false
+
+
+func _get_inventory_list_text() -> String:
+    if player == null:
+        return "No inventory items."
+
+    if not player.has_method("get_inventory_items"):
+        return "No inventory items."
+
+    var items: Array = player.get_inventory_items()
+
+    if items.is_empty():
+        return "No inventory items."
+
+    var text := ""
+
+    for item in items:
+        var item_name: String = str(item.get("name", "Unknown Item"))
+        text += "- " + item_name + "\n"
+
+    return text.strip_edges()
+
+
+func _get_currency_list_text() -> String:
+    if player == null:
+        return "No currencies discovered."
+
+    if not player.has_method("get_discovered_currency_rows"):
+        return "No currencies discovered."
+
+    var currency_rows: Array = player.get_discovered_currency_rows()
+
+    if currency_rows.is_empty():
+        return "No currencies discovered."
+
+    var text := ""
+
+    for row in currency_rows:
+        if typeof(row) != TYPE_DICTIONARY:
+            continue
+
+        var currency_name: String = str(row.get("name", "Unknown Currency"))
+        var currency_amount: int = int(row.get("amount", 0))
+
+        text += "- " + currency_name + ": " + str(currency_amount) + "\n"
+
+    return text.strip_edges()
 
 
 func _hide_old_equipment_controls() -> void:
@@ -872,7 +1120,9 @@ func _update_character_screen() -> void:
         _clear_attributes_panel()
         _clear_combat_stats()
 
-        inventory_label.text = "Inventory:\nNone"
+        if inventory_label != null:
+            inventory_label.text = "Inventory:\nNone"
+            inventory_label.visible = false
 
         _set_stat_buttons_disabled(true)
         _update_equipment_slot_panel()
@@ -894,7 +1144,9 @@ func _update_character_screen() -> void:
     _update_attributes_panel(stats)
     _update_combat_stats(stats)
 
-    inventory_label.text = _get_inventory_text()
+    if inventory_label != null:
+        inventory_label.text = _get_inventory_text()
+        inventory_label.visible = false
 
     _set_stat_buttons_disabled(stats.stat_points <= 0)
     _update_equipment_slot_panel()
@@ -1277,6 +1529,30 @@ func _spend_stat_point(stat_id: String) -> void:
     if spent:
         _update_hud()
         _update_character_screen()
+
+
+func _on_inventory_list_button_pressed() -> void:
+    _refresh_player_reference()
+
+    if sheet_list_panel != null and sheet_list_panel.visible and active_sheet_list_title == "Inventory":
+        _hide_sheet_list()
+        return
+
+    _show_sheet_list("Inventory", _get_inventory_list_text())
+
+
+func _on_currency_list_button_pressed() -> void:
+    _refresh_player_reference()
+
+    if sheet_list_panel != null and sheet_list_panel.visible and active_sheet_list_title == "Currency":
+        _hide_sheet_list()
+        return
+
+    _show_sheet_list("Currency", _get_currency_list_text())
+
+
+func _on_sheet_list_close_button_pressed() -> void:
+    _hide_sheet_list()
 
 
 func _on_equipment_slot_selected(selected_index: int, slot_key: String) -> void:
