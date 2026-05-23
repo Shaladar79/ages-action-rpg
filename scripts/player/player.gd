@@ -299,42 +299,107 @@ func _notify_ui_stats_changed() -> void:
         autoload_ui.refresh_character_display()
 
 
-func add_inventory_item(item_id: String, item_name: String) -> void:
+func add_inventory_item(item_id: String, item_name: String, quantity: int = 1) -> void:
     if is_defeated:
         return
 
-    if has_inventory_item(item_id):
+    var clean_item_id := item_id.strip_edges()
+
+    if clean_item_id == "":
+        return
+
+    var safe_quantity: int = maxi(1, quantity)
+
+    if _is_stackable_inventory_item(clean_item_id):
+        for index in range(inventory.size()):
+            var item: Dictionary = inventory[index]
+            var current_item_id: String = str(item.get("id", ""))
+
+            if current_item_id == clean_item_id:
+                var current_quantity: int = int(item.get("quantity", 1))
+                item["quantity"] = current_quantity + safe_quantity
+                item["name"] = item_name
+                inventory[index] = item
+
+                print("Stacked inventory item: ", item_name, " x", item["quantity"])
+                _notify_ui_stats_changed()
+                return
+
+        inventory.append({
+            "id": clean_item_id,
+            "name": item_name,
+            "quantity": safe_quantity
+        })
+
+        print("Added stackable inventory item: ", item_name, " x", safe_quantity)
+        _notify_ui_stats_changed()
+        return
+
+    if has_inventory_item(clean_item_id):
         print("Inventory already has item: ", item_name)
         return
 
     inventory.append({
-        "id": item_id,
-        "name": item_name
+        "id": clean_item_id,
+        "name": item_name,
+        "quantity": 1
     })
 
     print("Added to inventory: ", item_name)
     _notify_ui_stats_changed()
 
 
-func remove_inventory_item(item_id: String) -> bool:
+func remove_inventory_item(item_id: String, quantity: int = 1) -> bool:
+    var clean_item_id := item_id.strip_edges()
+
+    if clean_item_id == "":
+        return false
+
+    var safe_quantity: int = maxi(1, quantity)
+
     for index in range(inventory.size()):
         var item: Dictionary = inventory[index]
         var current_item_id: String = str(item.get("id", ""))
 
-        if current_item_id == item_id:
-            inventory.remove_at(index)
-            print("Removed from inventory: ", item_id)
-            _clear_hotbar_slots_for_missing_item(item_id)
-            _unequip_missing_item_if_needed(item_id)
-            _notify_ui_stats_changed()
-            return true
+        if current_item_id != clean_item_id:
+            continue
+
+        if _is_stackable_inventory_item(clean_item_id):
+            var current_quantity: int = int(item.get("quantity", 1))
+            var new_quantity: int = current_quantity - safe_quantity
+
+            if new_quantity > 0:
+                item["quantity"] = new_quantity
+                inventory[index] = item
+
+                print("Removed from stack: ", clean_item_id, " remaining: ", new_quantity)
+                _notify_ui_stats_changed()
+                return true
+
+        inventory.remove_at(index)
+        print("Removed from inventory: ", clean_item_id)
+
+        _clear_hotbar_slots_for_missing_item(clean_item_id)
+        _unequip_missing_item_if_needed(clean_item_id)
+        _notify_ui_stats_changed()
+        return true
 
     return false
 
 
 func has_inventory_item(item_id: String) -> bool:
+    var clean_item_id := item_id.strip_edges()
+
+    if clean_item_id == "":
+        return false
+
     for item in inventory:
-        if item.get("id", "") == item_id:
+        if str(item.get("id", "")) != clean_item_id:
+            continue
+
+        var quantity: int = int(item.get("quantity", 1))
+
+        if quantity > 0:
             return true
 
     return false
@@ -361,19 +426,60 @@ func set_inventory_items(saved_inventory: Array) -> void:
 
         var item_id: String = str(item.get("id", ""))
         var item_name: String = str(item.get("name", item_id))
+        var quantity: int = int(item.get("quantity", 1))
 
         if item_id.strip_edges() == "":
             continue
 
-        inventory.append({
-            "id": item_id,
-            "name": item_name
-        })
+        quantity = maxi(1, quantity)
+
+        if _is_stackable_inventory_item(item_id):
+            _add_loaded_stackable_inventory_item(item_id, item_name, quantity)
+        else:
+            inventory.append({
+                "id": item_id,
+                "name": item_name,
+                "quantity": 1
+            })
 
     _ensure_starting_equipment()
     _validate_equipment_after_inventory_load()
     print("Inventory loaded. Item count: ", inventory.size())
     _notify_ui_stats_changed()
+
+func _add_loaded_stackable_inventory_item(item_id: String, item_name: String, quantity: int) -> void:
+    var clean_item_id := item_id.strip_edges()
+
+    if clean_item_id == "":
+        return
+
+    var safe_quantity: int = maxi(1, quantity)
+
+    for index in range(inventory.size()):
+        var item: Dictionary = inventory[index]
+        var current_item_id: String = str(item.get("id", ""))
+
+        if current_item_id == clean_item_id:
+            var current_quantity: int = int(item.get("quantity", 1))
+            item["quantity"] = current_quantity + safe_quantity
+            item["name"] = item_name
+            inventory[index] = item
+            return
+
+    inventory.append({
+        "id": clean_item_id,
+        "name": item_name,
+        "quantity": safe_quantity
+    })
+
+
+func _is_stackable_inventory_item(item_id: String) -> bool:
+    var clean_item_id := item_id.strip_edges()
+
+    if clean_item_id == "":
+        return false
+
+    return ItemDatabase.get_item_type(clean_item_id) == "consumable"
 
 func _initialize_currencies() -> void:
     for currency_id in CURRENCY_DISPLAY_NAMES.keys():

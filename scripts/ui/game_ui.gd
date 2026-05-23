@@ -930,8 +930,16 @@ func _get_inventory_list_text() -> String:
     var text := ""
 
     for item in items:
+        if typeof(item) != TYPE_DICTIONARY:
+            continue
+
         var item_name: String = str(item.get("name", "Unknown Item"))
-        text += "- " + item_name + "\n"
+        var quantity: int = int(item.get("quantity", 1))
+
+        if quantity > 1:
+            text += "- " + item_name + " x" + str(quantity) + "\n"
+        else:
+            text += "- " + item_name + "\n"
 
     return text.strip_edges()
 
@@ -1501,8 +1509,16 @@ func _get_inventory_text() -> String:
     var text := "Inventory:\n"
 
     for item in items:
-        var item_name: String = item.get("name", "Unknown Item")
-        text += "- " + item_name + "\n"
+        if typeof(item) != TYPE_DICTIONARY:
+            continue
+
+        var item_name: String = str(item.get("name", "Unknown Item"))
+        var quantity: int = int(item.get("quantity", 1))
+
+        if quantity > 1:
+            text += "- " + item_name + " x" + str(quantity) + "\n"
+        else:
+            text += "- " + item_name + "\n"
 
     return text.strip_edges()
 

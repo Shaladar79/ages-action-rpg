@@ -33,6 +33,7 @@ texture = ExtResource("2_rl85u")
 centered = false
 
 [node name="CollisionWalls" type="Node2D" parent="." unique_id=1594235200]
+visible = false
 position = Vector2(11, 12)
 
 [node name="Top_Left" type="StaticBody2D" parent="CollisionWalls" unique_id=1588707261]
@@ -230,8 +231,11 @@ persistent_id = "SCBoss"
 monster_name = "Monster"
 defense = 1
 xp_reward = 6
+drop_item_1_id = "healing_tonic"
+drop_item_1_chance_percent = 100.0
 drop_currency_chance_percent = 100.0
 drop_currency_min_amount = 10
+drop_currency_max_amount = 10
 
 [node name="StartCavern Earthling" parent="Monsters" unique_id=1655329841 instance=ExtResource("11_gd1mq")]
 position = Vector2(829, 441)
