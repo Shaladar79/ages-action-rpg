@@ -8,6 +8,7 @@ radius = 22.022715
 
 [node name="HealingTonic" type="Area2D" unique_id=1342245157]
 script = ExtResource("1_vpp7t")
+persistent_id = "healing_tonic_1"
 item_id = "healing_tonic"
 item_name = "Healing Tonic"
 item_type = "consumable"

@@ -248,9 +248,10 @@ size = Vector2(41, 46)
 [sub_resource type="CircleShape2D" id="CircleShape2D_bgjfe"]
 radius = 219.52904
 
-[node name="RockSpitter" type="CharacterBody2D" unique_id=165711745]
+[node name="RockSpitter" type="CharacterBody2D" unique_id=165711745 groups=["slopes_rock_spitter_kill_count"]]
 script = ExtResource("1_3h42a")
 persistent_id = "RS_"
+respawn_mode = 2
 monster_level = 2
 max_hit_points = 5
 attack = 3

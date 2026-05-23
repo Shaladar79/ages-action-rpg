@@ -4,8 +4,12 @@ class_name BossMonster
 enum BossSpecialChoice {
     NONE,
     AOE,
-    SLAM
+    SLAM,
+    BURST
 }
+
+@export_group("Boss Identity")
+@export var boss_defeated_flag: String = "intro_boss_defeated"
 
 @export_group("Boss Specials")
 @export var special_attacks_enabled: bool = true
@@ -29,13 +33,13 @@ enum BossSpecialChoice {
     "Lightning",
     "Acid",
     "Light",
-	"Shadow"
+    "Shadow"
 )
 var aoe_damage_types: int = DamageTypes.FIRE
 @export var aoe_radius: float = 72.0
 @export var aoe_trigger_range: float = 160.0
 @export var aoe_windup_time: float = 1.25
-@export var aoe_cooldown: float = 5.0
+@export var aoe_cooldown: float = 8.0
 @export var aoe_telegraph_color: Color = Color(1.0, 0.25, 0.05, 0.35)
 
 @export_group("Slam Special")
@@ -51,7 +55,7 @@ var aoe_damage_types: int = DamageTypes.FIRE
     "Lightning",
     "Acid",
     "Light",
-	"Shadow"
+    "Shadow"
 )
 var slam_damage_types: int = DamageTypes.BASHING
 @export var slam_length: float = 82.0
@@ -61,16 +65,49 @@ var slam_damage_types: int = DamageTypes.BASHING
 @export var slam_cooldown: float = 3.5
 @export var slam_telegraph_color: Color = Color(1.0, 0.0, 0.0, 0.45)
 
+@export_group("Burst Special")
+@export var burst_enabled: bool = false
+@export var burst_damage: int = 1
+@export_flags(
+    "Bashing",
+    "Slashing",
+    "Chopping",
+    "Piercing",
+    "Fire",
+    "Ice",
+    "Lightning",
+    "Acid",
+    "Light",
+    "Shadow"
+)
+var burst_damage_types: int = DamageTypes.PIERCING
+@export var burst_trigger_range: float = 260.0
+@export var burst_cooldown: float = 5.0
+@export var burst_followup_delay: float = 2.0
+@export var burst_projectile_range: float = 260.0
+@export var burst_projectile_speed: float = 240.0
+@export var burst_projectile_hit_radius: float = 10.0
+@export var burst_projectile_spawn_offset: float = 16.0
+@export var burst_projectile_texture: Texture2D = null
+@export var burst_projectile_scale: Vector2 = Vector2(1.0, 1.0)
+@export var burst_projectile_color: Color = Color(1.0, 0.85, 0.25, 1.0)
+@export var burst_projectile_z_index: int = 220
+@export var burst_projectile_collision_layer: int = 0
+@export var burst_projectile_collision_mask: int = 1
+
 var is_using_special_attack: bool = false
 var aoe_special_timer: float = 0.0
 var slam_special_timer: float = 0.0
+var burst_special_timer: float = 0.0
 var special_global_timer: float = 0.0
 
 var active_telegraphs: Array[Polygon2D] = []
+var active_burst_projectiles: Array[Area2D] = []
 
 
 func _exit_tree() -> void:
     _clear_active_telegraphs()
+    _clear_active_burst_projectiles()
 
 
 func _physics_process(delta: float) -> void:
@@ -96,10 +133,12 @@ func die(player: Node2D = null) -> void:
     if is_dead:
         return
 
-    SaveManager.set_flag("intro_boss_defeated", true)
-    print("Boss defeated flag set: intro_boss_defeated")
+    if boss_defeated_flag.strip_edges() != "":
+        SaveManager.set_flag(boss_defeated_flag, true)
+        print("Boss defeated flag set: ", boss_defeated_flag)
 
     _clear_active_telegraphs()
+    _clear_active_burst_projectiles()
     is_using_special_attack = false
     super.die(player)
 
@@ -110,6 +149,9 @@ func _update_boss_special_timers(delta: float) -> void:
 
     if slam_special_timer > 0.0:
         slam_special_timer -= delta
+
+    if burst_special_timer > 0.0:
+        burst_special_timer -= delta
 
     if special_global_timer > 0.0:
         special_global_timer -= delta
@@ -136,6 +178,10 @@ func _try_start_boss_special_attack() -> bool:
             _start_slam_special()
             return true
 
+        BossSpecialChoice.BURST:
+            _start_burst_special()
+            return true
+
         _:
             return false
 
@@ -151,6 +197,9 @@ func _choose_boss_special_attack() -> BossSpecialChoice:
 
     if aoe_enabled and aoe_special_timer <= 0.0 and distance_to_player <= aoe_trigger_range:
         return BossSpecialChoice.AOE
+
+    if burst_enabled and burst_special_timer <= 0.0 and distance_to_player <= burst_trigger_range:
+        return BossSpecialChoice.BURST
 
     return BossSpecialChoice.NONE
 
@@ -234,10 +283,180 @@ func _start_slam_special() -> void:
         slam_width,
         slam_damage,
         slam_damage_types,
-		"Slam"
+        "Slam"
     )
 
     is_using_special_attack = false
+
+
+func _start_burst_special() -> void:
+    if is_using_special_attack:
+        return
+
+    is_using_special_attack = true
+    burst_special_timer = burst_cooldown
+    special_global_timer = special_global_cooldown
+
+    print(monster_name, " begins burst special.")
+
+    _fire_burst_cardinal_projectiles()
+
+    if burst_followup_delay > 0.0:
+        await get_tree().create_timer(burst_followup_delay).timeout
+
+    if not is_inside_tree():
+        _clear_active_burst_projectiles()
+        return
+
+    if is_dead:
+        _clear_active_burst_projectiles()
+        is_using_special_attack = false
+        return
+
+    _fire_burst_diagonal_projectiles()
+
+    is_using_special_attack = false
+
+
+func _fire_burst_cardinal_projectiles() -> void:
+    _spawn_burst_projectile(Vector2.UP)
+    _spawn_burst_projectile(Vector2.DOWN)
+    _spawn_burst_projectile(Vector2.LEFT)
+    _spawn_burst_projectile(Vector2.RIGHT)
+
+    print(monster_name, " fired cardinal burst.")
+
+
+func _fire_burst_diagonal_projectiles() -> void:
+    _spawn_burst_projectile(Vector2(-1.0, -1.0).normalized())
+    _spawn_burst_projectile(Vector2(1.0, -1.0).normalized())
+    _spawn_burst_projectile(Vector2(-1.0, 1.0).normalized())
+    _spawn_burst_projectile(Vector2(1.0, 1.0).normalized())
+
+    print(monster_name, " fired diagonal burst.")
+
+
+func _spawn_burst_projectile(direction: Vector2) -> void:
+    if direction == Vector2.ZERO:
+        return
+
+    var normalized_direction := direction.normalized()
+
+    var projectile := Area2D.new()
+    projectile.name = "BossBurstProjectile"
+    projectile.global_position = global_position + (normalized_direction * burst_projectile_spawn_offset)
+    projectile.rotation = normalized_direction.angle()
+    projectile.z_index = burst_projectile_z_index
+    projectile.z_as_relative = false
+    projectile.monitoring = true
+    projectile.monitorable = true
+    projectile.collision_layer = burst_projectile_collision_layer
+    projectile.collision_mask = burst_projectile_collision_mask
+    projectile.set_meta("has_hit_player", false)
+
+    var collision_shape := CollisionShape2D.new()
+    var circle_shape := CircleShape2D.new()
+    circle_shape.radius = burst_projectile_hit_radius
+    collision_shape.shape = circle_shape
+    projectile.add_child(collision_shape)
+
+    if burst_projectile_texture != null:
+        var sprite := Sprite2D.new()
+        sprite.name = "ProjectileSprite"
+        sprite.texture = burst_projectile_texture
+        sprite.scale = burst_projectile_scale
+        sprite.z_index = burst_projectile_z_index
+        projectile.add_child(sprite)
+    else:
+        var polygon := Polygon2D.new()
+        polygon.name = "ProjectileFallbackPolygon"
+        polygon.color = burst_projectile_color
+        polygon.polygon = PackedVector2Array([
+            Vector2(10.0, 0.0),
+            Vector2(0.0, -5.0),
+            Vector2(-10.0, 0.0),
+            Vector2(0.0, 5.0)
+        ])
+        polygon.z_index = burst_projectile_z_index
+        projectile.add_child(polygon)
+
+    var current_scene := get_tree().current_scene
+
+    if current_scene != null:
+        current_scene.add_child(projectile)
+    else:
+        add_child(projectile)
+
+    active_burst_projectiles.append(projectile)
+
+    projectile.body_entered.connect(_on_burst_projectile_body_entered.bind(projectile))
+
+    var end_position := projectile.global_position + (normalized_direction * burst_projectile_range)
+    var travel_time := 0.8
+
+    if burst_projectile_speed > 0.0:
+        travel_time = burst_projectile_range / burst_projectile_speed
+
+    travel_time = maxf(0.05, travel_time)
+
+    var tween := projectile.create_tween()
+    tween.tween_property(projectile, "global_position", end_position, travel_time)
+    tween.finished.connect(_on_burst_projectile_finished.bind(projectile))
+
+
+func _on_burst_projectile_body_entered(body: Node2D, projectile: Area2D) -> void:
+    if projectile == null:
+        return
+
+    if not is_instance_valid(projectile):
+        return
+
+    if bool(projectile.get_meta("has_hit_player", false)):
+        return
+
+    if body == null:
+        return
+
+    if not body.is_in_group("player"):
+        return
+
+    projectile.set_meta("has_hit_player", true)
+
+    _damage_player_from_special(body, burst_damage, burst_damage_types)
+
+    print(monster_name, " burst projectile hit player for base damage: ", burst_damage)
+
+    _remove_burst_projectile_from_active_list(projectile)
+    projectile.queue_free()
+
+
+func _on_burst_projectile_finished(projectile: Area2D) -> void:
+    if projectile == null:
+        return
+
+    if not is_instance_valid(projectile):
+        _remove_burst_projectile_from_active_list(projectile)
+        return
+
+    _remove_burst_projectile_from_active_list(projectile)
+    projectile.queue_free()
+
+
+func _clear_active_burst_projectiles() -> void:
+    for projectile in active_burst_projectiles:
+        if is_instance_valid(projectile):
+            projectile.queue_free()
+
+    active_burst_projectiles.clear()
+
+
+func _remove_burst_projectile_from_active_list(projectile: Area2D) -> void:
+    if projectile == null:
+        return
+
+    for index in range(active_burst_projectiles.size() - 1, -1, -1):
+        if active_burst_projectiles[index] == projectile:
+            active_burst_projectiles.remove_at(index)
 
 
 func _flash_and_clear_telegraph(telegraph: Polygon2D) -> void:

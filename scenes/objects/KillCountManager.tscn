@@ -1,0 +1,6 @@
+[gd_scene format=3 uid="uid://d1atpidv0v2uu"]
+
+[ext_resource type="Script" uid="uid://6xbmbu82a262" path="res://scripts/story/KillCountManager.gd" id="1_fxbbn"]
+
+[node name="KillCountManager" type="Node" unique_id=1148503933]
+script = ExtResource("1_fxbbn")

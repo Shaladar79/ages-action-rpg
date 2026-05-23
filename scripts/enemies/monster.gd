@@ -1,6 +1,8 @@
 extends CharacterBody2D
 class_name Monster
 
+signal monster_defeated(monster: Monster, player: Node2D)
+
 enum RespawnMode {
     USE_MAP_DEFAULT,
     ALWAYS_RESPAWN,
@@ -571,6 +573,7 @@ func die(player: Node2D = null) -> void:
 
     _award_xp_to_player_if_eligible(player)
     _roll_drops_for_player(player)
+    monster_defeated.emit(self, player)
     _show_first_monster_defeated_lesson(player)
 
     if disable_collision_on_death:
