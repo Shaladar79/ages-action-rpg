@@ -27,6 +27,18 @@ enum AttackStyle {
 @export var xp_reward: int = 1
 @export var xp_level_cutoff_below_player: int = 5
 
+@export_group("Drops")
+@export var drop_item_1_id: String = ""
+@export_range(0.0, 100.0, 0.1) var drop_item_1_chance_percent: float = 0.0
+
+@export var drop_item_2_id: String = ""
+@export_range(0.0, 100.0, 0.1) var drop_item_2_chance_percent: float = 0.0
+
+@export var drop_currency_id: String = "shines"
+@export_range(0.0, 100.0, 0.1) var drop_currency_chance_percent: float = 0.0
+@export var drop_currency_min_amount: int = 1
+@export var drop_currency_max_amount: int = 1
+
 @export_flags(
     "Bashing",
     "Slashing",
@@ -37,7 +49,7 @@ enum AttackStyle {
     "Lightning",
     "Acid",
     "Light",
-	"Shadow"
+    "Shadow"
 )
 var weakness_types: int = DamageTypes.NONE
 
@@ -52,7 +64,7 @@ var weakness_types: int = DamageTypes.NONE
     "Lightning",
     "Acid",
     "Light",
-	"Shadow"
+    "Shadow"
 )
 var damage_types: int = DamageTypes.BASHING
 
@@ -82,7 +94,7 @@ var damage_types: int = DamageTypes.BASHING
     "Lightning",
     "Acid",
     "Light",
-	"Shadow"
+    "Shadow"
 )
 var melee_damage_types: int = DamageTypes.BASHING
 @export var melee_cooldown: float = 1.25
@@ -99,7 +111,7 @@ var melee_damage_types: int = DamageTypes.BASHING
     "Lightning",
     "Acid",
     "Light",
-	"Shadow"
+    "Shadow"
 )
 var ranged_damage_types: int = DamageTypes.PIERCING
 @export var ranged_range: float = 180.0
@@ -480,6 +492,7 @@ func die(player: Node2D = null) -> void:
         SaveManager.mark_monster_defeated(persistent_id)
 
     _award_xp_to_player_if_eligible(player)
+    _roll_drops_for_player(player)
     _show_first_monster_defeated_lesson(player)
 
     if disable_collision_on_death:
@@ -496,6 +509,77 @@ func die(player: Node2D = null) -> void:
 
     if destroy_on_death:
         queue_free()
+
+
+func _roll_drops_for_player(player: Node2D) -> void:
+    if player == null:
+        return
+
+    _roll_item_drop(player, drop_item_1_id, drop_item_1_chance_percent, "Item Slot 1")
+    _roll_item_drop(player, drop_item_2_id, drop_item_2_chance_percent, "Item Slot 2")
+    _roll_currency_drop(player)
+
+
+func _roll_item_drop(player: Node2D, item_id: String, chance_percent: float, slot_name: String) -> void:
+    var clean_item_id := item_id.strip_edges()
+
+    if clean_item_id == "":
+        return
+
+    if chance_percent <= 0.0:
+        return
+
+    var roll := randf_range(0.0, 100.0)
+
+    if roll > chance_percent:
+        print(monster_name, " ", slot_name, " drop failed. Roll: ", roll, " Chance: ", chance_percent)
+        return
+
+    if not player.has_method("add_inventory_item"):
+        push_warning("Player cannot receive item drops. Missing add_inventory_item().")
+        return
+
+    var item_name := ItemDatabase.get_item_name(clean_item_id)
+    player.add_inventory_item(clean_item_id, item_name)
+
+    print(monster_name, " dropped item: ", item_name, " Roll: ", roll, " Chance: ", chance_percent)
+
+
+func _roll_currency_drop(player: Node2D) -> void:
+    var clean_currency_id := drop_currency_id.strip_edges()
+
+    if clean_currency_id == "":
+        return
+
+    if drop_currency_chance_percent <= 0.0:
+        return
+
+    var roll := randf_range(0.0, 100.0)
+
+    if roll > drop_currency_chance_percent:
+        print(monster_name, " currency drop failed. Roll: ", roll, " Chance: ", drop_currency_chance_percent)
+        return
+
+    if not player.has_method("add_currency"):
+        push_warning("Player cannot receive currency drops. Missing add_currency().")
+        return
+
+    var min_amount: int = maxi(0, drop_currency_min_amount)
+    var max_amount: int = maxi(min_amount, drop_currency_max_amount)
+
+    if max_amount <= 0:
+        return
+
+    var amount := randi_range(min_amount, max_amount)
+
+    if amount <= 0:
+        return
+
+    player.add_currency(clean_currency_id, amount)
+
+    print(monster_name, " dropped currency: ", clean_currency_id, " x", amount, " Roll: ", roll, " Chance: ", drop_currency_chance_percent)
+
+
 func _show_first_monster_defeated_lesson(player: Node2D) -> void:
     if player == null:
         return
@@ -538,6 +622,7 @@ func _get_game_ui() -> Node:
 
     return null
 
+
 func _award_xp_to_player_if_eligible(player: Node2D) -> void:
     if player == null:
         return
@@ -557,7 +642,7 @@ func _award_xp_to_player_if_eligible(player: Node2D) -> void:
             lowest_xp_level,
             " for player level ",
             player_level,
-			"."
+            "."
         )
         return
 

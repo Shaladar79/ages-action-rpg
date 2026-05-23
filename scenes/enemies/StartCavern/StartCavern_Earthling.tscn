@@ -274,6 +274,8 @@ radius = 27.018513
 script = ExtResource("1_4ibsn")
 max_hit_points = 2
 attack = 2
+drop_currency_chance_percent = 100.0
+drop_currency_max_amount = 3
 weakness_types = 1
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=1158242322]
