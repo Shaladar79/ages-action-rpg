@@ -1583,7 +1583,10 @@ func _try_start_respawn() -> void:
 func _respawn_player() -> void:
     if not RespawnManager.can_respawn():
         is_respawning = false
+        print("Respawn failed. No active respawn point.")
         return
+
+    hide_dialogue()
 
     global_position = RespawnManager.get_respawn_position()
     velocity = Vector2.ZERO

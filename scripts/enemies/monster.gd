@@ -150,6 +150,13 @@ var ranged_damage_types: int = DamageTypes.PIERCING
 @export_group("Boss / Important Enemy Flags")
 @export var boss_defeated_flag: String = ""
 
+@export_group("Quest Progress On Death")
+@export var quest_progress_enabled: bool = false
+@export var quest_id: String = ""
+@export var objective_id: String = ""
+@export var quest_progress_amount: int = 1
+@export var quest_progress_debug_prints: bool = true
+
 @export_group("Special Attack Controller")
 # Preferred attack system for new enemies.
 # Use this with Can Attack Player Off.
@@ -870,6 +877,8 @@ func die(player: Node2D = null) -> void:
     if _should_save_defeat_state():
         SaveManager.mark_monster_defeated(persistent_id)
 
+    _report_quest_kill_progress()
+
     _award_xp_to_player_if_eligible(player)
     _roll_drops_for_player(player)
     monster_defeated.emit(self, player)
@@ -889,6 +898,48 @@ func die(player: Node2D = null) -> void:
 
     if destroy_on_death:
         queue_free()
+
+
+func _report_quest_kill_progress() -> void:
+    if not quest_progress_enabled:
+        return
+
+    var clean_quest_id := quest_id.strip_edges()
+    var clean_objective_id := objective_id.strip_edges()
+
+    if clean_quest_id == "":
+        if quest_progress_debug_prints:
+            push_warning(monster_name + " has quest progress enabled but quest_id is blank.")
+        return
+
+    if clean_objective_id == "":
+        if quest_progress_debug_prints:
+            push_warning(monster_name + " has quest progress enabled but objective_id is blank.")
+        return
+
+    if quest_progress_amount <= 0:
+        if quest_progress_debug_prints:
+            push_warning(monster_name + " has quest progress enabled but quest_progress_amount must be greater than 0.")
+        return
+
+    if not QuestManager.is_quest_active(clean_quest_id):
+        if quest_progress_debug_prints:
+            print(monster_name, " did not add quest kill progress because quest is not active: ", clean_quest_id)
+        return
+
+    var progress_added := QuestManager.add_objective_progress(
+        clean_quest_id,
+        clean_objective_id,
+        quest_progress_amount
+    )
+
+    if not progress_added:
+        if quest_progress_debug_prints:
+            print(monster_name, " failed to add quest kill progress: ", clean_quest_id, " / ", clean_objective_id)
+        return
+
+    if quest_progress_debug_prints:
+        print(monster_name, " added quest kill progress: ", clean_quest_id, " / ", clean_objective_id, " +", quest_progress_amount)
 
 
 func _roll_drops_for_player(player: Node2D) -> void:
