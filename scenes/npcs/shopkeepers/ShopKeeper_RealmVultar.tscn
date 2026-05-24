@@ -1,0 +1,84 @@
+[gd_scene format=3 uid="uid://3j1f8tltg0sj"]
+
+[ext_resource type="Script" uid="uid://dbix2kp3ktukn" path="res://scripts/characters/npcs/shop_keeper.gd" id="1_38qww"]
+[ext_resource type="Texture2D" uid="uid://jmq6dhu7qyv8" path="res://art/characters/NPC/SA_Village_shop.png" id="1_r8k70"]
+[ext_resource type="Script" uid="uid://dmhim3ohrnvcm" path="res://scripts/core/shop_stock_entry.gd" id="2_0lk46"]
+
+[sub_resource type="Resource" id="Resource_nqxse"]
+script = ExtResource("2_0lk46")
+item_id = "healing_tonic"
+price_amount = 10
+metadata/_custom_type_script = "uid://dmhim3ohrnvcm"
+
+[sub_resource type="Resource" id="Resource_27f20"]
+script = ExtResource("2_0lk46")
+item_id = "sling_ammo"
+quantity = 5
+price_amount = 5
+required_flag = "village_sling_unlocked"
+metadata/_custom_type_script = "uid://dmhim3ohrnvcm"
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_m7ddv"]
+atlas = ExtResource("1_r8k70")
+region = Rect2(72, 0, 72, 72)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_38qww"]
+atlas = ExtResource("1_r8k70")
+region = Rect2(72, 72, 72, 72)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_0lk46"]
+atlas = ExtResource("1_r8k70")
+region = Rect2(72, 144, 72, 72)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_nqxse"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_m7ddv")
+}],
+"loop": true,
+"name": &"idle_down",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_38qww")
+}],
+"loop": true,
+"name": &"idle_left",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_0lk46")
+}],
+"loop": true,
+"name": &"idle_right",
+"speed": 5.0
+}]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_27f20"]
+radius = 11.0
+height = 34.0
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_7drio"]
+radius = 27.0
+
+[node name="ShopKeeper_RealmVultar" type="Area2D" unique_id=228929064]
+script = ExtResource("1_38qww")
+stock = Array[ExtResource("2_0lk46")]([SubResource("Resource_nqxse"), SubResource("Resource_27f20")])
+
+[node name="Sprite2D" type="AnimatedSprite2D" parent="." unique_id=149513852]
+scale = Vector2(0.5, 0.5)
+sprite_frames = SubResource("SpriteFrames_nqxse")
+animation = &"idle_right"
+
+[node name="StaticBody2D" type="StaticBody2D" parent="." unique_id=1523681073]
+visible = false
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D" unique_id=197534191]
+shape = SubResource("CapsuleShape2D_27f20")
+
+[node name="CollisionShape2D2" type="CollisionShape2D" parent="." unique_id=1064974967]
+visible = false
+shape = SubResource("CircleShape2D_7drio")
