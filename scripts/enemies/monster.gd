@@ -15,19 +15,37 @@ enum AttackStyle {
     MIXED
 }
 
+@export_group("Identity / Persistence")
 @export var persistent_id: String = ""
 @export var respawn_mode: RespawnMode = RespawnMode.USE_MAP_DEFAULT
-
 @export var monster_name: String = "Monster"
 @export var monster_level: int = 0
+
+@export_group("Core Stats")
 @export var max_hit_points: int = 3
-
-# Kept for backward compatibility. New monsters should mainly use Melee Damage / Ranged Damage.
-@export var attack: int = 1
-
 @export var defense: int = 0
 @export var xp_reward: int = 1
 @export var xp_level_cutoff_below_player: int = 5
+
+@export_group("Legacy Damage Compatibility")
+# Legacy fallback value. New enemies should use Special Attacks instead.
+# If Legacy Melee Damage is 0 or less, this value is copied into Legacy Melee Damage.
+@export var attack: int = 1
+
+# Legacy fallback damage type. New enemies should use each special attack's damage type instead.
+@export_flags(
+    "Bashing",
+    "Slashing",
+    "Chopping",
+    "Piering",
+    "Fire",
+    "Ice",
+    "Lightning",
+    "Acid",
+    "Light",
+    "Shadow"
+)
+var damage_types: int = DamageTypes.BASHING
 
 @export_group("Drops")
 @export var drop_item_1_id: String = ""
@@ -41,6 +59,7 @@ enum AttackStyle {
 @export var drop_currency_min_amount: int = 1
 @export var drop_currency_max_amount: int = 1
 
+@export_group("Weaknesses")
 @export_flags(
     "Bashing",
     "Slashing",
@@ -54,22 +73,6 @@ enum AttackStyle {
     "Shadow"
 )
 var weakness_types: int = DamageTypes.NONE
-
-# Kept for backward compatibility. New monsters should mainly use Melee Damage Types / Ranged Damage Types.
-@export_flags(
-    "Bashing",
-    "Slashing",
-    "Chopping",
-    "Piercing",
-    "Fire",
-    "Ice",
-    "Lightning",
-    "Acid",
-    "Light",
-    "Shadow"
-)
-var damage_types: int = DamageTypes.BASHING
-
 @export var weakness_damage_multiplier: float = 1.5
 
 @export_group("Movement")
@@ -80,11 +83,13 @@ var damage_types: int = DamageTypes.BASHING
 @export var wander_radius: float = 64.0
 @export var wander_interval: float = 2.0
 
-@export_group("Attack Style")
+@export_group("Legacy Basic Attack / Fallback")
+# Leave this Off for new enemies that use Special Attacks.
+# Turn it On only for older enemies still using the old instant/basic attack system.
+@export var can_attack_player: bool = false
 @export var attack_style: AttackStyle = AttackStyle.MELEE_ONLY
-@export var can_attack_player: bool = true
 
-@export_group("Melee Attack")
+@export_group("Legacy Melee Attack / Fallback")
 @export var melee_damage: int = 1
 @export_flags(
     "Bashing",
@@ -101,7 +106,7 @@ var damage_types: int = DamageTypes.BASHING
 var melee_damage_types: int = DamageTypes.BASHING
 @export var melee_cooldown: float = 1.25
 
-@export_group("Ranged Attack")
+@export_group("Legacy Ranged Attack / Fallback")
 @export var ranged_damage: int = 1
 @export_flags(
     "Bashing",
@@ -142,10 +147,12 @@ var ranged_damage_types: int = DamageTypes.PIERCING
 @export var damage_flash_color: Color = Color(1.0, 0.0, 0.0, 1.0)
 @export var damage_flash_duration: float = 0.12
 
-@export_group("Boss Identity")
+@export_group("Boss / Important Enemy Flags")
 @export var boss_defeated_flag: String = ""
 
-@export_group("Special Attacks")
+@export_group("Special Attack Controller")
+# Preferred attack system for new enemies.
+# Use this with Can Attack Player Off.
 @export var special_attacks_enabled: bool = false
 @export var special_global_cooldown: float = 1.0
 
@@ -159,7 +166,7 @@ var ranged_damage_types: int = DamageTypes.PIERCING
 @export var telegraph_impact_flash_time: float = 0.12
 @export var telegraph_impact_flash_color: Color = Color(1.0, 0.0, 0.0, 0.85)
 
-@export_group("AOE Special")
+@export_group("Special AOE Attack")
 @export var aoe_enabled: bool = false
 @export var aoe_lock_movement: bool = true
 @export var aoe_damage: int = 1
@@ -182,7 +189,7 @@ var aoe_damage_types: int = DamageTypes.FIRE
 @export var aoe_cooldown: float = 8.0
 @export var aoe_telegraph_color: Color = Color(1.0, 0.25, 0.05, 0.35)
 
-@export_group("Slam Special")
+@export_group("Special Slam Attack")
 @export var slam_enabled: bool = false
 @export var slam_lock_movement: bool = true
 @export var slam_damage: int = 5
@@ -206,7 +213,7 @@ var slam_damage_types: int = DamageTypes.BASHING
 @export var slam_cooldown: float = 3.5
 @export var slam_telegraph_color: Color = Color(1.0, 0.0, 0.0, 0.45)
 
-@export_group("Burst Special")
+@export_group("Special Burst Attack")
 @export var burst_enabled: bool = false
 @export var burst_lock_movement: bool = false
 @export var burst_damage: int = 1
@@ -237,7 +244,7 @@ var burst_damage_types: int = DamageTypes.PIERCING
 @export var burst_projectile_collision_layer: int = 0
 @export var burst_projectile_collision_mask: int = 1
 
-@export_group("Projectile Special")
+@export_group("Special Projectile Attack")
 @export var projectile_enabled: bool = false
 @export var projectile_lock_movement: bool = false
 @export var projectile_damage: int = 1
@@ -478,7 +485,7 @@ func _try_melee_attack_player() -> void:
     _damage_player(player_in_attack_range, melee_damage, melee_damage_types)
 
     melee_attack_timer = melee_cooldown
-    print(monster_name, " used melee attack for base damage: ", melee_damage)
+    print(monster_name, " used legacy melee attack for base damage: ", melee_damage)
 
 
 func _try_ranged_attack_player() -> void:
@@ -495,7 +502,8 @@ func _try_ranged_attack_player() -> void:
     _spawn_ranged_projectile(player_target)
 
     ranged_attack_timer = ranged_cooldown
-    print(monster_name, " fired ranged attack for base damage: ", ranged_damage)
+    print(monster_name, " fired legacy ranged attack for base damage: ", ranged_damage)
+
 
 func _spawn_ranged_projectile(target: Node2D) -> void:
     if target == null:
@@ -567,6 +575,7 @@ func _spawn_ranged_projectile(target: Node2D) -> void:
     tween.tween_property(projectile, "global_position", target_position, travel_time)
     tween.finished.connect(_on_ranged_projectile_finished.bind(projectile))
 
+
 func _on_ranged_projectile_body_entered(body: Node2D, projectile: Area2D) -> void:
     if projectile == null:
         return
@@ -587,7 +596,7 @@ func _on_ranged_projectile_body_entered(body: Node2D, projectile: Area2D) -> voi
 
     _damage_player(body, ranged_damage, ranged_damage_types)
 
-    print(monster_name, " ranged projectile hit player for base damage: ", ranged_damage)
+    print(monster_name, " legacy ranged projectile hit player for base damage: ", ranged_damage)
 
     projectile.queue_free()
 
@@ -617,7 +626,7 @@ func _on_ranged_projectile_area_entered(area: Area2D, projectile: Area2D) -> voi
 
     _damage_player(possible_player, ranged_damage, ranged_damage_types)
 
-    print(monster_name, " ranged projectile hit player hurtbox for base damage: ", ranged_damage)
+    print(monster_name, " legacy ranged projectile hit player hurtbox for base damage: ", ranged_damage)
 
     projectile.queue_free()
 
@@ -630,6 +639,7 @@ func _on_ranged_projectile_finished(projectile: Area2D) -> void:
         return
 
     projectile.queue_free()
+
 
 func _damage_player(player: Node2D, damage_amount: int, attack_damage_types: int) -> void:
     if player == null:
@@ -671,7 +681,7 @@ func _on_attack_area_body_entered(body: Node2D) -> void:
         return
 
     player_in_attack_range = body
-    print(monster_name, " has player in attack range.")
+    print(monster_name, " has player in legacy attack range.")
 
 
 func _on_attack_area_body_exited(body: Node2D) -> void:
@@ -679,7 +689,7 @@ func _on_attack_area_body_exited(body: Node2D) -> void:
         return
 
     player_in_attack_range = null
-    print(monster_name, " lost player attack range.")
+    print(monster_name, " lost player legacy attack range.")
 
 
 func _start_default_animation() -> void:
@@ -830,6 +840,7 @@ func _flash_sprite(flash_color: Color, flash_duration: float) -> void:
 
     flash_tween = create_tween()
     flash_tween.tween_property(visual_node, "modulate", original_modulate, flash_duration)
+
 
 func _get_primary_visual_node() -> CanvasItem:
     if animated_sprite_2d != null:

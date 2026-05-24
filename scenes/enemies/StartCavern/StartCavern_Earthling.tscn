@@ -278,16 +278,15 @@ monster_level = 1
 max_hit_points = 5
 drop_currency_chance_percent = 100.0
 drop_currency_max_amount = 3
-weakness_types = 1
-can_attack_player = false
+weakness_types = 128
 melee_damage = 2
 special_attacks_enabled = true
 slam_enabled = true
 slam_damage = 2
-slam_length = 30.0
+slam_length = 48.0
 slam_width = 24.0
-slam_trigger_range = 34.0
-slam_windup_time = 0.2
+slam_trigger_range = 40.0
+slam_windup_time = 0.5
 slam_cooldown = 1.5
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=1158242322]
