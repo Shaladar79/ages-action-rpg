@@ -330,10 +330,17 @@ position = Vector2(1011, 759)
 position = Vector2(731, 468)
 scale = Vector2(0.6, 0.6)
 persistent_id = "rockturretminiboss"
+max_hit_points = 40
 defense = 1
 drop_item_1_id = "amulet_of_minor_defense"
 drop_item_2_chance_percent = 100.0
 melee_damage = 0
+special_attacks_enabled = true
+aoe_enabled = true
+aoe_damage = 8
+aoe_damage_types = 1
+burst_damage = 4
+burst_damage_types = 1
 
 [node name="Loot" type="Node2D" parent="." unique_id=777198081]
 

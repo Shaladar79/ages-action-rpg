@@ -130,6 +130,110 @@ var ranged_damage_types: int = DamageTypes.PIERCING
 @export var hide_sprite_on_death: bool = true
 @export var disable_collision_on_death: bool = true
 
+@export_group("Combat Flash")
+@export var flash_on_attack: bool = true
+@export var attack_flash_color: Color = Color(2.5, 2.5, 2.5, 1.0)
+@export var attack_flash_duration: float = 0.12
+
+@export var flash_on_damage: bool = true
+@export var damage_flash_color: Color = Color(1.0, 0.0, 0.0, 1.0)
+@export var damage_flash_duration: float = 0.12
+
+@export_group("Boss Identity")
+@export var boss_defeated_flag: String = ""
+
+@export_group("Special Attacks")
+@export var special_attacks_enabled: bool = false
+@export var special_global_cooldown: float = 1.0
+
+# Master movement lock switch.
+# If this is Off, no special attack locks movement.
+# If this is On, each special attack uses its own movement-lock setting.
+@export var lock_movement_during_special: bool = true
+
+@export var telegraph_polygon_sides: int = 48
+@export var telegraph_z_index: int = 200
+@export var telegraph_impact_flash_time: float = 0.12
+@export var telegraph_impact_flash_color: Color = Color(1.0, 0.0, 0.0, 0.85)
+
+@export_group("AOE Special")
+@export var aoe_enabled: bool = false
+@export var aoe_lock_movement: bool = true
+@export var aoe_damage: int = 1
+@export_flags(
+    "Bashing",
+    "Slashing",
+    "Chopping",
+    "Piercing",
+    "Fire",
+    "Ice",
+    "Lightning",
+    "Acid",
+    "Light",
+    "Shadow"
+)
+var aoe_damage_types: int = DamageTypes.FIRE
+@export var aoe_radius: float = 72.0
+@export var aoe_trigger_range: float = 160.0
+@export var aoe_windup_time: float = 1.25
+@export var aoe_cooldown: float = 8.0
+@export var aoe_telegraph_color: Color = Color(1.0, 0.25, 0.05, 0.35)
+
+@export_group("Slam Special")
+@export var slam_enabled: bool = false
+@export var slam_lock_movement: bool = true
+@export var slam_damage: int = 5
+@export_flags(
+    "Bashing",
+    "Slashing",
+    "Chopping",
+    "Piercing",
+    "Fire",
+    "Ice",
+    "Lightning",
+    "Acid",
+    "Light",
+    "Shadow"
+)
+var slam_damage_types: int = DamageTypes.BASHING
+@export var slam_length: float = 82.0
+@export var slam_width: float = 36.0
+@export var slam_trigger_range: float = 72.0
+@export var slam_windup_time: float = 0.8
+@export var slam_cooldown: float = 3.5
+@export var slam_telegraph_color: Color = Color(1.0, 0.0, 0.0, 0.45)
+
+@export_group("Burst Special")
+@export var burst_enabled: bool = false
+@export var burst_lock_movement: bool = false
+@export var burst_damage: int = 1
+@export_flags(
+    "Bashing",
+    "Slashing",
+    "Chopping",
+    "Piercing",
+    "Fire",
+    "Ice",
+    "Lightning",
+    "Acid",
+    "Light",
+    "Shadow"
+)
+var burst_damage_types: int = DamageTypes.PIERCING
+@export var burst_trigger_range: float = 260.0
+@export var burst_cooldown: float = 5.0
+@export var burst_followup_delay: float = 2.0
+@export var burst_projectile_range: float = 260.0
+@export var burst_projectile_speed: float = 240.0
+@export var burst_projectile_hit_radius: float = 10.0
+@export var burst_projectile_spawn_offset: float = 16.0
+@export var burst_projectile_texture: Texture2D = null
+@export var burst_projectile_scale: Vector2 = Vector2(1.0, 1.0)
+@export var burst_projectile_color: Color = Color(1.0, 0.85, 0.25, 1.0)
+@export var burst_projectile_z_index: int = 220
+@export var burst_projectile_collision_layer: int = 0
+@export var burst_projectile_collision_mask: int = 1
+
 @onready var sprite_2d: Sprite2D = get_node_or_null("Sprite2D") as Sprite2D
 @onready var animated_sprite_2d: AnimatedSprite2D = get_node_or_null("AnimatedSprite2D") as AnimatedSprite2D
 @onready var attack_area: Area2D = get_node_or_null("AttackArea") as Area2D
@@ -148,6 +252,9 @@ var wander_target: Vector2 = Vector2.ZERO
 var wander_timer: float = 0.0
 
 var last_direction: String = "down"
+var special_attacks: MonsterSpecialAttacks = null
+
+var flash_tween: Tween = null
 
 
 func _ready() -> void:
@@ -163,6 +270,7 @@ func _ready() -> void:
 
     player_target = get_tree().get_first_node_in_group("player") as Node2D
 
+    _ensure_special_attack_controller()
     _start_default_animation()
     _connect_attack_area()
 
@@ -172,10 +280,37 @@ func _physics_process(delta: float) -> void:
         return
 
     _update_attack_timers(delta)
+
+    if special_attacks != null:
+        special_attacks.update_special_timers(delta)
+
+        if special_attacks.is_busy():
+            if special_attacks.is_locking_movement():
+                velocity = Vector2.ZERO
+                move_and_slide()
+                _update_animation_from_velocity(Vector2.ZERO)
+                return
+
+            _update_movement(delta)
+            return
+
+        if special_attacks.try_start_special_attack():
+            return
+
     _update_movement(delta)
 
     if can_attack_player:
         _try_attack_player()
+
+
+func _ensure_special_attack_controller() -> void:
+    if special_attacks != null:
+        return
+
+    special_attacks = MonsterSpecialAttacks.new()
+    special_attacks.name = "MonsterSpecialAttacks"
+    add_child(special_attacks)
+    special_attacks.setup(self)
 
 
 func _apply_legacy_attack_defaults() -> void:
@@ -301,6 +436,7 @@ func _try_melee_attack_player() -> void:
     if melee_attack_timer > 0.0:
         return
 
+    _flash_attack()
     _damage_player(player_in_attack_range, melee_damage, melee_damage_types)
 
     melee_attack_timer = melee_cooldown
@@ -317,11 +453,13 @@ func _try_ranged_attack_player() -> void:
     if not _is_player_in_ranged_range():
         return
 
+    _flash_attack()
     _show_ranged_attack_icon(player_target)
     _damage_player(player_target, ranged_damage, ranged_damage_types)
 
     ranged_attack_timer = ranged_cooldown
     print(monster_name, " used ranged attack for base damage: ", ranged_damage)
+
 
 func _show_ranged_attack_icon(target: Node2D) -> void:
     if target == null:
@@ -395,6 +533,7 @@ func _show_default_ranged_attack_icon(target: Node2D) -> void:
     tween.tween_property(icon, "global_position", target_position, travel_time)
     tween.tween_property(icon, "modulate:a", 0.0, 0.12)
     tween.finished.connect(icon.queue_free)
+
 
 func _damage_player(player: Node2D, damage_amount: int, attack_damage_types: int) -> void:
     if player == null:
@@ -542,6 +681,7 @@ func _apply_damage(damage_amount: int, incoming_damage_types: int, attacker: Nod
         print(monster_name, " weakness hit! Damage types: ", DamageTypes.get_damage_type_names(incoming_damage_types))
 
     current_hit_points -= final_damage
+    _flash_damage()
 
     print(monster_name, " took damage: ", final_damage)
     print(monster_name, " HP: ", current_hit_points, " / ", max_hit_points)
@@ -560,6 +700,51 @@ func _is_weak_to_damage_types(incoming_damage_types: int) -> bool:
     return DamageTypes.damage_types_overlap(incoming_damage_types, weakness_types)
 
 
+func flash_for_special_attack() -> void:
+    _flash_attack()
+
+
+func _flash_attack() -> void:
+    if not flash_on_attack:
+        return
+
+    _flash_sprite(attack_flash_color, attack_flash_duration)
+
+
+func _flash_damage() -> void:
+    if not flash_on_damage:
+        return
+
+    _flash_sprite(damage_flash_color, damage_flash_duration)
+
+
+func _flash_sprite(flash_color: Color, flash_duration: float) -> void:
+    var visual_node := _get_primary_visual_node()
+
+    if visual_node == null:
+        return
+
+    if flash_tween != null:
+        flash_tween.kill()
+        flash_tween = null
+
+    var original_modulate: Color = visual_node.modulate
+
+    visual_node.modulate = flash_color
+
+    flash_tween = create_tween()
+    flash_tween.tween_property(visual_node, "modulate", original_modulate, flash_duration)
+
+func _get_primary_visual_node() -> CanvasItem:
+    if animated_sprite_2d != null:
+        return animated_sprite_2d
+
+    if sprite_2d != null:
+        return sprite_2d
+
+    return null
+
+
 func die(player: Node2D = null) -> void:
     if is_dead:
         return
@@ -567,6 +752,13 @@ func die(player: Node2D = null) -> void:
     is_dead = true
 
     print(monster_name, " defeated. XP reward: ", xp_reward)
+
+    if boss_defeated_flag.strip_edges() != "":
+        SaveManager.set_flag(boss_defeated_flag, true)
+        print("Boss defeated flag set: ", boss_defeated_flag)
+
+    if special_attacks != null:
+        special_attacks.clear_all_special_visuals()
 
     if _should_save_defeat_state():
         SaveManager.mark_monster_defeated(persistent_id)
