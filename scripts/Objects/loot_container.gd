@@ -37,6 +37,15 @@ var drop_currency_id: String = ""
 @export var drop_currency_min_amount: int = 1
 @export var drop_currency_max_amount: int = 1
 
+@export_group("Quest Progress On Open")
+@export var quest_progress_enabled: bool = false
+@export var quest_id: String = ""
+@export var objective_id: String = ""
+@export var quest_progress_amount: int = 1
+@export var require_active_quest_to_open: bool = true
+@export var quest_not_active_message: String = "You do not need this right now."
+@export var quest_progress_debug_prints: bool = true
+
 @export_group("Debug")
 @export var debug_prints: bool = true
 
@@ -74,6 +83,9 @@ func interact(player: Node) -> void:
         _show_player_message(player, empty_message)
         return
 
+    if not _can_open_for_quest(player):
+        return
+
     _open_container(player)
 
 
@@ -87,6 +99,9 @@ func _open_container(player: Node) -> void:
         received_anything = true
 
     if _try_give_currency(player):
+        received_anything = true
+
+    if _report_quest_pickup_progress():
         received_anything = true
 
     _hide_interaction_prompt()
@@ -104,6 +119,75 @@ func _open_container(player: Node) -> void:
         return
 
     _refresh_visual()
+
+
+func _can_open_for_quest(player: Node) -> bool:
+    if not quest_progress_enabled:
+        return true
+
+    if not require_active_quest_to_open:
+        return true
+
+    var clean_quest_id := quest_id.strip_edges()
+
+    if clean_quest_id == "":
+        if quest_progress_debug_prints:
+            push_warning(name + " has quest progress enabled but quest_id is blank.")
+        _show_player_message(player, quest_not_active_message)
+        return false
+
+    if QuestManager.is_quest_active(clean_quest_id):
+        return true
+
+    if quest_progress_debug_prints:
+        print(name, " cannot be opened because quest is not active: ", clean_quest_id)
+
+    _show_player_message(player, quest_not_active_message)
+    return false
+
+
+func _report_quest_pickup_progress() -> bool:
+    if not quest_progress_enabled:
+        return false
+
+    var clean_quest_id := quest_id.strip_edges()
+    var clean_objective_id := objective_id.strip_edges()
+
+    if clean_quest_id == "":
+        if quest_progress_debug_prints:
+            push_warning(name + " has quest progress enabled but quest_id is blank.")
+        return false
+
+    if clean_objective_id == "":
+        if quest_progress_debug_prints:
+            push_warning(name + " has quest progress enabled but objective_id is blank.")
+        return false
+
+    if quest_progress_amount <= 0:
+        if quest_progress_debug_prints:
+            push_warning(name + " has quest progress enabled but quest_progress_amount must be greater than 0.")
+        return false
+
+    if not QuestManager.is_quest_active(clean_quest_id):
+        if quest_progress_debug_prints:
+            print(name, " did not add quest pickup progress because quest is not active: ", clean_quest_id)
+        return false
+
+    var progress_added := QuestManager.add_objective_progress(
+        clean_quest_id,
+        clean_objective_id,
+        quest_progress_amount
+    )
+
+    if not progress_added:
+        if quest_progress_debug_prints:
+            print(name, " failed to add quest pickup progress: ", clean_quest_id, " / ", clean_objective_id)
+        return false
+
+    if quest_progress_debug_prints:
+        print(name, " added quest pickup progress: ", clean_quest_id, " / ", clean_objective_id, " +", quest_progress_amount)
+
+    return true
 
 
 func _try_give_item(player: Node) -> bool:
@@ -167,10 +251,12 @@ func _try_give_currency(player: Node) -> bool:
 
     if amount <= 0:
         return false
+
     print("Trying to give currency to player.")
     print("Currency ID: ", clean_currency_id)
     print("Amount: ", amount)
     print("Player has add_currency: ", player.has_method("add_currency"))
+
     player.add_currency(clean_currency_id, amount)
 
     if debug_prints:

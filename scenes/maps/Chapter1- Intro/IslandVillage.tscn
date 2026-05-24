@@ -5,6 +5,76 @@
 [ext_resource type="PackedScene" uid="uid://3j1f8tltg0sj" path="res://scenes/npcs/shopkeepers/ShopKeeper_RealmVultar.tscn" id="3_i8oeu"]
 [ext_resource type="PackedScene" uid="uid://cihgogaol4td8" path="res://scenes/objects/map_transition_area.tscn" id="3_jjnn0"]
 [ext_resource type="PackedScene" uid="uid://ds0nibabilemd" path="res://scenes/player/Player.tscn" id="4_4ciox"]
+[ext_resource type="PackedScene" uid="uid://b4x6xea46nwp1" path="res://scenes/npcs/questgivers/Vultar/QuestGiver.tscn" id="4_lgn6g"]
+[ext_resource type="Script" uid="uid://dt5yvut01s10s" path="res://scripts/core/quests/quest_entry.gd" id="5_ub0y7"]
+[ext_resource type="Script" uid="uid://pomcudkoxce3" path="res://scripts/core/quests/quest_objective_entry.gd" id="6_7sfwb"]
+[ext_resource type="PackedScene" uid="uid://clxr5342eb6d" path="res://scenes/objects/questmarkers/QuestProgressArea.tscn" id="7_3djgd"]
+[ext_resource type="PackedScene" uid="uid://cfokf5kfxdijr" path="res://scenes/enemies/Foothills/Forrest_Beatle.tscn" id="8_h83v4"]
+[ext_resource type="PackedScene" uid="uid://pyq76iw1lw5d" path="res://scenes/objects/save_totem.tscn" id="11_know0"]
+[ext_resource type="PackedScene" uid="uid://s2g52egtcgbs" path="res://scenes/objects/pickups/testitem.tscn" id="12_ub0y7"]
+
+[sub_resource type="Resource" id="Resource_7gjs6"]
+script = ExtResource("6_7sfwb")
+objective_id = "campfire"
+objective_type = 3
+metadata/_custom_type_script = "uid://pomcudkoxce3"
+
+[sub_resource type="Resource" id="Resource_f2evy"]
+script = ExtResource("5_ub0y7")
+quest_id = "check_the_fire"
+quest_title = "Camp Fire"
+quest_type = 0
+started_flag = "ceck_the_fire_start"
+ready_to_turn_in_flag = "checked _the_fire"
+completed_flag = "checked_fire_comp"
+first_time_dialogue = "Go make sure the fire is out"
+active_dialogue = "Did you check it?"
+ready_to_turn_in_dialogue = "Was it out"
+completed_dialogue = "Good, Talk to me again i hace another task for you."
+objectives = Array[ExtResource("6_7sfwb")]([SubResource("Resource_7gjs6")])
+metadata/_custom_type_script = "uid://dt5yvut01s10s"
+
+[sub_resource type="Resource" id="Resource_i3jri"]
+script = ExtResource("6_7sfwb")
+objective_id = "beatle_dead"
+objective_type = 1
+metadata/_custom_type_script = "uid://pomcudkoxce3"
+
+[sub_resource type="Resource" id="Resource_pxthl"]
+script = ExtResource("5_ub0y7")
+quest_id = "kill_beatle"
+quest_title = "Invasive Cretures"
+quest_type = 0
+started_flag = "kill_beatle_start"
+ready_to_turn_in_flag = "kill_beatle_done"
+completed_flag = "kill_beatle_comp"
+first_time_dialogue = "Kill that beatle that got into town"
+active_dialogue = "Go kill it"
+ready_to_turn_in_dialogue = "You Killed it"
+completed_dialogue = "Good Job come back to me, for another job."
+objectives = Array[ExtResource("6_7sfwb")]([SubResource("Resource_i3jri")])
+metadata/_custom_type_script = "uid://dt5yvut01s10s"
+
+[sub_resource type="Resource" id="Resource_ub0y7"]
+script = ExtResource("6_7sfwb")
+objective_id = "get_shirt"
+objective_type = 2
+metadata/_custom_type_script = "uid://pomcudkoxce3"
+
+[sub_resource type="Resource" id="Resource_7sfwb"]
+script = ExtResource("5_ub0y7")
+quest_id = "get_shirt"
+quest_title = "Get Shirt"
+quest_type = 0
+started_flag = "get_shirt_start"
+ready_to_turn_in_flag = "got_shit"
+completed_flag = "shirt_comp"
+first_time_dialogue = "get my shit from by the shop"
+active_dialogue = "go get it"
+ready_to_turn_in_dialogue = "you got it"
+completed_dialogue = "thanks, come back for more work"
+objectives = Array[ExtResource("6_7sfwb")]([SubResource("Resource_ub0y7")])
+metadata/_custom_type_script = "uid://dt5yvut01s10s"
 
 [node name="IslandVillage" type="Node2D" unique_id=634947960]
 
@@ -20,6 +90,21 @@ position = Vector2(487, 94)
 [node name="ShopKeeper_RealmVultar" parent="Ysort" unique_id=228929064 instance=ExtResource("3_i8oeu")]
 position = Vector2(425.99997, 269.99997)
 rotation = 0.058428537
+
+[node name="QuestGiver" parent="Ysort" unique_id=1663897061 instance=ExtResource("4_lgn6g")]
+position = Vector2(818, 191)
+quests = Array[ExtResource("5_ub0y7")]([SubResource("Resource_f2evy"), SubResource("Resource_pxthl"), SubResource("Resource_7sfwb")])
+
+[node name="QuestProgressArea" parent="Ysort" unique_id=1142422050 instance=ExtResource("7_3djgd")]
+position = Vector2(590, 340)
+quest_id = "check_the_fire"
+objective_id = "campfire"
+
+[node name="ForrestBeatle" parent="Ysort" unique_id=1159453956 instance=ExtResource("8_h83v4")]
+position = Vector2(75, 162)
+quest_progress_enabled = true
+quest_id = "kill_beatle"
+objective_id = "beatle_dead"
 
 [node name="MapSpawns" type="Node2D" parent="." unique_id=1571131686]
 visible = false
@@ -139,3 +224,16 @@ polygon = PackedVector2Array(36, 650, 67, 645, 76, 665, 96, 669, 100, 701, 65, 7
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="MapCollisions/StaticBody2D20" unique_id=910949124]
 polygon = PackedVector2Array(91, 309, 61, 343, 52, 389, 88, 394, 102, 354, 116, 330)
+
+[node name="SaveTotem" parent="." unique_id=528667636 instance=ExtResource("11_know0")]
+position = Vector2(474, 150)
+respawn_id = "island_village"
+
+[node name="Testitem" parent="." unique_id=1484649167 instance=ExtResource("12_ub0y7")]
+position = Vector2(385, 318)
+persistent_id = "shirt"
+disappear_on_open = true
+quest_progress_enabled = true
+quest_id = "get_shirt"
+objective_id = "get_shirt"
+require_active_quest_to_open = false
