@@ -21,6 +21,13 @@ func start_quest(quest_entry: QuestEntry) -> bool:
         push_warning("Cannot start quest. Quest id is blank.")
         return false
 
+    var completed_flag := quest_entry.completed_flag.strip_edges()
+
+    if completed_flag != "" and SaveManager.is_flag_set(completed_flag):
+        if OS.is_debug_build():
+            print("QuestManager refused to restart completed quest by flag: ", quest_id)
+        return false
+
     if is_quest_completed(quest_id):
         return false
 
@@ -182,7 +189,11 @@ func is_quest_completed(quest_id: String) -> bool:
     if active_quests.has(clean_quest_id):
         return false
 
-    return false
+    # Default completed-flag convention.
+    # QuestGiver still checks the exact QuestEntry.completed_flag directly.
+    var completed_flag := "quest_" + clean_quest_id + "_completed"
+
+    return SaveManager.is_flag_set(completed_flag)
 
 
 func track_quest(quest_id: String) -> bool:
@@ -226,6 +237,8 @@ func untrack_quest(quest_id: String) -> void:
         if tracked_optional_quest_ids[index] == clean_quest_id:
             tracked_optional_quest_ids.remove_at(index)
 
+    _notify_quest_ui_changed()
+
 
 func get_tracked_quests() -> Array[Dictionary]:
     var rows: Array[Dictionary] = []
@@ -249,6 +262,83 @@ func get_active_quest_rows() -> Array[Dictionary]:
         rows.append(active_quests[quest_id])
 
     return rows
+
+
+func get_quest_save_data() -> Dictionary:
+    return {
+        "active_quests": active_quests.duplicate(true),
+        "tracked_story_quest_id": tracked_story_quest_id,
+        "tracked_optional_quest_ids": tracked_optional_quest_ids.duplicate()
+    }
+
+
+func load_quest_save_data(saved_quest_data: Dictionary) -> void:
+    active_quests.clear()
+    tracked_story_quest_id = ""
+    tracked_optional_quest_ids.clear()
+
+    if saved_quest_data.is_empty():
+        _notify_quest_ui_changed()
+        print("QuestManager loaded no saved quest data.")
+        return
+
+    var saved_active_quests: Dictionary = saved_quest_data.get("active_quests", {})
+
+    for quest_id in saved_active_quests.keys():
+        var clean_quest_id := str(quest_id).strip_edges()
+
+        if clean_quest_id == "":
+            continue
+
+        var quest_data = saved_active_quests.get(quest_id, {})
+
+        if typeof(quest_data) != TYPE_DICTIONARY:
+            continue
+
+        var typed_quest_data: Dictionary = quest_data.duplicate(true)
+
+        var completed_flag: String = str(typed_quest_data.get("completed_flag", "")).strip_edges()
+
+        if completed_flag != "" and SaveManager.is_flag_set(completed_flag):
+            continue
+
+        active_quests[clean_quest_id] = typed_quest_data
+
+    var saved_story_id := str(saved_quest_data.get("tracked_story_quest_id", "")).strip_edges()
+
+    if saved_story_id != "" and active_quests.has(saved_story_id):
+        tracked_story_quest_id = saved_story_id
+
+    var saved_optional_ids: Array = saved_quest_data.get("tracked_optional_quest_ids", [])
+
+    for saved_optional_id in saved_optional_ids:
+        var clean_optional_id := str(saved_optional_id).strip_edges()
+
+        if clean_optional_id == "":
+            continue
+
+        if not active_quests.has(clean_optional_id):
+            continue
+
+        if tracked_optional_quest_ids.has(clean_optional_id):
+            continue
+
+        if tracked_optional_quest_ids.size() >= 2:
+            break
+
+        tracked_optional_quest_ids.append(clean_optional_id)
+
+    _notify_quest_ui_changed()
+
+    print("QuestManager loaded active quest count: ", active_quests.size())
+    print("QuestManager loaded tracked optional quest count: ", tracked_optional_quest_ids.size())
+
+
+func clear_quest_state() -> void:
+    active_quests.clear()
+    tracked_story_quest_id = ""
+    tracked_optional_quest_ids.clear()
+    _notify_quest_ui_changed()
 
 
 func _build_quest_data_from_entry(quest_entry: QuestEntry) -> Dictionary:

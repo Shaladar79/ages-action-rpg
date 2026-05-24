@@ -99,12 +99,15 @@ quests = Array[ExtResource("5_ub0y7")]([SubResource("Resource_f2evy"), SubResour
 position = Vector2(590, 340)
 quest_id = "check_the_fire"
 objective_id = "campfire"
+persistent_id = "campfire_walk"
 
 [node name="ForrestBeatle" parent="Ysort" unique_id=1159453956 instance=ExtResource("8_h83v4")]
 position = Vector2(75, 162)
+respawn_mode = 2
 quest_progress_enabled = true
 quest_id = "kill_beatle"
 objective_id = "beatle_dead"
+slam_windup_time = 0.5
 
 [node name="MapSpawns" type="Node2D" parent="." unique_id=1571131686]
 visible = false

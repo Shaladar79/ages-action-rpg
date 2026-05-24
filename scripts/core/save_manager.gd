@@ -260,6 +260,7 @@ func save_game(player: Node) -> bool:
         "hotbar_slots": _get_player_hotbar_slots(player),
         "currency_data": _get_player_currency_save_data(player),
         "respawn": _build_respawn_data(),
+        "quest_data": _get_quest_save_data(),
         "world_state": _build_world_state_data()
     }
 
@@ -309,6 +310,7 @@ func load_game_from_menu() -> void:
 
     pending_loaded_data = save_data
     _apply_world_state_data(save_data)
+    _apply_quest_data(save_data)
 
     var scene_path: String = save_data.get("scene_path", "")
 
@@ -341,6 +343,7 @@ func apply_pending_loaded_data(player: Node) -> void:
     _apply_currency_data(player, pending_loaded_data)
     _apply_respawn_data(pending_loaded_data)
     _apply_world_state_data(pending_loaded_data)
+    _apply_quest_data(pending_loaded_data)
 
     pending_loaded_data = {}
 
@@ -420,6 +423,7 @@ func _get_player_hotbar_slots(player: Node) -> Array:
 
     return []
 
+
 func _get_player_currency_save_data(player: Node) -> Dictionary:
     if player.has_method("get_currency_save_data"):
         return player.get_currency_save_data()
@@ -441,6 +445,30 @@ func _apply_currency_data(player: Node, save_data: Dictionary) -> void:
         return
 
     push_warning("Player does not have set_currency_save_data(). Currency data was not loaded.")
+
+
+func _get_quest_save_data() -> Dictionary:
+    if QuestManager == null:
+        return {}
+
+    if QuestManager.has_method("get_quest_save_data"):
+        return QuestManager.get_quest_save_data()
+
+    return {}
+
+
+func _apply_quest_data(save_data: Dictionary) -> void:
+    var saved_quest_data: Dictionary = save_data.get("quest_data", {})
+
+    if QuestManager == null:
+        return
+
+    if QuestManager.has_method("load_quest_save_data"):
+        QuestManager.load_quest_save_data(saved_quest_data)
+        return
+
+    push_warning("QuestManager does not have load_quest_save_data(). Quest data was not loaded.")
+
 
 func _build_respawn_data() -> Dictionary:
     return {

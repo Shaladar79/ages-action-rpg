@@ -1,21 +1,48 @@
 extends Area2D
 class_name QuestProgressArea
 
+@export_group("Quest Progress")
 @export var quest_id: String = ""
 @export var objective_id: String = ""
 @export var progress_amount: int = 1
 
+@export_group("Persistence")
+@export var persistent_id: String = ""
+@export var save_triggered_state: bool = true
+@export var remove_if_already_triggered: bool = true
+
+@export_group("Trigger Behavior")
 @export var trigger_once: bool = true
 @export var disable_after_trigger: bool = true
 
+@export_group("Requirements")
 @export var required_flag: String = ""
+
+@export_group("Debug")
 @export var debug_prints: bool = true
 
 var _has_triggered: bool = false
 
 
 func _ready() -> void:
-    body_entered.connect(_on_body_entered)
+    if persistent_id.strip_edges() == "":
+        persistent_id = name
+
+    if save_triggered_state and SaveManager.is_collectable_collected(persistent_id):
+        _has_triggered = true
+
+        if debug_prints:
+            print("QuestProgressArea already triggered from save: ", persistent_id)
+
+        if remove_if_already_triggered:
+            queue_free()
+            return
+
+        if disable_after_trigger:
+            _disable_area()
+
+    if not body_entered.is_connected(_on_body_entered):
+        body_entered.connect(_on_body_entered)
 
 
 func _on_body_entered(body: Node2D) -> void:
@@ -70,10 +97,27 @@ func _on_body_entered(body: Node2D) -> void:
 
     _has_triggered = true
 
+    if save_triggered_state:
+        SaveManager.mark_collectable_collected(persistent_id)
+
     if debug_prints:
         print("QuestProgressArea added progress: ", clean_quest_id, " / ", clean_objective_id)
 
     if disable_after_trigger:
-        monitoring = false
-        set_deferred("monitorable", false)
-        visible = false
+        _disable_area()
+
+
+func _disable_area() -> void:
+    monitoring = false
+    set_deferred("monitorable", false)
+    visible = false
+
+    for child in get_children():
+        if child is CollisionShape2D:
+            child.set_deferred("disabled", true)
+
+        if child is CollisionPolygon2D:
+            child.set_deferred("disabled", true)
+
+        if child is CanvasItem:
+            child.visible = false
