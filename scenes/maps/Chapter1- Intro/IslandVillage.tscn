@@ -1,0 +1,24 @@
+[gd_scene format=3 uid="uid://dp5jqgxvrcyy3"]
+
+[ext_resource type="Texture2D" uid="uid://blqhbg7he1x0v" path="res://art/maps/Primative_Island_Village.png" id="1_qg4p0"]
+[ext_resource type="PackedScene" uid="uid://d2qyxdpcmw4x0" path="res://scenes/objects/map_spawn_point.tscn" id="2_4ciox"]
+[ext_resource type="PackedScene" uid="uid://cihgogaol4td8" path="res://scenes/objects/map_transition_area.tscn" id="3_jjnn0"]
+[ext_resource type="PackedScene" uid="uid://ds0nibabilemd" path="res://scenes/player/Player.tscn" id="4_4ciox"]
+
+[node name="IslandVillage" type="Node2D" unique_id=634947960]
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=262002603]
+position = Vector2(726, 545)
+texture = ExtResource("1_qg4p0")
+
+[node name="FromFoothills_Village" parent="." unique_id=366895598 instance=ExtResource("2_4ciox")]
+position = Vector2(527, 127)
+spawn_id = "ToVillage"
+
+[node name="FromFoothills" parent="." unique_id=1344752193 instance=ExtResource("3_jjnn0")]
+position = Vector2(515, 42)
+target_scene_path = "uid://2j7r845rkdbh"
+target_spawn_id = "FromVillage"
+
+[node name="Player" parent="." unique_id=949372820 instance=ExtResource("4_4ciox")]
+position = Vector2(487, 94)

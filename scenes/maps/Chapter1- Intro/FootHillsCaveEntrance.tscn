@@ -1,0 +1,46 @@
+[gd_scene format=3 uid="uid://b0lu42p7dhwm"]
+
+[ext_resource type="Texture2D" uid="uid://b1euygw2mhtfy" path="res://art/maps/cave_volcaniccave.png" id="1_ips5n"]
+[ext_resource type="PackedScene" uid="uid://cihgogaol4td8" path="res://scenes/objects/map_transition_area.tscn" id="2_1e46f"]
+[ext_resource type="PackedScene" uid="uid://d2qyxdpcmw4x0" path="res://scenes/objects/map_spawn_point.tscn" id="3_q2plx"]
+[ext_resource type="PackedScene" uid="uid://ds0nibabilemd" path="res://scenes/player/Player.tscn" id="4_1e46f"]
+[ext_resource type="PackedScene" uid="uid://pyq76iw1lw5d" path="res://scenes/objects/save_totem.tscn" id="5_q2plx"]
+
+[node name="Node2D" type="Node2D" unique_id=1825267986]
+z_index = -100
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1832189357]
+position = Vector2(733, 543)
+texture = ExtResource("1_ips5n")
+
+[node name="YSort" type="Node2D" parent="." unique_id=312399438]
+y_sort_enabled = true
+
+[node name="SaveTotem" parent="YSort" unique_id=528667636 instance=ExtResource("5_q2plx")]
+position = Vector2(1158, 163)
+respawn_id = "Cave"
+
+[node name="Player" parent="YSort" unique_id=949372820 groups=["player"] instance=ExtResource("4_1e46f")]
+position = Vector2(1307, 139)
+
+[node name="MapSpawns" type="Node2D" parent="." unique_id=676420149]
+
+[node name="FromFoothills" parent="MapSpawns" unique_id=366895598 instance=ExtResource("3_q2plx")]
+position = Vector2(1277, 173)
+spawn_id = "FromFoothills"
+
+[node name="MapSpawnPoint" parent="MapSpawns" unique_id=127815865 instance=ExtResource("3_q2plx")]
+position = Vector2(136, 1034)
+spawn_id = "FromRitual"
+
+[node name="MapTrans" type="Node2D" parent="." unique_id=452873340]
+
+[node name="ToRitual" parent="MapTrans" unique_id=1344752193 instance=ExtResource("2_1e46f")]
+position = Vector2(175, 964)
+target_scene_path = "uid://baxj5bwchnbd3"
+target_spawn_id = "FromCave"
+
+[node name="ToFoothills" parent="MapTrans" unique_id=549319488 instance=ExtResource("2_1e46f")]
+position = Vector2(1337, 75)
+target_scene_path = "uid://2j7r845rkdbh"
+target_spawn_id = "FromCave"

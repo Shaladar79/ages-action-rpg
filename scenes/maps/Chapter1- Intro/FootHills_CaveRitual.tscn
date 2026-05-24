@@ -1,0 +1,24 @@
+[gd_scene format=3 uid="uid://baxj5bwchnbd3"]
+
+[ext_resource type="Texture2D" uid="uid://cotl276kdx5v1" path="res://art/maps/fireportal.png" id="1_djena"]
+[ext_resource type="PackedScene" uid="uid://cihgogaol4td8" path="res://scenes/objects/map_transition_area.tscn" id="2_n73kn"]
+[ext_resource type="PackedScene" uid="uid://d2qyxdpcmw4x0" path="res://scenes/objects/map_spawn_point.tscn" id="3_ddp54"]
+[ext_resource type="PackedScene" uid="uid://ds0nibabilemd" path="res://scenes/player/Player.tscn" id="4_n037p"]
+
+[node name="FootHillsCaveRitual" type="Node2D" unique_id=594081172]
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=88032633]
+position = Vector2(727, 546)
+texture = ExtResource("1_djena")
+
+[node name="ToCaveEnt" parent="." unique_id=1344752193 instance=ExtResource("2_n73kn")]
+position = Vector2(1195, 101)
+target_scene_path = "uid://b0lu42p7dhwm"
+target_spawn_id = "FromRitual"
+
+[node name="MapSpawnPoint" parent="." unique_id=366895598 instance=ExtResource("3_ddp54")]
+position = Vector2(1122, 218)
+spawn_id = "FromCave"
+
+[node name="Player" parent="." unique_id=949372820 instance=ExtResource("4_n037p")]
+position = Vector2(1158, 174)

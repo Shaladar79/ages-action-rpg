@@ -1,0 +1,42 @@
+[gd_scene format=3 uid="uid://v1uxu1eltwyw"]
+
+[ext_resource type="Texture2D" uid="uid://by8bb47dv6h1c" path="res://art/maps/forrest_ritual_site.png" id="1_n7885"]
+[ext_resource type="PackedScene" uid="uid://ds0nibabilemd" path="res://scenes/player/Player.tscn" id="2_7kl22"]
+[ext_resource type="PackedScene" uid="uid://d2qyxdpcmw4x0" path="res://scenes/objects/map_spawn_point.tscn" id="3_g8qud"]
+[ext_resource type="PackedScene" uid="uid://cihgogaol4td8" path="res://scenes/objects/map_transition_area.tscn" id="4_v1lru"]
+[ext_resource type="PackedScene" uid="uid://pyq76iw1lw5d" path="res://scenes/objects/save_totem.tscn" id="5_g8qud"]
+
+[node name="ForrestRitual" type="Node2D" unique_id=598241187]
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1510091395]
+position = Vector2(726, 540)
+texture = ExtResource("1_n7885")
+
+[node name="Player" parent="." unique_id=949372820 groups=["player"] instance=ExtResource("2_7kl22")]
+position = Vector2(714, 897)
+
+[node name="SaveTotem" parent="." unique_id=528667636 instance=ExtResource("5_g8qud")]
+position = Vector2(813, 752)
+respawn_id = "Forrest_Ritual"
+
+[node name="MapSpawns" type="Node2D" parent="." unique_id=628626065]
+
+[node name="MapTransitionArea" parent="MapSpawns" unique_id=1344752193 instance=ExtResource("4_v1lru")]
+position = Vector2(710, 1042)
+target_scene_path = "uid://bs8xi76n5ey8c"
+target_spawn_id = "FromRitual"
+
+[node name="MapTransitionArea2" parent="MapSpawns" unique_id=2045761431 instance=ExtResource("4_v1lru")]
+position = Vector2(745, 49)
+target_scene_path = "uid://bpi37l23rtyh6"
+target_spawn_id = "FromRitual"
+
+[node name="MapSpawn" type="Node2D" parent="." unique_id=817995238]
+
+[node name="FromForrest" parent="MapSpawn" unique_id=366895598 instance=ExtResource("3_g8qud")]
+position = Vector2(719, 946)
+spawn_id = "FromForrest"
+
+[node name="FromBoss" parent="MapSpawn" unique_id=273106240 instance=ExtResource("3_g8qud")]
+position = Vector2(745, 139)
+spawn_id = "FromBoss"

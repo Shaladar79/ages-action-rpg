@@ -13,6 +13,7 @@
 [ext_resource type="PackedScene" uid="uid://c7ww4rahpm4ls" path="res://scenes/enemies/Slopes/Rock_Turret_Mini_Boss.tscn" id="11_i456y"]
 [ext_resource type="PackedScene" uid="uid://b81kib11b5cms" path="res://scenes/objects/LootContainer.tscn" id="12_adn6g"]
 [ext_resource type="Texture2D" uid="uid://dgy60dy11p0s5" path="res://art/Assets/icons/fullcolor/individual_32x32/icon256.png" id="13_adn6g"]
+[ext_resource type="Texture2D" uid="uid://cm4g7v2pey1iy" path="res://art/Assets/icons/fullcolor/individual_32x32/icon175.png" id="14_xyeje"]
 
 [node name="SlopesOfMountChonos" type="Node2D" unique_id=924677795]
 
@@ -25,9 +26,11 @@ monsters_respawn_by_default = true
 script = ExtResource("2_usf74")
 required_kills = 10
 target_node_path = NodePath("../Monsters/RockTurretMiniBoss")
+count_only_monsters_in_group = true
+eligible_monster_group = "slopes_rock_spitter_kill_count"
 
 [node name="MapImage" type="Sprite2D" parent="." unique_id=520401794]
-position = Vector2(723, 549)
+position = Vector2(729, 550)
 texture = ExtResource("2_440q3")
 
 [node name="MapCollisions_Top" type="Node2D" parent="." unique_id=802038249]
@@ -179,6 +182,7 @@ y_sort_enabled = true
 
 [node name="SaveTotem" parent="Ysort" unique_id=528667636 instance=ExtResource("3_440q3")]
 position = Vector2(158, 157)
+respawn_id = "Slopes_Save"
 
 [node name="Player" parent="Ysort" unique_id=949372820 instance=ExtResource("4_4prd7")]
 position = Vector2(201, 174)
@@ -188,6 +192,10 @@ position = Vector2(201, 174)
 [node name="From_Start_Cavern" parent="Mapspawns" unique_id=366895598 instance=ExtResource("3_1p2iq")]
 z_index = -100
 position = Vector2(193, 173)
+
+[node name="FromFoothills" parent="Mapspawns" unique_id=2021761799 instance=ExtResource("3_1p2iq")]
+position = Vector2(689, 1006)
+spawn_id = "FromFoothills"
 
 [node name="MapChange" type="Node2D" parent="." unique_id=1212440118]
 
@@ -231,33 +239,45 @@ For now, your feet are your shield."
 
 [node name="RockSpitter" parent="Monsters" unique_id=165711745 instance=ExtResource("7_4prd7")]
 position = Vector2(584, 223)
+persistent_id = "RS_1"
 
 [node name="RockSpitter2" parent="Monsters" unique_id=412149953 instance=ExtResource("7_4prd7")]
 position = Vector2(295, 586)
+persistent_id = "RS_2"
 
 [node name="RockSpitter3" parent="Monsters" unique_id=1552881211 instance=ExtResource("7_4prd7")]
 position = Vector2(925, 369)
+persistent_id = "RS_3"
+drop_currency_min_amount = 2
+drop_currency_max_amount = 2
 
 [node name="RockSpitter4" parent="Monsters" unique_id=343713712 instance=ExtResource("7_4prd7")]
 position = Vector2(1285, 402)
+persistent_id = "RS_4"
 
 [node name="RockSpitter5" parent="Monsters" unique_id=420897154 instance=ExtResource("7_4prd7")]
 position = Vector2(444, 775)
+persistent_id = "RS_5"
 
 [node name="RockSpitter6" parent="Monsters" unique_id=739308055 instance=ExtResource("7_4prd7")]
 position = Vector2(691, 972)
+persistent_id = "RS_6"
 
 [node name="RockSpitter7" parent="Monsters" unique_id=849516143 instance=ExtResource("7_4prd7")]
 position = Vector2(183, 918)
+persistent_id = "RS_7"
 
 [node name="RockSpitter8" parent="Monsters" unique_id=1656490551 instance=ExtResource("7_4prd7")]
 position = Vector2(891, 599)
+persistent_id = "RS_8"
 
 [node name="RockSpitter9" parent="Monsters" unique_id=1374426528 instance=ExtResource("7_4prd7")]
 position = Vector2(1297, 713)
+persistent_id = "RS_9"
 
 [node name="RockSpitter10" parent="Monsters" unique_id=846974716 instance=ExtResource("7_4prd7")]
 position = Vector2(1199, 535)
+persistent_id = "RS_10"
 
 [node name="StartCavern Earthling" parent="Monsters" unique_id=1655329841 instance=ExtResource("8_5obdd")]
 position = Vector2(340, 288)
@@ -317,9 +337,43 @@ melee_damage = 0
 
 [node name="Loot" type="Node2D" parent="." unique_id=777198081]
 
-[node name="LootContainer" parent="." unique_id=1056668251 instance=ExtResource("12_adn6g")]
+[node name="LootContainer_healing_tonic_1" parent="Loot" unique_id=1056668251 instance=ExtResource("12_adn6g")]
 position = Vector2(82, 595)
 persistent_id = "ht_pouch_1"
 closed_texture = ExtResource("13_adn6g")
 disappear_on_open = true
 drop_item_id = "healing_tonic"
+
+[node name="LootContainer_healing_tonic_2" parent="Loot" unique_id=1649691829 instance=ExtResource("12_adn6g")]
+position = Vector2(972, 466)
+persistent_id = "ht_pouch_2"
+closed_texture = ExtResource("13_adn6g")
+disappear_on_open = true
+drop_item_id = "healing_tonic"
+
+[node name="LootContainer_healing_tonic_3" parent="Loot" unique_id=1955093091 instance=ExtResource("12_adn6g")]
+position = Vector2(225, 972)
+persistent_id = "ht_pouch_3"
+closed_texture = ExtResource("13_adn6g")
+disappear_on_open = true
+drop_item_id = "healing_tonic"
+
+[node name="LootContainer_Shines_1" parent="Loot" unique_id=1320283112 instance=ExtResource("12_adn6g")]
+position = Vector2(752, 112)
+persistent_id = "shines_1"
+closed_texture = ExtResource("14_xyeje")
+opened_message = "You find 50 shines"
+disappear_on_open = true
+drop_currency_id = "shines"
+drop_currency_min_amount = 20
+drop_currency_max_amount = 20
+
+[node name="LootContainer_Shines_2" parent="Loot" unique_id=2096982870 instance=ExtResource("12_adn6g")]
+position = Vector2(1052, 933)
+persistent_id = "shines_2"
+closed_texture = ExtResource("14_xyeje")
+opened_message = "You find 50 shines"
+disappear_on_open = true
+drop_currency_id = "shines"
+drop_currency_min_amount = 20
+drop_currency_max_amount = 20

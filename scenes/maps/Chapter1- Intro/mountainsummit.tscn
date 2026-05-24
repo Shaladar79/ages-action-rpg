@@ -1,0 +1,8 @@
+[gd_scene format=3 uid="uid://d2dj8pxxgihm4"]
+
+[ext_resource type="Texture2D" uid="uid://cdu2hjbdnyhw6" path="res://art/maps/MountainSummit.png" id="1_rmru7"]
+
+[node name="Summit" type="Node2D" unique_id=1213367326]
+
+[node name="MapImage" type="Sprite2D" parent="." unique_id=978306677]
+texture = ExtResource("1_rmru7")

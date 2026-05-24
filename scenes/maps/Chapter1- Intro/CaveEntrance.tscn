@@ -1,0 +1,36 @@
+[gd_scene format=3 uid="uid://c1apyoqrt6kwb"]
+
+[ext_resource type="Texture2D" uid="uid://b1euygw2mhtfy" path="res://art/maps/cave_volcaniccave.png" id="1_sqvcd"]
+[ext_resource type="Script" uid="uid://dgyphpqc2hcty" path="res://scripts/core/map_settings.gd" id="2_opqvh"]
+[ext_resource type="Script" uid="uid://6xbmbu82a262" path="res://scripts/story/KillCountManager.gd" id="3_bvhqy"]
+[ext_resource type="PackedScene" uid="uid://cihgogaol4td8" path="res://scenes/objects/map_transition_area.tscn" id="4_dy37t"]
+[ext_resource type="PackedScene" uid="uid://d2qyxdpcmw4x0" path="res://scenes/objects/map_spawn_point.tscn" id="5_iekn6"]
+
+[node name="CaveEntrance" type="Node2D" unique_id=1452127864]
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=125798576]
+position = Vector2(799.5, 445.5)
+scale = Vector2(1.0973756, 0.8222836)
+texture = ExtResource("1_sqvcd")
+
+[node name="Mapsettings" type="Node2D" parent="." unique_id=1298466334]
+script = ExtResource("2_opqvh")
+
+[node name="KillCount" type="Node2D" parent="." unique_id=776437895]
+script = ExtResource("3_bvhqy")
+
+[node name="MapTrans" type="Node2D" parent="." unique_id=5883816]
+
+[node name="FromCaveEnt_Foothills" parent="MapTrans" unique_id=1344752193 instance=ExtResource("4_dy37t")]
+position = Vector2(1465, 56)
+
+[node name="FromCaveEnt_CaveRitual" parent="MapTrans" unique_id=982688075 instance=ExtResource("4_dy37t")]
+position = Vector2(199, 778)
+
+[node name="SpawnPoints" type="Node2D" parent="." unique_id=770088619]
+
+[node name="FromFoothills" parent="SpawnPoints" unique_id=366895598 instance=ExtResource("5_iekn6")]
+position = Vector2(1417, 123)
+
+[node name="FromCaveRitual" parent="SpawnPoints" unique_id=1222772555 instance=ExtResource("5_iekn6")]
+position = Vector2(160, 834)

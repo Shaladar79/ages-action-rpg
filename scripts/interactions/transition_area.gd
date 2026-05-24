@@ -20,6 +20,7 @@ var player_in_area: Node2D = null
 
 
 func _ready() -> void:
+    print("Transition loaded: ", name, " at ", global_position)
     if not body_entered.is_connected(_on_body_entered):
         body_entered.connect(_on_body_entered)
 

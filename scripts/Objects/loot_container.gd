@@ -89,7 +89,7 @@ func _open_container(player: Node) -> void:
     if _try_give_currency(player):
         received_anything = true
 
-        _hide_interaction_prompt()
+    _hide_interaction_prompt()
 
     if received_anything:
         _show_player_message(player, opened_message)
@@ -97,11 +97,11 @@ func _open_container(player: Node) -> void:
         _show_player_message(player, empty_message)
 
     if debug_prints:
-       print("Loot container opened: ", persistent_id)
+        print("Loot container opened: ", persistent_id)
 
     if disappear_on_open:
-       queue_free()
-       return
+        queue_free()
+        return
 
     _refresh_visual()
 
@@ -167,7 +167,10 @@ func _try_give_currency(player: Node) -> bool:
 
     if amount <= 0:
         return false
-
+    print("Trying to give currency to player.")
+    print("Currency ID: ", clean_currency_id)
+    print("Amount: ", amount)
+    print("Player has add_currency: ", player.has_method("add_currency"))
     player.add_currency(clean_currency_id, amount)
 
     if debug_prints:

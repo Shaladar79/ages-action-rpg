@@ -1,0 +1,42 @@
+[gd_scene format=3 uid="uid://bs8xi76n5ey8c"]
+
+[ext_resource type="Texture2D" uid="uid://dyytytvr8sso1" path="res://art/maps/Parallax Test_World.png" id="1_oy0xl"]
+[ext_resource type="PackedScene" uid="uid://d2qyxdpcmw4x0" path="res://scenes/objects/map_spawn_point.tscn" id="2_yx0ah"]
+[ext_resource type="PackedScene" uid="uid://ds0nibabilemd" path="res://scenes/player/Player.tscn" id="3_7cpp6"]
+[ext_resource type="PackedScene" uid="uid://cihgogaol4td8" path="res://scenes/objects/map_transition_area.tscn" id="4_4ax8d"]
+[ext_resource type="PackedScene" uid="uid://pyq76iw1lw5d" path="res://scenes/objects/save_totem.tscn" id="5_4ax8d"]
+
+[node name="Forrest" type="Node2D" unique_id=489099902]
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1506944520]
+position = Vector2(722, 543)
+texture = ExtResource("1_oy0xl")
+
+[node name="Player" parent="." unique_id=949372820 groups=["player"] instance=ExtResource("3_7cpp6")]
+position = Vector2(1318, 349)
+
+[node name="ManpTrans" type="Node2D" parent="." unique_id=1228078535]
+
+[node name="ToFootHills" parent="ManpTrans" unique_id=1344752193 instance=ExtResource("4_4ax8d")]
+position = Vector2(1394, 282)
+target_scene_path = "uid://2j7r845rkdbh"
+target_spawn_id = "FromForrest"
+
+[node name="ToForrestRitual" parent="ManpTrans" unique_id=1267580029 instance=ExtResource("4_4ax8d")]
+position = Vector2(264, 37)
+target_scene_path = "uid://v1uxu1eltwyw"
+target_spawn_id = "FromForrest"
+
+[node name="MapSpawnPoint" parent="ManpTrans" unique_id=366895598 instance=ExtResource("2_yx0ah")]
+position = Vector2(296, 110)
+spawn_id = "FromRitual"
+
+[node name="SaveTotem" parent="ManpTrans" unique_id=528667636 instance=ExtResource("5_4ax8d")]
+position = Vector2(1060, 211)
+respawn_id = "Forrest"
+
+[node name="SpawnPonts" type="Node2D" parent="." unique_id=691935357]
+
+[node name="FromFoothills" parent="SpawnPonts" unique_id=2095581574 instance=ExtResource("2_yx0ah")]
+position = Vector2(1341, 311)
+spawn_id = "FromFotthills"

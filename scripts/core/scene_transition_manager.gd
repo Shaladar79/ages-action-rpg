@@ -43,7 +43,8 @@ func store_player_data(player: Node) -> void:
     pending_player_data = {
         "character_stats": _build_character_stats_data(stats),
         "inventory": _get_player_inventory(player),
-        "hotbar_slots": _get_player_hotbar_slots(player)
+        "hotbar_slots": _get_player_hotbar_slots(player),
+        "currency_data": _get_player_currency_save_data(player)
     }
 
     print("Stored player transition data.")
@@ -63,6 +64,7 @@ func apply_player_data(player: Node) -> void:
     _apply_character_stats(player, pending_player_data)
     _apply_inventory(player, pending_player_data)
     _apply_hotbar_slots(player, pending_player_data)
+    _apply_currency_data(player, pending_player_data)
 
     pending_player_data = {}
 
@@ -146,6 +148,16 @@ func _get_player_hotbar_slots(player: Node) -> Array:
         return player.get_hotbar_slots()
 
     return []
+
+
+func _get_player_currency_save_data(player: Node) -> Dictionary:
+    if player.has_method("get_currency_save_data"):
+        return player.get_currency_save_data()
+
+    return {
+        "currencies": {},
+        "discovered_currency_ids": []
+    }
 
 
 func _apply_character_stats(player: Node, data: Dictionary) -> void:
@@ -241,3 +253,16 @@ func _apply_hotbar_slots(player: Node, data: Dictionary) -> void:
         return
 
     push_warning("Player does not have set_hotbar_slots(). Hotbar was not transferred.")
+
+
+func _apply_currency_data(player: Node, data: Dictionary) -> void:
+    var saved_currency_data: Dictionary = data.get("currency_data", {})
+
+    if saved_currency_data.is_empty():
+        return
+
+    if player.has_method("set_currency_save_data"):
+        player.set_currency_save_data(saved_currency_data)
+        return
+
+    push_warning("Player does not have set_currency_save_data(). Currency data was not transferred.")

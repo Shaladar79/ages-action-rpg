@@ -1,35 +1,35 @@
 [gd_scene format=3 uid="uid://05p1dytgra5q"]
 
-[ext_resource type="Script" uid="uid://by3sbf30mtuip" path="res://scenes/maps/start_cavern.gd" id="1_x5kcs"]
-[ext_resource type="Script" uid="uid://dgyphpqc2hcty" path="res://scripts/core/map_settings.gd" id="2_1x8pa"]
-[ext_resource type="Texture2D" uid="uid://bbj6po78v6q28" path="res://art/maps/Parallax_StartCavern.png" id="2_rl85u"]
-[ext_resource type="PackedScene" uid="uid://ds0nibabilemd" path="res://scenes/player/Player.tscn" id="2_x5kcs"]
-[ext_resource type="PackedScene" uid="uid://rs71u43sps4l" path="res://scenes/objects/push_rock.tscn" id="6_kcxuk"]
-[ext_resource type="PackedScene" uid="uid://0vcalfqbsnfl" path="res://scenes/enemies/StartCavern/SC_Boss.tscn" id="7_gd1mq"]
-[ext_resource type="PackedScene" uid="uid://bbc8361yvbkxt" path="res://scenes/objects/BreakableRock.tscn" id="7_rl85u"]
-[ext_resource type="PackedScene" uid="uid://c54peu6mqtky8" path="res://scenes/objects/CollectableClub.tscn" id="8_o2k4q"]
-[ext_resource type="Script" uid="uid://cn6mnuf1x8vbq" path="res://scripts/enemies/BossMonster.gd" id="8_svhj1"]
-[ext_resource type="PackedScene" uid="uid://bas01evmp7jm4" path="res://scenes/objects/trans_area.tscn" id="10_3svxi"]
-[ext_resource type="PackedScene" uid="uid://pyq76iw1lw5d" path="res://scenes/objects/save_totem.tscn" id="10_3573v"]
-[ext_resource type="PackedScene" uid="uid://d0sha3ho6ifgm" path="res://scenes/items/Consumables/Healing_Tonic.tscn" id="10_csk6f"]
-[ext_resource type="PackedScene" uid="uid://cihgogaol4td8" path="res://scenes/objects/map_transition_area.tscn" id="11_3svxi"]
-[ext_resource type="PackedScene" uid="uid://c1p4pdy1arniu" path="res://scenes/objects/MonsterClearEchoTrigger.tscn" id="11_btgmq"]
-[ext_resource type="PackedScene" uid="uid://bpapdn74pq4la" path="res://scenes/enemies/StartCavern/StartCavern_Earthling.tscn" id="11_gd1mq"]
-[ext_resource type="PackedScene" uid="uid://corrah5u0halh" path="res://scenes/objects/EchoDialogueTrigger.tscn" id="15_b8m33"]
-[ext_resource type="PackedScene" uid="uid://bql24l7sa24cp" path="res://scenes/objects/PuzzleResetStone.tscn" id="16_ru4hj"]
-[ext_resource type="PackedScene" uid="uid://c22k78g2y6kpn" path="res://scenes/objects/BossGateBlocker.tscn" id="18_gi0ji"]
+[ext_resource type="Script" uid="uid://by3sbf30mtuip" path="res://scenes/maps/Chapter1- Intro/start_cavern.gd" id="1_ipecf"]
+[ext_resource type="Script" uid="uid://dgyphpqc2hcty" path="res://scripts/core/map_settings.gd" id="2_j3sot"]
+[ext_resource type="Texture2D" uid="uid://bbj6po78v6q28" path="res://art/maps/Parallax_StartCavern.png" id="3_bc5g6"]
+[ext_resource type="PackedScene" uid="uid://bas01evmp7jm4" path="res://scenes/objects/trans_area.tscn" id="4_gpagj"]
+[ext_resource type="PackedScene" uid="uid://rs71u43sps4l" path="res://scenes/objects/push_rock.tscn" id="5_vpebn"]
+[ext_resource type="PackedScene" uid="uid://bbc8361yvbkxt" path="res://scenes/objects/BreakableRock.tscn" id="6_pbla5"]
+[ext_resource type="PackedScene" uid="uid://0vcalfqbsnfl" path="res://scenes/enemies/StartCavern/SC_Boss.tscn" id="7_g1fv5"]
+[ext_resource type="Script" uid="uid://cn6mnuf1x8vbq" path="res://scripts/enemies/BossMonster.gd" id="8_wqcy6"]
+[ext_resource type="PackedScene" uid="uid://bpapdn74pq4la" path="res://scenes/enemies/StartCavern/StartCavern_Earthling.tscn" id="9_yytj5"]
+[ext_resource type="PackedScene" uid="uid://d0sha3ho6ifgm" path="res://scenes/items/Consumables/Healing_Tonic.tscn" id="10_2ewpr"]
+[ext_resource type="PackedScene" uid="uid://ds0nibabilemd" path="res://scenes/player/Player.tscn" id="11_vfogo"]
+[ext_resource type="PackedScene" uid="uid://c54peu6mqtky8" path="res://scenes/objects/CollectableClub.tscn" id="12_iyco4"]
+[ext_resource type="PackedScene" uid="uid://pyq76iw1lw5d" path="res://scenes/objects/save_totem.tscn" id="13_7iida"]
+[ext_resource type="PackedScene" uid="uid://bql24l7sa24cp" path="res://scenes/objects/PuzzleResetStone.tscn" id="14_xv4x6"]
+[ext_resource type="PackedScene" uid="uid://cihgogaol4td8" path="res://scenes/objects/map_transition_area.tscn" id="15_ayirs"]
+[ext_resource type="PackedScene" uid="uid://c1p4pdy1arniu" path="res://scenes/objects/MonsterClearEchoTrigger.tscn" id="16_c4d2t"]
+[ext_resource type="PackedScene" uid="uid://corrah5u0halh" path="res://scenes/objects/EchoDialogueTrigger.tscn" id="17_7g80t"]
+[ext_resource type="PackedScene" uid="uid://c22k78g2y6kpn" path="res://scenes/objects/BossGateBlocker.tscn" id="18_x63im"]
 
 [node name="StartCavern" type="Node2D" unique_id=102575327]
 position = Vector2(-7, -11)
-script = ExtResource("1_x5kcs")
+script = ExtResource("1_ipecf")
 
 [node name="MapSettings" type="Node2D" parent="." unique_id=2091156536]
-script = ExtResource("2_1x8pa")
+script = ExtResource("2_j3sot")
 
 [node name="MapImage" type="Sprite2D" parent="." unique_id=470302150]
 z_index = -100
 position = Vector2(10, 12)
-texture = ExtResource("2_rl85u")
+texture = ExtResource("3_bc5g6")
 centered = false
 
 [node name="CollisionWalls" type="Node2D" parent="." unique_id=1594235200]
@@ -83,13 +83,13 @@ position = Vector2(158, 371)
 
 [node name="Objects" type="Node2D" parent="." unique_id=790765806]
 
-[node name="TransitionArea" parent="Objects" unique_id=600252779 instance=ExtResource("10_3svxi")]
+[node name="TransitionArea" parent="Objects" unique_id=600252779 instance=ExtResource("4_gpagj")]
 visible = false
 position = Vector2(565, 1074)
 target_marker_path = NodePath("../Marker")
 target_spawn_id = ""
 
-[node name="TransitionArea2" parent="Objects" unique_id=520088292 instance=ExtResource("10_3svxi")]
+[node name="TransitionArea2" parent="Objects" unique_id=520088292 instance=ExtResource("4_gpagj")]
 visible = false
 position = Vector2(1403, 729)
 target_marker_path = NodePath("../Marker2")
@@ -103,106 +103,102 @@ position = Vector2(1089, 719)
 visible = false
 position = Vector2(1294, 564)
 
-[node name="PushRock" parent="Objects" unique_id=649356019 instance=ExtResource("6_kcxuk")]
+[node name="PushRock" parent="Objects" unique_id=649356019 instance=ExtResource("5_vpebn")]
 position = Vector2(407, 536)
 scale = Vector2(0.9, 0.9)
 persistent_id = "PushRock"
 
-[node name="PushRock3" parent="Objects" unique_id=171120929 instance=ExtResource("6_kcxuk")]
+[node name="PushRock3" parent="Objects" unique_id=171120929 instance=ExtResource("5_vpebn")]
 position = Vector2(391.00003, 732)
 scale = Vector2(0.9, 0.9)
 persistent_id = "PushRock3"
 
-[node name="PushRock5" parent="Objects" unique_id=387110213 instance=ExtResource("6_kcxuk")]
+[node name="PushRock5" parent="Objects" unique_id=387110213 instance=ExtResource("5_vpebn")]
 position = Vector2(204, 789)
 scale = Vector2(0.8, 0.8)
 persistent_id = "PushRock3"
 
-[node name="PushRock7" parent="Objects" unique_id=1554864028 instance=ExtResource("6_kcxuk")]
+[node name="PushRock7" parent="Objects" unique_id=1554864028 instance=ExtResource("5_vpebn")]
 position = Vector2(232, 846)
 scale = Vector2(0.8, 0.8)
 persistent_id = "PushRock7"
 
-[node name="PushRock2" parent="Objects" unique_id=1334004705 instance=ExtResource("6_kcxuk")]
+[node name="PushRock2" parent="Objects" unique_id=1334004705 instance=ExtResource("5_vpebn")]
 position = Vector2(459, 240)
 scale = Vector2(0.9, 0.9)
 persistent_id = "PushRock4"
 
-[node name="PushRock6" parent="Objects" unique_id=572963818 instance=ExtResource("6_kcxuk")]
-position = Vector2(1077, 714.00006)
-scale = Vector2(0.9, 0.9)
-persistent_id = "PushRock5"
-
-[node name="BreakableRock" parent="Objects" unique_id=1719668920 instance=ExtResource("7_rl85u")]
+[node name="BreakableRock" parent="Objects" unique_id=1719668920 instance=ExtResource("6_pbla5")]
 position = Vector2(449.00003, 432.00003)
 persistent_id = "BreakRock"
 max_hit_points = 2
 
-[node name="BreakableRock2" parent="Objects" unique_id=309177355 instance=ExtResource("7_rl85u")]
+[node name="BreakableRock2" parent="Objects" unique_id=309177355 instance=ExtResource("6_pbla5")]
 position = Vector2(424.00003, 339.00003)
 persistent_id = "BreakRock2"
 max_hit_points = 2
 
-[node name="BreakableRock3" parent="Objects" unique_id=989234372 instance=ExtResource("7_rl85u")]
+[node name="BreakableRock3" parent="Objects" unique_id=989234372 instance=ExtResource("6_pbla5")]
 position = Vector2(549, 215.00002)
 persistent_id = "BreakRock3"
 max_hit_points = 2
 
-[node name="BreakableRock4" parent="Objects" unique_id=731841295 instance=ExtResource("7_rl85u")]
+[node name="BreakableRock4" parent="Objects" unique_id=731841295 instance=ExtResource("6_pbla5")]
 position = Vector2(638, 201)
 persistent_id = "BreakRock4"
 max_hit_points = 2
 
-[node name="BreakableRock5" parent="Objects" unique_id=276393617 instance=ExtResource("7_rl85u")]
+[node name="BreakableRock5" parent="Objects" unique_id=276393617 instance=ExtResource("6_pbla5")]
 position = Vector2(685, 910.00006)
 persistent_id = "BreakRock5"
 max_hit_points = 2
 
-[node name="BreakableRock6" parent="Objects" unique_id=1133455491 instance=ExtResource("7_rl85u")]
+[node name="BreakableRock6" parent="Objects" unique_id=1133455491 instance=ExtResource("6_pbla5")]
 position = Vector2(738, 938.00006)
 persistent_id = "BreakRock6"
 max_hit_points = 2
 
-[node name="BreakableRock7" parent="Objects" unique_id=50061366 instance=ExtResource("7_rl85u")]
+[node name="BreakableRock7" parent="Objects" unique_id=50061366 instance=ExtResource("6_pbla5")]
 position = Vector2(681, 954)
 persistent_id = "BreakRock7"
 max_hit_points = 2
 
-[node name="BreakableRock8" parent="Objects" unique_id=364065125 instance=ExtResource("7_rl85u")]
+[node name="BreakableRock8" parent="Objects" unique_id=364065125 instance=ExtResource("6_pbla5")]
 position = Vector2(1147, 717)
 persistent_id = "BreakRock8"
 max_hit_points = 2
 
-[node name="BreakableRock9" parent="Objects" unique_id=2133566474 instance=ExtResource("7_rl85u")]
+[node name="BreakableRock9" parent="Objects" unique_id=2133566474 instance=ExtResource("6_pbla5")]
 position = Vector2(1292, 719)
 persistent_id = "BreakRock9"
 max_hit_points = 2
 
-[node name="BreakableRock10" parent="Objects" unique_id=1004047280 instance=ExtResource("7_rl85u")]
+[node name="BreakableRock10" parent="Objects" unique_id=1004047280 instance=ExtResource("6_pbla5")]
 position = Vector2(1111, 462)
 persistent_id = "BreakRock10"
 max_hit_points = 2
 
-[node name="BreakableRock11" parent="Objects" unique_id=114512878 instance=ExtResource("7_rl85u")]
+[node name="BreakableRock11" parent="Objects" unique_id=114512878 instance=ExtResource("6_pbla5")]
 position = Vector2(1173, 444)
 persistent_id = "BreakRock11"
 max_hit_points = 2
 
-[node name="BreakableRock12" parent="Objects" unique_id=260304288 instance=ExtResource("7_rl85u")]
+[node name="BreakableRock12" parent="Objects" unique_id=260304288 instance=ExtResource("6_pbla5")]
 position = Vector2(1223, 470)
 persistent_id = "BreakRock12"
 max_hit_points = 2
 
-[node name="BreakableRock13" parent="Objects" unique_id=88982035 instance=ExtResource("7_rl85u")]
+[node name="BreakableRock13" parent="Objects" unique_id=88982035 instance=ExtResource("6_pbla5")]
 position = Vector2(1269, 442)
 persistent_id = "BreakRock13"
 max_hit_points = 2
 
 [node name="Monsters" type="Node2D" parent="." unique_id=1278830268]
 
-[node name="ScBoss" parent="Monsters" unique_id=1453354898 instance=ExtResource("7_gd1mq")]
+[node name="ScBoss" parent="Monsters" unique_id=1453354898 instance=ExtResource("7_g1fv5")]
 position = Vector2(1211, 296)
-script = ExtResource("8_svhj1")
+script = ExtResource("8_wqcy6")
+boss_defeated_flag = "intro_boss_defeated"
 special_attacks_enabled = true
 special_global_cooldown = 1.0
 lock_movement_during_special = true
@@ -227,6 +223,22 @@ slam_trigger_range = 72.0
 slam_windup_time = 0.8
 slam_cooldown = 3.5
 slam_telegraph_color = Color(1, 0, 0, 0.45)
+burst_enabled = false
+burst_damage = 1
+burst_damage_types = 8
+burst_trigger_range = 260.0
+burst_cooldown = 5.0
+burst_followup_delay = 2.0
+burst_projectile_range = 260.0
+burst_projectile_speed = 240.0
+burst_projectile_hit_radius = 10.0
+burst_projectile_spawn_offset = 16.0
+burst_projectile_texture = null
+burst_projectile_scale = Vector2(1, 1)
+burst_projectile_color = Color(1, 0.85, 0.25, 1)
+burst_projectile_z_index = 220
+burst_projectile_collision_layer = 0
+burst_projectile_collision_mask = 1
 persistent_id = "SCBoss"
 monster_name = "Monster"
 defense = 1
@@ -237,80 +249,80 @@ drop_currency_chance_percent = 100.0
 drop_currency_min_amount = 10
 drop_currency_max_amount = 10
 
-[node name="StartCavern Earthling" parent="Monsters" unique_id=1655329841 instance=ExtResource("11_gd1mq")]
+[node name="StartCavern Earthling" parent="Monsters" unique_id=1655329841 instance=ExtResource("9_yytj5")]
 position = Vector2(829, 441)
 persistent_id = "SCEarth1"
 drop_currency_max_amount = 4
 
-[node name="StartCavern Earthling2" parent="Monsters" unique_id=1629732996 instance=ExtResource("11_gd1mq")]
+[node name="StartCavern Earthling2" parent="Monsters" unique_id=1629732996 instance=ExtResource("9_yytj5")]
 position = Vector2(741, 578)
 persistent_id = "SCEarth2"
 
-[node name="StartCavern Earthling3" parent="Monsters" unique_id=1093796272 instance=ExtResource("11_gd1mq")]
+[node name="StartCavern Earthling3" parent="Monsters" unique_id=1093796272 instance=ExtResource("9_yytj5")]
 position = Vector2(861, 647)
 persistent_id = "SCEarth3"
 
-[node name="StartCavern Earthling4" parent="Monsters" unique_id=810886055 instance=ExtResource("11_gd1mq")]
+[node name="StartCavern Earthling4" parent="Monsters" unique_id=810886055 instance=ExtResource("9_yytj5")]
 position = Vector2(759, 697)
 persistent_id = "SCEarth4"
 
-[node name="StartCavern Earthling5" parent="Monsters" unique_id=14868799 instance=ExtResource("11_gd1mq")]
+[node name="StartCavern Earthling5" parent="Monsters" unique_id=14868799 instance=ExtResource("9_yytj5")]
 position = Vector2(1212, 706)
 persistent_id = "SCEarth5"
 
-[node name="StartCavern Earthling6" parent="Monsters" unique_id=1366198870 instance=ExtResource("11_gd1mq")]
-position = Vector2(1170, 584)
+[node name="StartCavern Earthling6" parent="Monsters" unique_id=1366198870 instance=ExtResource("9_yytj5")]
+position = Vector2(1220, 580)
 persistent_id = "SCEarth6"
 
-[node name="StartCavern Earthling7" parent="Monsters" unique_id=235897523 instance=ExtResource("11_gd1mq")]
-position = Vector2(1278, 509)
+[node name="StartCavern Earthling7" parent="Monsters" unique_id=235897523 instance=ExtResource("9_yytj5")]
+position = Vector2(1280, 497)
 persistent_id = "SCEarth7"
 
-[node name="StartCavern Earthling8" parent="Monsters" unique_id=798555463 instance=ExtResource("11_gd1mq")]
-position = Vector2(1181, 520)
+[node name="StartCavern Earthling8" parent="Monsters" unique_id=798555463 instance=ExtResource("9_yytj5")]
+position = Vector2(1174, 545)
 persistent_id = "SCEarth8"
 
-[node name="StartCavern Earthling9" parent="Monsters" unique_id=328998222 instance=ExtResource("11_gd1mq")]
-position = Vector2(1333, 559)
+[node name="StartCavern Earthling9" parent="Monsters" unique_id=328998222 instance=ExtResource("9_yytj5")]
+position = Vector2(1290, 616)
 persistent_id = "SCEarth9"
 
-[node name="StartCavern Earthling10" parent="Monsters" unique_id=2013640142 instance=ExtResource("11_gd1mq")]
-position = Vector2(1095, 516)
+[node name="StartCavern Earthling10" parent="Monsters" unique_id=2013640142 instance=ExtResource("9_yytj5")]
+position = Vector2(1141, 507)
 persistent_id = "SCEarth10"
 
-[node name="HealingTonic" parent="Monsters" unique_id=1005442685 instance=ExtResource("10_csk6f")]
+[node name="HealingTonic" parent="Monsters" unique_id=1005442685 instance=ExtResource("10_2ewpr")]
 position = Vector2(135, 817)
 persistent_id = "HealingTonic1"
 
 [node name="YSortWorld" type="Node2D" parent="." unique_id=965274766]
 y_sort_enabled = true
 
-[node name="Player" parent="YSortWorld" unique_id=949372820 groups=["player"] instance=ExtResource("2_x5kcs")]
+[node name="Player" parent="YSortWorld" unique_id=949372820 groups=["player"] instance=ExtResource("11_vfogo")]
 position = Vector2(144, 371)
 
-[node name="CollectableClub" parent="YSortWorld" unique_id=524225198 instance=ExtResource("8_o2k4q")]
+[node name="CollectableClub" parent="YSortWorld" unique_id=524225198 instance=ExtResource("12_iyco4")]
 z_index = -1
 position = Vector2(412, 973)
 persistent_id = "Stone_Club1"
 auto_equip_on_pickup = true
 
-[node name="SaveTotem" parent="YSortWorld" unique_id=528667636 instance=ExtResource("10_3573v")]
+[node name="SaveTotem" parent="YSortWorld" unique_id=528667636 instance=ExtResource("13_7iida")]
 position = Vector2(870, 80)
 
-[node name="PuzzleResetStone" parent="YSortWorld" unique_id=244382430 instance=ExtResource("16_ru4hj")]
+[node name="PuzzleResetStone" parent="YSortWorld" unique_id=244382430 instance=ExtResource("14_xv4x6")]
 position = Vector2(289, 734)
 scale = Vector2(0.2, 0.2)
 push_object_paths = Array[NodePath]([NodePath("../../Objects/PushRock5"), NodePath("../../Objects/PushRock7")])
 
-[node name="MapTransitionArea" parent="." unique_id=1344752193 instance=ExtResource("11_3svxi")]
+[node name="MapTransitionArea" parent="." unique_id=1344752193 instance=ExtResource("15_ayirs")]
 visible = false
 position = Vector2(1299, 198)
 target_scene_path = "uid://chph8q00qw2nc"
 target_spawn_id = "From_Start_Cavern"
 
-[node name="MonsterClearEchoTrigger" parent="." unique_id=1642328376 instance=ExtResource("11_btgmq")]
-visible = false
-position = Vector2(1212, 558)
+[node name="MonsterClearEchoTrigger" parent="." unique_id=1642328376 instance=ExtResource("16_c4d2t")]
+position = Vector2(1335, 552)
+scale = Vector2(0.25, 0.25)
 trigger_id = "SCBoss_fgt"
 required_defeated_monster_ids = Array[String](["SCEarth1", "SCEarth2", "SCEarth3", "SCEarth4", "SCEarth5", "SCEarth6", "SCEarth7", "SCEarth8", "SCEarth9", "SCEarth10"])
 dialogue_text = "The path grows still.
@@ -322,7 +334,7 @@ Watch the ground.
 Greater enemies often warn where their strongest attacks will land.
 When the arena speaks, move."
 
-[node name="EchoIntroTrigger" parent="." unique_id=280110426 instance=ExtResource("15_b8m33")]
+[node name="EchoIntroTrigger" parent="." unique_id=280110426 instance=ExtResource("17_7g80t")]
 visible = false
 position = Vector2(213, 477.00003)
 scale = Vector2(0.7, 0.7)
@@ -339,7 +351,7 @@ The corruption has roots older than kingdoms, older than names.
 But survival comes before destiny.
 Move, listen, and learn."
 
-[node name="EchoPushRockTrigger" parent="." unique_id=1741898381 instance=ExtResource("15_b8m33")]
+[node name="EchoPushRockTrigger" parent="." unique_id=1741898381 instance=ExtResource("17_7g80t")]
 visible = false
 position = Vector2(390, 536.00006)
 scale = Vector2(0.7, 0.7)
@@ -354,7 +366,7 @@ When a puzzle may trap itself, they often placed a reset stone nearby.
 If the way becomes sealed, seek the reset."
 required_flag = "intro_spirit_met"
 
-[node name="EchoBreakableRockTrigger" parent="." unique_id=20013153 instance=ExtResource("15_b8m33")]
+[node name="EchoBreakableRockTrigger" parent="." unique_id=20013153 instance=ExtResource("17_7g80t")]
 visible = false
 position = Vector2(451, 465)
 scale = Vector2(0.6, 0.6)
@@ -369,7 +381,7 @@ Your Stone Club carries Bashing force.
 Use it against the cracked rock and open the way."
 required_flag = "equipment_lesson_seen"
 
-[node name="EchoSaveTotemTrigger" parent="." unique_id=846468557 instance=ExtResource("15_b8m33")]
+[node name="EchoSaveTotemTrigger" parent="." unique_id=846468557 instance=ExtResource("17_7g80t")]
 visible = false
 position = Vector2(867, 117)
 scale = Vector2(0.8, 0.8)
@@ -384,7 +396,7 @@ Use it when the path is sealed, but do not grow careless.
 Some places in Mezoria will not be so forgiving."
 required_flag = "breakable_lesson_seen"
 
-[node name="EchoHealingTonicTrigger" parent="." unique_id=1199151662 instance=ExtResource("15_b8m33")]
+[node name="EchoHealingTonicTrigger" parent="." unique_id=1199151662 instance=ExtResource("17_7g80t")]
 visible = false
 position = Vector2(132, 815.99994)
 scale = Vector2(0.7, 0.7)
@@ -398,7 +410,7 @@ Open your character screen and place the tonic on one of your hotkeys.
 Then you may call on it with keys one through five.
 A prepared hand survives what a desperate hand cannot."
 
-[node name="EchoStoneClubTrigger" parent="." unique_id=1471645559 instance=ExtResource("15_b8m33")]
+[node name="EchoStoneClubTrigger" parent="." unique_id=1471645559 instance=ExtResource("17_7g80t")]
 visible = false
 position = Vector2(410, 968)
 scale = Vector2(0.7, 0.7)
@@ -413,7 +425,7 @@ Remember that.
 Some things break only when struck the right way."
 required_flag = "push_rock_lesson_seen"
 
-[node name="EchoCombatLessonTrigger" parent="." unique_id=253619871 instance=ExtResource("15_b8m33")]
+[node name="EchoCombatLessonTrigger" parent="." unique_id=253619871 instance=ExtResource("17_7g80t")]
 visible = false
 position = Vector2(859, 284)
 trigger_id = "echo_first_combat_lesson"
@@ -428,7 +440,7 @@ Learn them, and you will live longer.
 Do not let fear root you in place."
 required_flag = "save_totem_lesson_seen"
 
-[node name="BossGateBlocker" parent="." unique_id=2096925575 instance=ExtResource("18_gi0ji")]
+[node name="BossGateBlocker" parent="." unique_id=2096925575 instance=ExtResource("18_x63im")]
 visible = false
 position = Vector2(1299, 199)
 rotation = -0.009365366

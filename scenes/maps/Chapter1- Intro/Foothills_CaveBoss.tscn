@@ -1,0 +1,8 @@
+[gd_scene format=3 uid="uid://dwvjdkpq8eebq"]
+
+[ext_resource type="Texture2D" uid="uid://rmprnf6h3cud" path="res://art/maps/volcano boss arena.png" id="1_277la"]
+
+[node name="FoothillsCaveBoss" type="Node2D" unique_id=251262397]
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=693322395]
+texture = ExtResource("1_277la")

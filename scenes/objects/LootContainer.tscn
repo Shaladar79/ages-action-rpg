@@ -11,4 +11,5 @@ script = ExtResource("1_8gaj4")
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=2062310532]
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1978358394]
+visible = false
 shape = SubResource("CircleShape2D_8gaj4")

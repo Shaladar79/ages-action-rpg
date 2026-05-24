@@ -227,12 +227,12 @@ script = ExtResource("1_gfjak")
 weapon_visual_scale = Vector2(0.06, 0.06)
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=664127344]
+scale = Vector2(0.8, 0.8)
 sprite_frames = SubResource("SpriteFrames_mndc6")
 animation = &"walk_up"
 frame_progress = 0.71346617
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=582978164]
-visible = false
 y_sort_enabled = true
 position = Vector2(0, 11.25)
 shape = SubResource("RectangleShape2D_gfjak")
@@ -279,6 +279,6 @@ text = "Test"
 scroll_active = false
 
 [node name="WeaponSprite" type="Sprite2D" parent="." unique_id=126568166]
-visible = false
-scale = Vector2(0.2, 0.2)
+position = Vector2(1.5258789e-05, -2.999999)
+scale = Vector2(0.05, 0.05)
 texture = ExtResource("4_524rm")
