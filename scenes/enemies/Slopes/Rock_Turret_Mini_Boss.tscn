@@ -244,17 +244,11 @@ radius = 290.0155
 
 [node name="RockTurretMiniBoss" type="CharacterBody2D" unique_id=425000271]
 script = ExtResource("1_v4gf1")
-boss_defeated_flag = "slopes_optional_miniboss_defeated"
-aoe_damage = 3
-aoe_damage_types = 17
-slam_enabled = false
-burst_enabled = true
-burst_damage = 2
-burst_damage_types = 9
+persistent_id = "RT_"
 respawn_mode = 2
+monster_name = "Rock Turret"
 monster_level = 5
 max_hit_points = 25
-attack = 4
 defense = 2
 xp_reward = 15
 drop_item_1_id = "AMULET_OF_MINOR_DEFENSE"
@@ -266,7 +260,17 @@ drop_currency_min_amount = 20
 drop_currency_max_amount = 20
 weakness_types = 128
 move_speed = 10.0
+can_attack_player = false
 melee_damage = 4
+boss_defeated_flag = "slopes_optional_miniboss_defeated"
+special_attacks_enabled = true
+aoe_enabled = true
+aoe_damage = 7
+aoe_damage_types = 1
+burst_enabled = true
+burst_lock_movement = true
+burst_damage = 4
+burst_damage_types = 9
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=500854733]
 scale = Vector2(1.2, 1.214)

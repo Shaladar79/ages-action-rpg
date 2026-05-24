@@ -5,7 +5,8 @@ enum SpecialChoice {
     NONE,
     AOE,
     SLAM,
-    BURST
+    BURST,
+    PROJECTILE
 }
 
 var monster: Monster = null
@@ -16,10 +17,12 @@ var current_special_locks_movement: bool = false
 var aoe_special_timer: float = 0.0
 var slam_special_timer: float = 0.0
 var burst_special_timer: float = 0.0
+var projectile_special_timer: float = 0.0
 var special_global_timer: float = 0.0
 
 var active_telegraphs: Array[Polygon2D] = []
 var active_burst_projectiles: Array[Area2D] = []
+var active_single_projectiles: Array[Area2D] = []
 
 
 func setup(owner_monster: Monster) -> void:
@@ -39,6 +42,9 @@ func update_special_timers(delta: float) -> void:
 
     if burst_special_timer > 0.0:
         burst_special_timer -= delta
+
+    if projectile_special_timer > 0.0:
+        projectile_special_timer -= delta
 
     if special_global_timer > 0.0:
         special_global_timer -= delta
@@ -89,6 +95,10 @@ func try_start_special_attack() -> bool:
             _start_burst_special()
             return true
 
+        SpecialChoice.PROJECTILE:
+            _start_projectile_special()
+            return true
+
         _:
             return false
 
@@ -96,6 +106,7 @@ func try_start_special_attack() -> bool:
 func clear_all_special_visuals() -> void:
     _clear_active_telegraphs()
     _clear_active_burst_projectiles()
+    _clear_active_single_projectiles()
     is_using_special_attack = false
     current_special_locks_movement = false
 
@@ -117,6 +128,9 @@ func _choose_special_attack() -> SpecialChoice:
 
     if monster.burst_enabled and burst_special_timer <= 0.0 and distance_to_player <= monster.burst_trigger_range:
         return SpecialChoice.BURST
+
+    if monster.projectile_enabled and projectile_special_timer <= 0.0 and distance_to_player <= monster.projectile_trigger_range:
+        return SpecialChoice.PROJECTILE
 
     return SpecialChoice.NONE
 
@@ -251,6 +265,59 @@ func _start_burst_special() -> void:
     _end_special()
 
 
+func _start_projectile_special() -> void:
+    if monster == null:
+        return
+
+    if is_using_special_attack:
+        return
+
+    is_using_special_attack = true
+    current_special_locks_movement = monster.projectile_lock_movement
+    projectile_special_timer = monster.projectile_cooldown
+    special_global_timer = monster.special_global_cooldown
+
+    _flash_monster_for_special_attack()
+
+    var projectile_direction := _get_direction_to_player()
+    var projectile_origin := monster.global_position
+    var telegraph: Polygon2D = null
+
+    if monster.projectile_use_line_telegraph:
+        telegraph = _create_rectangle_telegraph(
+            projectile_origin,
+            projectile_direction,
+            monster.projectile_range,
+            monster.projectile_telegraph_width,
+            monster.projectile_telegraph_color
+        )
+
+    print(monster.monster_name, " begins projectile special.")
+
+    if monster.projectile_windup_time > 0.0:
+        await monster.get_tree().create_timer(monster.projectile_windup_time).timeout
+
+    if not _is_monster_valid_for_special():
+        if telegraph != null:
+            _remove_telegraph_from_active_list(telegraph)
+            if is_instance_valid(telegraph):
+                telegraph.queue_free()
+
+        _end_special()
+        return
+
+    if telegraph != null:
+        await _flash_and_clear_telegraph(telegraph)
+
+    if not _is_monster_valid_for_special():
+        _end_special()
+        return
+
+    _spawn_single_projectile(projectile_direction)
+
+    _end_special()
+
+
 func _flash_monster_for_special_attack() -> void:
     if monster == null:
         return
@@ -350,6 +417,80 @@ func _spawn_burst_projectile(direction: Vector2) -> void:
     tween.finished.connect(_on_burst_projectile_finished.bind(projectile))
 
 
+func _spawn_single_projectile(direction: Vector2) -> void:
+    if monster == null:
+        return
+
+    if direction == Vector2.ZERO:
+        return
+
+    var normalized_direction := direction.normalized()
+
+    var projectile := Area2D.new()
+    projectile.name = "MonsterProjectileSpecial"
+    projectile.global_position = monster.global_position + (normalized_direction * monster.projectile_spawn_offset)
+    projectile.rotation = normalized_direction.angle()
+    projectile.z_index = monster.projectile_z_index
+    projectile.z_as_relative = false
+    projectile.monitoring = true
+    projectile.monitorable = true
+    projectile.collision_layer = monster.projectile_collision_layer
+    projectile.collision_mask = monster.projectile_collision_mask
+    projectile.set_meta("has_hit_player", false)
+
+    var collision_shape := CollisionShape2D.new()
+    var circle_shape := CircleShape2D.new()
+    circle_shape.radius = monster.projectile_hit_radius
+    collision_shape.shape = circle_shape
+    projectile.add_child(collision_shape)
+
+    if monster.projectile_texture != null:
+        var sprite := Sprite2D.new()
+        sprite.name = "ProjectileSprite"
+        sprite.texture = monster.projectile_texture
+        sprite.scale = monster.projectile_scale
+        sprite.z_index = monster.projectile_z_index
+        projectile.add_child(sprite)
+    else:
+        var polygon := Polygon2D.new()
+        polygon.name = "ProjectileFallbackPolygon"
+        polygon.color = monster.projectile_color
+        polygon.polygon = PackedVector2Array([
+            Vector2(8.0, 0.0),
+            Vector2(0.0, -4.0),
+            Vector2(-8.0, 0.0),
+            Vector2(0.0, 4.0)
+        ])
+        polygon.z_index = monster.projectile_z_index
+        projectile.add_child(polygon)
+
+    var current_scene := monster.get_tree().current_scene
+
+    if current_scene != null:
+        current_scene.add_child(projectile)
+    else:
+        monster.add_child(projectile)
+
+    active_single_projectiles.append(projectile)
+
+    projectile.body_entered.connect(_on_single_projectile_body_entered.bind(projectile))
+    projectile.area_entered.connect(_on_single_projectile_area_entered.bind(projectile))
+
+    var end_position := projectile.global_position + (normalized_direction * monster.projectile_range)
+    var travel_time := 0.8
+
+    if monster.projectile_speed > 0.0:
+        travel_time = monster.projectile_range / monster.projectile_speed
+
+    travel_time = maxf(0.05, travel_time)
+
+    var tween := projectile.create_tween()
+    tween.tween_property(projectile, "global_position", end_position, travel_time)
+    tween.finished.connect(_on_single_projectile_finished.bind(projectile))
+
+    print(monster.monster_name, " fired projectile special.")
+
+
 func _on_burst_projectile_body_entered(body: Node2D, projectile: Area2D) -> void:
     if monster == null:
         return
@@ -379,6 +520,69 @@ func _on_burst_projectile_body_entered(body: Node2D, projectile: Area2D) -> void
     projectile.queue_free()
 
 
+func _on_single_projectile_body_entered(body: Node2D, projectile: Area2D) -> void:
+    if monster == null:
+        return
+
+    if projectile == null:
+        return
+
+    if not is_instance_valid(projectile):
+        return
+
+    if bool(projectile.get_meta("has_hit_player", false)):
+        return
+
+    if body == null:
+        return
+
+    if not body.is_in_group("player"):
+        return
+
+    projectile.set_meta("has_hit_player", true)
+
+    _damage_player_from_special(body, monster.projectile_damage, monster.projectile_damage_types)
+
+    print(monster.monster_name, " projectile special hit player for base damage: ", monster.projectile_damage)
+
+    _remove_single_projectile_from_active_list(projectile)
+    projectile.queue_free()
+
+
+func _on_single_projectile_area_entered(area: Area2D, projectile: Area2D) -> void:
+    if monster == null:
+        return
+
+    if projectile == null:
+        return
+
+    if not is_instance_valid(projectile):
+        return
+
+    if bool(projectile.get_meta("has_hit_player", false)):
+        return
+
+    if area == null:
+        return
+
+    var possible_player := area.get_parent()
+
+    if possible_player == null:
+        return
+
+    if not possible_player.is_in_group("player"):
+        return
+
+    projectile.set_meta("has_hit_player", true)
+
+    _damage_player_from_special(possible_player, monster.projectile_damage, monster.projectile_damage_types)
+
+    print(monster.monster_name, " projectile special hit player hurtbox for base damage: ", monster.projectile_damage)
+
+    _remove_single_projectile_from_active_list(projectile)
+    projectile.queue_free()
+
+
 func _on_burst_projectile_finished(projectile: Area2D) -> void:
     if projectile == null:
         return
@@ -388,6 +592,18 @@ func _on_burst_projectile_finished(projectile: Area2D) -> void:
         return
 
     _remove_burst_projectile_from_active_list(projectile)
+    projectile.queue_free()
+
+
+func _on_single_projectile_finished(projectile: Area2D) -> void:
+    if projectile == null:
+        return
+
+    if not is_instance_valid(projectile):
+        _remove_single_projectile_from_active_list(projectile)
+        return
+
+    _remove_single_projectile_from_active_list(projectile)
     projectile.queue_free()
 
 
@@ -596,6 +812,23 @@ func _remove_burst_projectile_from_active_list(projectile: Area2D) -> void:
     for index in range(active_burst_projectiles.size() - 1, -1, -1):
         if active_burst_projectiles[index] == projectile:
             active_burst_projectiles.remove_at(index)
+
+
+func _clear_active_single_projectiles() -> void:
+    for projectile in active_single_projectiles:
+        if is_instance_valid(projectile):
+            projectile.queue_free()
+
+    active_single_projectiles.clear()
+
+
+func _remove_single_projectile_from_active_list(projectile: Area2D) -> void:
+    if projectile == null:
+        return
+
+    for index in range(active_single_projectiles.size() - 1, -1, -1):
+        if active_single_projectiles[index] == projectile:
+            active_single_projectiles.remove_at(index)
 
 
 func _build_circle_polygon(radius: float, sides: int) -> PackedVector2Array:

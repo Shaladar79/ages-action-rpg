@@ -272,11 +272,23 @@ radius = 27.018513
 
 [node name="StartCavern Earthling" type="CharacterBody2D" unique_id=1655329841]
 script = ExtResource("1_dd2jv")
-max_hit_points = 2
-attack = 2
+persistent_id = "Earthling_"
+monster_name = "Earthling Lv 3"
+monster_level = 3
+max_hit_points = 6
+xp_reward = 2
 drop_currency_chance_percent = 100.0
 drop_currency_max_amount = 3
 weakness_types = 1
+can_attack_player = false
+special_attacks_enabled = true
+slam_enabled = true
+slam_damage = 3
+slam_length = 30.0
+slam_width = 24.0
+slam_trigger_range = 34.0
+slam_windup_time = 0.2
+slam_cooldown = 1.5
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=1158242322]
 sprite_frames = SubResource("SpriteFrames_oxsjp")

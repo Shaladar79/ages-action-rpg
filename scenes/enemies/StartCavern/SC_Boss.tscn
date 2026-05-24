@@ -280,14 +280,19 @@ radius = 37.65634
 
 [node name="ScBoss" type="CharacterBody2D" unique_id=1453354898]
 script = ExtResource("1_puln3")
-persistent_id = "SC Boss"
+persistent_id = "EarthHulk_"
 respawn_mode = 2
-monster_name = null
+monster_name = "EarthHulk"
 max_hit_points = 10
-attack = 3
-defense = 2
+defense = 1
 xp_reward = 5
 weakness_types = 128
+melee_damage = 4
+special_attacks_enabled = true
+aoe_enabled = true
+aoe_damage = 3
+slam_enabled = true
+slam_damage = 6
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=199466056]
 scale = Vector2(1.203125, 1.328125)

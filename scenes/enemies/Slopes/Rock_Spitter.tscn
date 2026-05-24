@@ -251,18 +251,20 @@ radius = 219.52904
 [node name="RockSpitter" type="CharacterBody2D" unique_id=165711745 groups=["slopes_rock_spitter_kill_count"]]
 script = ExtResource("1_3h42a")
 persistent_id = "RS_"
-respawn_mode = 2
-monster_level = 2
-max_hit_points = 5
-attack = 3
+monster_name = "Rock Spitter Lv3"
+monster_level = 3
+max_hit_points = 6
 defense = 1
-xp_reward = 2
+xp_reward = 3
 drop_currency_chance_percent = 50.5
 move_speed = 20.0
 detection_range = 200.0
-attack_style = 1
-ranged_damage = 3
+can_attack_player = false
+ranged_damage = 4
 ranged_damage_types = 1
+special_attacks_enabled = true
+projectile_enabled = true
+projectile_damage = 3
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=1026028676]
 sprite_frames = SubResource("SpriteFrames_fvuhv")

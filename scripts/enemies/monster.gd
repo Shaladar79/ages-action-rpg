@@ -124,6 +124,9 @@ var ranged_damage_types: int = DamageTypes.PIERCING
 @export var ranged_attack_icon_speed: float = 260.0
 @export var ranged_attack_icon_lifetime: float = 0.8
 @export var ranged_attack_icon_z_index: int = 20
+@export var ranged_projectile_hit_radius: float = 8.0
+@export var ranged_projectile_collision_layer: int = 0
+@export var ranged_projectile_collision_mask: int = 1
 
 @export_group("Death")
 @export var destroy_on_death: bool = true
@@ -233,6 +236,41 @@ var burst_damage_types: int = DamageTypes.PIERCING
 @export var burst_projectile_z_index: int = 220
 @export var burst_projectile_collision_layer: int = 0
 @export var burst_projectile_collision_mask: int = 1
+
+@export_group("Projectile Special")
+@export var projectile_enabled: bool = false
+@export var projectile_lock_movement: bool = false
+@export var projectile_damage: int = 1
+@export_flags(
+    "Bashing",
+    "Slashing",
+    "Chopping",
+    "Piercing",
+    "Fire",
+    "Ice",
+    "Lightning",
+    "Acid",
+    "Light",
+    "Shadow"
+)
+var projectile_damage_types: int = DamageTypes.PIERCING
+@export var projectile_trigger_range: float = 180.0
+@export var projectile_cooldown: float = 1.75
+@export var projectile_windup_time: float = 0.2
+@export var projectile_range: float = 220.0
+@export var projectile_speed: float = 260.0
+@export var projectile_hit_radius: float = 8.0
+@export var projectile_spawn_offset: float = 16.0
+@export var projectile_texture: Texture2D = null
+@export var projectile_scale: Vector2 = Vector2(1.0, 1.0)
+@export var projectile_color: Color = Color(1.0, 0.85, 0.25, 1.0)
+@export var projectile_z_index: int = 220
+@export var projectile_collision_layer: int = 0
+@export var projectile_collision_mask: int = 1
+
+@export var projectile_use_line_telegraph: bool = true
+@export var projectile_telegraph_width: float = 10.0
+@export var projectile_telegraph_color: Color = Color(1.0, 0.85, 0.25, 0.35)
 
 @onready var sprite_2d: Sprite2D = get_node_or_null("Sprite2D") as Sprite2D
 @onready var animated_sprite_2d: AnimatedSprite2D = get_node_or_null("AnimatedSprite2D") as AnimatedSprite2D
@@ -454,86 +492,144 @@ func _try_ranged_attack_player() -> void:
         return
 
     _flash_attack()
-    _show_ranged_attack_icon(player_target)
-    _damage_player(player_target, ranged_damage, ranged_damage_types)
+    _spawn_ranged_projectile(player_target)
 
     ranged_attack_timer = ranged_cooldown
-    print(monster_name, " used ranged attack for base damage: ", ranged_damage)
+    print(monster_name, " fired ranged attack for base damage: ", ranged_damage)
 
-
-func _show_ranged_attack_icon(target: Node2D) -> void:
+func _spawn_ranged_projectile(target: Node2D) -> void:
     if target == null:
         return
 
-    if ranged_attack_icon_texture == null:
-        _show_default_ranged_attack_icon(target)
+    var start_position: Vector2 = global_position
+    var target_position: Vector2 = target.global_position
+    var direction: Vector2 = start_position.direction_to(target_position)
+
+    if direction == Vector2.ZERO:
         return
 
-    var icon := Sprite2D.new()
-    icon.name = "RangedAttackIcon"
-    icon.texture = ranged_attack_icon_texture
-    icon.scale = ranged_attack_icon_scale
-    icon.z_index = ranged_attack_icon_z_index
-    icon.global_position = global_position
+    var projectile := Area2D.new()
+    projectile.name = "MonsterRangedProjectile"
+    projectile.global_position = start_position
+    projectile.rotation = direction.angle()
+    projectile.z_index = ranged_attack_icon_z_index
+    projectile.z_as_relative = false
+    projectile.monitoring = true
+    projectile.monitorable = true
+    projectile.collision_layer = ranged_projectile_collision_layer
+    projectile.collision_mask = ranged_projectile_collision_mask
+    projectile.set_meta("has_hit_player", false)
+
+    var collision_shape := CollisionShape2D.new()
+    var circle_shape := CircleShape2D.new()
+    circle_shape.radius = ranged_projectile_hit_radius
+    collision_shape.shape = circle_shape
+    projectile.add_child(collision_shape)
+
+    if ranged_attack_icon_texture != null:
+        var sprite := Sprite2D.new()
+        sprite.name = "ProjectileSprite"
+        sprite.texture = ranged_attack_icon_texture
+        sprite.scale = ranged_attack_icon_scale
+        sprite.z_index = ranged_attack_icon_z_index
+        projectile.add_child(sprite)
+    else:
+        var fallback := Polygon2D.new()
+        fallback.name = "ProjectileFallbackPolygon"
+        fallback.color = Color(1.0, 0.85, 0.25, 1.0)
+        fallback.polygon = PackedVector2Array([
+            Vector2(8.0, 0.0),
+            Vector2(0.0, -4.0),
+            Vector2(-8.0, 0.0),
+            Vector2(0.0, 4.0)
+        ])
+        fallback.z_index = ranged_attack_icon_z_index
+        projectile.add_child(fallback)
 
     var current_scene := get_tree().current_scene
 
     if current_scene != null:
-        current_scene.add_child(icon)
+        current_scene.add_child(projectile)
     else:
-        add_child(icon)
+        add_child(projectile)
 
-    var target_position := target.global_position
-    var travel_distance := icon.global_position.distance_to(target_position)
-    var travel_time := ranged_attack_icon_lifetime
+    projectile.body_entered.connect(_on_ranged_projectile_body_entered.bind(projectile))
+    projectile.area_entered.connect(_on_ranged_projectile_area_entered.bind(projectile))
+
+    var travel_distance: float = start_position.distance_to(target_position)
+    var travel_time: float = ranged_attack_icon_lifetime
 
     if ranged_attack_icon_speed > 0.0:
         travel_time = travel_distance / ranged_attack_icon_speed
         travel_time = clampf(travel_time, 0.08, ranged_attack_icon_lifetime)
 
-    var direction := icon.global_position.direction_to(target_position)
+    var tween := projectile.create_tween()
+    tween.tween_property(projectile, "global_position", target_position, travel_time)
+    tween.finished.connect(_on_ranged_projectile_finished.bind(projectile))
 
-    if direction != Vector2.ZERO:
-        icon.rotation = direction.angle()
-
-    var tween := icon.create_tween()
-    tween.tween_property(icon, "global_position", target_position, travel_time)
-    tween.tween_property(icon, "modulate:a", 0.0, 0.12)
-    tween.finished.connect(icon.queue_free)
-
-
-func _show_default_ranged_attack_icon(target: Node2D) -> void:
-    if target == null:
+func _on_ranged_projectile_body_entered(body: Node2D, projectile: Area2D) -> void:
+    if projectile == null:
         return
 
-    var icon := ColorRect.new()
-    icon.name = "DefaultRangedAttackIcon"
-    icon.size = Vector2(8.0, 8.0)
-    icon.pivot_offset = icon.size * 0.5
-    icon.color = Color(1.0, 0.85, 0.25, 1.0)
-    icon.z_index = ranged_attack_icon_z_index
-    icon.global_position = global_position
+    if not is_instance_valid(projectile):
+        return
 
-    var current_scene := get_tree().current_scene
+    if bool(projectile.get_meta("has_hit_player", false)):
+        return
 
-    if current_scene != null:
-        current_scene.add_child(icon)
-    else:
-        add_child(icon)
+    if body == null:
+        return
 
-    var target_position := target.global_position
-    var travel_distance := icon.global_position.distance_to(target_position)
-    var travel_time := ranged_attack_icon_lifetime
+    if not body.is_in_group("player"):
+        return
 
-    if ranged_attack_icon_speed > 0.0:
-        travel_time = travel_distance / ranged_attack_icon_speed
-        travel_time = clampf(travel_time, 0.08, ranged_attack_icon_lifetime)
+    projectile.set_meta("has_hit_player", true)
 
-    var tween := icon.create_tween()
-    tween.tween_property(icon, "global_position", target_position, travel_time)
-    tween.tween_property(icon, "modulate:a", 0.0, 0.12)
-    tween.finished.connect(icon.queue_free)
+    _damage_player(body, ranged_damage, ranged_damage_types)
 
+    print(monster_name, " ranged projectile hit player for base damage: ", ranged_damage)
+
+    projectile.queue_free()
+
+
+func _on_ranged_projectile_area_entered(area: Area2D, projectile: Area2D) -> void:
+    if projectile == null:
+        return
+
+    if not is_instance_valid(projectile):
+        return
+
+    if bool(projectile.get_meta("has_hit_player", false)):
+        return
+
+    if area == null:
+        return
+
+    var possible_player := area.get_parent()
+
+    if possible_player == null:
+        return
+
+    if not possible_player.is_in_group("player"):
+        return
+
+    projectile.set_meta("has_hit_player", true)
+
+    _damage_player(possible_player, ranged_damage, ranged_damage_types)
+
+    print(monster_name, " ranged projectile hit player hurtbox for base damage: ", ranged_damage)
+
+    projectile.queue_free()
+
+
+func _on_ranged_projectile_finished(projectile: Area2D) -> void:
+    if projectile == null:
+        return
+
+    if not is_instance_valid(projectile):
+        return
+
+    projectile.queue_free()
 
 func _damage_player(player: Node2D, damage_amount: int, attack_damage_types: int) -> void:
     if player == null:

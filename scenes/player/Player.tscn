@@ -194,6 +194,9 @@ size = Vector2(16, 8.5)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_4kuee"]
 size = Vector2(10, 18.5)
 
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_524rm"]
+size = Vector2(12, 30.625)
+
 [node name="Player" type="CharacterBody2D" unique_id=949372820]
 script = ExtResource("1_gfjak")
 base_move_speed = 100.0
@@ -209,6 +212,7 @@ animation = &"idle_right"
 frame_progress = 0.6668118
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=582978164]
+visible = false
 y_sort_enabled = true
 position = Vector2(0, 13)
 shape = SubResource("RectangleShape2D_gfjak")
@@ -227,6 +231,7 @@ monitoring = false
 monitorable = false
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="AttackArea" unique_id=432478603]
+visible = false
 shape = SubResource("RectangleShape2D_4kuee")
 disabled = true
 
@@ -258,3 +263,10 @@ scroll_active = false
 position = Vector2(0, -2.3841858e-07)
 scale = Vector2(0.015, 0.02)
 texture = ExtResource("4_524rm")
+
+[node name="Hurtbox" type="Area2D" parent="." unique_id=6034215]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Hurtbox" unique_id=1612217188]
+visible = false
+position = Vector2(0, 2.3125)
+shape = SubResource("RectangleShape2D_524rm")

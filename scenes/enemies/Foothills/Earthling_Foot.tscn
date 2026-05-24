@@ -1,134 +1,134 @@
-[gd_scene format=3 uid="uid://bpapdn74pq4la"]
+[gd_scene format=3 uid="uid://7bj8u1ommy6b"]
 
-[ext_resource type="Script" uid="uid://piqrssdi1ltw" path="res://scripts/enemies/monster.gd" id="1_4ibsn"]
-[ext_resource type="Texture2D" uid="uid://bf4trwjoc6xk5" path="res://art/Assets/RPG Monsters Mega Pack/Monsters/TB_Monster_024/TB_Monster_024_C.png" id="2_tvnbh"]
+[ext_resource type="Script" uid="uid://piqrssdi1ltw" path="res://scripts/enemies/monster.gd" id="1_6gkhm"]
+[ext_resource type="Texture2D" uid="uid://bf4trwjoc6xk5" path="res://art/Assets/RPG Monsters Mega Pack/Monsters/TB_Monster_024/TB_Monster_024_C.png" id="2_8q6b3"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_ac2ou"]
-atlas = ExtResource("2_tvnbh")
+atlas = ExtResource("2_8q6b3")
 region = Rect2(0, 0, 64, 64)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_k7mj0"]
-atlas = ExtResource("2_tvnbh")
+atlas = ExtResource("2_8q6b3")
 region = Rect2(64, 0, 64, 64)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_8jehc"]
-atlas = ExtResource("2_tvnbh")
+atlas = ExtResource("2_8q6b3")
 region = Rect2(128, 0, 64, 64)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_n6td8"]
-atlas = ExtResource("2_tvnbh")
+atlas = ExtResource("2_8q6b3")
 region = Rect2(192, 0, 64, 64)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_6cmk1"]
-atlas = ExtResource("2_tvnbh")
+atlas = ExtResource("2_8q6b3")
 region = Rect2(256, 0, 64, 64)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_egy6v"]
-atlas = ExtResource("2_tvnbh")
+atlas = ExtResource("2_8q6b3")
 region = Rect2(320, 0, 64, 64)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_6ne17"]
-atlas = ExtResource("2_tvnbh")
+atlas = ExtResource("2_8q6b3")
 region = Rect2(384, 0, 64, 64)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_d65cj"]
-atlas = ExtResource("2_tvnbh")
+atlas = ExtResource("2_8q6b3")
 region = Rect2(448, 0, 64, 64)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_3yx03"]
-atlas = ExtResource("2_tvnbh")
+atlas = ExtResource("2_8q6b3")
 region = Rect2(0, 0, 64, 64)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_1hs57"]
-atlas = ExtResource("2_tvnbh")
+atlas = ExtResource("2_8q6b3")
 region = Rect2(64, 0, 64, 64)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_jo8lw"]
-atlas = ExtResource("2_tvnbh")
+atlas = ExtResource("2_8q6b3")
 region = Rect2(128, 0, 64, 64)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_nrnu3"]
-atlas = ExtResource("2_tvnbh")
+atlas = ExtResource("2_8q6b3")
 region = Rect2(64, 0, 64, 64)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_fusiy"]
-atlas = ExtResource("2_tvnbh")
+atlas = ExtResource("2_8q6b3")
 region = Rect2(0, 0, 64, 64)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_c721v"]
-atlas = ExtResource("2_tvnbh")
+atlas = ExtResource("2_8q6b3")
 region = Rect2(64, 0, 64, 64)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_13qu6"]
-atlas = ExtResource("2_tvnbh")
+atlas = ExtResource("2_8q6b3")
 region = Rect2(128, 0, 64, 64)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_xcft4"]
-atlas = ExtResource("2_tvnbh")
+atlas = ExtResource("2_8q6b3")
 region = Rect2(448, 0, 64, 64)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_f4oj2"]
-atlas = ExtResource("2_tvnbh")
+atlas = ExtResource("2_8q6b3")
 region = Rect2(0, 0, 64, 64)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_ma2ks"]
-atlas = ExtResource("2_tvnbh")
+atlas = ExtResource("2_8q6b3")
 region = Rect2(64, 0, 64, 64)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_28mpe"]
-atlas = ExtResource("2_tvnbh")
+atlas = ExtResource("2_8q6b3")
 region = Rect2(128, 0, 64, 64)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_1vq08"]
-atlas = ExtResource("2_tvnbh")
+atlas = ExtResource("2_8q6b3")
 region = Rect2(448, 0, 64, 64)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_dp22n"]
-atlas = ExtResource("2_tvnbh")
+atlas = ExtResource("2_8q6b3")
 region = Rect2(0, 0, 64, 64)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_qftcx"]
-atlas = ExtResource("2_tvnbh")
+atlas = ExtResource("2_8q6b3")
 region = Rect2(64, 0, 64, 64)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_y6my2"]
-atlas = ExtResource("2_tvnbh")
+atlas = ExtResource("2_8q6b3")
 region = Rect2(128, 0, 64, 64)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_8qj0d"]
-atlas = ExtResource("2_tvnbh")
+atlas = ExtResource("2_8q6b3")
 region = Rect2(448, 0, 64, 64)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_gm05j"]
-atlas = ExtResource("2_tvnbh")
+atlas = ExtResource("2_8q6b3")
 region = Rect2(0, 0, 64, 64)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_yip06"]
-atlas = ExtResource("2_tvnbh")
+atlas = ExtResource("2_8q6b3")
 region = Rect2(64, 0, 64, 64)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_osim2"]
-atlas = ExtResource("2_tvnbh")
+atlas = ExtResource("2_8q6b3")
 region = Rect2(128, 0, 64, 64)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_igl7s"]
-atlas = ExtResource("2_tvnbh")
+atlas = ExtResource("2_8q6b3")
 region = Rect2(192, 0, 64, 64)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_3j3d1"]
-atlas = ExtResource("2_tvnbh")
+atlas = ExtResource("2_8q6b3")
 region = Rect2(256, 0, 64, 64)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_7w2hv"]
-atlas = ExtResource("2_tvnbh")
+atlas = ExtResource("2_8q6b3")
 region = Rect2(320, 0, 64, 64)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_xga4l"]
-atlas = ExtResource("2_tvnbh")
+atlas = ExtResource("2_8q6b3")
 region = Rect2(384, 0, 64, 64)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_f1q25"]
-atlas = ExtResource("2_tvnbh")
+atlas = ExtResource("2_8q6b3")
 region = Rect2(448, 0, 64, 64)
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_oxsjp"]
@@ -271,19 +271,19 @@ radius = 19.0
 radius = 27.018513
 
 [node name="StartCavern Earthling" type="CharacterBody2D" unique_id=1655329841]
-script = ExtResource("1_4ibsn")
-persistent_id = "Earth_"
-monster_name = "Earthing Lv 1"
-monster_level = 1
-max_hit_points = 5
+script = ExtResource("1_6gkhm")
+persistent_id = "Earthling_"
+monster_name = "Earthling Lv 4"
+monster_level = 4
+max_hit_points = 8
+xp_reward = 3
 drop_currency_chance_percent = 100.0
 drop_currency_max_amount = 3
 weakness_types = 1
 can_attack_player = false
-melee_damage = 2
 special_attacks_enabled = true
 slam_enabled = true
-slam_damage = 2
+slam_damage = 4
 slam_length = 30.0
 slam_width = 24.0
 slam_trigger_range = 34.0

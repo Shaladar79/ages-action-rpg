@@ -12,12 +12,11 @@
 [ext_resource type="PackedScene" uid="uid://ds0nibabilemd" path="res://scenes/player/Player.tscn" id="11_vfogo"]
 [ext_resource type="PackedScene" uid="uid://c54peu6mqtky8" path="res://scenes/objects/CollectableClub.tscn" id="12_iyco4"]
 [ext_resource type="PackedScene" uid="uid://pyq76iw1lw5d" path="res://scenes/objects/save_totem.tscn" id="13_7iida"]
-[ext_resource type="PackedScene" uid="uid://b81kib11b5cms" path="res://scenes/objects/LootContainer.tscn" id="14_j3sot"]
 [ext_resource type="PackedScene" uid="uid://bql24l7sa24cp" path="res://scenes/objects/PuzzleResetStone.tscn" id="14_xv4x6"]
 [ext_resource type="PackedScene" uid="uid://cihgogaol4td8" path="res://scenes/objects/map_transition_area.tscn" id="15_ayirs"]
-[ext_resource type="Texture2D" uid="uid://48lqkm7bqt1b" path="res://art/Assets/icons/fullcolor/individual_24x24/icon256.png" id="15_bc5g6"]
 [ext_resource type="PackedScene" uid="uid://c1p4pdy1arniu" path="res://scenes/objects/MonsterClearEchoTrigger.tscn" id="16_c4d2t"]
 [ext_resource type="PackedScene" uid="uid://corrah5u0halh" path="res://scenes/objects/EchoDialogueTrigger.tscn" id="17_7g80t"]
+[ext_resource type="PackedScene" uid="uid://b81kib11b5cms" path="res://scenes/objects/Containers/LootContainer_pouch.tscn" id="18_ipecf"]
 [ext_resource type="PackedScene" uid="uid://c22k78g2y6kpn" path="res://scenes/objects/BossGateBlocker.tscn" id="18_x63im"]
 
 [node name="StartCavern" type="Node2D" unique_id=102575327]
@@ -203,7 +202,6 @@ persistent_id = "SCBoss"
 monster_name = "Monster"
 max_hit_points = 20
 attack = 5
-defense = 1
 xp_reward = 6
 drop_item_1_id = "healing_tonic"
 drop_item_1_chance_percent = 100.0
@@ -211,9 +209,9 @@ drop_currency_chance_percent = 100.0
 drop_currency_min_amount = 10
 drop_currency_max_amount = 10
 move_speed = 30.0
-aoe_damage = 2
 aoe_damage_types = 1
 aoe_cooldown = 5.0
+slam_width = 48.0
 
 [node name="StartCavern Earthling" parent="Monsters" unique_id=1655329841 instance=ExtResource("9_yytj5")]
 position = Vector2(829, 441)
@@ -276,13 +274,14 @@ position = Vector2(289, 734)
 scale = Vector2(0.2, 0.2)
 push_object_paths = Array[NodePath]([NodePath("../../Objects/PushRock5"), NodePath("../../Objects/PushRock7")])
 
-[node name="LootContainer_Healing_tonic_1" parent="YSortWorld" unique_id=1056668251 instance=ExtResource("14_j3sot")]
-position = Vector2(145, 818)
+[node name="LootContainer_HealingTonic" parent="YSortWorld" unique_id=1056668251 instance=ExtResource("18_ipecf")]
+position = Vector2(127, 822)
 persistent_id = "HT_1"
-closed_texture = ExtResource("15_bc5g6")
-opened_message = ""
-empty_message = ""
-disappear_on_open = true
+drop_item_id = "healing_tonic"
+
+[node name="LootContainer_HealingTonic2" parent="YSortWorld" unique_id=1498576120 instance=ExtResource("18_ipecf")]
+position = Vector2(1332, 846)
+persistent_id = "HT_2"
 drop_item_id = "healing_tonic"
 
 [node name="MapTransitionArea" parent="." unique_id=1344752193 instance=ExtResource("15_ayirs")]
@@ -292,6 +291,7 @@ target_scene_path = "uid://chph8q00qw2nc"
 target_spawn_id = "From_Start_Cavern"
 
 [node name="MonsterClearEchoTrigger" parent="." unique_id=1642328376 instance=ExtResource("16_c4d2t")]
+visible = false
 position = Vector2(1213, 467)
 scale = Vector2(0.25, 0.25)
 trigger_id = "SCBoss_fgt"
@@ -306,6 +306,7 @@ Greater enemies often warn where their strongest attacks will land.
 When the arena speaks, move."
 
 [node name="MonsterClearEchoTrigger2" parent="." unique_id=1180960914 instance=ExtResource("16_c4d2t")]
+visible = false
 position = Vector2(1264, 465)
 scale = Vector2(0.25, 0.25)
 trigger_id = "SCBoss_fgt"
@@ -320,6 +321,7 @@ Greater enemies often warn where their strongest attacks will land.
 When the arena speaks, move."
 
 [node name="MonsterClearEchoTrigger6" parent="." unique_id=1638585138 instance=ExtResource("16_c4d2t")]
+visible = false
 position = Vector2(1301, 458)
 scale = Vector2(0.25, 0.25)
 trigger_id = "SCBoss_fgt"
@@ -334,6 +336,7 @@ Greater enemies often warn where their strongest attacks will land.
 When the arena speaks, move."
 
 [node name="MonsterClearEchoTrigger7" parent="." unique_id=874222200 instance=ExtResource("16_c4d2t")]
+visible = false
 position = Vector2(1340, 437)
 scale = Vector2(0.25, 0.25)
 trigger_id = "SCBoss_fgt"
@@ -348,6 +351,7 @@ Greater enemies often warn where their strongest attacks will land.
 When the arena speaks, move."
 
 [node name="MonsterClearEchoTrigger3" parent="." unique_id=1596730552 instance=ExtResource("16_c4d2t")]
+visible = false
 position = Vector2(1165, 469)
 scale = Vector2(0.25, 0.25)
 trigger_id = "SCBoss_fgt"
@@ -362,6 +366,7 @@ Greater enemies often warn where their strongest attacks will land.
 When the arena speaks, move."
 
 [node name="MonsterClearEchoTrigger4" parent="." unique_id=2036535679 instance=ExtResource("16_c4d2t")]
+visible = false
 position = Vector2(1119, 469)
 scale = Vector2(0.25, 0.25)
 trigger_id = "SCBoss_fgt"
@@ -376,6 +381,7 @@ Greater enemies often warn where their strongest attacks will land.
 When the arena speaks, move."
 
 [node name="MonsterClearEchoTrigger5" parent="." unique_id=91286732 instance=ExtResource("16_c4d2t")]
+visible = false
 position = Vector2(1080, 471)
 scale = Vector2(0.25, 0.25)
 trigger_id = "SCBoss_fgt"

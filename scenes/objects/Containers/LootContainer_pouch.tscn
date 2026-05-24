@@ -1,0 +1,30 @@
+[gd_scene format=3 uid="uid://b81kib11b5cms"]
+
+[ext_resource type="Script" uid="uid://yoa0aycbm38n" path="res://scripts/Objects/loot_container.gd" id="1_8gaj4"]
+[ext_resource type="Texture2D" uid="uid://48lqkm7bqt1b" path="res://art/Assets/icons/fullcolor/individual_24x24/icon256.png" id="2_7xytd"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_8gaj4"]
+radius = 10.049875
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_k88oy"]
+radius = 7.071068
+
+[node name="LootContainer" type="Area2D" unique_id=1056668251]
+script = ExtResource("1_8gaj4")
+closed_texture = ExtResource("2_7xytd")
+opened_message = ""
+empty_message = ""
+disappear_on_open = true
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=2062310532]
+texture = ExtResource("2_7xytd")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1978358394]
+visible = false
+shape = SubResource("CircleShape2D_8gaj4")
+
+[node name="StaticBody2D" type="StaticBody2D" parent="." unique_id=2086412695]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D" unique_id=244958302]
+visible = false
+shape = SubResource("CircleShape2D_k88oy")
