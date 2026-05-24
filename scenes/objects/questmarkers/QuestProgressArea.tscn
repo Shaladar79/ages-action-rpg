@@ -1,0 +1,12 @@
+[gd_scene format=3 uid="uid://clxr5342eb6d"]
+
+[ext_resource type="Script" uid="uid://bs41r3yd25ej5" path="res://scripts/core/quests/quest_progress_area.gd" id="1_j2efx"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_o5bs5"]
+radius = 70.23532
+
+[node name="QuestProgressArea" type="Area2D" unique_id=1142422050]
+script = ExtResource("1_j2efx")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1081138921]
+shape = SubResource("CircleShape2D_o5bs5")

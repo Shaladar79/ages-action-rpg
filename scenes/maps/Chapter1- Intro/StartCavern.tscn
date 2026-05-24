@@ -15,10 +15,34 @@
 [ext_resource type="PackedScene" uid="uid://bql24l7sa24cp" path="res://scenes/objects/PuzzleResetStone.tscn" id="14_xv4x6"]
 [ext_resource type="PackedScene" uid="uid://cihgogaol4td8" path="res://scenes/objects/map_transition_area.tscn" id="15_ayirs"]
 [ext_resource type="PackedScene" uid="uid://b4x6xea46nwp1" path="res://scenes/npcs/questgivers/Vultar/QuestGiver.tscn" id="15_j3sot"]
+[ext_resource type="PackedScene" uid="uid://clxr5342eb6d" path="res://scenes/objects/questmarkers/QuestProgressArea.tscn" id="16_bc5g6"]
 [ext_resource type="PackedScene" uid="uid://c1p4pdy1arniu" path="res://scenes/objects/MonsterClearEchoTrigger.tscn" id="16_c4d2t"]
+[ext_resource type="Script" uid="uid://dt5yvut01s10s" path="res://scripts/core/quests/quest_entry.gd" id="16_vpebn"]
 [ext_resource type="PackedScene" uid="uid://corrah5u0halh" path="res://scenes/objects/EchoDialogueTrigger.tscn" id="17_7g80t"]
+[ext_resource type="Script" uid="uid://pomcudkoxce3" path="res://scripts/core/quests/quest_objective_entry.gd" id="17_pbla5"]
 [ext_resource type="PackedScene" uid="uid://b81kib11b5cms" path="res://scenes/objects/Containers/LootContainer_pouch.tscn" id="18_ipecf"]
 [ext_resource type="PackedScene" uid="uid://c22k78g2y6kpn" path="res://scenes/objects/BossGateBlocker.tscn" id="18_x63im"]
+
+[sub_resource type="Resource" id="Resource_g1fv5"]
+script = ExtResource("17_pbla5")
+objective_id = "walk1"
+objective_type = 3
+metadata/_custom_type_script = "uid://pomcudkoxce3"
+
+[sub_resource type="Resource" id="Resource_wqcy6"]
+script = ExtResource("16_vpebn")
+quest_id = "blue_walk"
+quest_title = "wal ove there"
+quest_type = 0
+started_flag = "walk_start"
+ready_to_turn_in_flag = "walk_done"
+completed_flag = "walk_comp"
+first_time_dialogue = "walk to the blue crystal"
+active_dialogue = "go there"
+ready_to_turn_in_dialogue = "You walked there"
+completed_dialogue = "It was a long walk"
+objectives = Array[ExtResource("17_pbla5")]([SubResource("Resource_g1fv5")])
+metadata/_custom_type_script = "uid://dt5yvut01s10s"
 
 [node name="StartCavern" type="Node2D" unique_id=102575327]
 position = Vector2(-7, -11)
@@ -287,6 +311,13 @@ drop_item_id = "healing_tonic"
 
 [node name="QuestGiver" parent="YSortWorld" unique_id=1663897061 instance=ExtResource("15_j3sot")]
 position = Vector2(190, 380)
+quests = Array[ExtResource("16_vpebn")]([SubResource("Resource_wqcy6")])
+
+[node name="QuestProgressArea" parent="YSortWorld" unique_id=1142422050 instance=ExtResource("16_bc5g6")]
+position = Vector2(122, 433)
+scale = Vector2(0.25, 0.25)
+quest_id = "blue_walk"
+objective_id = "walk1"
 
 [node name="MapTransitionArea" parent="." unique_id=1344752193 instance=ExtResource("15_ayirs")]
 visible = false
