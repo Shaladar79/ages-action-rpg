@@ -26,9 +26,11 @@ const CURRENCY_DISPLAY_NAMES: Dictionary = {
 @export var base_move_speed: float = 120.0
 @export var move_speed_per_speed_point: float = 4.0
 
-@export var attack_duration: float = 0.5
-@export var base_attack_cooldown: float = 0.35
-@export var attack_speed_bonus_per_agility: float = 0.01
+@export_group("Attack Timing")
+@export var attack_damage_window: float = 0.14
+@export var weapon_visual_duration: float = 0.20
+@export var base_attack_cooldown: float = 0.5
+@export var attack_speed_bonus_per_agility: float = 0.05
 @export var attack_offset: float = 24.0
 
 @export var respawn_delay: float = 1.5
@@ -48,7 +50,8 @@ var last_direction: String = "down"
 var is_attacking: bool = false
 var is_defeated: bool = false
 var is_respawning: bool = false
-var attack_timer: float = 0.0
+var attack_damage_timer: float = 0.0
+var weapon_visual_timer: float = 0.0
 var cooldown_timer: float = 0.0
 var hit_targets: Array[Node] = []
 
@@ -198,7 +201,7 @@ func _physics_process(delta: float) -> void:
     if Input.is_action_just_pressed("attack"):
         _try_attack()
 
-    if is_attacking:
+    if attack_damage_timer > 0.0:
         _check_attack_overlaps()
 
     _update_animation(input_vector)
@@ -249,7 +252,7 @@ func _show_first_level_up_lesson() -> void:
         "This is growth, Gene Ambrose.",
         "When you grow stronger, open your character screen.",
         "There you may shape what you become.",
-        "Strength, endurance, precision, will — each path leaves a mark."
+		"Strength, endurance, precision, will — each path leaves a mark."
     ]
 
     var game_ui := _get_game_ui()
@@ -259,6 +262,7 @@ func _show_first_level_up_lesson() -> void:
         return
 
     show_dialogue("You gained a level. Open your character sheet and spend your character point.")
+
 
 func _get_game_ui() -> Node:
     var group_nodes := get_tree().get_nodes_in_group("interaction_ui")
@@ -273,6 +277,7 @@ func _get_game_ui() -> Node:
         return autoload_ui
 
     return null
+
 
 func spend_stat_point(stat_id: String) -> bool:
     if is_defeated:
@@ -447,6 +452,7 @@ func set_inventory_items(saved_inventory: Array) -> void:
     print("Inventory loaded. Item count: ", inventory.size())
     _notify_ui_stats_changed()
 
+
 func _add_loaded_stackable_inventory_item(item_id: String, item_name: String, quantity: int) -> void:
     var clean_item_id := item_id.strip_edges()
 
@@ -480,6 +486,7 @@ func _is_stackable_inventory_item(item_id: String) -> bool:
         return false
 
     return ItemDatabase.get_item_type(clean_item_id) == "consumable"
+
 
 func _initialize_currencies() -> void:
     for currency_id in CURRENCY_DISPLAY_NAMES.keys():
@@ -645,6 +652,7 @@ func set_currency_save_data(saved_currency_data: Dictionary) -> void:
 
     print("Currency save data loaded. Discovered count: ", discovered_currency_ids.size())
     _notify_ui_stats_changed()
+
 
 func equip_melee_weapon(item_id: String) -> bool:
     return _equip_item_to_slot(item_id, ItemDatabase.EQUIPMENT_SLOT_MELEE_WEAPON)
@@ -1293,7 +1301,8 @@ func _try_attack() -> void:
         return
 
     is_attacking = true
-    attack_timer = attack_duration
+    attack_damage_timer = attack_damage_window
+    weapon_visual_timer = weapon_visual_duration
     cooldown_timer = get_current_attack_cooldown()
     hit_targets.clear()
 
@@ -1309,15 +1318,22 @@ func _update_attack_timers(delta: float) -> void:
     if cooldown_timer > 0.0:
         cooldown_timer -= delta
 
-    if not is_attacking:
-        return
+    if attack_damage_timer > 0.0:
+        attack_damage_timer -= delta
 
-    attack_timer -= delta
+        if attack_damage_timer <= 0.0:
+            attack_damage_timer = 0.0
+            _disable_attack_hitbox()
 
-    if attack_timer <= 0.0:
+    if weapon_visual_timer > 0.0:
+        weapon_visual_timer -= delta
+
+        if weapon_visual_timer <= 0.0:
+            weapon_visual_timer = 0.0
+            _hide_weapon_sprite()
+
+    if attack_damage_timer <= 0.0 and weapon_visual_timer <= 0.0:
         is_attacking = false
-        _disable_attack_hitbox()
-        _hide_weapon_sprite()
 
 
 func _position_attack_area() -> void:
@@ -1402,7 +1418,7 @@ func _damage_area_target(area: Area2D) -> void:
     if is_defeated:
         return
 
-    if not is_attacking:
+    if attack_damage_timer <= 0.0:
         return
 
     var target := area.get_parent()
@@ -1524,6 +1540,8 @@ func _on_player_defeated() -> void:
     is_defeated = true
     is_respawning = false
     is_attacking = false
+    attack_damage_timer = 0.0
+    weapon_visual_timer = 0.0
     velocity = Vector2.ZERO
 
     _disable_attack_hitbox()
@@ -1569,7 +1587,8 @@ func _respawn_player() -> void:
     is_defeated = false
     is_respawning = false
     is_attacking = false
-    attack_timer = 0.0
+    attack_damage_timer = 0.0
+    weapon_visual_timer = 0.0
     cooldown_timer = 0.0
     hit_targets.clear()
 

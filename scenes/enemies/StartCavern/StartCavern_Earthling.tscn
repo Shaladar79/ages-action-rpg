@@ -272,8 +272,8 @@ radius = 27.018513
 
 [node name="StartCavern Earthling" type="CharacterBody2D" unique_id=1655329841]
 script = ExtResource("1_4ibsn")
-max_hit_points = 2
-attack = 2
+max_hit_points = 5
+attack = 3
 drop_currency_chance_percent = 100.0
 drop_currency_max_amount = 3
 weakness_types = 1

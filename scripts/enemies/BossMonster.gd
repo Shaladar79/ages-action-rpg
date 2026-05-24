@@ -14,7 +14,12 @@ enum BossSpecialChoice {
 @export_group("Boss Specials")
 @export var special_attacks_enabled: bool = true
 @export var special_global_cooldown: float = 1.0
+
+# Master movement lock switch.
+# If this is Off, no special attack locks movement.
+# If this is On, each special attack uses its own movement-lock setting.
 @export var lock_movement_during_special: bool = true
+
 @export var telegraph_polygon_sides: int = 48
 @export var telegraph_z_index: int = 200
 @export var telegraph_impact_flash_time: float = 0.12
@@ -22,6 +27,7 @@ enum BossSpecialChoice {
 
 @export_group("AOE Special")
 @export var aoe_enabled: bool = true
+@export var aoe_lock_movement: bool = true
 @export var aoe_damage: int = 1
 @export_flags(
     "Bashing",
@@ -44,6 +50,7 @@ var aoe_damage_types: int = DamageTypes.FIRE
 
 @export_group("Slam Special")
 @export var slam_enabled: bool = true
+@export var slam_lock_movement: bool = true
 @export var slam_damage: int = 5
 @export_flags(
     "Bashing",
@@ -67,6 +74,7 @@ var slam_damage_types: int = DamageTypes.BASHING
 
 @export_group("Burst Special")
 @export var burst_enabled: bool = false
+@export var burst_lock_movement: bool = false
 @export var burst_damage: int = 1
 @export_flags(
     "Bashing",
@@ -96,6 +104,8 @@ var burst_damage_types: int = DamageTypes.PIERCING
 @export var burst_projectile_collision_mask: int = 1
 
 var is_using_special_attack: bool = false
+var current_special_locks_movement: bool = false
+
 var aoe_special_timer: float = 0.0
 var slam_special_timer: float = 0.0
 var burst_special_timer: float = 0.0
@@ -117,10 +127,13 @@ func _physics_process(delta: float) -> void:
     _update_boss_special_timers(delta)
 
     if is_using_special_attack:
-        if lock_movement_during_special:
+        if lock_movement_during_special and current_special_locks_movement:
             velocity = Vector2.ZERO
             move_and_slide()
             _update_animation_from_velocity(Vector2.ZERO)
+            return
+
+        super._physics_process(delta)
         return
 
     if special_attacks_enabled and _try_start_boss_special_attack():
@@ -140,6 +153,7 @@ func die(player: Node2D = null) -> void:
     _clear_active_telegraphs()
     _clear_active_burst_projectiles()
     is_using_special_attack = false
+    current_special_locks_movement = false
     super.die(player)
 
 
@@ -209,6 +223,7 @@ func _start_aoe_special() -> void:
         return
 
     is_using_special_attack = true
+    current_special_locks_movement = aoe_lock_movement
     aoe_special_timer = aoe_cooldown
     special_global_timer = special_global_cooldown
 
@@ -221,22 +236,27 @@ func _start_aoe_special() -> void:
 
     if not is_inside_tree():
         _clear_active_telegraphs()
+        is_using_special_attack = false
+        current_special_locks_movement = false
         return
 
     if is_dead:
         _clear_active_telegraphs()
         is_using_special_attack = false
+        current_special_locks_movement = false
         return
 
     await _flash_and_clear_telegraph(telegraph)
 
     if is_dead:
         is_using_special_attack = false
+        current_special_locks_movement = false
         return
 
     _damage_player_if_in_radius(attack_center, aoe_radius, aoe_damage, aoe_damage_types, "AOE")
 
     is_using_special_attack = false
+    current_special_locks_movement = false
 
 
 func _start_slam_special() -> void:
@@ -244,6 +264,7 @@ func _start_slam_special() -> void:
         return
 
     is_using_special_attack = true
+    current_special_locks_movement = slam_lock_movement
     slam_special_timer = slam_cooldown
     special_global_timer = special_global_cooldown
 
@@ -263,17 +284,21 @@ func _start_slam_special() -> void:
 
     if not is_inside_tree():
         _clear_active_telegraphs()
+        is_using_special_attack = false
+        current_special_locks_movement = false
         return
 
     if is_dead:
         _clear_active_telegraphs()
         is_using_special_attack = false
+        current_special_locks_movement = false
         return
 
     await _flash_and_clear_telegraph(telegraph)
 
     if is_dead:
         is_using_special_attack = false
+        current_special_locks_movement = false
         return
 
     _damage_player_if_in_rectangle(
@@ -287,6 +312,7 @@ func _start_slam_special() -> void:
     )
 
     is_using_special_attack = false
+    current_special_locks_movement = false
 
 
 func _start_burst_special() -> void:
@@ -294,6 +320,7 @@ func _start_burst_special() -> void:
         return
 
     is_using_special_attack = true
+    current_special_locks_movement = burst_lock_movement
     burst_special_timer = burst_cooldown
     special_global_timer = special_global_cooldown
 
@@ -306,16 +333,20 @@ func _start_burst_special() -> void:
 
     if not is_inside_tree():
         _clear_active_burst_projectiles()
+        is_using_special_attack = false
+        current_special_locks_movement = false
         return
 
     if is_dead:
         _clear_active_burst_projectiles()
         is_using_special_attack = false
+        current_special_locks_movement = false
         return
 
     _fire_burst_diagonal_projectiles()
 
     is_using_special_attack = false
+    current_special_locks_movement = false
 
 
 func _fire_burst_cardinal_projectiles() -> void:
