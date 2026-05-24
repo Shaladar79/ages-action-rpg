@@ -239,4 +239,3 @@ disappear_on_open = true
 quest_progress_enabled = true
 quest_id = "get_shirt"
 objective_id = "get_shirt"
-require_active_quest_to_open = false
