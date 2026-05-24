@@ -14,6 +14,7 @@
 [ext_resource type="PackedScene" uid="uid://pyq76iw1lw5d" path="res://scenes/objects/save_totem.tscn" id="13_7iida"]
 [ext_resource type="PackedScene" uid="uid://bql24l7sa24cp" path="res://scenes/objects/PuzzleResetStone.tscn" id="14_xv4x6"]
 [ext_resource type="PackedScene" uid="uid://cihgogaol4td8" path="res://scenes/objects/map_transition_area.tscn" id="15_ayirs"]
+[ext_resource type="PackedScene" uid="uid://b4x6xea46nwp1" path="res://scenes/npcs/questgivers/Vultar/QuestGiver.tscn" id="15_j3sot"]
 [ext_resource type="PackedScene" uid="uid://c1p4pdy1arniu" path="res://scenes/objects/MonsterClearEchoTrigger.tscn" id="16_c4d2t"]
 [ext_resource type="PackedScene" uid="uid://corrah5u0halh" path="res://scenes/objects/EchoDialogueTrigger.tscn" id="17_7g80t"]
 [ext_resource type="PackedScene" uid="uid://b81kib11b5cms" path="res://scenes/objects/Containers/LootContainer_pouch.tscn" id="18_ipecf"]
@@ -201,8 +202,8 @@ script = ExtResource("8_wqcy6")
 persistent_id = "SCBoss"
 monster_name = "Monster"
 max_hit_points = 20
-attack = 5
 xp_reward = 6
+attack = 5
 drop_item_1_id = "healing_tonic"
 drop_item_1_chance_percent = 100.0
 drop_currency_chance_percent = 100.0
@@ -283,6 +284,9 @@ drop_item_id = "healing_tonic"
 position = Vector2(1332, 846)
 persistent_id = "HT_2"
 drop_item_id = "healing_tonic"
+
+[node name="QuestGiver" parent="YSortWorld" unique_id=1663897061 instance=ExtResource("15_j3sot")]
+position = Vector2(190, 380)
 
 [node name="MapTransitionArea" parent="." unique_id=1344752193 instance=ExtResource("15_ayirs")]
 visible = false

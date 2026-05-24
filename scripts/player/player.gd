@@ -1279,6 +1279,12 @@ func _try_interact() -> void:
     if is_dialogue_active():
         return
 
+    var game_ui := _get_game_ui()
+
+    if game_ui != null and game_ui.has_method("should_block_player_interact"):
+        if game_ui.should_block_player_interact():
+            return
+
     if nearby_interactable == null:
         print("No nearby interactable.")
         return

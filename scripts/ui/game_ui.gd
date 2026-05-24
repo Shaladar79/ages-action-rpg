@@ -99,6 +99,7 @@ var story_dialogue_lines: Array[String] = []
 var story_dialogue_index: int = 0
 var story_dialogue_speaker_name: String = ""
 var story_dialogue_active: bool = false
+var story_dialogue_recently_closed_timer: float = 0.0
 
 var manual_pause_active: bool = false
 var character_screen_pause_active: bool = false
@@ -150,6 +151,9 @@ func _ready() -> void:
 
 
 func _process(delta: float) -> void:
+    if story_dialogue_recently_closed_timer > 0.0:
+        story_dialogue_recently_closed_timer -= delta
+
     hud_refresh_timer -= delta
 
     if hud_refresh_timer > 0.0:
@@ -361,6 +365,7 @@ func show_story_dialogue(lines: Array, speaker_name: String = "Echo Spirit") -> 
     story_dialogue_speaker_name = speaker_name
     story_dialogue_index = 0
     story_dialogue_active = true
+    story_dialogue_recently_closed_timer = 0.0
     _set_story_dialogue_pause(true)
 
     print("Story dialogue opened. Line count: ", story_dialogue_lines.size())
@@ -388,6 +393,7 @@ func hide_story_dialogue() -> void:
         story_dialogue_layer.visible = false
 
     _set_story_dialogue_pause(false)
+    story_dialogue_recently_closed_timer = 0.25
 
     print("Story dialogue closed.")
 
@@ -701,6 +707,25 @@ func _on_shop_buy_button_pressed(stock_index: int) -> void:
 
 func is_story_dialogue_active() -> bool:
     return story_dialogue_active
+
+
+func should_block_player_interact() -> bool:
+    if story_dialogue_active:
+        return true
+
+    if story_dialogue_recently_closed_timer > 0.0:
+        return true
+
+    if shop_layer != null and shop_layer.visible:
+        return true
+
+    if save_prompt != null and save_prompt.visible:
+        return true
+
+    if character_screen != null and character_screen.visible:
+        return true
+
+    return false
 
 
 func _advance_story_dialogue() -> void:
