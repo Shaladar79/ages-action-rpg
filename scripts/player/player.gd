@@ -1427,9 +1427,24 @@ func _damage_area_target(area: Area2D) -> void:
     if attack_damage_timer <= 0.0:
         return
 
+    if area == null:
+        return
+
     var target := area.get_parent()
 
     if target == null:
+        return
+
+    # Prevent the player from hitting their own hurtbox/child Area2D.
+    if target == self:
+        return
+
+    # Prevent hitting anything marked as player.
+    if target.is_in_group("player"):
+        return
+
+    # Prevent hitting child/owned nodes of the player.
+    if self.is_ancestor_of(target):
         return
 
     if hit_targets.has(target):
