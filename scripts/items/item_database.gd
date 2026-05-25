@@ -317,6 +317,66 @@ static func get_spell_id(item_id: String) -> String:
         return ""
 
     return str(item_data.get("spell_id", ""))
+static func get_spell_cast_target(item_id: String) -> String:
+    var item_data := get_item_data(item_id)
+
+    if item_data.is_empty():
+        return "projectile"
+
+    return str(item_data.get("cast_target", "projectile"))
+
+
+static func get_spell_defense_bonus(item_id: String) -> int:
+    var item_data := get_item_data(item_id)
+
+    if item_data.is_empty():
+        return 0
+
+    return int(item_data.get("defense_bonus", 0))
+
+
+static func get_spell_move_speed_multiplier(item_id: String) -> float:
+    var item_data := get_item_data(item_id)
+
+    if item_data.is_empty():
+        return 1.0
+
+    return float(item_data.get("move_speed_multiplier", 1.0))
+    
+static func get_spell_damage(item_id: String) -> int:
+    var item_data := get_item_data(item_id)
+
+    if item_data.is_empty():
+        return 0
+
+    return int(item_data.get("spell_damage", 0))
+
+
+static func get_spell_damage_types(item_id: String) -> int:
+    var item_data := get_item_data(item_id)
+
+    if item_data.is_empty():
+        return DamageTypes.NONE
+
+    return int(item_data.get("damage_types", DamageTypes.NONE))
+
+
+static func get_spell_status_damage_per_tick(item_id: String) -> int:
+    var item_data := get_item_data(item_id)
+
+    if item_data.is_empty():
+        return 1
+
+    return int(item_data.get("status_damage_per_tick", 1))
+
+
+static func get_spell_status_tick_interval(item_id: String) -> float:
+    var item_data := get_item_data(item_id)
+
+    if item_data.is_empty():
+        return 1.0
+
+    return float(item_data.get("status_tick_interval", 1.0))
 
 static func get_spell_range(item_id: String) -> float:
     var item_data := get_item_data(item_id)

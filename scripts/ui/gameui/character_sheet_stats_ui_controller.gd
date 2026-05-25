@@ -68,6 +68,20 @@ func update_character_sheet(stats: CharacterStats) -> void:
     _update_attributes_panel(stats)
     _update_combat_stats(stats)
 
+func update_character_sheet_for_player(player: Node, stats: CharacterStats) -> void:
+    update_character_sheet(stats)
+
+    if player == null:
+        return
+
+    if stats == null:
+        return
+
+    if defense_label == null:
+        return
+
+    if player.has_method("get_defense"):
+        defense_label.text = "Defense: " + str(player.get_defense())
 
 func clear_character_sheet() -> void:
     if title_label != null:

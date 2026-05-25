@@ -3,40 +3,16 @@
 [ext_resource type="Texture2D" uid="uid://b1euygw2mhtfy" path="res://art/maps/cave_volcaniccave.png" id="1_rqo2q"]
 [ext_resource type="PackedScene" uid="uid://cihgogaol4td8" path="res://scenes/objects/map_transition_area.tscn" id="2_l4v4r"]
 [ext_resource type="PackedScene" uid="uid://d2qyxdpcmw4x0" path="res://scenes/objects/map_spawn_point.tscn" id="3_ssplw"]
+[ext_resource type="PackedScene" uid="uid://y23yeiirbwo7" path="res://scenes/enemies/cave/Rumbler.tscn" id="3_xnhdc"]
 [ext_resource type="PackedScene" uid="uid://ds0nibabilemd" path="res://scenes/player/Player.tscn" id="4_xnhdc"]
+[ext_resource type="Script" uid="uid://dgyphpqc2hcty" path="res://scripts/core/map_settings.gd" id="6_ts0od"]
+[ext_resource type="PackedScene" uid="uid://dojjfsgpjfm7i" path="res://scenes/enemies/cave/FireMephit.tscn" id="6_vp6hn"]
+[ext_resource type="PackedScene" uid="uid://diepcak1mm2tn" path="res://scenes/enemies/Slopes/Rock_Spitter.tscn" id="7_ts0od"]
 
 [node name="FootHillscave" type="Node2D" unique_id=644050731]
 
-[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1638557816]
-position = Vector2(726, 544)
-texture = ExtResource("1_rqo2q")
-
-[node name="Player" parent="." unique_id=949372820 groups=["player"] instance=ExtResource("4_xnhdc")]
-position = Vector2(1289, 151)
-
-[node name="MapSpawns" type="Node2D" parent="." unique_id=1229036644]
-
-[node name="FromFoothills" parent="MapSpawns" unique_id=366895598 instance=ExtResource("3_ssplw")]
-position = Vector2(1277, 175)
-spawn_id = "FromFoothills"
-
-[node name="FromCaveRitual" parent="MapSpawns" unique_id=813232813 instance=ExtResource("3_ssplw")]
-position = Vector2(126, 1042)
-spawn_id = "FromRitual"
-
-[node name="MapTrans" type="Node2D" parent="." unique_id=1261238227]
-
-[node name="ToFoothills" parent="MapTrans" unique_id=1344752193 instance=ExtResource("2_l4v4r")]
-position = Vector2(1329, 70)
-target_scene_path = "uid://2j7r845rkdbh"
-target_spawn_id = "FromCave"
-
-[node name="ToCaveRitual" parent="MapTrans" unique_id=1276731504 instance=ExtResource("2_l4v4r")]
-position = Vector2(163, 958)
-target_scene_path = "uid://baxj5bwchnbd3"
-target_spawn_id = "FromCave"
-
 [node name="MapCollisions" type="StaticBody2D" parent="." unique_id=859524048]
+visible = false
 
 [node name="Top" type="CollisionPolygon2D" parent="MapCollisions" unique_id=1053488488]
 polygon = PackedVector2Array(1440, 384, 1398, 342, 1380, 321, 1364, 280, 1362, 250, 1361, 219, 1380, 206, 1374, 182, 1354, 172, 1324, 170, 1342, 119, 1377, 111, 1394, 88, 1385, 39, 1351, 17, 1308, 20, 1278, 31, 1269, 52, 1264, 88, 1271, 115, 1266, 138, 1235, 150, 1197, 173, 1171, 178, 1151, 164, 1126, 182, 1097, 179, 1087, 149, 1050, 144, 1048, 115, 1046, 77, 1041, 52, 1029, 39, 988, 40, 982, 58, 977, 98, 956, 126, 927, 141, 909, 163, 880, 159, 850, 160, 822, 176, 815, 154, 815, 107, 804, 84, 777, 58, 752, 71, 757, 96, 756, 118, 751, 140, 741, 167, 720, 174, 690, 167, 665, 142, 636, 125, 621, 92, 612, 57, 586, 42, 551, 34, 538, 43, 524, 49, 521, 83, 493, 78, 545, 132, 504, 149, 464, 135, 434, 94, 382, 65, 318, 68, 259, 73, 228, 81, 186, 84, 172, 107, 166, 138, 155, 169, 153, 198, 170, 219, 201, 228, 228, 240, 264, 247, 308, 254, 350, 264, 376, 302, 411, 337, 413, 355, 439, 373, 483, 390, 517, 403, 572, 419, 603, 424, 628, 424, 665, 448, 693, 478, 707, 504, 696, 534, 673, 550, 638, 553, 608, 574, 581, 601, 539, 633, 512, 650, 458, 640, 440, 615, 426, 587, 412, 556, 409, 535, 434, 521, 461, 518, 487, 529, 499, 552, 499, 585, 463, 596, 454, 609, 460, 630, 507, 640, 538, 624, 541, 603, 558, 601, 556, 572, 540, 535, 530, 501, 544, 493, 593, 492, 584, 448, 510, 447, 469, 441, 436, 470, 408, 486, 378, 487, 354, 488, 354, 521, 366, 556, 374, 587, 349, 603, 304, 598, 282, 587, 274, 553, 293, 521, 315, 505, 337, 493, 316, 464, 284, 482, 257, 510, 232, 517, 181, 503, 134, 489, 92, 455, 54, 429, 7, 420, 15, 56, 147, 14, 945, 8, 1438, 9)
@@ -79,3 +55,140 @@ polygon = PackedVector2Array(975, 187, 1003, 181, 1043, 193, 1072, 213, 1081, 23
 
 [node name="Rock" type="CollisionPolygon2D" parent="MapCollisions" unique_id=1818161815]
 polygon = PackedVector2Array(867, 179, 841, 197, 847, 210, 856, 224, 867, 233, 889, 245, 910, 238, 904, 221, 892, 202)
+
+[node name="Mapsettings" type="Node2D" parent="." unique_id=1660435180]
+script = ExtResource("6_ts0od")
+age_name = "Vartul"
+map_name = "Cave"
+monsters_respawn_by_default = true
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1638557816]
+z_index = -100
+position = Vector2(726, 544)
+texture = ExtResource("1_rqo2q")
+
+[node name="Player" parent="." unique_id=949372820 groups=["player"] instance=ExtResource("4_xnhdc")]
+position = Vector2(1289, 151)
+attack_damage_window = null
+weapon_visual_duration = null
+base_attack_cooldown = null
+attack_speed_bonus_per_agility = null
+respawn_delay = null
+spell_projectile_speed = null
+spell_projectile_spawn_offset = null
+spell_projectile_collision_layer = null
+spell_projectile_collision_mask = null
+ranged_attack_cooldown = null
+ranged_projectile_collision_layer = null
+ranged_projectile_collision_mask = null
+
+[node name="Monsters" type="Node2D" parent="." unique_id=1587593676]
+
+[node name="Rumbler" parent="Monsters" unique_id=787607196 instance=ExtResource("3_xnhdc")]
+position = Vector2(959, 322)
+monster_name = "Rumbler"
+monster_level = 7
+weakness_types = 128
+
+[node name="Rumbler2" parent="Monsters" unique_id=413115482 instance=ExtResource("3_xnhdc")]
+position = Vector2(1292, 485)
+monster_name = "Rumbler"
+monster_level = 7
+weakness_types = 128
+
+[node name="Rumbler3" parent="Monsters" unique_id=1642562307 instance=ExtResource("3_xnhdc")]
+position = Vector2(458, 203)
+monster_name = "Rumbler"
+monster_level = 7
+weakness_types = 128
+
+[node name="Rumbler4" parent="Monsters" unique_id=1532937618 instance=ExtResource("3_xnhdc")]
+position = Vector2(707, 563)
+monster_name = "Rumbler"
+monster_level = 7
+weakness_types = 128
+
+[node name="Rumbler5" parent="Monsters" unique_id=290019712 instance=ExtResource("3_xnhdc")]
+position = Vector2(224, 590)
+monster_name = "Rumbler"
+monster_level = 7
+weakness_types = 128
+
+[node name="Rumbler7" parent="Monsters" unique_id=1642910218 instance=ExtResource("3_xnhdc")]
+position = Vector2(743, 478)
+monster_name = "Rumbler"
+monster_level = 7
+weakness_types = 128
+
+[node name="Rumbler6" parent="Monsters" unique_id=825553081 instance=ExtResource("3_xnhdc")]
+position = Vector2(1145, 1008)
+monster_name = "Rumbler"
+monster_level = 7
+weakness_types = 128
+
+[node name="RockSpitter" parent="Monsters" unique_id=165711745 instance=ExtResource("7_ts0od")]
+position = Vector2(993, 125)
+persistent_id = ""
+monster_level = 6
+max_hit_points = 9
+defense = 2
+xp_reward = 5
+weakness_types = 128
+projectile_damage = 5
+
+[node name="RockSpitter2" parent="Monsters" unique_id=1984628985 instance=ExtResource("7_ts0od")]
+position = Vector2(1082, 412)
+persistent_id = ""
+monster_level = 6
+max_hit_points = 9
+defense = 2
+xp_reward = 5
+weakness_types = 128
+projectile_damage = 5
+
+[node name="RockSpitter3" parent="Monsters" unique_id=462015200 instance=ExtResource("7_ts0od")]
+position = Vector2(212, 93)
+persistent_id = ""
+monster_level = 6
+max_hit_points = 9
+defense = 2
+xp_reward = 5
+weakness_types = 128
+projectile_damage = 5
+
+[node name="FireMephit" parent="Monsters" unique_id=685716754 instance=ExtResource("6_vp6hn")]
+position = Vector2(467, 485)
+
+[node name="FireMephit2" parent="Monsters" unique_id=944111340 instance=ExtResource("6_vp6hn")]
+position = Vector2(934, 832)
+
+[node name="FireMephit3" parent="Monsters" unique_id=959154679 instance=ExtResource("6_vp6hn")]
+position = Vector2(1317, 740)
+
+[node name="FireMephit4" parent="Monsters" unique_id=884545627 instance=ExtResource("6_vp6hn")]
+position = Vector2(330, 820)
+
+[node name="FireMephit5" parent="Monsters" unique_id=1767729378 instance=ExtResource("6_vp6hn")]
+position = Vector2(789, 914)
+
+[node name="MapSpawns" type="Node2D" parent="." unique_id=1229036644]
+
+[node name="FromFoothills" parent="MapSpawns" unique_id=366895598 instance=ExtResource("3_ssplw")]
+position = Vector2(1277, 175)
+spawn_id = "FromFoothills"
+
+[node name="FromCaveRitual" parent="MapSpawns" unique_id=813232813 instance=ExtResource("3_ssplw")]
+position = Vector2(126, 1042)
+spawn_id = "FromRitual"
+
+[node name="MapTrans" type="Node2D" parent="." unique_id=1261238227]
+
+[node name="ToFoothills" parent="MapTrans" unique_id=1344752193 instance=ExtResource("2_l4v4r")]
+position = Vector2(1329, 70)
+target_scene_path = "uid://2j7r845rkdbh"
+target_spawn_id = "FromCave"
+
+[node name="ToCaveRitual" parent="MapTrans" unique_id=1276731504 instance=ExtResource("2_l4v4r")]
+position = Vector2(163, 958)
+target_scene_path = "uid://baxj5bwchnbd3"
+target_spawn_id = "FromCave"

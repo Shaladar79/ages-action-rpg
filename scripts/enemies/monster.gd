@@ -180,11 +180,6 @@ var ranged_damage_types: int = DamageTypes.PIERCING
 @export var telegraph_impact_flash_time: float = 0.12
 @export var telegraph_impact_flash_color: Color = Color(1.0, 0.0, 0.0, 0.85)
 
-@export_group("Special Projectile Status Effect")
-@export var projectile_status_effect_enabled: bool = false
-@export var projectile_status_effect_id: String = "tangled"
-@export var projectile_status_effect_duration: float = 4.0
-@export var projectile_status_move_speed_multiplier: float = 0.5
 
 @export_group("Special AOE Attack")
 @export var aoe_enabled: bool = false
@@ -214,6 +209,7 @@ var aoe_damage_types: int = DamageTypes.FIRE
 @export var aoe_status_effect_id: String = ""
 @export var aoe_status_effect_duration: float = 0.0
 @export var aoe_status_move_speed_multiplier: float = 1.0
+@export var aoe_status_damage_per_tick: int = 1
 
 @export_group("Special Slam Attack")
 @export var slam_enabled: bool = false
@@ -244,6 +240,7 @@ var slam_damage_types: int = DamageTypes.BASHING
 @export var slam_status_effect_id: String = ""
 @export var slam_status_effect_duration: float = 0.0
 @export var slam_status_move_speed_multiplier: float = 1.0
+@export var slam_status_damage_per_tick: int = 1
 
 @export_group("Special Wave Attack")
 @export var wave_enabled: bool = false
@@ -277,7 +274,7 @@ var wave_damage_types: int = DamageTypes.BASHING
 @export var wave_status_effect_id: String = ""
 @export var wave_status_effect_duration: float = 0.0
 @export var wave_status_move_speed_multiplier: float = 1.0
-
+@export var wave_status_damage_per_tick: int = 1
 
 @export_group("Special Burst Attack")
 @export var burst_enabled: bool = false
@@ -316,6 +313,7 @@ var burst_damage_types: int = DamageTypes.PIERCING
 @export var burst_status_effect_id: String = ""
 @export var burst_status_effect_duration: float = 0.0
 @export var burst_status_move_speed_multiplier: float = 1.0
+@export var burst_status_damage_per_tick: int = 1
 
 @export_group("Special Projectile Attack")
 @export var projectile_enabled: bool = false
@@ -351,6 +349,13 @@ var projectile_damage_types: int = DamageTypes.PIERCING
 @export var projectile_use_line_telegraph: bool = true
 @export var projectile_telegraph_width: float = 10.0
 @export var projectile_telegraph_color: Color = Color(1.0, 0.85, 0.25, 0.35)
+
+@export_group("Special Projectile Status Effect")
+@export var projectile_status_effect_enabled: bool = false
+@export var projectile_status_effect_id: String = "tangled"
+@export var projectile_status_effect_duration: float = 4.0
+@export var projectile_status_move_speed_multiplier: float = 0.5
+@export var projectile_status_damage_per_tick: int = 1
 
 @onready var sprite_2d: Sprite2D = get_node_or_null("Sprite2D") as Sprite2D
 @onready var animated_sprite_2d: AnimatedSprite2D = get_node_or_null("AnimatedSprite2D") as AnimatedSprite2D
@@ -508,13 +513,58 @@ func remove_status_effect(status_id: String) -> bool:
 func has_status_effect(status_id: String) -> bool:
     return StatusEffects.has_status_effect(active_status_effects, status_id)
 
+func take_status_tick_damage(damage_amount: int, incoming_damage_types: int = DamageTypes.NONE) -> void:
+    if is_dead:
+        return
 
+    if damage_amount <= 0:
+        return
+
+    current_hit_points -= damage_amount
+    _flash_damage()
+
+    print(monster_name, " took status tick damage: ", damage_amount)
+
+    if incoming_damage_types != DamageTypes.NONE:
+        print(monster_name, " status tick damage types: ", DamageTypes.get_damage_type_names(incoming_damage_types))
+
+    print(monster_name, " HP: ", current_hit_points, " / ", max_hit_points)
+
+    if current_hit_points <= 0:
+        die(null)
+        
 func _update_status_effects(delta: float) -> void:
-    var expired_status_ids := StatusEffects.update_status_effects(active_status_effects, delta)
+    var update_result := StatusEffects.update_status_effects(active_status_effects, delta)
+
+    var tick_events: Array = update_result.get("tick_events", [])
+
+    for tick_event in tick_events:
+        if typeof(tick_event) != TYPE_DICTIONARY:
+            continue
+
+        var damage_amount: int = int(tick_event.get("damage_amount", 0))
+        var damage_types: int = int(tick_event.get("damage_types", DamageTypes.NONE))
+        var status_id: String = str(tick_event.get("status_id", ""))
+
+        if damage_amount <= 0:
+            continue
+
+        print(monster_name, " status tick: ", status_id, " damage: ", damage_amount)
+
+        var ignore_defense: bool = bool(tick_event.get("ignore_defense", false))
+
+        if ignore_defense:
+            take_status_tick_damage(damage_amount, damage_types)
+        else:
+            take_damage_with_types(damage_amount, damage_types)
+
+    var expired_status_ids: Array = update_result.get("expired_status_ids", [])
 
     for status_id in expired_status_ids:
         print(monster_name, " status expired: ", status_id)
 
+func get_current_defense() -> int:
+    return defense + StatusEffects.get_defense_bonus(active_status_effects)
 
 func get_current_move_speed() -> float:
     return move_speed * StatusEffects.get_move_speed_multiplier(active_status_effects)
@@ -922,7 +972,7 @@ func take_damage_with_types(damage_amount: int, incoming_damage_types: int, atta
 
 
 func _apply_damage(damage_amount: int, incoming_damage_types: int, attacker: Node2D = null) -> void:
-    var final_damage: int = maxi(1, damage_amount - defense)
+    var final_damage: int = maxi(1, damage_amount - get_current_defense())
 
     if _is_weak_to_damage_types(incoming_damage_types):
         final_damage = maxi(1, int(ceil(float(final_damage) * weakness_damage_multiplier)))

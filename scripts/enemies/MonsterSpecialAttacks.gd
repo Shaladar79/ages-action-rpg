@@ -191,8 +191,8 @@ func _start_aoe_special() -> void:
         monster.aoe_status_effect_enabled,
         monster.aoe_status_effect_id,
         monster.aoe_status_effect_duration,
-        monster.aoe_status_move_speed_multiplier
-    )
+        monster.aoe_status_move_speed_multiplier,
+        monster.aoe_status_damage_per_tick)
 
     _end_special()
 
@@ -247,8 +247,8 @@ func _start_slam_special() -> void:
         monster.slam_status_effect_enabled,
         monster.slam_status_effect_id,
         monster.slam_status_effect_duration,
-        monster.slam_status_move_speed_multiplier
-    )
+        monster.slam_status_move_speed_multiplier,
+        monster.slam_status_damage_per_tick)
 
     _end_special()
 
@@ -619,7 +619,8 @@ func _apply_burst_status_to_player(player: Node2D) -> void:
         monster.burst_status_effect_id,
         monster.burst_status_effect_duration,
         monster.burst_status_move_speed_multiplier,
-        "Burst"
+        "Burst",
+        monster.burst_status_damage_per_tick
     )
 
 func _on_single_projectile_body_entered(body: Node2D, projectile: Area2D) -> void:
@@ -881,14 +882,14 @@ func _hit_player_if_in_wave_section(
     else:
         print(monster.monster_name, " ", attack_name, " hit player.")
 
-    _apply_configured_status_to_player(
+        _apply_configured_status_to_player(
         player,
         monster.wave_status_effect_enabled,
         monster.wave_status_effect_id,
         monster.wave_status_effect_duration,
         monster.wave_status_move_speed_multiplier,
-        attack_name
-    )
+        attack_name,
+        monster.wave_status_damage_per_tick)
 
 func _apply_configured_status_to_player(
     player: Node2D,
@@ -896,7 +897,8 @@ func _apply_configured_status_to_player(
     status_effect_id: String,
     status_duration: float,
     status_move_speed_multiplier: float,
-    source_name: String
+    source_name: String,
+    status_damage_per_tick: int = 1
 ) -> void:
     if monster == null:
         return
@@ -919,7 +921,8 @@ func _apply_configured_status_to_player(
         return
 
     var status_effect_data := {
-        StatusEffects.KEY_MOVE_SPEED_MULTIPLIER: status_move_speed_multiplier
+        StatusEffects.KEY_MOVE_SPEED_MULTIPLIER: status_move_speed_multiplier,
+        StatusEffects.KEY_DAMAGE_PER_TICK: status_damage_per_tick
     }
 
     var applied: bool = player.apply_status_effect(
@@ -936,7 +939,9 @@ func _apply_configured_status_to_player(
             " applied status to player: ",
             clean_status_id,
             " duration: ",
-            status_duration
+            status_duration,
+            " damage per tick: ",
+            status_damage_per_tick
         )
 
 func _hit_player_if_in_special_radius(
@@ -948,7 +953,8 @@ func _hit_player_if_in_special_radius(
     status_enabled: bool = false,
     status_effect_id: String = "",
     status_duration: float = 0.0,
-    status_move_speed_multiplier: float = 1.0
+    status_move_speed_multiplier: float = 1.0,
+    status_damage_per_tick: int = 1
 ) -> void:
     if monster == null:
         return
@@ -970,13 +976,14 @@ func _hit_player_if_in_special_radius(
     else:
         print(monster.monster_name, " ", attack_name, " hit player.")
 
-    _apply_configured_status_to_player(
+        _apply_configured_status_to_player(
         player,
         status_enabled,
         status_effect_id,
         status_duration,
         status_move_speed_multiplier,
-        attack_name
+        attack_name,
+        status_damage_per_tick
     )
 
 func _hit_player_if_in_special_rectangle(
@@ -990,7 +997,8 @@ func _hit_player_if_in_special_rectangle(
     status_enabled: bool = false,
     status_effect_id: String = "",
     status_duration: float = 0.0,
-    status_move_speed_multiplier: float = 1.0
+    status_move_speed_multiplier: float = 1.0,
+    status_damage_per_tick: int = 1
 ) -> void:
     if monster == null:
         return
@@ -1029,13 +1037,14 @@ func _hit_player_if_in_special_rectangle(
     else:
         print(monster.monster_name, " ", attack_name, " hit player.")
 
-    _apply_configured_status_to_player(
+        _apply_configured_status_to_player(
         player,
         status_enabled,
         status_effect_id,
         status_duration,
         status_move_speed_multiplier,
-        attack_name
+        attack_name,
+        status_damage_per_tick
     )
 
 func _damage_player_from_special(player: Node2D, damage_amount: int, attack_damage_types: int) -> void:
@@ -1248,5 +1257,6 @@ func _apply_projectile_status_to_player(player: Node2D) -> void:
         monster.projectile_status_effect_id,
         monster.projectile_status_effect_duration,
         monster.projectile_status_move_speed_multiplier,
-        "Projectile"
+        "Projectile",
+        monster.projectile_status_damage_per_tick
     )

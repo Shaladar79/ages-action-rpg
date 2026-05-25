@@ -19,20 +19,21 @@
 [sub_resource type="Resource" id="Resource_nqxse"]
 script = ExtResource("4_h83v4")
 item_id = "healing_tonic"
-price_amount = 10
+price_amount = 30
 metadata/_custom_type_script = "uid://dmhim3ohrnvcm"
 
 [sub_resource type="Resource" id="Resource_27f20"]
 script = ExtResource("4_h83v4")
 item_id = "sling_ammo"
 quantity = 5
-price_amount = 5
+price_amount = 20
+required_flag = "sling_found"
 metadata/_custom_type_script = "uid://dmhim3ohrnvcm"
 
 [sub_resource type="Resource" id="Resource_7gjs6"]
 script = ExtResource("4_h83v4")
 item_id = "mana_tonic"
-price_amount = 30
+price_amount = 50
 required_flag = "mana_unlocked"
 metadata/_custom_type_script = "uid://dmhim3ohrnvcm"
 

@@ -2,6 +2,7 @@
 
 [ext_resource type="Script" uid="uid://piqrssdi1ltw" path="res://scripts/enemies/monster.gd" id="1_3h42a"]
 [ext_resource type="Texture2D" uid="uid://bxgy3fv8g00l0" path="res://art/Assets/RPG Monsters Mega Pack/Monsters/TB_Monster_009/TB_Monster_009_Full.png" id="2_52ccm"]
+[ext_resource type="Texture2D" uid="uid://bu6a16ekuisbl" path="res://art/Assets/icons/fullcolor/individual_24x24/icon171.png" id="2_hagbl"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_hagbl"]
 atlas = ExtResource("2_52ccm")
@@ -264,6 +265,7 @@ ranged_damage_types = 1
 special_attacks_enabled = true
 projectile_enabled = true
 projectile_damage = 3
+projectile_texture = ExtResource("2_hagbl")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=1026028676]
 sprite_frames = SubResource("SpriteFrames_fvuhv")

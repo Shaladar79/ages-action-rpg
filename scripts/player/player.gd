@@ -267,35 +267,60 @@ func has_status_effect(status_id: String) -> bool:
 
 
 func _update_status_effects(delta: float) -> void:
-    var expired_status_ids := StatusEffects.update_status_effects(active_status_effects, delta)
+    var update_result := StatusEffects.update_status_effects(active_status_effects, delta)
+
+    var tick_events: Array = update_result.get("tick_events", [])
+
+    for tick_event in tick_events:
+        if typeof(tick_event) != TYPE_DICTIONARY:
+            continue
+
+        var damage_amount: int = int(tick_event.get("damage_amount", 0))
+        var damage_types: int = int(tick_event.get("damage_types", DamageTypes.NONE))
+        var status_id: String = str(tick_event.get("status_id", ""))
+
+        if damage_amount <= 0:
+            continue
+
+        print("Player status tick: ", status_id, " damage: ", damage_amount)
+        var ignore_defense: bool = bool(tick_event.get("ignore_defense", false))
+
+        if ignore_defense:
+            take_status_tick_damage(damage_amount, damage_types)
+        else:
+            take_damage_with_types(damage_amount, damage_types)
+
+    var expired_status_ids: Array = update_result.get("expired_status_ids", [])
 
     for status_id in expired_status_ids:
         print("Player status expired: ", status_id)
 
-func gain_xp(amount: int) -> bool:
+func take_status_tick_damage(incoming_damage: int, incoming_damage_types: int = DamageTypes.NONE) -> void:
     if is_defeated:
-        return false
+        return
 
-    if amount <= 0:
-        return false
+    if incoming_damage <= 0:
+        return
 
-    var previous_level: int = character_stats.level
-    var leveled_up := character_stats.add_xp(amount)
-    var current_level: int = character_stats.level
+    if incoming_damage_types != DamageTypes.NONE and _is_resistant_to_damage_types(incoming_damage_types):
+        print("Status tick negated by resistance: ", DamageTypes.get_damage_type_names(incoming_damage_types))
+        return
+
+    character_stats.current_health -= incoming_damage
+    character_stats.current_health = maxi(character_stats.current_health, 0)
+
+    print("Player took status tick damage: ", incoming_damage)
+
+    if incoming_damage_types != DamageTypes.NONE:
+        print("Status tick damage types: ", DamageTypes.get_damage_type_names(incoming_damage_types))
+
+    print("Player HP: ", character_stats.current_health, " / ", character_stats.max_health)
 
     _notify_ui_stats_changed()
 
-    if leveled_up:
-        print("Player leveled up from ", previous_level, " to ", current_level)
-
-        if not SaveManager.is_flag_set("level_up_lesson_seen"):
-            _show_first_level_up_lesson()
-        else:
-            print("Level-up lesson already seen. Skipping repeated level-up dialogue.")
-
-    return leveled_up
-
-
+    if character_stats.current_health <= 0:
+        _on_player_defeated()
+        
 func _show_first_level_up_lesson() -> void:
     if SaveManager.is_flag_set("level_up_lesson_seen"):
         return
@@ -1049,7 +1074,7 @@ func get_ranged_attack_damage() -> int:
 
 
 func get_defense() -> int:
-    return character_stats.get_defense()
+    return character_stats.get_defense() + StatusEffects.get_defense_bonus(active_status_effects)
 
 
 func _unequip_missing_item_if_needed(item_id: String) -> void:
@@ -1364,14 +1389,10 @@ func _use_hotbar_spell_book(slot_number: int, item_id: String) -> bool:
         print("Not enough Mana to cast: ", ItemDatabase.get_spell_name(item_id))
         return false
 
-    var spell_range: float = ItemDatabase.get_spell_range(item_id)
     var cooldown: float = ItemDatabase.get_spell_cooldown(item_id)
+    var cast_target: String = ItemDatabase.get_spell_cast_target(item_id)
     var status_effect: String = ItemDatabase.get_spell_status_effect(item_id)
     var status_duration: float = ItemDatabase.get_spell_status_duration(item_id)
-
-    if spell_range <= 0.0:
-        print("Spell has no valid range: ", item_id)
-        return false
 
     if status_effect.strip_edges() == "":
         print("Spell has no status effect: ", item_id)
@@ -1381,24 +1402,37 @@ func _use_hotbar_spell_book(slot_number: int, item_id: String) -> bool:
         print("Spell has no valid status duration: ", item_id)
         return false
 
-    var cast_direction := _get_last_direction_vector()
-
-    if cast_direction == Vector2.ZERO:
-        cast_direction = Vector2.DOWN
-
     var spent := character_stats.spend_mana(mana_cost)
 
     if not spent:
         print("Failed to spend Mana for spell: ", ItemDatabase.get_spell_name(item_id))
         return false
 
-    _spawn_spell_projectile(
-        item_id,
-        cast_direction,
-        spell_range,
-        status_effect,
-        status_duration
-    )
+    match cast_target:
+        "self":
+            _cast_self_buff_spell(item_id, status_effect, status_duration)
+
+        _:
+            var spell_range: float = ItemDatabase.get_spell_range(item_id)
+
+            if spell_range <= 0.0:
+                print("Spell has no valid range: ", item_id)
+                character_stats.restore_mana(mana_cost)
+                _notify_ui_stats_changed()
+                return false
+
+            var cast_direction := _get_last_direction_vector()
+
+            if cast_direction == Vector2.ZERO:
+                cast_direction = Vector2.DOWN
+
+            _spawn_spell_projectile(
+                item_id,
+                cast_direction,
+                spell_range,
+                status_effect,
+                status_duration
+            )
 
     _set_hotbar_slot_cooldown(slot_number, cooldown)
 
@@ -1406,6 +1440,30 @@ func _use_hotbar_spell_book(slot_number: int, item_id: String) -> bool:
     _notify_ui_stats_changed()
 
     return true
+func _cast_self_buff_spell(item_id: String, status_effect: String, status_duration: float) -> void:
+    var status_effect_data := {
+        StatusEffects.KEY_MOVE_SPEED_MULTIPLIER: ItemDatabase.get_spell_move_speed_multiplier(item_id)
+    }
+
+    if status_effect == StatusEffects.STATUS_ROCK_SKIN:
+        status_effect_data[StatusEffects.KEY_DEFENSE_BONUS] = ItemDatabase.get_spell_defense_bonus(item_id)
+
+    if status_effect == StatusEffects.STATUS_BURNING:
+        status_effect_data[StatusEffects.KEY_DAMAGE_PER_TICK] = ItemDatabase.get_spell_status_damage_per_tick(item_id)
+        status_effect_data[StatusEffects.KEY_DAMAGE_TICK_INTERVAL] = ItemDatabase.get_spell_status_tick_interval(item_id)
+        status_effect_data[StatusEffects.KEY_DAMAGE_TYPES] = ItemDatabase.get_spell_damage_types(item_id)
+        status_effect_data[StatusEffects.KEY_IGNORE_DEFENSE] = true
+
+    apply_status_effect(status_effect, status_duration, status_effect_data)
+
+    print(
+        "Self-cast spell applied: ",
+        ItemDatabase.get_spell_name(item_id),
+        " status: ",
+        status_effect,
+        " duration: ",
+        status_duration
+    )
 
 func _spawn_spell_projectile(
         item_id: String,
@@ -1424,8 +1482,14 @@ func _spawn_spell_projectile(
     projectile.collision_mask = spell_projectile_collision_mask
 
     var status_effect_data := {
-        StatusEffects.KEY_MOVE_SPEED_MULTIPLIER: 0.5
+        StatusEffects.KEY_MOVE_SPEED_MULTIPLIER: ItemDatabase.get_spell_move_speed_multiplier(item_id)
     }
+
+    if status_effect == StatusEffects.STATUS_BURNING:
+        status_effect_data[StatusEffects.KEY_DAMAGE_PER_TICK] = ItemDatabase.get_spell_status_damage_per_tick(item_id)
+        status_effect_data[StatusEffects.KEY_DAMAGE_TICK_INTERVAL] = ItemDatabase.get_spell_status_tick_interval(item_id)
+        status_effect_data[StatusEffects.KEY_DAMAGE_TYPES] = ItemDatabase.get_spell_damage_types(item_id)
+        status_effect_data[StatusEffects.KEY_IGNORE_DEFENSE] = true
 
     projectile.setup(
         self,
@@ -1434,7 +1498,9 @@ func _spawn_spell_projectile(
         spell_range,
         status_effect,
         status_duration,
-        status_effect_data
+        status_effect_data,
+        ItemDatabase.get_spell_damage(item_id),
+        ItemDatabase.get_spell_damage_types(item_id)
     )
 
     var current_scene := get_tree().current_scene
@@ -1443,7 +1509,6 @@ func _spawn_spell_projectile(
         current_scene.add_child(projectile)
     else:
         get_parent().add_child(projectile)
-
 
 func _get_last_direction_vector() -> Vector2:
     match last_direction:

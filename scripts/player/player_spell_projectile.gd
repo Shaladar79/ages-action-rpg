@@ -15,6 +15,8 @@ var status_effect_data: Dictionary = {}
 
 var has_hit: bool = false
 
+var damage_amount: int = 0
+var damage_types: int = DamageTypes.NONE
 
 func setup(
         projectile_caster: Node2D,
@@ -23,7 +25,9 @@ func setup(
         range_value: float,
         effect_id: String,
         effect_duration: float,
-        effect_data: Dictionary = {}
+        effect_data: Dictionary = {},
+        projectile_damage: int = 0,
+        projectile_damage_types: int = DamageTypes.NONE
 ) -> void:
     caster = projectile_caster
     direction = cast_direction.normalized()
@@ -33,6 +37,8 @@ func setup(
     status_effect = effect_id
     status_duration = effect_duration
     status_effect_data = effect_data.duplicate(true)
+    damage_amount = projectile_damage
+    damage_types = projectile_damage_types
 
     if direction == Vector2.ZERO:
         direction = Vector2.DOWN
@@ -136,14 +142,26 @@ func _try_hit_target(target: Node) -> void:
     if target.is_in_group("player"):
         return
 
-    if not target.has_method("apply_status_effect"):
+    var can_damage := target.has_method("take_damage_with_types") or target.has_method("take_damage")
+    var can_apply_status := target.has_method("apply_status_effect")
+
+    if not can_damage and not can_apply_status:
         return
 
     has_hit = true
 
-    var applied: bool = target.apply_status_effect(status_effect, status_duration, status_effect_data)
+    if damage_amount > 0:
+        if target.has_method("take_damage_with_types"):
+            target.take_damage_with_types(damage_amount, damage_types, caster)
+        elif target.has_method("take_damage"):
+            target.take_damage(damage_amount)
 
-    if applied:
-        print(spell_name, " hit ", target.name, " and applied ", status_effect)
+        print(spell_name, " dealt direct damage: ", damage_amount)
+
+    if can_apply_status and status_effect.strip_edges() != "" and status_duration > 0.0:
+        var applied: bool = target.apply_status_effect(status_effect, status_duration, status_effect_data)
+
+        if applied:
+            print(spell_name, " hit ", target.name, " and applied ", status_effect)
 
     queue_free()

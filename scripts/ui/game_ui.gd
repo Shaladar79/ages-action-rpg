@@ -499,9 +499,13 @@ func _update_hud() -> void:
 
 func _update_character_screen() -> void:
     var stats := _get_stats()
+    var current_player := _get_player_for_ui_controller()
 
     if character_sheet_stats_ui != null:
-        character_sheet_stats_ui.update_character_sheet(stats)
+        if character_sheet_stats_ui.has_method("update_character_sheet_for_player"):
+            character_sheet_stats_ui.update_character_sheet_for_player(current_player, stats)
+        else:
+            character_sheet_stats_ui.update_character_sheet(stats)
 
     if character_sheet_buttons_ui != null:
         character_sheet_buttons_ui.update_stat_buttons(stats)
