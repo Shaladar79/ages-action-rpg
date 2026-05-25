@@ -8,7 +8,7 @@
 [node name="MountainBoss" type="Node2D" unique_id=1231829728]
 
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=1971183551]
-position = Vector2(629, 624)
+position = Vector2(635, 629)
 texture = ExtResource("1_xwcxs")
 
 [node name="FromRitual" parent="." unique_id=366895598 instance=ExtResource("2_8q2gy")]
@@ -23,3 +23,8 @@ target_spawn_id = "FromBoss"
 
 [node name="Player" parent="." unique_id=949372820 groups=["player"] instance=ExtResource("4_38p3s")]
 position = Vector2(648, 830)
+
+[node name="MapCollisions" type="StaticBody2D" parent="." unique_id=525924115]
+
+[node name="Boarder" type="CollisionPolygon2D" parent="MapCollisions" unique_id=715242884]
+polygon = PackedVector2Array(337, 1240, 417, 1108, 456, 1017, 484, 911, 541, 882, 565, 778, 505, 737, 399, 698, 318, 654, 243, 607, 207, 522, 246, 413, 313, 356, 347, 314, 373, 270, 427, 239, 500, 226, 531, 247, 565, 267, 591, 278, 588, 208, 541, 187, 534, 143, 570, 130, 624, 122, 697, 125, 754, 122, 793, 148, 754, 203, 697, 216, 705, 278, 752, 247, 809, 218, 853, 197, 923, 283, 894, 327, 871, 374, 879, 402, 933, 431, 995, 446, 1055, 465, 1096, 509, 1104, 563, 1045, 612, 972, 641, 892, 690, 827, 732, 775, 760, 710, 760, 692, 797, 707, 841, 700, 872, 645, 885, 637, 916, 645, 965, 637, 1020, 622, 1064, 624, 1134, 666, 1170, 739, 1222, 780, 1248, 1239, 1250, 1221, 26, 51, 42, 23, 1245)

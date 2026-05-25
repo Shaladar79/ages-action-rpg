@@ -35,3 +35,38 @@ target_spawn_id = "FromCave"
 position = Vector2(163, 958)
 target_scene_path = "uid://baxj5bwchnbd3"
 target_spawn_id = "FromCave"
+
+[node name="MapCollisions" type="StaticBody2D" parent="." unique_id=859524048]
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="MapCollisions" unique_id=1053488488]
+polygon = PackedVector2Array(1440, 384, 1398, 342, 1380, 321, 1364, 280, 1362, 250, 1361, 219, 1380, 206, 1374, 182, 1354, 172, 1324, 170, 1342, 119, 1377, 111, 1394, 88, 1385, 39, 1351, 17, 1308, 20, 1278, 31, 1269, 52, 1264, 88, 1271, 115, 1266, 138, 1235, 150, 1197, 173, 1171, 178, 1151, 164, 1126, 182, 1097, 179, 1087, 149, 1050, 144, 1048, 115, 1046, 77, 1041, 52, 1029, 39, 988, 40, 982, 58, 977, 98, 956, 126, 927, 141, 909, 163, 880, 159, 850, 160, 822, 176, 815, 154, 815, 107, 804, 84, 777, 58, 752, 71, 757, 96, 756, 118, 751, 140, 741, 167, 734, 183, 688, 175, 658, 150, 627, 126, 621, 92, 612, 57, 586, 42, 551, 34, 538, 43, 524, 49, 521, 83, 493, 78, 545, 132, 504, 149, 464, 135, 434, 94, 382, 65, 318, 68, 259, 73, 228, 81, 186, 84, 172, 107, 166, 138, 155, 169, 153, 198, 170, 219, 201, 228, 228, 240, 264, 247, 308, 254, 350, 264, 376, 302, 411, 337, 413, 355, 439, 373, 483, 390, 517, 403, 572, 419, 603, 424, 628, 424, 665, 448, 693, 478, 707, 504, 696, 534, 673, 550, 638, 553, 608, 574, 581, 601, 539, 633, 512, 650, 458, 640, 440, 615, 426, 587, 412, 556, 409, 535, 434, 521, 461, 518, 487, 529, 499, 552, 499, 585, 463, 596, 454, 609, 460, 630, 507, 640, 538, 624, 541, 603, 558, 601, 556, 572, 540, 535, 530, 501, 544, 493, 593, 492, 584, 448, 510, 447, 469, 441, 436, 470, 408, 486, 378, 487, 354, 488, 354, 521, 366, 556, 374, 587, 349, 603, 304, 598, 282, 587, 274, 553, 293, 521, 315, 505, 337, 493, 316, 464, 284, 482, 257, 510, 232, 517, 181, 503, 134, 489, 92, 455, 54, 429, 7, 420, 15, 56, 147, 14, 945, 8, 1438, 9)
+
+[node name="CollisionPolygon2D2" type="CollisionPolygon2D" parent="MapCollisions" unique_id=1221067746]
+
+[node name="CollisionPolygon2D3" type="CollisionPolygon2D" parent="MapCollisions" unique_id=1823501346]
+
+[node name="CollisionPolygon2D4" type="CollisionPolygon2D" parent="MapCollisions" unique_id=315258676]
+
+[node name="CollisionPolygon2D5" type="CollisionPolygon2D" parent="MapCollisions" unique_id=1501667069]
+
+[node name="CollisionPolygon2D6" type="CollisionPolygon2D" parent="MapCollisions" unique_id=1720388203]
+
+[node name="CollisionPolygon2D7" type="CollisionPolygon2D" parent="MapCollisions" unique_id=89914266]
+
+[node name="CollisionPolygon2D8" type="CollisionPolygon2D" parent="MapCollisions" unique_id=1679760356]
+
+[node name="CollisionPolygon2D9" type="CollisionPolygon2D" parent="MapCollisions" unique_id=1630987209]
+
+[node name="CollisionPolygon2D10" type="CollisionPolygon2D" parent="MapCollisions" unique_id=837102909]
+
+[node name="CollisionPolygon2D11" type="CollisionPolygon2D" parent="MapCollisions" unique_id=852694418]
+
+[node name="CollisionPolygon2D12" type="CollisionPolygon2D" parent="MapCollisions" unique_id=1885570628]
+
+[node name="CollisionPolygon2D13" type="CollisionPolygon2D" parent="MapCollisions" unique_id=1193340327]
+
+[node name="CollisionPolygon2D14" type="CollisionPolygon2D" parent="MapCollisions" unique_id=1818161815]
+
+[node name="CollisionPolygon2D15" type="CollisionPolygon2D" parent="MapCollisions" unique_id=1950931869]
+
+[node name="CollisionPolygon2D16" type="CollisionPolygon2D" parent="MapCollisions" unique_id=1530260371]
