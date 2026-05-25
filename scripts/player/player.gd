@@ -61,7 +61,13 @@ var hotbar_slots: Array[Dictionary] = []
 
 var currencies: Dictionary = {}
 var discovered_currency_ids: Array[String] = []
+var active_status_effects: Dictionary = {}
 
+@export_group("Spell Casting")
+@export var spell_projectile_speed: float = 260.0
+@export var spell_projectile_spawn_offset: float = 18.0
+@export var spell_projectile_collision_layer: int = 0
+@export var spell_projectile_collision_mask: int = 1
 
 func _ready() -> void:
     add_to_group("player")
@@ -177,6 +183,7 @@ func _find_map_spawn_point(node: Node, spawn_id: String) -> Node2D:
 func _physics_process(delta: float) -> void:
     _update_attack_timers(delta)
     _update_hotbar_cooldowns(delta)
+    _update_status_effects(delta)
 
     if Input.is_action_just_pressed("dialogue_continue"):
         if is_dialogue_active():
@@ -220,12 +227,42 @@ func get_character_stats() -> CharacterStats:
 
 
 func get_current_move_speed() -> float:
-    return character_stats.get_move_speed(base_move_speed, move_speed_per_speed_point)
+    return character_stats.get_move_speed(base_move_speed, move_speed_per_speed_point) * StatusEffects.get_move_speed_multiplier(active_status_effects)
 
 
 func get_current_attack_cooldown() -> float:
     return character_stats.get_attack_cooldown(base_attack_cooldown, attack_speed_bonus_per_agility)
 
+func apply_status_effect(status_id: String, duration: float, effect_data: Dictionary = {}) -> bool:
+    if is_defeated:
+        return false
+
+    var applied := StatusEffects.apply_status_effect(active_status_effects, status_id, duration, effect_data)
+
+    if applied:
+        print("Player status applied/refreshed: ", status_id, " duration: ", duration)
+
+    return applied
+
+
+func remove_status_effect(status_id: String) -> bool:
+    var removed := StatusEffects.remove_status_effect(active_status_effects, status_id)
+
+    if removed:
+        print("Player status removed: ", status_id)
+
+    return removed
+
+
+func has_status_effect(status_id: String) -> bool:
+    return StatusEffects.has_status_effect(active_status_effects, status_id)
+
+
+func _update_status_effects(delta: float) -> void:
+    var expired_status_ids := StatusEffects.update_status_effects(active_status_effects, delta)
+
+    for status_id in expired_status_ids:
+        print("Player status expired: ", status_id)
 
 func gain_xp(amount: int) -> bool:
     if is_defeated:
@@ -1258,6 +1295,19 @@ func _use_hotbar_consumable(slot_number: int, item_id: String) -> bool:
                 print("Consumable not used. Player is already at full health.")
                 return false
 
+        "restore_mana":
+            var mana_gain: int = ItemDatabase.get_mana_gain(item_id)
+
+            if mana_gain <= 0:
+                print("Consumable has no mana gain: ", item_id)
+                return false
+
+            var restored: bool = restore_player_mana(mana_gain)
+
+            if not restored:
+                print("Consumable not used. Mana is locked or already full.")
+                return false
+
         _:
             print("Unknown consumable effect: ", effect)
             return false
@@ -1272,9 +1322,127 @@ func _use_hotbar_consumable(slot_number: int, item_id: String) -> bool:
 
 
 func _use_hotbar_spell_book(slot_number: int, item_id: String) -> bool:
-    print("Spell book hotbar use placeholder. Slot: ", slot_number, " Item: ", item_id)
-    return false
+    if character_stats == null:
+        return false
 
+    if not character_stats.has_mana_resource:
+        print("Cannot cast spell. Mana is not unlocked.")
+        return false
+
+    var mana_cost: int = ItemDatabase.get_spell_mana_cost(item_id)
+
+    if not character_stats.can_spend_mana(mana_cost):
+        print("Not enough Mana to cast: ", ItemDatabase.get_spell_name(item_id))
+        return false
+
+    var spell_range: float = ItemDatabase.get_spell_range(item_id)
+    var cooldown: float = ItemDatabase.get_spell_cooldown(item_id)
+    var status_effect: String = ItemDatabase.get_spell_status_effect(item_id)
+    var status_duration: float = ItemDatabase.get_spell_status_duration(item_id)
+
+    if spell_range <= 0.0:
+        print("Spell has no valid range: ", item_id)
+        return false
+
+    if status_effect.strip_edges() == "":
+        print("Spell has no status effect: ", item_id)
+        return false
+
+    if status_duration <= 0.0:
+        print("Spell has no valid status duration: ", item_id)
+        return false
+
+    var cast_direction := _get_last_direction_vector()
+
+    if cast_direction == Vector2.ZERO:
+        cast_direction = Vector2.DOWN
+
+    var spent := character_stats.spend_mana(mana_cost)
+
+    if not spent:
+        print("Failed to spend Mana for spell: ", ItemDatabase.get_spell_name(item_id))
+        return false
+
+    _spawn_spell_projectile(
+        item_id,
+        cast_direction,
+        spell_range,
+        status_effect,
+        status_duration
+    )
+
+    _set_hotbar_slot_cooldown(slot_number, cooldown)
+
+    print("Cast spell from hotbar slot ", slot_number, ": ", ItemDatabase.get_spell_name(item_id))
+    _notify_ui_stats_changed()
+
+    return true
+
+func _spawn_spell_projectile(
+        item_id: String,
+        cast_direction: Vector2,
+        spell_range: float,
+        status_effect: String,
+        status_duration: float
+) -> void:
+    var projectile := PlayerSpellProjectile.new()
+    projectile.name = "PlayerSpellProjectile"
+
+    var spawn_position := global_position + (cast_direction.normalized() * spell_projectile_spawn_offset)
+    projectile.global_position = spawn_position
+    projectile.speed = spell_projectile_speed
+    projectile.collision_layer = spell_projectile_collision_layer
+    projectile.collision_mask = spell_projectile_collision_mask
+
+    var status_effect_data := {
+        StatusEffects.KEY_MOVE_SPEED_MULTIPLIER: 0.5
+    }
+
+    projectile.setup(
+        self,
+        cast_direction,
+        item_id,
+        spell_range,
+        status_effect,
+        status_duration,
+        status_effect_data
+    )
+
+    var current_scene := get_tree().current_scene
+
+    if current_scene != null:
+        current_scene.add_child(projectile)
+    else:
+        get_parent().add_child(projectile)
+
+
+func _get_last_direction_vector() -> Vector2:
+    match last_direction:
+        "up":
+            return Vector2.UP
+        "down":
+            return Vector2.DOWN
+        "left":
+            return Vector2.LEFT
+        "right":
+            return Vector2.RIGHT
+
+    return Vector2.DOWN
+
+
+func _set_hotbar_slot_cooldown(slot_number: int, cooldown: float) -> void:
+    _initialize_hotbar_slots()
+
+    if slot_number < 1 or slot_number > HOTBAR_SLOT_COUNT:
+        return
+
+    if cooldown <= 0.0:
+        return
+
+    var slot_index := slot_number - 1
+    var slot: Dictionary = hotbar_slots[slot_index]
+    slot["cooldown_remaining"] = cooldown
+    hotbar_slots[slot_index] = slot
 
 func _use_hotbar_technique_manual(slot_number: int, item_id: String) -> bool:
     print("Technique manual hotbar use placeholder. Slot: ", slot_number, " Item: ", item_id)
@@ -1298,6 +1466,19 @@ func heal_player(heal_amount: int) -> bool:
 
     return true
 
+func restore_player_mana(mana_amount: int) -> bool:
+    if mana_amount <= 0:
+        return false
+
+    if character_stats == null:
+        return false
+
+    var restored: bool = character_stats.restore_mana(mana_amount)
+
+    if restored:
+        _notify_ui_stats_changed()
+
+    return restored
 
 func show_dialogue(message: String, speaker_name: String = "System") -> void:
     var clean_message := message.strip_edges()

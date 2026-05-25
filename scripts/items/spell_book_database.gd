@@ -19,6 +19,7 @@ static func get_item_data(item_id: String) -> Dictionary:
                 "spell_school": SPELL_SCHOOL_NATURE,
                 "mana_cost": 3,
                 "cooldown": 5.0,
+                "spell_range": 220.0,
                 "status_effect": "tangled",
                 "status_duration": 4.0,
                 "move_speed_multiplier": 0.5,

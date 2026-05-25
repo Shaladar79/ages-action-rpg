@@ -192,6 +192,14 @@ static func get_heal_amount(item_id: String) -> int:
     return int(item_data.get("heal_amount", 0))
 
 
+static func get_mana_gain(item_id: String) -> int:
+    var item_data := get_item_data(item_id)
+
+    if item_data.is_empty():
+        return 0
+
+    return int(item_data.get("mana_gain", 0))
+    
 static func is_consumed_on_use(item_id: String) -> bool:
     var item_data := get_item_data(item_id)
 
@@ -209,6 +217,13 @@ static func get_spell_id(item_id: String) -> String:
 
     return str(item_data.get("spell_id", ""))
 
+static func get_spell_range(item_id: String) -> float:
+    var item_data := get_item_data(item_id)
+
+    if item_data.is_empty():
+        return 0.0
+
+    return float(item_data.get("spell_range", 0.0))
 
 static func get_spell_name(item_id: String) -> String:
     var item_data := get_item_data(item_id)

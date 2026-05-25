@@ -5,6 +5,7 @@
 [ext_resource type="PackedScene" uid="uid://3j1f8tltg0sj" path="res://scenes/npcs/shopkeepers/ShopKeeper_RealmVultar.tscn" id="3_i8oeu"]
 [ext_resource type="PackedScene" uid="uid://cihgogaol4td8" path="res://scenes/objects/map_transition_area.tscn" id="3_jjnn0"]
 [ext_resource type="PackedScene" uid="uid://ds0nibabilemd" path="res://scenes/player/Player.tscn" id="4_4ciox"]
+[ext_resource type="Script" uid="uid://dmhim3ohrnvcm" path="res://scripts/core/shop_stock_entry.gd" id="4_h83v4"]
 [ext_resource type="PackedScene" uid="uid://b4x6xea46nwp1" path="res://scenes/npcs/questgivers/Vultar/QuestGiver.tscn" id="4_lgn6g"]
 [ext_resource type="Script" uid="uid://dt5yvut01s10s" path="res://scripts/core/quests/quest_entry.gd" id="5_ub0y7"]
 [ext_resource type="Script" uid="uid://pomcudkoxce3" path="res://scripts/core/quests/quest_objective_entry.gd" id="6_7sfwb"]
@@ -14,6 +15,27 @@
 [ext_resource type="PackedScene" uid="uid://cxmjxgggvevd3" path="res://scenes/objects/restareas/RestAreaInteractable.tscn" id="11_3djgd"]
 [ext_resource type="PackedScene" uid="uid://pyq76iw1lw5d" path="res://scenes/objects/save_totem.tscn" id="11_know0"]
 [ext_resource type="PackedScene" uid="uid://s2g52egtcgbs" path="res://scenes/objects/pickups/testitem.tscn" id="12_ub0y7"]
+
+[sub_resource type="Resource" id="Resource_nqxse"]
+script = ExtResource("4_h83v4")
+item_id = "healing_tonic"
+price_amount = 10
+metadata/_custom_type_script = "uid://dmhim3ohrnvcm"
+
+[sub_resource type="Resource" id="Resource_27f20"]
+script = ExtResource("4_h83v4")
+item_id = "sling_ammo"
+quantity = 5
+price_amount = 5
+required_flag = "village_sling_unlocked"
+metadata/_custom_type_script = "uid://dmhim3ohrnvcm"
+
+[sub_resource type="Resource" id="Resource_7gjs6"]
+script = ExtResource("4_h83v4")
+item_id = "mana_tonic"
+price_amount = 30
+required_flag = "mana_unlocked"
+metadata/_custom_type_script = "uid://dmhim3ohrnvcm"
 
 [sub_resource type="Resource" id="Resource_7sfwb"]
 script = ExtResource("6_7sfwb")
@@ -81,6 +103,7 @@ position = Vector2(487, 94)
 [node name="ShopKeeper_RealmVultar" parent="Ysort" unique_id=228929064 instance=ExtResource("3_i8oeu")]
 position = Vector2(425.99997, 269.99997)
 rotation = 0.058428537
+stock = Array[ExtResource("4_h83v4")]([SubResource("Resource_nqxse"), SubResource("Resource_27f20"), SubResource("Resource_7gjs6")])
 
 [node name="QuestGiver" parent="Ysort" unique_id=1663897061 instance=ExtResource("4_lgn6g")]
 position = Vector2(818, 191)

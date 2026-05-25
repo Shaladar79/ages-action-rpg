@@ -315,6 +315,7 @@ var special_attacks: MonsterSpecialAttacks = null
 
 var flash_tween: Tween = null
 
+var active_status_effects: Dictionary = {}
 
 func _ready() -> void:
     if _should_remove_because_quest_spawn_gate():
@@ -343,6 +344,7 @@ func _physics_process(delta: float) -> void:
         return
 
     _update_attack_timers(delta)
+    _update_status_effects(delta)
 
     if special_attacks != null:
         special_attacks.update_special_timers(delta)
@@ -423,6 +425,40 @@ func _should_remove_because_defeated_in_save() -> bool:
     print(monster_name, " removed because persistent monster is already defeated: ", persistent_id)
     return true
 
+func apply_status_effect(status_id: String, duration: float, effect_data: Dictionary = {}) -> bool:
+    if is_dead:
+        return false
+
+    var applied := StatusEffects.apply_status_effect(active_status_effects, status_id, duration, effect_data)
+
+    if applied:
+        print(monster_name, " status applied/refreshed: ", status_id, " duration: ", duration)
+
+    return applied
+
+
+func remove_status_effect(status_id: String) -> bool:
+    var removed := StatusEffects.remove_status_effect(active_status_effects, status_id)
+
+    if removed:
+        print(monster_name, " status removed: ", status_id)
+
+    return removed
+
+
+func has_status_effect(status_id: String) -> bool:
+    return StatusEffects.has_status_effect(active_status_effects, status_id)
+
+
+func _update_status_effects(delta: float) -> void:
+    var expired_status_ids := StatusEffects.update_status_effects(active_status_effects, delta)
+
+    for status_id in expired_status_ids:
+        print(monster_name, " status expired: ", status_id)
+
+
+func get_current_move_speed() -> float:
+    return move_speed * StatusEffects.get_move_speed_multiplier(active_status_effects)
 
 func _update_movement(delta: float) -> void:
     if player_target == null:
@@ -460,7 +496,7 @@ func _get_chase_velocity() -> Vector2:
         return Vector2.ZERO
 
     var direction := global_position.direction_to(player_target.global_position)
-    return direction * move_speed
+    return direction * get_current_move_speed()
 
 
 func _get_desired_stop_distance() -> float:
@@ -486,7 +522,7 @@ func _get_wander_velocity(delta: float) -> Vector2:
     if global_position.distance_to(wander_target) <= 6.0:
         return Vector2.ZERO
 
-    return direction_to_wander * (move_speed * 0.5)
+    return direction_to_wander * (get_current_move_speed() * 0.5)
 
 
 func _choose_new_wander_target() -> void:
