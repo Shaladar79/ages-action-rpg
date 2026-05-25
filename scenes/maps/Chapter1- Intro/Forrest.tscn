@@ -15,6 +15,10 @@ texture = ExtResource("1_oy0xl")
 [node name="Player" parent="." unique_id=949372820 groups=["player"] instance=ExtResource("3_7cpp6")]
 position = Vector2(1318, 349)
 
+[node name="SaveTotem" parent="." unique_id=528667636 instance=ExtResource("5_4ax8d")]
+position = Vector2(1060, 211)
+respawn_id = "Forrest"
+
 [node name="ManpTrans" type="Node2D" parent="." unique_id=1228078535]
 
 [node name="ToFootHills" parent="ManpTrans" unique_id=1344752193 instance=ExtResource("4_4ax8d")]
@@ -27,16 +31,64 @@ position = Vector2(264, 37)
 target_scene_path = "uid://v1uxu1eltwyw"
 target_spawn_id = "FromForrest"
 
-[node name="MapSpawnPoint" parent="ManpTrans" unique_id=366895598 instance=ExtResource("2_yx0ah")]
-position = Vector2(296, 110)
-spawn_id = "FromRitual"
-
-[node name="SaveTotem" parent="ManpTrans" unique_id=528667636 instance=ExtResource("5_4ax8d")]
-position = Vector2(1060, 211)
-respawn_id = "Forrest"
-
 [node name="SpawnPonts" type="Node2D" parent="." unique_id=691935357]
 
 [node name="FromFoothills" parent="SpawnPonts" unique_id=2095581574 instance=ExtResource("2_yx0ah")]
 position = Vector2(1341, 311)
 spawn_id = "FromFotthills"
+
+[node name="FromRitual" parent="SpawnPonts/FromFoothills" unique_id=366895598 instance=ExtResource("2_yx0ah")]
+position = Vector2(-1045, -201)
+spawn_id = "FromRitual"
+
+[node name="MapCollisions" type="Node2D" parent="." unique_id=2120209800]
+
+[node name="TopRight" type="StaticBody2D" parent="MapCollisions" unique_id=490800871]
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="MapCollisions/TopRight" unique_id=681316494]
+polygon = PackedVector2Array(1445, 204, 1324, 281, 1312, 291, 1293, 335, 1154, 367, 1114, 350, 1104, 321, 1129, 306, 1154, 302, 1135, 277, 1160, 244, 1163, 211, 1124, 180, 1079, 155, 1040, 140, 1017, 135, 1008, 156, 967, 167, 959, 177, 942, 190, 929, 247, 869, 247, 912, 314, 937, 296, 962, 299, 983, 319, 1016, 325, 1028, 344, 1031, 386, 1023, 423, 965, 451, 928, 443, 892, 420, 852, 410, 811, 393, 665, 455, 547, 504, 524, 470, 480, 372, 492, 296, 497, 258, 485, 241, 465, 200, 451, 167, 406, 121, 352, 133, 323, 111, 313, 3, 1444, 4)
+
+[node name="Boarder" type="StaticBody2D" parent="MapCollisions" unique_id=301170112]
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="MapCollisions/Boarder" unique_id=246824933]
+polygon = PackedVector2Array(209, 1, 264, 79, 251, 115, 240, 143, 258, 190, 237, 213, 181, 228, 144, 238, 134, 297, 120, 343, 142, 381, 162, 337, 189, 366, 207, 398, 223, 400, 240, 370, 260, 405, 270, 439, 263, 456, 180, 475, 149, 512, 158, 546, 180, 568, 205, 609, 220, 642, 200, 657, 178, 672, 168, 696, 162, 715, 171, 743, 185, 770, 181, 786, 168, 792, 145, 787, 128, 821, 118, 873, 137, 916, 182, 933, 232, 937, 276, 928, 309, 922, 350, 949, 389, 959, 448, 993, 615, 982, 744, 919, 773, 855, 814, 815, 825, 866, 857, 909, 899, 970, 937, 1003, 978, 1008, 1004, 993, 1018, 985, 1032, 980, 1068, 971, 1125, 985, 1127, 932, 1175, 901, 1231, 871, 1250, 834, 1253, 782, 1207, 711, 1177, 665, 1181, 632, 1191, 603, 1209, 556, 1253, 535, 1289, 518, 1298, 487, 1292, 447, 1261, 412, 1350, 370, 1348, 333, 1444, 287, 1442, 1081, 4, 1080, 38, 2)
+
+[node name="WestLakeShore" type="StaticBody2D" parent="MapCollisions" unique_id=769110332]
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="MapCollisions/WestLakeShore" unique_id=534904473]
+polygon = PackedVector2Array(819, 463, 758, 571, 646, 580, 632, 605, 569, 658, 533, 687, 548, 703, 559, 749, 576, 755, 588, 784, 583, 826, 556, 852, 522, 879, 542, 912, 542, 971, 450, 996, 477, 878, 485, 839, 495, 808, 530, 805, 540, 782, 525, 755, 510, 713, 475, 684, 480, 643, 574, 598, 632, 550, 705, 513)
+
+[node name="EastLakeShore" type="StaticBody2D" parent="MapCollisions" unique_id=1052042208]
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="MapCollisions/EastLakeShore" unique_id=957535803]
+polygon = PackedVector2Array(794, 471, 822, 463, 844, 487, 833, 523, 825, 543, 853, 575, 880, 621, 895, 676, 903, 712, 923, 709, 948, 727, 954, 764, 947, 790, 922, 806, 906, 835, 885, 840, 823, 847, 813, 816, 853, 778, 873, 726, 853, 665, 811, 637, 763, 612, 754, 571, 703, 507)
+
+[node name="Grove1" type="StaticBody2D" parent="MapCollisions" unique_id=1382491699]
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="MapCollisions/Grove1" unique_id=1076331867]
+polygon = PackedVector2Array(1034, 463, 962, 523, 961, 548, 978, 567, 985, 591, 1011, 628, 1029, 636, 1055, 641, 1091, 636, 1121, 625, 1141, 606, 1143, 574, 1132, 553, 1124, 521, 1114, 492, 1084, 479, 1053, 468)
+
+[node name="Grove2" type="StaticBody2D" parent="MapCollisions" unique_id=1049205625]
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="MapCollisions/Grove2" unique_id=723859695]
+polygon = PackedVector2Array(388, 444, 298, 476, 252, 479, 223, 515, 223, 555, 246, 574, 286, 578, 328, 580, 362, 586, 391, 600, 418, 585, 427, 567, 461, 543, 476, 525, 483, 500, 473, 467, 434, 440)
+
+[node name="Grove3" type="StaticBody2D" parent="MapCollisions" unique_id=298189795]
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="MapCollisions/Grove3" unique_id=875071423]
+polygon = PackedVector2Array(375, 284, 349, 329, 329, 377, 350, 413, 391, 419, 414, 409, 427, 381, 441, 350, 446, 329, 436, 295, 408, 281)
+
+[node name="Rock" type="StaticBody2D" parent="MapCollisions" unique_id=1371848419]
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="MapCollisions/Rock" unique_id=1876491708]
+polygon = PackedVector2Array(382, 154, 370, 167, 361, 173, 358, 185, 368, 192, 382, 193, 398, 191, 408, 195, 425, 197, 431, 191, 427, 183, 420, 173, 413, 159)
+
+[node name="StaticBody2D" type="StaticBody2D" parent="MapCollisions" unique_id=1952054114]
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="MapCollisions/StaticBody2D" unique_id=1875018645]
+polygon = PackedVector2Array(449, 711, 460, 744, 467, 774, 492, 791, 496, 823, 481, 860, 437, 893, 391, 885, 362, 864, 356, 850, 366, 826, 383, 797, 418, 753, 439, 741)
+
+[node name="Grove4" type="StaticBody2D" parent="MapCollisions" unique_id=649327980]
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="MapCollisions/Grove4" unique_id=1141607903]
+polygon = PackedVector2Array(961, 829, 1006, 831, 1018, 873, 1040, 901, 1061, 917, 1059, 936, 1040, 938, 1020, 943, 986, 952, 962, 928, 949, 895, 951, 864)
