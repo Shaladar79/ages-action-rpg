@@ -1,0 +1,401 @@
+[gd_scene format=3 uid="uid://bxt5jfm7dnpxq"]
+
+[ext_resource type="Script" uid="uid://c4lb7if574pis" path="res://scripts/ui/game_ui.gd" id="1_7r27d"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_rmwll"]
+
+[node name="GameUi" type="CanvasLayer" unique_id=397137118]
+script = ExtResource("1_7r27d")
+
+[node name="HUD" type="Control" parent="." unique_id=1229583169]
+layout_mode = 3
+anchors_preset = 0
+offset_left = 20.0
+offset_top = 20.0
+offset_right = 300.0
+offset_bottom = 120.0
+
+[node name="Health" type="Label" parent="HUD" unique_id=396948228]
+layout_mode = 0
+offset_left = -12.0
+offset_top = -17.0
+offset_right = 96.0
+offset_bottom = 6.0
+text = "Health:  10/10"
+
+[node name="Mana" type="Label" parent="HUD" unique_id=1244037222]
+visible = false
+layout_mode = 0
+offset_left = 135.0
+offset_top = -17.0
+offset_right = 216.0
+offset_bottom = 6.0
+text = "Mana:  0/0"
+
+[node name="Stamina" type="Label" parent="HUD" unique_id=260106224]
+visible = false
+layout_mode = 0
+offset_left = 246.0
+offset_top = -17.0
+offset_right = 286.0
+offset_bottom = 6.0
+text = "Stamin: 0/0"
+
+[node name="InteractionPrompt" type="Control" parent="." unique_id=1983246764]
+visible = false
+layout_mode = 3
+anchor_right = 1.0
+anchor_bottom = 0.95
+
+[node name="InteractionLabel" type="Label" parent="InteractionPrompt" unique_id=1808072959]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "Press E to Interact"
+label_settings = SubResource("LabelSettings_rmwll")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="PauseMenu" type="Control" parent="." unique_id=177807478]
+visible = false
+layout_mode = 3
+anchors_preset = 0
+offset_left = 661.0
+offset_top = 232.0
+offset_right = 701.0
+offset_bottom = 272.0
+
+[node name="Panel" type="Panel" parent="PauseMenu" unique_id=858258006]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="Button" type="Button" parent="PauseMenu/Panel" unique_id=1279082822]
+layout_mode = 0
+offset_right = 8.0
+offset_bottom = 8.0
+
+[node name="Button2" type="Button" parent="PauseMenu/Panel" unique_id=576981056]
+layout_mode = 0
+offset_right = 8.0
+offset_bottom = 8.0
+
+[node name="CharacterScreen" type="Control" parent="." unique_id=1158254083]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 1.0
+offset_top = 3.0
+offset_right = 1.0
+offset_bottom = 3.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Panel" type="Panel" parent="CharacterScreen" unique_id=1657285329]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -586.0
+offset_top = -353.0
+offset_right = 560.0
+offset_bottom = 345.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="TitleLabel" type="Label" parent="CharacterScreen/Panel" unique_id=1444449901]
+layout_mode = 1
+anchors_preset = -1
+anchor_bottom = 0.033
+offset_left = 479.0
+offset_top = 9.0
+offset_right = 636.0
+offset_bottom = 15.966
+theme_override_font_sizes/font_size = 20
+text = "Character Sheet"
+
+[node name="CharacterNameLabel" type="Label" parent="CharacterScreen/Panel" unique_id=1229887213]
+layout_mode = 0
+offset_left = 15.0
+offset_top = 15.0
+offset_right = 182.0
+offset_bottom = 49.0
+theme_override_font_sizes/font_size = 22
+text = "Gene Ambrose"
+
+[node name="LevelLabel" type="Label" parent="CharacterScreen/Panel" unique_id=1389463935]
+layout_mode = 0
+offset_left = 764.0
+offset_top = 73.0
+offset_right = 805.0
+offset_bottom = 96.0
+text = "Level"
+
+[node name="XpLabel" type="Label" parent="CharacterScreen/Panel" unique_id=1690540457]
+layout_mode = 0
+offset_left = 820.0
+offset_top = 41.0
+offset_right = 905.0
+offset_bottom = 64.0
+text = "Experience"
+
+[node name="InventoryLabel" type="Label" parent="CharacterScreen/Panel" unique_id=1273099567]
+layout_mode = 0
+offset_left = 834.0
+offset_top = 283.0
+offset_right = 909.0
+offset_bottom = 306.0
+text = "Inventory"
+
+[node name="CloseButton" type="Button" parent="CharacterScreen/Panel" unique_id=2087100762]
+layout_mode = 0
+offset_left = 1089.0
+offset_top = 7.0
+offset_right = 1139.0
+offset_bottom = 47.0
+theme_override_colors/font_color = Color(0.7874327, 0, 0.007870244, 1)
+theme_override_font_sizes/font_size = 23
+text = "X"
+
+[node name="Health" type="Label" parent="CharacterScreen/Panel" unique_id=992867155]
+layout_mode = 0
+offset_left = 12.0
+offset_top = 50.0
+offset_right = 130.0
+offset_bottom = 73.0
+text = "Health: "
+
+[node name="Mana" type="Label" parent="CharacterScreen/Panel" unique_id=1916842270]
+layout_mode = 0
+offset_left = 163.0
+offset_top = 49.0
+offset_right = 260.0
+offset_bottom = 72.0
+text = "Mana:"
+
+[node name="Stamina" type="Label" parent="CharacterScreen/Panel" unique_id=1439906429]
+layout_mode = 0
+offset_left = 301.0
+offset_top = 49.0
+offset_right = 450.0
+offset_bottom = 72.0
+text = "Stamina:"
+
+[node name="AttributesPanel_base" type="Panel" parent="CharacterScreen/Panel" unique_id=1260620279]
+layout_mode = 0
+offset_left = 3.0
+offset_top = 71.0
+offset_right = 372.0
+offset_bottom = 267.0
+
+[node name="Attribute_panel_att" type="Panel" parent="CharacterScreen/Panel/AttributesPanel_base" unique_id=133121654]
+layout_mode = 0
+offset_left = 6.0
+offset_top = 6.0
+offset_right = 136.0
+offset_bottom = 121.0
+
+[node name="AttributesLabel" type="Label" parent="CharacterScreen/Panel/AttributesPanel_base/Attribute_panel_att" unique_id=351978585]
+layout_mode = 0
+offset_left = 1.0
+offset_top = 1.0
+offset_right = 101.0
+offset_bottom = 18.0
+theme_override_font_sizes/font_size = 12
+text = "Attribute"
+horizontal_alignment = 1
+
+[node name="Might" type="Label" parent="CharacterScreen/Panel/AttributesPanel_base/Attribute_panel_att" unique_id=1345124879]
+layout_mode = 0
+offset_left = 1.0
+offset_top = 19.0
+offset_right = 55.0
+offset_bottom = 36.0
+theme_override_font_sizes/font_size = 12
+text = "Might: "
+
+[node name="Agility" type="Label" parent="CharacterScreen/Panel/AttributesPanel_base/Attribute_panel_att" unique_id=2031878922]
+layout_mode = 0
+offset_left = 2.0
+offset_top = 33.0
+offset_right = 55.0
+offset_bottom = 50.0
+theme_override_font_sizes/font_size = 12
+text = "Agility:"
+
+[node name="Toughness" type="Label" parent="CharacterScreen/Panel/AttributesPanel_base/Attribute_panel_att" unique_id=569396683]
+layout_mode = 0
+offset_left = 1.0
+offset_top = 48.0
+offset_right = 70.0
+offset_bottom = 65.0
+theme_override_font_sizes/font_size = 12
+text = "Toughness: "
+
+[node name="Endurance" type="Label" parent="CharacterScreen/Panel/AttributesPanel_base/Attribute_panel_att" unique_id=1261516833]
+visible = false
+layout_mode = 0
+offset_top = 64.0
+offset_right = 83.0
+offset_bottom = 81.0
+theme_override_font_sizes/font_size = 12
+text = "Endurance: "
+
+[node name="Focus" type="Label" parent="CharacterScreen/Panel/AttributesPanel_base/Attribute_panel_att" unique_id=848665413]
+visible = false
+layout_mode = 0
+offset_top = 79.0
+offset_right = 53.0
+offset_bottom = 96.0
+theme_override_font_sizes/font_size = 12
+text = "Focus: "
+
+[node name="Speed" type="Label" parent="CharacterScreen/Panel/AttributesPanel_base/Attribute_panel_att" unique_id=1236061009]
+layout_mode = 0
+offset_top = 96.0
+offset_right = 56.0
+offset_bottom = 113.0
+theme_override_font_sizes/font_size = 12
+text = "Speed: "
+
+[node name="AddMightButton" type="Button" parent="CharacterScreen/Panel/AttributesPanel_base/Attribute_panel_att" unique_id=1347572391]
+layout_mode = 0
+offset_left = 93.0
+offset_top = 20.0
+offset_right = 130.0
+offset_bottom = 40.0
+theme_override_font_sizes/font_size = 6
+text = "+ Might"
+
+[node name="AddEnduranceButton" type="Button" parent="CharacterScreen/Panel/AttributesPanel_base/Attribute_panel_att" unique_id=343863978]
+visible = false
+layout_mode = 0
+offset_left = 89.0
+offset_top = 66.0
+offset_right = 127.0
+offset_bottom = 82.0
+theme_override_font_sizes/font_size = 5
+text = "+ Endurance"
+
+[node name="AddFocusButton" type="Button" parent="CharacterScreen/Panel/AttributesPanel_base/Attribute_panel_att" unique_id=589221206]
+visible = false
+layout_mode = 0
+offset_left = 100.0
+offset_top = 80.0
+offset_right = 127.0
+offset_bottom = 96.0
+theme_override_font_sizes/font_size = 5
+text = "+ Focus"
+
+[node name="AddAgilityButton" type="Button" parent="CharacterScreen/Panel/AttributesPanel_base/Attribute_panel_att" unique_id=33668870]
+layout_mode = 0
+offset_left = 96.0
+offset_top = 35.0
+offset_right = 127.0
+offset_bottom = 52.0
+theme_override_font_sizes/font_size = 6
+text = "+ Agility"
+
+[node name="AddToughnessButton" type="Button" parent="CharacterScreen/Panel/AttributesPanel_base/Attribute_panel_att" unique_id=1490826095]
+layout_mode = 0
+offset_left = 86.0
+offset_top = 50.0
+offset_right = 131.0
+offset_bottom = 67.0
+theme_override_font_sizes/font_size = 6
+text = "+ Toughness"
+
+[node name="AddSpeedButton" type="Button" parent="CharacterScreen/Panel/AttributesPanel_base/Attribute_panel_att" unique_id=1688046268]
+layout_mode = 0
+offset_left = 96.0
+offset_top = 95.0
+offset_right = 127.0
+offset_bottom = 112.0
+theme_override_font_sizes/font_size = 6
+text = "+ Speed"
+
+[node name="StatPointsLabel" type="Label" parent="CharacterScreen/Panel/AttributesPanel_base" unique_id=1621531415]
+layout_mode = 0
+offset_top = 179.0
+offset_right = 94.0
+offset_bottom = 196.0
+theme_override_font_sizes/font_size = 12
+text = "Stat Points: 0"
+
+[node name="AbilityPointsLabel" type="Label" parent="CharacterScreen/Panel/AttributesPanel_base" unique_id=779886468]
+layout_mode = 0
+offset_left = 265.0
+offset_top = 179.0
+offset_right = 369.0
+offset_bottom = 196.0
+theme_override_font_sizes/font_size = 12
+text = "Ability Points: 0"
+
+[node name="atk_lbl" type="Label" parent="CharacterScreen/Panel/AttributesPanel_base" unique_id=826371130]
+layout_mode = 0
+offset_left = 4.0
+offset_top = 122.0
+offset_right = 59.0
+offset_bottom = 136.0
+theme_override_font_sizes/font_size = 10
+text = "Attack:"
+
+[node name="def_lbl" type="Label" parent="CharacterScreen/Panel/AttributesPanel_base" unique_id=1323837963]
+layout_mode = 0
+offset_left = 3.0
+offset_top = 134.0
+offset_right = 71.0
+offset_bottom = 148.0
+theme_override_font_sizes/font_size = 10
+text = "Defense:"
+
+[node name="SavePrompt" type="Control" parent="." unique_id=677553481]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 3.0
+offset_top = 3.0
+offset_right = 3.0
+offset_bottom = 3.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Panel" type="Panel" parent="SavePrompt" unique_id=1694234600]
+layout_mode = 0
+offset_left = 611.0
+offset_top = 377.0
+offset_right = 941.0
+offset_bottom = 447.0
+
+[node name="MessageLabel" type="Label" parent="SavePrompt/Panel" unique_id=1744091169]
+layout_mode = 0
+offset_left = 9.0
+offset_top = 7.0
+offset_right = 322.0
+offset_bottom = 44.0
+theme_override_font_sizes/font_size = 20
+text = "Do you want to save your game?"
+horizontal_alignment = 1
+
+[node name="YesButton" type="Button" parent="SavePrompt/Panel" unique_id=412546980]
+layout_mode = 0
+offset_left = 10.0
+offset_top = 34.0
+offset_right = 69.0
+offset_bottom = 65.0
+text = "Yes"
+
+[node name="NoButton" type="Button" parent="SavePrompt/Panel" unique_id=870221376]
+layout_mode = 0
+offset_left = 251.0
+offset_top = 35.0
+offset_right = 314.0
+offset_bottom = 66.0
+text = "No"

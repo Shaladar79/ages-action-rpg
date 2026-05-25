@@ -3,6 +3,8 @@ class_name CharacterSheetStatsUiController
 
 var character_panel: Panel = null
 
+var stats_root: Control = null
+
 var title_label: Label = null
 var character_name_label: Label = null
 var level_label: Label = null
@@ -33,9 +35,8 @@ func setup(panel_node: Panel) -> void:
         push_warning("CharacterSheetStatsUiController setup failed. Character panel is null.")
         return
 
-    _bind_existing_editor_labels()
-    _position_character_sheet_header_labels()
-    _hide_locked_resources_and_stats()
+    _hide_legacy_editor_labels()
+    _create_character_sheet_stats_panel()
     clear_character_sheet()
 
 
@@ -93,71 +94,107 @@ func clear_character_sheet() -> void:
     _clear_combat_stats()
 
 
-func _bind_existing_editor_labels() -> void:
-    title_label = character_panel.get_node_or_null("TitleLabel") as Label
-    character_name_label = character_panel.get_node_or_null("CharacterNameLabel") as Label
-    level_label = character_panel.get_node_or_null("LevelLabel") as Label
-    xp_label = character_panel.get_node_or_null("XpLabel") as Label
-    stat_points_label = character_panel.get_node_or_null("StatPointsLabel") as Label
-    ability_points_label = character_panel.get_node_or_null("AbilityPointsLabel") as Label
+func _create_character_sheet_stats_panel() -> void:
+    if stats_root != null:
+        return
 
-    sheet_health_label = character_panel.get_node_or_null("Health") as Label
-    sheet_mana_label = character_panel.get_node_or_null("Mana") as Label
-    sheet_stamina_label = character_panel.get_node_or_null("Stamina") as Label
+    stats_root = Control.new()
+    stats_root.name = "CodeBuiltCharacterSheetStats"
+    stats_root.anchor_left = 0.0
+    stats_root.anchor_right = 1.0
+    stats_root.anchor_top = 0.0
+    stats_root.anchor_bottom = 1.0
+    stats_root.offset_left = 0.0
+    stats_root.offset_right = 0.0
+    stats_root.offset_top = 0.0
+    stats_root.offset_bottom = 0.0
+    stats_root.mouse_filter = Control.MOUSE_FILTER_IGNORE
+    character_panel.add_child(stats_root)
 
-    attack_label = character_panel.find_child("atk_lbl", true, false) as Label
-    defense_label = character_panel.find_child("def_lbl", true, false) as Label
+    title_label = _create_label("TitleLabel", "Character Sheet", Vector2(16.0, 8.0), Vector2(260.0, 28.0), 20)
 
-    attributes_label = character_panel.get_node_or_null("AttributesPanel_base/Attribute_panel_att/AttributesLabel") as Label
-    might_label = character_panel.get_node_or_null("AttributesPanel_base/Attribute_panel_att/Might") as Label
-    agility_label = character_panel.get_node_or_null("AttributesPanel_base/Attribute_panel_att/Agility") as Label
-    toughness_label = character_panel.get_node_or_null("AttributesPanel_base/Attribute_panel_att/Toughness") as Label
-    endurance_label = character_panel.get_node_or_null("AttributesPanel_base/Attribute_panel_att/Endurance") as Label
-    focus_label = character_panel.get_node_or_null("AttributesPanel_base/Attribute_panel_att/Focus") as Label
-    speed_label = character_panel.get_node_or_null("AttributesPanel_base/Attribute_panel_att/Speed") as Label
+    character_name_label = _create_label("CharacterNameLabel", "No Character", Vector2(16.0, 38.0), Vector2(250.0, 24.0), 15)
+    level_label = _create_label("LevelLabel", "Level: --", Vector2(270.0, 38.0), Vector2(120.0, 24.0), 15)
+    xp_label = _create_label("XpLabel", "XP: -- / --", Vector2(400.0, 38.0), Vector2(180.0, 24.0), 15)
 
+    stat_points_label = _create_label("StatPointsLabel", "Stat Points: --", Vector2(16.0, 70.0), Vector2(180.0, 24.0), 14)
+    ability_points_label = _create_label("AbilityPointsLabel", "Ability Points: --", Vector2(200.0, 70.0), Vector2(180.0, 24.0), 14)
+    ability_points_label.visible = false
 
-func _position_character_sheet_header_labels() -> void:
-    if character_name_label != null:
-        character_name_label.anchor_left = 0.0
-        character_name_label.anchor_right = 0.0
-        character_name_label.anchor_top = 0.0
-        character_name_label.anchor_bottom = 0.0
-        character_name_label.offset_left = 16.0
-        character_name_label.offset_right = 260.0
-        character_name_label.offset_top = 20.0
-        character_name_label.offset_bottom = 46.0
+    sheet_health_label = _create_label("Health", "Health: -- / --", Vector2(16.0, 104.0), Vector2(180.0, 24.0), 14)
+    sheet_mana_label = _create_label("Mana", "", Vector2(200.0, 104.0), Vector2(160.0, 24.0), 14)
+    sheet_stamina_label = _create_label("Stamina", "", Vector2(365.0, 104.0), Vector2(170.0, 24.0), 14)
 
-    if level_label != null:
-        level_label.anchor_left = 0.0
-        level_label.anchor_right = 0.0
-        level_label.anchor_top = 0.0
-        level_label.anchor_bottom = 0.0
-        level_label.offset_left = 270.0
-        level_label.offset_right = 390.0
-        level_label.offset_top = 20.0
-        level_label.offset_bottom = 46.0
+    attack_label = _create_label("MeleeAttackLabel", "Attack: --", Vector2(16.0, 138.0), Vector2(180.0, 24.0), 14)
+    defense_label = _create_label("DefenseLabel", "Defense: --", Vector2(200.0, 138.0), Vector2(180.0, 24.0), 14)
 
-    if xp_label != null:
-        xp_label.anchor_left = 0.0
-        xp_label.anchor_right = 0.0
-        xp_label.anchor_top = 0.0
-        xp_label.anchor_bottom = 0.0
-        xp_label.offset_left = 400.0
-        xp_label.offset_right = 560.0
-        xp_label.offset_top = 20.0
-        xp_label.offset_bottom = 46.0
+    attributes_label = _create_label("AttributesLabel", "Attributes", Vector2(16.0, 180.0), Vector2(180.0, 24.0), 16)
+
+    might_label = _create_label("Might", "Might: --", Vector2(24.0, 212.0), Vector2(135.0, 24.0), 14)
+    agility_label = _create_label("Agility", "Agility: --", Vector2(24.0, 242.0), Vector2(135.0, 24.0), 14)
+    toughness_label = _create_label("Toughness", "Toughness: --", Vector2(24.0, 272.0), Vector2(135.0, 24.0), 14)
+    speed_label = _create_label("Speed", "Speed: --", Vector2(24.0, 302.0), Vector2(135.0, 24.0), 14)
+
+    endurance_label = _create_label("Endurance", "Endurance: --", Vector2(24.0, 332.0), Vector2(135.0, 24.0), 14)
+    endurance_label.visible = false
+
+    focus_label = _create_label("Focus", "Focus: --", Vector2(24.0, 362.0), Vector2(135.0, 24.0), 14)
+    focus_label.visible = false
 
 
-func _hide_locked_resources_and_stats() -> void:
-    if ability_points_label != null:
-        ability_points_label.visible = false
+func _create_label(label_name: String, label_text: String, position: Vector2, size: Vector2, font_size: int = 14) -> Label:
+    var label := Label.new()
+    label.name = label_name
+    label.text = label_text
+    label.anchor_left = 0.0
+    label.anchor_right = 0.0
+    label.anchor_top = 0.0
+    label.anchor_bottom = 0.0
+    label.offset_left = position.x
+    label.offset_top = position.y
+    label.offset_right = position.x + size.x
+    label.offset_bottom = position.y + size.y
+    label.custom_minimum_size = size
+    label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+    label.add_theme_font_size_override("font_size", font_size)
 
-    if endurance_label != null:
-        endurance_label.visible = false
+    stats_root.add_child(label)
+    return label
 
-    if focus_label != null:
-        focus_label.visible = false
+
+func _hide_legacy_editor_labels() -> void:
+    _hide_legacy_node("TitleLabel")
+    _hide_legacy_node("CharacterNameLabel")
+    _hide_legacy_node("LevelLabel")
+    _hide_legacy_node("XpLabel")
+    _hide_legacy_node("StatPointsLabel")
+    _hide_legacy_node("AbilityPointsLabel")
+    _hide_legacy_node("Health")
+    _hide_legacy_node("Mana")
+    _hide_legacy_node("Stamina")
+    _hide_legacy_node("AttributesPanel_base")
+
+    var old_attack_label := character_panel.find_child("atk_lbl", true, false) as CanvasItem
+    if old_attack_label != null:
+        old_attack_label.visible = false
+
+    var old_defense_label := character_panel.find_child("def_lbl", true, false) as CanvasItem
+    if old_defense_label != null:
+        old_defense_label.visible = false
+
+
+func _hide_legacy_node(node_path: String) -> void:
+    if character_panel == null:
+        return
+
+    var node := character_panel.get_node_or_null(node_path)
+
+    if node == null:
+        return
+
+    if node is CanvasItem:
+        var canvas_item := node as CanvasItem
+        canvas_item.visible = false
 
 
 func _clear_sheet_resources() -> void:
