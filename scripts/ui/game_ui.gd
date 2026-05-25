@@ -4,9 +4,6 @@ extends CanvasLayer
 @onready var hud_mana_label: Label = get_node_or_null("HUD/Mana") as Label
 @onready var hud_stamina_label: Label = get_node_or_null("HUD/Stamina") as Label
 
-@onready var interaction_prompt: Control = $InteractionPrompt
-@onready var interaction_label: Label = $InteractionPrompt/InteractionLabel
-
 @onready var character_screen: Control = $CharacterScreen
 @onready var character_panel: Panel = $CharacterScreen/Panel
 
@@ -22,6 +19,7 @@ var hotbar_assignment_ui: HotbarAssignmentUiController = null
 var equipment_slot_ui: EquipmentSlotUiController = null
 var character_sheet_stats_ui: CharacterSheetStatsUiController = null
 var character_sheet_buttons_ui: CharacterSheetButtonsUiController = null
+var interaction_prompt_ui: InteractionPromptUiController = null
 
 var hud_refresh_timer: float = 0.0
 var hud_refresh_interval: float = 0.25
@@ -43,8 +41,8 @@ func _ready() -> void:
     _ensure_pause_input_action()
 
     character_screen.visible = false
-    interaction_prompt.visible = false
 
+    _create_interaction_prompt_ui()
     _create_save_prompt_ui()
     _create_hud_ui()
     _create_hud_quest_panel()
@@ -171,12 +169,17 @@ func _set_shop_pause(active: bool) -> void:
 
 
 func show_prompt(key_text: String = "E") -> void:
-    interaction_label.text = key_text
-    interaction_prompt.visible = true
+    if interaction_prompt_ui == null:
+        _create_interaction_prompt_ui()
+
+    interaction_prompt_ui.show_prompt(key_text)
 
 
 func hide_prompt() -> void:
-    interaction_prompt.visible = false
+    if interaction_prompt_ui == null:
+        return
+
+    interaction_prompt_ui.hide_prompt()
 
 
 func show_story_message(message: String, speaker_name: String = "Echo Spirit") -> void:
@@ -325,6 +328,14 @@ func close_character_screen() -> void:
     character_screen.visible = false
     _hide_sheet_list()
     _set_character_screen_pause(false)
+
+
+func _create_interaction_prompt_ui() -> void:
+    if interaction_prompt_ui != null:
+        return
+
+    interaction_prompt_ui = InteractionPromptUiController.new()
+    interaction_prompt_ui.setup(self)
 
 
 func _create_hud_ui() -> void:

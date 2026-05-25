@@ -2,8 +2,6 @@
 
 [ext_resource type="Script" uid="uid://c4lb7if574pis" path="res://scripts/ui/game_ui.gd" id="1_7r27d"]
 
-[sub_resource type="LabelSettings" id="LabelSettings_rmwll"]
-
 [node name="GameUi" type="CanvasLayer" unique_id=397137118]
 script = ExtResource("1_7r27d")
 
@@ -40,24 +38,6 @@ offset_top = -17.0
 offset_right = 286.0
 offset_bottom = 6.0
 text = "Stamin: 0/0"
-
-[node name="InteractionPrompt" type="Control" parent="." unique_id=1983246764]
-visible = false
-layout_mode = 3
-anchor_right = 1.0
-anchor_bottom = 0.95
-
-[node name="InteractionLabel" type="Label" parent="InteractionPrompt" unique_id=1808072959]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-text = "Press E to Interact"
-label_settings = SubResource("LabelSettings_rmwll")
-horizontal_alignment = 1
-vertical_alignment = 1
 
 [node name="PauseMenu" type="Control" parent="." unique_id=177807478]
 visible = false
@@ -108,48 +88,3 @@ offset_right = 560.0
 offset_bottom = 345.0
 grow_horizontal = 2
 grow_vertical = 2
-
-[node name="SavePrompt" type="Control" parent="." unique_id=677553481]
-layout_mode = 3
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = 3.0
-offset_top = 3.0
-offset_right = 3.0
-offset_bottom = 3.0
-grow_horizontal = 2
-grow_vertical = 2
-
-[node name="Panel" type="Panel" parent="SavePrompt" unique_id=1694234600]
-layout_mode = 0
-offset_left = 611.0
-offset_top = 377.0
-offset_right = 941.0
-offset_bottom = 447.0
-
-[node name="MessageLabel" type="Label" parent="SavePrompt/Panel" unique_id=1744091169]
-layout_mode = 0
-offset_left = 9.0
-offset_top = 7.0
-offset_right = 322.0
-offset_bottom = 44.0
-theme_override_font_sizes/font_size = 20
-text = "Do you want to save your game?"
-horizontal_alignment = 1
-
-[node name="YesButton" type="Button" parent="SavePrompt/Panel" unique_id=412546980]
-layout_mode = 0
-offset_left = 10.0
-offset_top = 34.0
-offset_right = 69.0
-offset_bottom = 65.0
-text = "Yes"
-
-[node name="NoButton" type="Button" parent="SavePrompt/Panel" unique_id=870221376]
-layout_mode = 0
-offset_left = 251.0
-offset_top = 35.0
-offset_right = 314.0
-offset_bottom = 66.0
-text = "No"
