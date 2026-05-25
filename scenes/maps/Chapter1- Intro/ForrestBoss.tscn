@@ -22,3 +22,8 @@ target_spawn_id = "FromBoss"
 
 [node name="Player" parent="." unique_id=949372820 groups=["player"] instance=ExtResource("4_5oh6i")]
 position = Vector2(738, 939)
+
+[node name="Mapcollisions" type="StaticBody2D" parent="." unique_id=17886632]
+
+[node name="mapwalls" type="CollisionPolygon2D" parent="Mapcollisions" unique_id=746748871]
+polygon = PackedVector2Array(671, 1074, 687, 855, 625, 810, 387, 723, 282, 660, 217, 600, 190, 516, 202, 434, 235, 382, 272, 356, 325, 341, 385, 312, 408, 319, 479, 286, 549, 224, 611, 251, 670, 226, 652, 160, 703, 154, 673, 74, 697, 47, 751, 45, 759, 89, 785, 123, 798, 171, 841, 210, 944, 257, 1016, 298, 1063, 312, 1108, 319, 1161, 366, 1209, 407, 1233, 446, 1241, 483, 1221, 471, 1190, 516, 1141, 538, 1128, 561, 1126, 608, 1102, 637, 1063, 672, 1022, 697, 966, 734, 901, 773, 853, 803, 796, 867, 783, 933, 814, 1070, 1445, 1077, 1443, 6, 28, 21, 11, 1083)
