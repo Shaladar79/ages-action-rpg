@@ -180,6 +180,12 @@ var ranged_damage_types: int = DamageTypes.PIERCING
 @export var telegraph_impact_flash_time: float = 0.12
 @export var telegraph_impact_flash_color: Color = Color(1.0, 0.0, 0.0, 0.85)
 
+@export_group("Special Projectile Status Effect")
+@export var projectile_status_effect_enabled: bool = false
+@export var projectile_status_effect_id: String = "tangled"
+@export var projectile_status_effect_duration: float = 4.0
+@export var projectile_status_move_speed_multiplier: float = 0.5
+
 @export_group("Special AOE Attack")
 @export var aoe_enabled: bool = false
 @export var aoe_lock_movement: bool = true
@@ -202,6 +208,12 @@ var aoe_damage_types: int = DamageTypes.FIRE
 @export var aoe_windup_time: float = 1.25
 @export var aoe_cooldown: float = 8.0
 @export var aoe_telegraph_color: Color = Color(1.0, 0.25, 0.05, 0.35)
+
+@export_group("Special AOE Status Effect")
+@export var aoe_status_effect_enabled: bool = false
+@export var aoe_status_effect_id: String = ""
+@export var aoe_status_effect_duration: float = 0.0
+@export var aoe_status_move_speed_multiplier: float = 1.0
 
 @export_group("Special Slam Attack")
 @export var slam_enabled: bool = false
@@ -226,6 +238,46 @@ var slam_damage_types: int = DamageTypes.BASHING
 @export var slam_windup_time: float = 0.8
 @export var slam_cooldown: float = 3.5
 @export var slam_telegraph_color: Color = Color(1.0, 0.0, 0.0, 0.45)
+
+@export_group("Special Slam Status Effect")
+@export var slam_status_effect_enabled: bool = false
+@export var slam_status_effect_id: String = ""
+@export var slam_status_effect_duration: float = 0.0
+@export var slam_status_move_speed_multiplier: float = 1.0
+
+@export_group("Special Wave Attack")
+@export var wave_enabled: bool = false
+@export_enum("left", "right", "up", "down", "toward_player") var wave_direction: String = "toward_player"
+@export var wave_lock_movement: bool = true
+@export var wave_damage: int = 2
+@export_flags(
+    "Bashing",
+    "Slashing",
+    "Chopping",
+    "Piercing",
+    "Fire",
+    "Ice",
+    "Lightning",
+    "Acid",
+    "Light",
+    "Shadow"
+)
+var wave_damage_types: int = DamageTypes.BASHING
+@export var wave_trigger_range: float = 240.0
+@export var wave_section_count: int = 5
+@export var wave_section_size: Vector2 = Vector2(72.0, 36.0)
+@export_range(0.0, 0.9, 0.01) var wave_section_overlap_ratio: float = 0.333
+@export var wave_section_delay: float = 1.0
+@export var wave_section_warning_time: float = 0.15
+@export var wave_cooldown: float = 8.0
+@export var wave_telegraph_color: Color = Color(0.25, 1.0, 0.35, 0.35)
+
+@export_group("Special Wave Status Effect")
+@export var wave_status_effect_enabled: bool = false
+@export var wave_status_effect_id: String = ""
+@export var wave_status_effect_duration: float = 0.0
+@export var wave_status_move_speed_multiplier: float = 1.0
+
 
 @export_group("Special Burst Attack")
 @export var burst_enabled: bool = false
@@ -257,6 +309,13 @@ var burst_damage_types: int = DamageTypes.PIERCING
 @export var burst_projectile_z_index: int = 220
 @export var burst_projectile_collision_layer: int = 0
 @export var burst_projectile_collision_mask: int = 1
+
+
+@export_group("Special Burst Status Effect")
+@export var burst_status_effect_enabled: bool = false
+@export var burst_status_effect_id: String = ""
+@export var burst_status_effect_duration: float = 0.0
+@export var burst_status_move_speed_multiplier: float = 1.0
 
 @export_group("Special Projectile Attack")
 @export var projectile_enabled: bool = false

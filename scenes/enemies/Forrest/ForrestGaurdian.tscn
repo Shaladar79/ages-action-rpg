@@ -1,0 +1,279 @@
+[gd_scene format=3 uid="uid://xqlef8pg6h6m"]
+
+[ext_resource type="Script" uid="uid://piqrssdi1ltw" path="res://scripts/enemies/monster.gd" id="1_5vi24"]
+[ext_resource type="Texture2D" uid="uid://cjk7yktuwmwew" path="res://art/Assets/RPG Monsters Mega Pack/Monsters/TB_Monster_029/TB_Monster_029_8BIT.png" id="2_5vi24"]
+[ext_resource type="Texture2D" uid="uid://bgog4b55q5bwn" path="res://art/Assets/icons/fullcolor/individual_24x24/icon163.png" id="2_550x5"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_550x5"]
+atlas = ExtResource("2_5vi24")
+region = Rect2(0, 0, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_p6cay"]
+atlas = ExtResource("2_5vi24")
+region = Rect2(64, 0, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_8talv"]
+atlas = ExtResource("2_5vi24")
+region = Rect2(128, 0, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_cn00x"]
+atlas = ExtResource("2_5vi24")
+region = Rect2(192, 0, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_qfaxa"]
+atlas = ExtResource("2_5vi24")
+region = Rect2(256, 0, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_guabs"]
+atlas = ExtResource("2_5vi24")
+region = Rect2(320, 0, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_vsnd4"]
+atlas = ExtResource("2_5vi24")
+region = Rect2(384, 0, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_6fdvd"]
+atlas = ExtResource("2_5vi24")
+region = Rect2(448, 0, 64, 64)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_4y5pf"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_550x5")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_p6cay")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_8talv")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_cn00x")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_qfaxa")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_guabs")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_vsnd4")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_6fdvd")
+}],
+"loop": true,
+"name": &"idle_down",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_550x5")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_p6cay")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_8talv")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_cn00x")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_qfaxa")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_guabs")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_vsnd4")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_6fdvd")
+}],
+"loop": true,
+"name": &"walk_down",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_550x5")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_p6cay")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_8talv")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_cn00x")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_qfaxa")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_guabs")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_vsnd4")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_6fdvd")
+}],
+"loop": true,
+"name": &"walk_left",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_550x5")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_p6cay")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_8talv")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_cn00x")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_qfaxa")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_guabs")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_vsnd4")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_6fdvd")
+}],
+"loop": true,
+"name": &"walk_right",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_550x5")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_p6cay")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_8talv")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_cn00x")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_qfaxa")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_guabs")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_vsnd4")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_6fdvd")
+}],
+"loop": true,
+"name": &"walk_up",
+"speed": 5.0
+}]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_odqxh"]
+radius = 34.359215
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_0skxw"]
+size = Vector2(60, 79.99999)
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_7v1po"]
+radius = 30.184616
+
+[node name="ForrestGaurdian" type="CharacterBody2D" unique_id=1159453956]
+scale = Vector2(0.6, 0.6)
+script = ExtResource("1_5vi24")
+monster_name = "Forrest Beatle"
+monster_level = 7
+max_hit_points = 100
+defense = 3
+xp_reward = 30
+damage_types = 2
+drop_item_1_id = "spell_book_tangle_foot"
+drop_item_1_chance_percent = 100.0
+drop_currency_chance_percent = 100.0
+drop_currency_min_amount = 30
+drop_currency_max_amount = 50
+weakness_types = 20
+move_speed = 40.0
+melee_damage = 4
+melee_damage_types = 2
+boss_defeated_flag = "forrest_boss_defeated"
+special_attacks_enabled = true
+projectile_status_effect_enabled = true
+projectile_status_effect_duration = 6.0
+aoe_enabled = true
+aoe_damage = 8
+aoe_damage_types = 1
+aoe_radius = 150.0
+aoe_trigger_range = 360.0
+aoe_windup_time = 2.5
+aoe_status_effect_enabled = true
+aoe_status_effect_id = "tangled"
+aoe_status_effect_duration = 4.0
+aoe_status_move_speed_multiplier = 0.5
+slam_damage = 6
+slam_damage_types = 2
+slam_length = 56.0
+slam_width = 24.0
+slam_trigger_range = 50.0
+slam_windup_time = 0.4
+slam_cooldown = 2.0
+wave_direction = "left"
+wave_damage = 5
+wave_trigger_range = 200.0
+wave_section_size = Vector2(36, 72)
+wave_section_delay = 0.5
+wave_section_warning_time = 0.25
+wave_cooldown = 12.0
+burst_enabled = true
+burst_lock_movement = true
+burst_damage = 5
+burst_cooldown = 3.0
+burst_followup_delay = 1.0
+burst_projectile_range = 300.0
+burst_projectile_texture = ExtResource("2_550x5")
+burst_status_effect_enabled = true
+burst_status_effect_id = "tangled"
+burst_status_effect_duration = 4.0
+burst_status_move_speed_multiplier = 0.5
+projectile_enabled = true
+projectile_lock_movement = true
+projectile_damage = 5
+projectile_cooldown = 3.0
+projectile_hit_radius = 12.0
+projectile_texture = ExtResource("2_550x5")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=1603053430]
+sprite_frames = SubResource("SpriteFrames_4y5pf")
+animation = &"walk_up"
+frame_progress = 0.23092432
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1422066732]
+visible = false
+shape = SubResource("CircleShape2D_odqxh")
+
+[node name="HurtBox" type="Area2D" parent="." unique_id=361217704]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="HurtBox" unique_id=887511105]
+visible = false
+shape = SubResource("RectangleShape2D_0skxw")
+
+[node name="AttackArea" type="Area2D" parent="." unique_id=704896010]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="AttackArea" unique_id=106745185]
+visible = false
+shape = SubResource("CircleShape2D_7v1po")

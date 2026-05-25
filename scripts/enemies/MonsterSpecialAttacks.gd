@@ -5,6 +5,7 @@ enum SpecialChoice {
     NONE,
     AOE,
     SLAM,
+    WAVE,
     BURST,
     PROJECTILE
 }
@@ -16,6 +17,7 @@ var current_special_locks_movement: bool = false
 
 var aoe_special_timer: float = 0.0
 var slam_special_timer: float = 0.0
+var wave_special_timer: float = 0.0
 var burst_special_timer: float = 0.0
 var projectile_special_timer: float = 0.0
 var special_global_timer: float = 0.0
@@ -40,6 +42,9 @@ func update_special_timers(delta: float) -> void:
     if slam_special_timer > 0.0:
         slam_special_timer -= delta
 
+    if wave_special_timer > 0.0:
+        wave_special_timer -= delta
+
     if burst_special_timer > 0.0:
         burst_special_timer -= delta
 
@@ -48,7 +53,6 @@ func update_special_timers(delta: float) -> void:
 
     if special_global_timer > 0.0:
         special_global_timer -= delta
-
 
 func is_busy() -> bool:
     return is_using_special_attack
@@ -91,6 +95,10 @@ func try_start_special_attack() -> bool:
             _start_slam_special()
             return true
 
+        SpecialChoice.WAVE:
+            _start_wave_special()
+            return true
+
         SpecialChoice.BURST:
             _start_burst_special()
             return true
@@ -122,6 +130,9 @@ func _choose_special_attack() -> SpecialChoice:
 
     if monster.slam_enabled and slam_special_timer <= 0.0 and distance_to_player <= monster.slam_trigger_range:
         return SpecialChoice.SLAM
+
+    if monster.wave_enabled and wave_special_timer <= 0.0 and distance_to_player <= monster.wave_trigger_range:
+        return SpecialChoice.WAVE
 
     if monster.aoe_enabled and aoe_special_timer <= 0.0 and distance_to_player <= monster.aoe_trigger_range:
         return SpecialChoice.AOE
@@ -171,12 +182,16 @@ func _start_aoe_special() -> void:
         _end_special()
         return
 
-    _damage_player_if_in_radius(
+    _hit_player_if_in_special_radius(
         attack_center,
         monster.aoe_radius,
         monster.aoe_damage,
         monster.aoe_damage_types,
-        "AOE"
+        "AOE",
+        monster.aoe_status_effect_enabled,
+        monster.aoe_status_effect_id,
+        monster.aoe_status_effect_duration,
+        monster.aoe_status_move_speed_multiplier
     )
 
     _end_special()
@@ -221,18 +236,89 @@ func _start_slam_special() -> void:
         _end_special()
         return
 
-    _damage_player_if_in_rectangle(
+    _hit_player_if_in_special_rectangle(
         slam_origin,
         slam_direction,
         monster.slam_length,
         monster.slam_width,
         monster.slam_damage,
         monster.slam_damage_types,
-        "Slam"
+        "Slam",
+        monster.slam_status_effect_enabled,
+        monster.slam_status_effect_id,
+        monster.slam_status_effect_duration,
+        monster.slam_status_move_speed_multiplier
     )
 
     _end_special()
 
+
+
+func _start_wave_special() -> void:
+    if monster == null:
+        return
+
+    if is_using_special_attack:
+        return
+
+    is_using_special_attack = true
+    current_special_locks_movement = monster.wave_lock_movement
+    wave_special_timer = monster.wave_cooldown
+    special_global_timer = monster.special_global_cooldown
+
+    _flash_monster_for_special_attack()
+
+    var resolved_direction := _get_resolved_wave_direction()
+    var section_positions := _get_wave_section_positions(resolved_direction)
+    var section_order := _get_wave_section_order(resolved_direction)
+    var section_size := _get_wave_section_size(resolved_direction)
+
+    print(monster.monster_name, " begins wave special. Direction: ", resolved_direction)
+
+    for order_index in range(section_order.size()):
+        if not _is_monster_valid_for_special():
+            _end_special()
+            return
+
+        var section_index: int = int(section_order[order_index])
+        var section_position: Vector2 = section_positions[section_index]
+
+        var telegraph := _create_centered_rectangle_telegraph(
+            section_position,
+            section_size,
+            monster.wave_telegraph_color,
+            "BossWaveSection" + str(section_index + 1)
+        )
+
+        if monster.wave_section_warning_time > 0.0:
+            await monster.get_tree().create_timer(monster.wave_section_warning_time).timeout
+
+        if not _is_monster_valid_for_special():
+            if is_instance_valid(telegraph):
+                _remove_telegraph_from_active_list(telegraph)
+                telegraph.queue_free()
+
+            _end_special()
+            return
+
+        await _flash_and_clear_telegraph(telegraph)
+
+        if not _is_monster_valid_for_special():
+            _end_special()
+            return
+
+        _hit_player_if_in_wave_section(
+            section_position,
+            section_size,
+            monster.wave_damage,
+            monster.wave_damage_types,
+            "Wave Section " + str(section_index + 1)
+        )
+
+        if order_index < section_order.size() - 1 and monster.wave_section_delay > 0.0:
+            await monster.get_tree().create_timer(monster.wave_section_delay).timeout
+
+    _end_special()
 
 func _start_burst_special() -> void:
     if monster == null:
@@ -512,13 +598,29 @@ func _on_burst_projectile_body_entered(body: Node2D, projectile: Area2D) -> void
 
     projectile.set_meta("has_hit_player", true)
 
-    _damage_player_from_special(body, monster.burst_damage, monster.burst_damage_types)
+    if monster.burst_damage > 0:
+        _damage_player_from_special(body, monster.burst_damage, monster.burst_damage_types)
+        print(monster.monster_name, " burst projectile hit player for base damage: ", monster.burst_damage)
+    else:
+        print(monster.monster_name, " burst projectile hit player.")
 
-    print(monster.monster_name, " burst projectile hit player for base damage: ", monster.burst_damage)
+    _apply_burst_status_to_player(body)
 
     _remove_burst_projectile_from_active_list(projectile)
     projectile.queue_free()
 
+func _apply_burst_status_to_player(player: Node2D) -> void:
+    if monster == null:
+        return
+
+    _apply_configured_status_to_player(
+        player,
+        monster.burst_status_effect_enabled,
+        monster.burst_status_effect_id,
+        monster.burst_status_effect_duration,
+        monster.burst_status_move_speed_multiplier,
+        "Burst"
+    )
 
 func _on_single_projectile_body_entered(body: Node2D, projectile: Area2D) -> void:
     if monster == null:
@@ -541,13 +643,16 @@ func _on_single_projectile_body_entered(body: Node2D, projectile: Area2D) -> voi
 
     projectile.set_meta("has_hit_player", true)
 
-    _damage_player_from_special(body, monster.projectile_damage, monster.projectile_damage_types)
+    if monster.projectile_damage > 0:
+        _damage_player_from_special(body, monster.projectile_damage, monster.projectile_damage_types)
+        print(monster.monster_name, " projectile special hit player for base damage: ", monster.projectile_damage)
+    else:
+        print(monster.monster_name, " projectile special hit player.")
 
-    print(monster.monster_name, " projectile special hit player for base damage: ", monster.projectile_damage)
+    _apply_projectile_status_to_player(body)
 
     _remove_single_projectile_from_active_list(projectile)
     projectile.queue_free()
-
 
 func _on_single_projectile_area_entered(area: Area2D, projectile: Area2D) -> void:
     if monster == null:
@@ -575,9 +680,13 @@ func _on_single_projectile_area_entered(area: Area2D, projectile: Area2D) -> voi
 
     projectile.set_meta("has_hit_player", true)
 
-    _damage_player_from_special(possible_player, monster.projectile_damage, monster.projectile_damage_types)
+    if monster.projectile_damage > 0:
+        _damage_player_from_special(possible_player, monster.projectile_damage, monster.projectile_damage_types)
+        print(monster.monster_name, " projectile special hit player hurtbox for base damage: ", monster.projectile_damage)
+    else:
+        print(monster.monster_name, " projectile special hit player hurtbox.")
 
-    print(monster.monster_name, " projectile special hit player hurtbox for base damage: ", monster.projectile_damage)
+    _apply_projectile_status_to_player(possible_player)
 
     _remove_single_projectile_from_active_list(projectile)
     projectile.queue_free()
@@ -606,13 +715,240 @@ func _on_single_projectile_finished(projectile: Area2D) -> void:
     _remove_single_projectile_from_active_list(projectile)
     projectile.queue_free()
 
+func _get_resolved_wave_direction() -> String:
+    if monster == null:
+        return "down"
 
-func _damage_player_if_in_radius(
+    var selected_direction := monster.wave_direction.strip_edges().to_lower()
+
+    if selected_direction != "toward_player":
+        return selected_direction
+
+    var player := monster.get_tree().get_first_node_in_group("player") as Node2D
+
+    if player == null:
+        return monster.last_direction
+
+    var to_player := player.global_position - monster.global_position
+
+    if absf(to_player.x) >= absf(to_player.y):
+        if to_player.x < 0.0:
+            return "left"
+
+        return "right"
+
+    if to_player.y < 0.0:
+        return "up"
+
+    return "down"
+
+
+func _get_wave_section_size(resolved_direction: String) -> Vector2:
+    if monster == null:
+        return Vector2(72.0, 36.0)
+
+    var base_size := monster.wave_section_size
+
+    match resolved_direction:
+        "up", "down":
+            return Vector2(base_size.y, base_size.x)
+
+        _:
+            return base_size
+
+
+func _get_wave_section_positions(resolved_direction: String) -> Array[Vector2]:
+    var positions: Array[Vector2] = []
+
+    if monster == null:
+        return positions
+
+    var safe_count: int = maxi(1, monster.wave_section_count)
+    var section_size := _get_wave_section_size(resolved_direction)
+    var overlap_ratio := clampf(monster.wave_section_overlap_ratio, 0.0, 0.9)
+
+    var step_distance := 0.0
+
+    match resolved_direction:
+        "up", "down":
+            step_distance = section_size.y * (1.0 - overlap_ratio)
+
+        _:
+            step_distance = section_size.x * (1.0 - overlap_ratio)
+
+    var center_index := float(safe_count - 1) * 0.5
+
+    for index in range(safe_count):
+        var offset_from_center := (float(index) - center_index) * step_distance
+        var section_position := monster.global_position
+
+        match resolved_direction:
+            "up", "down":
+                section_position += Vector2(0.0, offset_from_center)
+
+            _:
+                section_position += Vector2(offset_from_center, 0.0)
+
+        positions.append(section_position)
+
+    return positions
+
+
+func _get_wave_section_order(resolved_direction: String) -> Array[int]:
+    var order: Array[int] = []
+
+    if monster == null:
+        return order
+
+    var safe_count: int = maxi(1, monster.wave_section_count)
+
+    match resolved_direction:
+        "right", "down":
+            for index in range(safe_count - 1, -1, -1):
+                order.append(index)
+
+        _:
+            for index in range(safe_count):
+                order.append(index)
+
+    return order
+
+
+func _create_centered_rectangle_telegraph(
+    center_position: Vector2,
+    size: Vector2,
+    telegraph_color: Color,
+    telegraph_name: String = "BossWaveTelegraphSection"
+) -> Polygon2D:
+    var half_width := size.x * 0.5
+    var half_height := size.y * 0.5
+
+    var telegraph := Polygon2D.new()
+    telegraph.name = telegraph_name
+    telegraph.color = telegraph_color
+    telegraph.polygon = PackedVector2Array([
+        Vector2(-half_width, -half_height),
+        Vector2(half_width, -half_height),
+        Vector2(half_width, half_height),
+        Vector2(-half_width, half_height)
+    ])
+    telegraph.global_position = center_position
+    telegraph.z_index = monster.telegraph_z_index
+    telegraph.z_as_relative = false
+
+    var current_scene := monster.get_tree().current_scene
+
+    if current_scene != null:
+        current_scene.add_child(telegraph)
+    else:
+        monster.add_child(telegraph)
+
+    _track_telegraph(telegraph)
+
+    return telegraph
+
+
+func _hit_player_if_in_wave_section(
+    section_center: Vector2,
+    section_size: Vector2,
+    damage_amount: int,
+    attack_damage_types: int,
+    attack_name: String
+) -> void:
+    if monster == null:
+        return
+
+    var player := monster.get_tree().get_first_node_in_group("player") as Node2D
+
+    if player == null:
+        return
+
+    var half_width := section_size.x * 0.5
+    var half_height := section_size.y * 0.5
+    var local_player_position := player.global_position - section_center
+
+    if absf(local_player_position.x) > half_width:
+        print(monster.monster_name, " ", attack_name, " missed player.")
+        return
+
+    if absf(local_player_position.y) > half_height:
+        print(monster.monster_name, " ", attack_name, " missed player.")
+        return
+
+    if damage_amount > 0:
+        _damage_player_from_special(player, damage_amount, attack_damage_types)
+        print(monster.monster_name, " ", attack_name, " hit player for base damage: ", damage_amount)
+    else:
+        print(monster.monster_name, " ", attack_name, " hit player.")
+
+    _apply_configured_status_to_player(
+        player,
+        monster.wave_status_effect_enabled,
+        monster.wave_status_effect_id,
+        monster.wave_status_effect_duration,
+        monster.wave_status_move_speed_multiplier,
+        attack_name
+    )
+
+func _apply_configured_status_to_player(
+    player: Node2D,
+    status_enabled: bool,
+    status_effect_id: String,
+    status_duration: float,
+    status_move_speed_multiplier: float,
+    source_name: String
+) -> void:
+    if monster == null:
+        return
+
+    if player == null:
+        return
+
+    if not status_enabled:
+        return
+
+    var clean_status_id := status_effect_id.strip_edges()
+
+    if clean_status_id == "":
+        return
+
+    if status_duration <= 0.0:
+        return
+
+    if not player.has_method("apply_status_effect"):
+        return
+
+    var status_effect_data := {
+        StatusEffects.KEY_MOVE_SPEED_MULTIPLIER: status_move_speed_multiplier
+    }
+
+    var applied: bool = player.apply_status_effect(
+        clean_status_id,
+        status_duration,
+        status_effect_data
+    )
+
+    if applied:
+        print(
+            monster.monster_name,
+            " ",
+            source_name,
+            " applied status to player: ",
+            clean_status_id,
+            " duration: ",
+            status_duration
+        )
+
+func _hit_player_if_in_special_radius(
     attack_center: Vector2,
     attack_radius: float,
     damage_amount: int,
     attack_damage_types: int,
-    attack_name: String
+    attack_name: String,
+    status_enabled: bool = false,
+    status_effect_id: String = "",
+    status_duration: float = 0.0,
+    status_move_speed_multiplier: float = 1.0
 ) -> void:
     if monster == null:
         return
@@ -628,18 +964,33 @@ func _damage_player_if_in_radius(
         print(monster.monster_name, " ", attack_name, " missed player.")
         return
 
-    _damage_player_from_special(player, damage_amount, attack_damage_types)
-    print(monster.monster_name, " ", attack_name, " hit player for base damage: ", damage_amount)
+    if damage_amount > 0:
+        _damage_player_from_special(player, damage_amount, attack_damage_types)
+        print(monster.monster_name, " ", attack_name, " hit player for base damage: ", damage_amount)
+    else:
+        print(monster.monster_name, " ", attack_name, " hit player.")
 
+    _apply_configured_status_to_player(
+        player,
+        status_enabled,
+        status_effect_id,
+        status_duration,
+        status_move_speed_multiplier,
+        attack_name
+    )
 
-func _damage_player_if_in_rectangle(
+func _hit_player_if_in_special_rectangle(
     attack_origin: Vector2,
     attack_direction: Vector2,
     attack_length: float,
     attack_width: float,
     damage_amount: int,
     attack_damage_types: int,
-    attack_name: String
+    attack_name: String,
+    status_enabled: bool = false,
+    status_effect_id: String = "",
+    status_duration: float = 0.0,
+    status_move_speed_multiplier: float = 1.0
 ) -> void:
     if monster == null:
         return
@@ -650,6 +1001,10 @@ func _damage_player_if_in_rectangle(
         return
 
     var normalized_direction: Vector2 = attack_direction.normalized()
+
+    if normalized_direction == Vector2.ZERO:
+        normalized_direction = Vector2.DOWN
+
     var right_direction: Vector2 = normalized_direction.orthogonal()
     var to_player: Vector2 = player.global_position - attack_origin
 
@@ -668,9 +1023,20 @@ func _damage_player_if_in_rectangle(
         print(monster.monster_name, " ", attack_name, " missed player.")
         return
 
-    _damage_player_from_special(player, damage_amount, attack_damage_types)
-    print(monster.monster_name, " ", attack_name, " hit player for base damage: ", damage_amount)
+    if damage_amount > 0:
+        _damage_player_from_special(player, damage_amount, attack_damage_types)
+        print(monster.monster_name, " ", attack_name, " hit player for base damage: ", damage_amount)
+    else:
+        print(monster.monster_name, " ", attack_name, " hit player.")
 
+    _apply_configured_status_to_player(
+        player,
+        status_enabled,
+        status_effect_id,
+        status_duration,
+        status_move_speed_multiplier,
+        attack_name
+    )
 
 func _damage_player_from_special(player: Node2D, damage_amount: int, attack_damage_types: int) -> void:
     if player == null:
@@ -871,3 +1237,16 @@ func _is_monster_valid_for_special() -> bool:
 func _end_special() -> void:
     is_using_special_attack = false
     current_special_locks_movement = false
+
+func _apply_projectile_status_to_player(player: Node2D) -> void:
+    if monster == null:
+        return
+
+    _apply_configured_status_to_player(
+        player,
+        monster.projectile_status_effect_enabled,
+        monster.projectile_status_effect_id,
+        monster.projectile_status_effect_duration,
+        monster.projectile_status_move_speed_multiplier,
+        "Projectile"
+    )
