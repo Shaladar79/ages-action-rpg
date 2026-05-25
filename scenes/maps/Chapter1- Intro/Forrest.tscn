@@ -1,21 +1,98 @@
 [gd_scene format=3 uid="uid://bs8xi76n5ey8c"]
 
 [ext_resource type="Texture2D" uid="uid://dyytytvr8sso1" path="res://art/maps/Parallax Test_World.png" id="1_oy0xl"]
+[ext_resource type="Script" uid="uid://dgyphpqc2hcty" path="res://scripts/core/map_settings.gd" id="1_w4qio"]
 [ext_resource type="PackedScene" uid="uid://d2qyxdpcmw4x0" path="res://scenes/objects/map_spawn_point.tscn" id="2_yx0ah"]
 [ext_resource type="PackedScene" uid="uid://ds0nibabilemd" path="res://scenes/player/Player.tscn" id="3_7cpp6"]
 [ext_resource type="PackedScene" uid="uid://cihgogaol4td8" path="res://scenes/objects/map_transition_area.tscn" id="4_4ax8d"]
 [ext_resource type="PackedScene" uid="uid://pyq76iw1lw5d" path="res://scenes/objects/save_totem.tscn" id="5_4ax8d"]
+[ext_resource type="PackedScene" uid="uid://b1f5ymlfthloy" path="res://scenes/enemies/Forrest/Forrest_Beatle_Forrest.tscn" id="6_p0vgl"]
+[ext_resource type="PackedScene" uid="uid://uotvxe6pd51s" path="res://scenes/enemies/Forrest/ThornShot.tscn" id="7_484se"]
+[ext_resource type="PackedScene" uid="uid://b81kib11b5cms" path="res://scenes/objects/Containers/LootContainer_pouch.tscn" id="9_n611n"]
 
 [node name="Forrest" type="Node2D" unique_id=489099902]
+
+[node name="MapSettings" type="Node2D" parent="." unique_id=1018761826]
+script = ExtResource("1_w4qio")
+age_name = "Vultar"
+map_name = "Forrest"
+monsters_respawn_by_default = true
 
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=1506944520]
 position = Vector2(722, 543)
 texture = ExtResource("1_oy0xl")
 
-[node name="Player" parent="." unique_id=949372820 groups=["player"] instance=ExtResource("3_7cpp6")]
+[node name="Ysort" type="Node2D" parent="." unique_id=695210456]
+
+[node name="Monsters" type="Node2D" parent="Ysort" unique_id=1438627932]
+
+[node name="ForrestBeatle" parent="Ysort/Monsters" unique_id=1159453956 instance=ExtResource("6_p0vgl")]
+position = Vector2(1216, 492)
+
+[node name="ForrestBeatle2" parent="Ysort/Monsters" unique_id=1775272200 instance=ExtResource("6_p0vgl")]
+position = Vector2(1143, 645)
+
+[node name="ForrestBeatle3" parent="Ysort/Monsters" unique_id=2030586902 instance=ExtResource("6_p0vgl")]
+position = Vector2(971, 628)
+
+[node name="ForrestBeatle4" parent="Ysort/Monsters" unique_id=1493621532 instance=ExtResource("6_p0vgl")]
+position = Vector2(959, 976)
+
+[node name="ForrestBeatle5" parent="Ysort/Monsters" unique_id=1291383521 instance=ExtResource("6_p0vgl")]
+position = Vector2(1135, 845)
+
+[node name="ForrestBeatle6" parent="Ysort/Monsters" unique_id=727463888 instance=ExtResource("6_p0vgl")]
+position = Vector2(418, 924)
+
+[node name="ForrestBeatle7" parent="Ysort/Monsters" unique_id=138799389 instance=ExtResource("6_p0vgl")]
+position = Vector2(151, 834)
+
+[node name="ForrestBeatle8" parent="Ysort/Monsters" unique_id=2046924467 instance=ExtResource("6_p0vgl")]
+position = Vector2(290, 753)
+
+[node name="ForrestBeatle9" parent="Ysort/Monsters" unique_id=1666545846 instance=ExtResource("6_p0vgl")]
+position = Vector2(321, 730)
+
+[node name="ForrestBeatle10" parent="Ysort/Monsters" unique_id=1844172133 instance=ExtResource("6_p0vgl")]
+position = Vector2(221, 353)
+
+[node name="ForrestBeatle11" parent="Ysort/Monsters" unique_id=261980146 instance=ExtResource("6_p0vgl")]
+position = Vector2(245, 323)
+
+[node name="ForrestBeatle12" parent="Ysort/Monsters" unique_id=1016977595 instance=ExtResource("6_p0vgl")]
+position = Vector2(299, 353)
+
+[node name="ForrestBeatle13" parent="Ysort/Monsters" unique_id=1862573953 instance=ExtResource("6_p0vgl")]
+position = Vector2(364, 216)
+
+[node name="ThornShot" parent="Ysort/Monsters" unique_id=1684954450 instance=ExtResource("7_484se")]
+position = Vector2(1097, 782)
+
+[node name="ThornShot2" parent="Ysort/Monsters" unique_id=2087051726 instance=ExtResource("7_484se")]
+position = Vector2(1252, 459)
+
+[node name="ThornShot3" parent="Ysort/Monsters" unique_id=1906873595 instance=ExtResource("7_484se")]
+position = Vector2(1005, 684)
+
+[node name="ThornShot4" parent="Ysort/Monsters" unique_id=1523477785 instance=ExtResource("7_484se")]
+position = Vector2(286, 700)
+
+[node name="ThornShot5" parent="Ysort/Monsters" unique_id=1572055720 instance=ExtResource("7_484se")]
+position = Vector2(358, 760)
+
+[node name="ThornShot6" parent="Ysort/Monsters" unique_id=1376571175 instance=ExtResource("7_484se")]
+position = Vector2(221, 270)
+
+[node name="ThornShot7" parent="Ysort/Monsters" unique_id=479710289 instance=ExtResource("7_484se")]
+position = Vector2(314, 287)
+
+[node name="ThornShot8" parent="Ysort/Monsters" unique_id=928704895 instance=ExtResource("7_484se")]
+position = Vector2(1185, 794)
+
+[node name="Player" parent="Ysort" unique_id=949372820 groups=["player"] instance=ExtResource("3_7cpp6")]
 position = Vector2(1318, 349)
 
-[node name="SaveTotem" parent="." unique_id=528667636 instance=ExtResource("5_4ax8d")]
+[node name="SaveTotem" parent="Ysort" unique_id=528667636 instance=ExtResource("5_4ax8d")]
 position = Vector2(1060, 211)
 respawn_id = "Forrest"
 
@@ -42,26 +119,28 @@ position = Vector2(-1045, -201)
 spawn_id = "FromRitual"
 
 [node name="MapCollisions" type="Node2D" parent="." unique_id=2120209800]
+visible = false
 
 [node name="TopRight" type="StaticBody2D" parent="MapCollisions" unique_id=490800871]
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="MapCollisions/TopRight" unique_id=681316494]
-polygon = PackedVector2Array(1445, 204, 1324, 281, 1312, 291, 1293, 335, 1154, 367, 1114, 350, 1104, 321, 1129, 306, 1154, 302, 1135, 277, 1160, 244, 1163, 211, 1124, 180, 1079, 155, 1040, 140, 1017, 135, 1008, 156, 967, 167, 959, 177, 942, 190, 929, 247, 869, 247, 912, 314, 937, 296, 962, 299, 983, 319, 1016, 325, 1028, 344, 1031, 386, 1023, 423, 965, 451, 928, 443, 892, 420, 852, 410, 811, 393, 665, 455, 547, 504, 524, 470, 480, 372, 492, 296, 497, 258, 485, 241, 465, 200, 451, 167, 406, 121, 352, 133, 323, 111, 313, 3, 1444, 4)
+polygon = PackedVector2Array(1445, 204, 1324, 281, 1312, 291, 1293, 335, 1154, 367, 1114, 350, 1104, 321, 1129, 306, 1154, 302, 1135, 277, 1160, 244, 1163, 211, 1124, 180, 1079, 155, 1040, 140, 1017, 135, 1008, 156, 967, 167, 959, 177, 942, 190, 929, 247, 869, 247, 912, 314, 937, 296, 962, 299, 983, 319, 1016, 325, 1028, 344, 1031, 386, 1023, 423, 967, 449, 919, 459, 878, 455, 846, 427, 833, 409, 806, 407, 681, 460, 630, 474, 591, 466, 575, 496, 546, 516, 531, 470, 527, 443, 505, 432, 486, 408, 480, 372, 492, 296, 497, 258, 485, 241, 465, 200, 451, 167, 406, 121, 330, 145, 323, 111, 312, 64, 314.5342, 35.730103, 313, 3, 1444, 4)
 
 [node name="Boarder" type="StaticBody2D" parent="MapCollisions" unique_id=301170112]
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="MapCollisions/Boarder" unique_id=246824933]
-polygon = PackedVector2Array(209, 1, 264, 79, 251, 115, 240, 143, 258, 190, 237, 213, 181, 228, 144, 238, 134, 297, 120, 343, 142, 381, 162, 337, 189, 366, 207, 398, 223, 400, 240, 370, 260, 405, 270, 439, 263, 456, 180, 475, 149, 512, 158, 546, 180, 568, 205, 609, 220, 642, 200, 657, 178, 672, 168, 696, 162, 715, 171, 743, 185, 770, 181, 786, 168, 792, 145, 787, 128, 821, 118, 873, 137, 916, 182, 933, 232, 937, 276, 928, 309, 922, 350, 949, 389, 959, 448, 993, 615, 982, 744, 919, 773, 855, 814, 815, 825, 866, 857, 909, 899, 970, 937, 1003, 978, 1008, 1004, 993, 1018, 985, 1032, 980, 1068, 971, 1125, 985, 1127, 932, 1175, 901, 1231, 871, 1250, 834, 1253, 782, 1207, 711, 1177, 665, 1181, 632, 1191, 603, 1209, 556, 1253, 535, 1289, 518, 1298, 487, 1292, 447, 1261, 412, 1350, 370, 1348, 333, 1444, 287, 1442, 1081, 4, 1080, 38, 2)
+polygon = PackedVector2Array(209, 1, 211, 32, 222, 68, 240, 143, 258, 190, 237, 213, 181, 228, 144, 238, 128, 296, 120, 343, 142, 381, 164, 354, 189, 366, 207, 398, 223, 400, 240, 370, 260, 405, 270, 439, 255, 448, 234, 450, 170, 473, 149, 512, 158, 546, 172, 576, 196, 606, 220, 642, 200, 657, 178, 672, 168, 696, 162, 715, 171, 743, 168, 792, 145, 787, 128, 821, 118, 873, 137, 916, 182, 933, 232, 937, 276, 928, 309, 922, 350, 949, 389, 959, 448, 993, 615, 982, 744, 919, 773, 855, 814, 815, 825, 866, 857, 909, 899, 970, 937, 1003, 978, 1008, 1004, 993, 1018, 985, 1032, 980, 1068, 971, 1125, 985, 1127, 932, 1175, 901, 1231, 871, 1250, 834, 1253, 782, 1207, 711, 1177, 665, 1181, 632, 1191, 603, 1209, 556, 1253, 535, 1289, 518, 1298, 487, 1292, 447, 1261, 412, 1350, 370, 1348, 333, 1444, 287, 1442, 1081, 4, 1080, 38, 2)
 
 [node name="WestLakeShore" type="StaticBody2D" parent="MapCollisions" unique_id=769110332]
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="MapCollisions/WestLakeShore" unique_id=534904473]
-polygon = PackedVector2Array(819, 463, 758, 571, 646, 580, 632, 605, 569, 658, 533, 687, 548, 703, 559, 749, 576, 755, 588, 784, 583, 826, 556, 852, 522, 879, 542, 912, 542, 971, 450, 996, 477, 878, 485, 839, 495, 808, 530, 805, 540, 782, 525, 755, 510, 713, 475, 684, 480, 643, 574, 598, 632, 550, 705, 513)
+polygon = PackedVector2Array(819, 463, 758, 571, 658, 591, 632, 605, 569, 658, 533, 687, 548, 703, 559, 749, 576, 755, 588, 784, 583, 826, 556, 852, 522, 879, 542, 912, 542, 971, 450, 996, 477, 878, 485, 839, 495, 808, 530, 805, 540, 782, 525, 755, 510, 713, 475, 684, 480, 643, 475, 609, 502, 586, 522, 589, 543, 595, 574, 598, 632, 550, 705, 513)
 
 [node name="EastLakeShore" type="StaticBody2D" parent="MapCollisions" unique_id=1052042208]
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="MapCollisions/EastLakeShore" unique_id=957535803]
-polygon = PackedVector2Array(794, 471, 822, 463, 844, 487, 833, 523, 825, 543, 853, 575, 880, 621, 895, 676, 903, 712, 923, 709, 948, 727, 954, 764, 947, 790, 922, 806, 906, 835, 885, 840, 823, 847, 813, 816, 853, 778, 873, 726, 853, 665, 811, 637, 763, 612, 754, 571, 703, 507)
+position = Vector2(-1, -2)
+polygon = PackedVector2Array(783, 451, 811, 439, 844, 487, 833, 523, 825, 543, 853, 575, 880, 621, 895, 676, 903, 712, 923, 709, 948, 727, 954, 764, 947, 790, 922, 806, 906, 835, 885, 840, 823, 847, 813, 816, 853, 778, 873, 726, 853, 665, 811, 637, 763, 612, 754, 571, 701.6802, 496.8802, 703, 489, 709.6595, 479.8418)
 
 [node name="Grove1" type="StaticBody2D" parent="MapCollisions" unique_id=1382491699]
 
@@ -71,7 +150,7 @@ polygon = PackedVector2Array(1034, 463, 962, 523, 961, 548, 978, 567, 985, 591, 
 [node name="Grove2" type="StaticBody2D" parent="MapCollisions" unique_id=1049205625]
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="MapCollisions/Grove2" unique_id=723859695]
-polygon = PackedVector2Array(388, 444, 298, 476, 252, 479, 223, 515, 223, 555, 246, 574, 286, 578, 328, 580, 362, 586, 391, 600, 418, 585, 427, 567, 461, 543, 476, 525, 483, 500, 473, 467, 434, 440)
+polygon = PackedVector2Array(388, 444, 298, 476, 245, 483, 223, 515, 223, 555, 246, 574, 286, 578, 328, 580, 362, 586, 388, 606, 427, 592, 427, 567, 461, 543, 476, 525, 483, 500, 473, 467, 434, 440)
 
 [node name="Grove3" type="StaticBody2D" parent="MapCollisions" unique_id=298189795]
 
@@ -92,3 +171,8 @@ polygon = PackedVector2Array(449, 711, 460, 744, 467, 774, 492, 791, 496, 823, 4
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="MapCollisions/Grove4" unique_id=1141607903]
 polygon = PackedVector2Array(961, 829, 1006, 831, 1018, 873, 1040, 901, 1061, 917, 1059, 936, 1040, 938, 1020, 943, 986, 952, 962, 928, 949, 895, 951, 864)
+
+[node name="LootContainer" parent="." unique_id=1056668251 instance=ExtResource("9_n611n")]
+position = Vector2(1052, 277)
+persistent_id = "tanglebook_test"
+drop_item_id = "spell_book_tangle_foot"

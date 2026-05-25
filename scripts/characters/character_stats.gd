@@ -4,6 +4,8 @@ class_name CharacterStats
 const STARTING_HEALTH_BASE: int = 15
 const HEALTH_PER_TOUGHNESS: int = 10
 
+const MANA_PER_FOCUS: int = 5
+
 const DEFAULT_SPEED_STAT: int = 10
 const DEFAULT_ATTACK_SPEED_BONUS_PER_AGILITY: float = 0.01
 
@@ -134,25 +136,111 @@ func spend_stat_point(stat_id: String) -> bool:
     return true
 
 
-func recalculate_derived_stats(heal_by_max_health_gain: bool = false) -> void:
+func unlock_mana_resource(fill_current_mana: bool = true) -> bool:
+    var was_locked := not has_mana_resource
+
+    has_mana_resource = true
+    recalculate_derived_stats(false)
+
+    if fill_current_mana:
+        current_mana = max_mana
+
+    print("Mana resource unlocked.")
+    print("Mana: ", current_mana, " / ", max_mana)
+
+    return was_locked
+
+
+func has_mana_unlocked() -> bool:
+    return has_mana_resource
+
+
+func recalculate_derived_stats(restore_by_max_resource_gain: bool = false) -> void:
     var old_max_health := max_health
+    var old_max_mana := max_mana
 
     max_health = get_calculated_max_health()
 
     if current_health <= 0:
         current_health = max_health
-        return
+    else:
+        if restore_by_max_resource_gain:
+            var health_gain := max_health - old_max_health
 
-    if heal_by_max_health_gain:
-        var health_gain := max_health - old_max_health
-        if health_gain > 0:
-            current_health += health_gain
+            if health_gain > 0:
+                current_health += health_gain
 
-    current_health = clampi(current_health, 0, max_health)
+        current_health = clampi(current_health, 0, max_health)
+
+    if has_mana_resource:
+        max_mana = get_calculated_max_mana()
+
+        if restore_by_max_resource_gain:
+            var mana_gain := max_mana - old_max_mana
+
+            if mana_gain > 0:
+                current_mana += mana_gain
+
+        current_mana = clampi(current_mana, 0, max_mana)
+    else:
+        max_mana = 0
+        current_mana = 0
 
 
 func get_calculated_max_health() -> int:
     return STARTING_HEALTH_BASE + (HEALTH_PER_TOUGHNESS * toughness) + _get_equipped_health_bonus()
+
+
+func get_calculated_max_mana() -> int:
+    return maxi(0, focus * MANA_PER_FOCUS)
+
+
+func can_spend_mana(amount: int) -> bool:
+    if not has_mana_resource:
+        return false
+
+    if amount <= 0:
+        return true
+
+    return current_mana >= amount
+
+
+func spend_mana(amount: int) -> bool:
+    if not has_mana_resource:
+        return false
+
+    if amount <= 0:
+        return true
+
+    if current_mana < amount:
+        return false
+
+    current_mana -= amount
+    current_mana = clampi(current_mana, 0, max_mana)
+
+    print("Mana spent: ", amount)
+    print("Mana: ", current_mana, " / ", max_mana)
+
+    return true
+
+
+func restore_mana(amount: int) -> bool:
+    if not has_mana_resource:
+        return false
+
+    if amount <= 0:
+        return false
+
+    if current_mana >= max_mana:
+        return false
+
+    current_mana += amount
+    current_mana = clampi(current_mana, 0, max_mana)
+
+    print("Mana restored: ", amount)
+    print("Mana: ", current_mana, " / ", max_mana)
+
+    return true
 
 
 func get_attack() -> int:
@@ -469,8 +557,6 @@ func _get_equipped_accessory_2_defense_bonus() -> int:
         return 0
 
     return ItemDatabase.get_defense_bonus(equipped_accessory_2_id)
-
-    return ItemDatabase.get_defense_bonus(equipped_armor_id)
 
 
 func _get_equipped_health_bonus() -> int:

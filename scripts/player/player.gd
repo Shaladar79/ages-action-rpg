@@ -368,6 +368,7 @@ func add_inventory_item(item_id: String, item_name: String, quantity: int = 1) -
 
                 print("Stacked inventory item: ", clean_item_name, " x", item["quantity"])
                 _show_reward_notification("Received: " + clean_item_name + " x" + str(safe_quantity))
+                _handle_spell_book_acquisition(clean_item_id)
                 _notify_ui_stats_changed()
                 return
 
@@ -379,11 +380,14 @@ func add_inventory_item(item_id: String, item_name: String, quantity: int = 1) -
 
         print("Added stackable inventory item: ", clean_item_name, " x", safe_quantity)
         _show_reward_notification("Received: " + clean_item_name + " x" + str(safe_quantity))
+        _handle_spell_book_acquisition(clean_item_id)
         _notify_ui_stats_changed()
         return
 
     if has_inventory_item(clean_item_id):
         print("Inventory already has item: ", clean_item_name)
+        _handle_spell_book_acquisition(clean_item_id)
+        _notify_ui_stats_changed()
         return
 
     inventory.append({
@@ -394,8 +398,58 @@ func add_inventory_item(item_id: String, item_name: String, quantity: int = 1) -
 
     print("Added to inventory: ", clean_item_name)
     _show_reward_notification("Received: " + clean_item_name)
+    _handle_spell_book_acquisition(clean_item_id)
     _notify_ui_stats_changed()
 
+func _handle_spell_book_acquisition(item_id: String) -> void:
+    if item_id.strip_edges() == "":
+        return
+
+    if not ItemDatabase.is_spell_book(item_id):
+        return
+
+    _unlock_mana_and_focus_from_first_spell_book()
+
+
+func _unlock_mana_and_focus_from_first_spell_book() -> bool:
+    if character_stats == null:
+        return false
+
+    if character_stats.has_mana_resource:
+        return false
+
+    var unlocked := character_stats.unlock_mana_resource(true)
+
+    SaveManager.set_flag("mana_unlocked", true)
+    SaveManager.set_flag("focus_unlocked", true)
+
+    _notify_ui_stats_changed()
+    _show_first_spell_book_lesson()
+
+    return unlocked
+
+
+func _show_first_spell_book_lesson() -> void:
+    if SaveManager.is_flag_set("spellbook_lesson_seen"):
+        return
+
+    SaveManager.set_flag("spellbook_lesson_seen", true)
+
+    var dialogue_lines: Array[String] = [
+        "This is a spell book.",
+        "A spell book can be assigned to your hotbar.",
+        "Casting spells uses Mana.",
+        "Your Focus increases your maximum Mana.",
+        "As you learn more spells, different schools of magic may grow stronger through use."
+    ]
+
+    var game_ui := _get_game_ui()
+
+    if game_ui != null and game_ui.has_method("show_story_dialogue"):
+        game_ui.show_story_dialogue(dialogue_lines, "Echo Spirit")
+        return
+
+    show_dialogue("You found a spell book. Mana and Focus are now unlocked.")
 
 func remove_inventory_item(item_id: String, quantity: int = 1) -> bool:
     var clean_item_id := item_id.strip_edges()

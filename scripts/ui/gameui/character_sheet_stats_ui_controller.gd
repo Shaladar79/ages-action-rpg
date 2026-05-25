@@ -275,7 +275,7 @@ func _update_attributes_panel(stats: CharacterStats) -> void:
 
     if focus_label != null:
         focus_label.text = "Focus: " + str(stats.focus)
-        focus_label.visible = false
+        focus_label.visible = stats.has_mana_resource
 
     if speed_label != null:
         speed_label.text = "Speed: " + str(stats.speed)

@@ -201,6 +201,69 @@ static func is_consumed_on_use(item_id: String) -> bool:
     return bool(item_data.get("consumed_on_use", false))
 
 
+static func get_spell_id(item_id: String) -> String:
+    var item_data := get_item_data(item_id)
+
+    if item_data.is_empty():
+        return ""
+
+    return str(item_data.get("spell_id", ""))
+
+
+static func get_spell_name(item_id: String) -> String:
+    var item_data := get_item_data(item_id)
+
+    if item_data.is_empty():
+        return get_item_name(item_id)
+
+    return str(item_data.get("spell_name", get_item_name(item_id)))
+
+
+static func get_spell_school(item_id: String) -> String:
+    var item_data := get_item_data(item_id)
+
+    if item_data.is_empty():
+        return ""
+
+    return str(item_data.get("spell_school", ""))
+
+
+static func get_spell_mana_cost(item_id: String) -> int:
+    var item_data := get_item_data(item_id)
+
+    if item_data.is_empty():
+        return 0
+
+    return int(item_data.get("mana_cost", 0))
+
+
+static func get_spell_cooldown(item_id: String) -> float:
+    var item_data := get_item_data(item_id)
+
+    if item_data.is_empty():
+        return 0.0
+
+    return float(item_data.get("cooldown", 0.0))
+
+
+static func get_spell_status_effect(item_id: String) -> String:
+    var item_data := get_item_data(item_id)
+
+    if item_data.is_empty():
+        return ""
+
+    return str(item_data.get("status_effect", ""))
+
+
+static func get_spell_status_duration(item_id: String) -> float:
+    var item_data := get_item_data(item_id)
+
+    if item_data.is_empty():
+        return 0.0
+
+    return float(item_data.get("status_duration", 0.0))
+
+
 static func damage_types_overlap(first_damage_types: int, second_damage_types: int) -> bool:
     return (first_damage_types & second_damage_types) != 0
 

@@ -36,7 +36,27 @@ func update_stat_buttons(stats: CharacterStats) -> void:
         _set_stat_buttons_disabled(true)
         return
 
-    _set_stat_buttons_disabled(stats.stat_points <= 0)
+    var no_stat_points := stats.stat_points <= 0
+
+    if add_might_button != null:
+        add_might_button.disabled = no_stat_points
+
+    if add_agility_button != null:
+        add_agility_button.disabled = no_stat_points
+
+    if add_toughness_button != null:
+        add_toughness_button.disabled = no_stat_points
+
+    if add_speed_button != null:
+        add_speed_button.disabled = no_stat_points
+
+    if add_endurance_button != null:
+        add_endurance_button.visible = false
+        add_endurance_button.disabled = true
+
+    if add_focus_button != null:
+        add_focus_button.visible = stats.has_mana_resource
+        add_focus_button.disabled = no_stat_points or not stats.has_mana_resource
 
 
 func _create_character_sheet_buttons() -> void:
@@ -146,6 +166,9 @@ func _connect_buttons() -> void:
     if add_speed_button != null and not add_speed_button.pressed.is_connected(_on_add_speed_button_pressed):
         add_speed_button.pressed.connect(_on_add_speed_button_pressed)
 
+    if add_focus_button != null and not add_focus_button.pressed.is_connected(_on_add_focus_button_pressed):
+        add_focus_button.pressed.connect(_on_add_focus_button_pressed)
+
 
 func _set_stat_buttons_disabled(disabled: bool) -> void:
     if add_might_button != null:
@@ -201,6 +224,10 @@ func _on_add_toughness_button_pressed() -> void:
 
 func _on_add_speed_button_pressed() -> void:
     _spend_stat_point("speed")
+
+
+func _on_add_focus_button_pressed() -> void:
+    _spend_stat_point("focus")
 
 
 func _on_close_button_pressed() -> void:
