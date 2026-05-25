@@ -1,0 +1,28 @@
+[gd_scene format=3 uid="uid://b0kjoqowqeyvs"]
+
+[ext_resource type="Script" uid="uid://bctg4pa746qnq" path="res://scripts/core/quests/quest_talk_target.gd" id="1_jwtyi"]
+[ext_resource type="Texture2D" uid="uid://b63q4mnrxuk3y" path="res://art/Assets/RPG Monsters Mega Pack/Monsters/TB_Monster_028/TB_Monster_028_B_Single_Sprites/TB_Monster_028_B_6.png" id="2_0maa4"]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_y66uu"]
+radius = 26.0
+height = 52.0
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_anqfu"]
+radius = 14.0
+height = 46.0
+
+[node name="QuestTalkTarget" type="Area2D" unique_id=413590697]
+script = ExtResource("1_jwtyi")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1962099922]
+texture = ExtResource("2_0maa4")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1158829049]
+visible = false
+shape = SubResource("CapsuleShape2D_y66uu")
+
+[node name="StaticBody2D" type="StaticBody2D" parent="." unique_id=1986725962]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D" unique_id=1757047273]
+visible = false
+shape = SubResource("CapsuleShape2D_anqfu")

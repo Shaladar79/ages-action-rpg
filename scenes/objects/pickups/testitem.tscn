@@ -12,6 +12,7 @@ radius = 17.029387
 script = ExtResource("1_j2qar")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1643627818]
+visible = false
 shape = SubResource("CircleShape2D_j2qar")
 
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=1545699406]
@@ -21,4 +22,5 @@ texture = ExtResource("1_qcsu6")
 [node name="StaticBody2D" type="StaticBody2D" parent="." unique_id=429468860]
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D" unique_id=869563566]
+visible = false
 shape = SubResource("CircleShape2D_nb5bg")

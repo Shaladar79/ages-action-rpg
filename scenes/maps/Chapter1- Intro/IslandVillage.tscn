@@ -10,6 +10,7 @@
 [ext_resource type="Script" uid="uid://pomcudkoxce3" path="res://scripts/core/quests/quest_objective_entry.gd" id="6_7sfwb"]
 [ext_resource type="PackedScene" uid="uid://clxr5342eb6d" path="res://scenes/objects/questmarkers/QuestProgressArea.tscn" id="7_3djgd"]
 [ext_resource type="PackedScene" uid="uid://cfokf5kfxdijr" path="res://scenes/enemies/Foothills/Forrest_Beatle.tscn" id="8_h83v4"]
+[ext_resource type="PackedScene" uid="uid://b0kjoqowqeyvs" path="res://scenes/objects/questmarkers/QuestTalkTarget.tscn" id="9_7sfwb"]
 [ext_resource type="PackedScene" uid="uid://pyq76iw1lw5d" path="res://scenes/objects/save_totem.tscn" id="11_know0"]
 [ext_resource type="PackedScene" uid="uid://s2g52egtcgbs" path="res://scenes/objects/pickups/testitem.tscn" id="12_ub0y7"]
 
@@ -76,6 +77,27 @@ completed_dialogue = "thanks, come back for more work"
 objectives = Array[ExtResource("6_7sfwb")]([SubResource("Resource_ub0y7")])
 metadata/_custom_type_script = "uid://dt5yvut01s10s"
 
+[sub_resource type="Resource" id="Resource_3djgd"]
+script = ExtResource("6_7sfwb")
+objective_id = "rabbit"
+objective_type = 4
+metadata/_custom_type_script = "uid://pomcudkoxce3"
+
+[sub_resource type="Resource" id="Resource_h83v4"]
+script = ExtResource("5_ub0y7")
+quest_id = "talk_rabbit"
+quest_title = "Talt to The Rabbit"
+quest_type = 0
+started_flag = "rabbit_start"
+ready_to_turn_in_flag = "rabbit_talk"
+completed_flag = "rabbit_comp"
+first_time_dialogue = "Talk to the rabbit"
+active_dialogue = "He dont bite"
+ready_to_turn_in_dialogue = "How was He"
+completed_dialogue = "He is Nice, Come back i have more things for you to do"
+objectives = Array[ExtResource("6_7sfwb")]([SubResource("Resource_3djgd")])
+metadata/_custom_type_script = "uid://dt5yvut01s10s"
+
 [node name="IslandVillage" type="Node2D" unique_id=634947960]
 
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=262002603]
@@ -93,9 +115,10 @@ rotation = 0.058428537
 
 [node name="QuestGiver" parent="Ysort" unique_id=1663897061 instance=ExtResource("4_lgn6g")]
 position = Vector2(818, 191)
-quests = Array[ExtResource("5_ub0y7")]([SubResource("Resource_f2evy"), SubResource("Resource_pxthl"), SubResource("Resource_7sfwb")])
+quests = Array[ExtResource("5_ub0y7")]([SubResource("Resource_f2evy"), SubResource("Resource_pxthl"), SubResource("Resource_7sfwb"), SubResource("Resource_h83v4")])
 
 [node name="QuestProgressArea" parent="Ysort" unique_id=1142422050 instance=ExtResource("7_3djgd")]
+visible = false
 position = Vector2(590, 340)
 quest_id = "check_the_fire"
 objective_id = "campfire"
@@ -108,6 +131,19 @@ quest_progress_enabled = true
 quest_id = "kill_beatle"
 objective_id = "beatle_dead"
 slam_windup_time = 0.5
+
+[node name="QuestTalkTarget" parent="Ysort" unique_id=413590697 instance=ExtResource("9_7sfwb")]
+position = Vector2(206, 580)
+quest_id = "talk_rabbit"
+objective_id = "rabbit"
+
+[node name="Testitem" parent="Ysort" unique_id=1484649167 instance=ExtResource("12_ub0y7")]
+position = Vector2(385, 318)
+persistent_id = "shirt"
+disappear_on_open = true
+quest_progress_enabled = true
+quest_id = "get_shirt"
+objective_id = "get_shirt"
 
 [node name="MapSpawns" type="Node2D" parent="." unique_id=1571131686]
 visible = false
@@ -231,11 +267,3 @@ polygon = PackedVector2Array(91, 309, 61, 343, 52, 389, 88, 394, 102, 354, 116, 
 [node name="SaveTotem" parent="." unique_id=528667636 instance=ExtResource("11_know0")]
 position = Vector2(474, 150)
 respawn_id = "island_village"
-
-[node name="Testitem" parent="." unique_id=1484649167 instance=ExtResource("12_ub0y7")]
-position = Vector2(385, 318)
-persistent_id = "shirt"
-disappear_on_open = true
-quest_progress_enabled = true
-quest_id = "get_shirt"
-objective_id = "get_shirt"
