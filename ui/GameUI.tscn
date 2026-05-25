@@ -145,30 +145,6 @@ offset_right = 905.0
 offset_bottom = 64.0
 text = "Experience"
 
-[node name="WeaponSlotLabel" type="Label" parent="CharacterScreen/Panel" unique_id=1848815701]
-layout_mode = 0
-offset_left = 30.0
-offset_top = 414.0
-offset_right = 94.0
-offset_bottom = 437.0
-text = "Weapon"
-
-[node name="ArmorSlotLabel" type="Label" parent="CharacterScreen/Panel" unique_id=909593493]
-layout_mode = 0
-offset_left = 28.0
-offset_top = 450.0
-offset_right = 78.0
-offset_bottom = 473.0
-text = "Armor"
-
-[node name="AccessorySlotLabel" type="Label" parent="CharacterScreen/Panel" unique_id=1511676729]
-layout_mode = 0
-offset_left = 33.0
-offset_top = 486.0
-offset_right = 124.0
-offset_bottom = 509.0
-text = "Accessory"
-
 [node name="InventoryLabel" type="Label" parent="CharacterScreen/Panel" unique_id=1273099567]
 layout_mode = 0
 offset_left = 834.0
@@ -176,30 +152,6 @@ offset_top = 283.0
 offset_right = 909.0
 offset_bottom = 306.0
 text = "Inventory"
-
-[node name="EquipWeaponButton" type="Button" parent="CharacterScreen/Panel" unique_id=1703223077]
-layout_mode = 0
-offset_left = 18.0
-offset_top = 656.0
-offset_right = 157.0
-offset_bottom = 687.0
-text = "Equip Stone Club"
-
-[node name="EquipArmorButton" type="Button" parent="CharacterScreen/Panel" unique_id=594993220]
-layout_mode = 0
-offset_left = 180.0
-offset_top = 656.0
-offset_right = 326.0
-offset_bottom = 687.0
-text = "Equip Grass Tunic"
-
-[node name="EquipAccessoryButton" type="Button" parent="CharacterScreen/Panel" unique_id=509826457]
-layout_mode = 0
-offset_left = 344.0
-offset_top = 657.0
-offset_right = 477.0
-offset_bottom = 688.0
-text = "Equip Accessory"
 
 [node name="CloseButton" type="Button" parent="CharacterScreen/Panel" unique_id=2087100762]
 layout_mode = 0

@@ -41,14 +41,7 @@ const HOTBAR_SLOT_COUNT: int = 5
 @onready var add_endurance_button: Button = get_node_or_null("CharacterScreen/Panel/AttributesPanel_base/Attribute_panel_att/AddEnduranceButton") as Button
 @onready var add_focus_button: Button = get_node_or_null("CharacterScreen/Panel/AttributesPanel_base/Attribute_panel_att/AddFocusButton") as Button
 
-@onready var weapon_slot_label: Label = $CharacterScreen/Panel/WeaponSlotLabel
-@onready var armor_slot_label: Label = $CharacterScreen/Panel/ArmorSlotLabel
-@onready var accessory_slot_label: Label = $CharacterScreen/Panel/AccessorySlotLabel
 @onready var inventory_label: Label = $CharacterScreen/Panel/InventoryLabel
-
-@onready var equip_weapon_button: Button = $CharacterScreen/Panel/EquipWeaponButton
-@onready var equip_armor_button: Button = $CharacterScreen/Panel/EquipArmorButton
-@onready var equip_accessory_button: Button = $CharacterScreen/Panel/EquipAccessoryButton
 @onready var close_button: Button = $CharacterScreen/Panel/CloseButton
 
 @onready var save_prompt: Control = get_node_or_null("SavePrompt") as Control
@@ -114,7 +107,6 @@ func _ready() -> void:
     _create_character_sheet_list_buttons()
     _create_character_sheet_list_panel()
     _position_character_sheet_header_labels()
-    _hide_old_equipment_controls()
     _hide_locked_resources_and_stats()
     _connect_buttons()
     _update_hud()
@@ -774,29 +766,6 @@ func _get_currency_list_text() -> String:
     return text.strip_edges()
 
 
-func _hide_old_equipment_controls() -> void:
-    if weapon_slot_label != null:
-        weapon_slot_label.visible = false
-
-    if armor_slot_label != null:
-        armor_slot_label.visible = false
-
-    if accessory_slot_label != null:
-        accessory_slot_label.visible = false
-
-    if equip_weapon_button != null:
-        equip_weapon_button.visible = false
-        equip_weapon_button.disabled = true
-
-    if equip_armor_button != null:
-        equip_armor_button.visible = false
-        equip_armor_button.disabled = true
-
-    if equip_accessory_button != null:
-        equip_accessory_button.visible = false
-        equip_accessory_button.disabled = true
-
-
 func _hide_locked_resources_and_stats() -> void:
     if ability_points_label != null:
         ability_points_label.visible = false
@@ -1379,18 +1348,6 @@ func _on_add_toughness_button_pressed() -> void:
 
 func _on_add_speed_button_pressed() -> void:
     _spend_stat_point("speed")
-
-
-func _on_equip_weapon_button_pressed() -> void:
-    print("Old equip weapon button is hidden. Use equipment slot dropdowns.")
-
-
-func _on_equip_armor_button_pressed() -> void:
-    print("Old equip armor button is hidden. Use equipment slot dropdowns.")
-
-
-func _on_equip_accessory_button_pressed() -> void:
-    print("Old equip accessory button is hidden. Use equipment slot dropdowns.")
 
 
 func _on_close_button_pressed() -> void:
