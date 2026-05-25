@@ -223,6 +223,9 @@ func gain_xp(amount: int) -> bool:
     if is_defeated:
         return false
 
+    if amount <= 0:
+        return false
+
     var previous_level: int = character_stats.level
     var leveled_up := character_stats.add_xp(amount)
     var current_level: int = character_stats.level
@@ -278,6 +281,31 @@ func _get_game_ui() -> Node:
 
     return null
 
+func _show_notification(message: String) -> void:
+    var clean_message := message.strip_edges()
+
+    if clean_message == "":
+        return
+
+    var game_ui := _get_game_ui()
+
+    if game_ui != null and game_ui.has_method("show_notification"):
+        game_ui.show_notification(clean_message)
+
+
+func _show_reward_notification(message: String) -> void:
+    var clean_message := message.strip_edges()
+
+    if clean_message == "":
+        return
+
+    var game_ui := _get_game_ui()
+
+    if game_ui != null and game_ui.has_method("show_reward_notification"):
+        game_ui.show_reward_notification(clean_message)
+        return
+
+    _show_notification(clean_message)
 
 func spend_stat_point(stat_id: String) -> bool:
     if is_defeated:
@@ -314,6 +342,10 @@ func add_inventory_item(item_id: String, item_name: String, quantity: int = 1) -
         return
 
     var safe_quantity: int = maxi(1, quantity)
+    var clean_item_name := item_name.strip_edges()
+
+    if clean_item_name == "":
+        clean_item_name = ItemDatabase.get_item_name(clean_item_id)
 
     if _is_stackable_inventory_item(clean_item_id):
         for index in range(inventory.size()):
@@ -323,34 +355,37 @@ func add_inventory_item(item_id: String, item_name: String, quantity: int = 1) -
             if current_item_id == clean_item_id:
                 var current_quantity: int = int(item.get("quantity", 1))
                 item["quantity"] = current_quantity + safe_quantity
-                item["name"] = item_name
+                item["name"] = clean_item_name
                 inventory[index] = item
 
-                print("Stacked inventory item: ", item_name, " x", item["quantity"])
+                print("Stacked inventory item: ", clean_item_name, " x", item["quantity"])
+                _show_reward_notification("Received: " + clean_item_name + " x" + str(safe_quantity))
                 _notify_ui_stats_changed()
                 return
 
         inventory.append({
             "id": clean_item_id,
-            "name": item_name,
+            "name": clean_item_name,
             "quantity": safe_quantity
         })
 
-        print("Added stackable inventory item: ", item_name, " x", safe_quantity)
+        print("Added stackable inventory item: ", clean_item_name, " x", safe_quantity)
+        _show_reward_notification("Received: " + clean_item_name + " x" + str(safe_quantity))
         _notify_ui_stats_changed()
         return
 
     if has_inventory_item(clean_item_id):
-        print("Inventory already has item: ", item_name)
+        print("Inventory already has item: ", clean_item_name)
         return
 
     inventory.append({
         "id": clean_item_id,
-        "name": item_name,
+        "name": clean_item_name,
         "quantity": 1
     })
 
-    print("Added to inventory: ", item_name)
+    print("Added to inventory: ", clean_item_name)
+    _show_reward_notification("Received: " + clean_item_name)
     _notify_ui_stats_changed()
 
 
@@ -524,9 +559,12 @@ func add_currency(currency_id: String, amount: int) -> bool:
 
     _discover_currency(clean_currency_id)
 
-    print("Added currency: ", get_currency_display_name(clean_currency_id), " +", amount)
+    var display_name := get_currency_display_name(clean_currency_id)
+
+    print("Added currency: ", display_name, " +", amount)
     print("Currency total: ", currencies[clean_currency_id])
 
+    _show_reward_notification("Received: " + str(amount) + " " + display_name)
     _notify_ui_stats_changed()
 
     return true
@@ -1199,28 +1237,37 @@ func heal_player(heal_amount: int) -> bool:
     return true
 
 
-func show_dialogue(message: String) -> void:
-    if dialogue_bubble == null:
+func show_dialogue(message: String, speaker_name: String = "System") -> void:
+    var clean_message := message.strip_edges()
+
+    if clean_message == "":
         return
 
-    if dialogue_bubble.has_method("show_dialogue"):
-        dialogue_bubble.show_dialogue(message)
+    var game_ui := _get_game_ui()
+
+    if game_ui != null and game_ui.has_method("show_story_message"):
+        game_ui.show_story_message(clean_message, speaker_name)
+        return
+
+    print("Dialogue message with no GameUi available: ", clean_message)
 
 
 func hide_dialogue() -> void:
-    if dialogue_bubble == null:
+    var game_ui := _get_game_ui()
+
+    if game_ui != null and game_ui.has_method("hide_story_dialogue"):
+        game_ui.hide_story_dialogue()
         return
 
-    if dialogue_bubble.has_method("hide_dialogue"):
+    if dialogue_bubble != null and dialogue_bubble.has_method("hide_dialogue"):
         dialogue_bubble.hide_dialogue()
 
 
 func is_dialogue_active() -> bool:
-    if dialogue_bubble == null:
-        return false
+    var game_ui := _get_game_ui()
 
-    if dialogue_bubble.has_method("is_dialogue_active"):
-        return dialogue_bubble.is_dialogue_active()
+    if game_ui != null and game_ui.has_method("is_story_dialogue_active"):
+        return game_ui.is_story_dialogue_active()
 
     return false
 

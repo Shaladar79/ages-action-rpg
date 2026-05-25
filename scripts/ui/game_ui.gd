@@ -20,6 +20,7 @@ var equipment_slot_ui: EquipmentSlotUiController = null
 var character_sheet_stats_ui: CharacterSheetStatsUiController = null
 var character_sheet_buttons_ui: CharacterSheetButtonsUiController = null
 var interaction_prompt_ui: InteractionPromptUiController = null
+var notification_ui: NotificationUiController = null
 
 var hud_refresh_timer: float = 0.0
 var hud_refresh_interval: float = 0.25
@@ -42,6 +43,7 @@ func _ready() -> void:
 
     character_screen.visible = false
 
+    _create_notification_ui()
     _create_interaction_prompt_ui()
     _create_save_prompt_ui()
     _create_hud_ui()
@@ -166,6 +168,20 @@ func _set_save_prompt_pause(active: bool) -> void:
 func _set_shop_pause(active: bool) -> void:
     shop_pause_active = active
     _refresh_pause_state()
+
+
+func show_notification(message: String, duration: float = 2.4) -> void:
+    if notification_ui == null:
+        _create_notification_ui()
+
+    if notification_ui == null:
+        return
+
+    notification_ui.show_notification(message, duration)
+
+
+func show_reward_notification(message: String) -> void:
+    show_notification(message, 2.6)
 
 
 func show_prompt(key_text: String = "E") -> void:
@@ -328,6 +344,14 @@ func close_character_screen() -> void:
     character_screen.visible = false
     _hide_sheet_list()
     _set_character_screen_pause(false)
+
+
+func _create_notification_ui() -> void:
+    if notification_ui != null:
+        return
+
+    notification_ui = NotificationUiController.new()
+    notification_ui.setup(self)
 
 
 func _create_interaction_prompt_ui() -> void:

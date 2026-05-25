@@ -455,6 +455,7 @@ func _apply_quest_rewards(quest_data: Dictionary, reward_player: Node) -> void:
     if reward_xp > 0:
         if reward_player.has_method("gain_xp"):
             reward_player.gain_xp(reward_xp)
+            _show_reward_notification("Gained: " + str(reward_xp) + " XP")
             print("Quest reward XP granted: ", reward_xp)
         else:
             push_warning("Quest reward XP failed. Player is missing gain_xp().")
@@ -483,7 +484,6 @@ func _apply_quest_rewards(quest_data: Dictionary, reward_player: Node) -> void:
         "Item Reward 2"
     )
 
-
 func _grant_item_reward(reward_player: Node, item_id: String, quantity: int, reward_label: String) -> void:
     var clean_item_id := item_id.strip_edges()
     var clean_quantity: int = maxi(0, quantity)
@@ -499,12 +499,22 @@ func _grant_item_reward(reward_player: Node, item_id: String, quantity: int, rew
         return
 
     var item_name := ItemDatabase.get_item_name(clean_item_id)
-
-    for _index in range(clean_quantity):
-        reward_player.add_inventory_item(clean_item_id, item_name)
+    reward_player.add_inventory_item(clean_item_id, item_name, clean_quantity)
 
     print("Quest reward item granted: ", item_name, " x", clean_quantity)
 
+func _show_reward_notification(message: String) -> void:
+    var clean_message := message.strip_edges()
+
+    if clean_message == "":
+        return
+
+    var group_nodes := get_tree().get_nodes_in_group("interaction_ui")
+
+    for ui_node in group_nodes:
+        if ui_node != null and ui_node.has_method("show_reward_notification"):
+            ui_node.show_reward_notification(clean_message)
+            return
 
 func _notify_quest_ui_changed() -> void:
     var group_nodes := get_tree().get_nodes_in_group("interaction_ui")
