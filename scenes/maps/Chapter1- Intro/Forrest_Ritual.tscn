@@ -40,3 +40,9 @@ spawn_id = "FromForrest"
 [node name="FromBoss" parent="MapSpawn" unique_id=273106240 instance=ExtResource("3_g8qud")]
 position = Vector2(745, 139)
 spawn_id = "FromBoss"
+
+[node name="Mapcollition" type="Node2D" parent="." unique_id=1032453725]
+
+[node name="StaticBody2D" type="StaticBody2D" parent="Mapcollition" unique_id=1587029483]
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Mapcollition/StaticBody2D" unique_id=444177275]
