@@ -69,6 +69,11 @@ var active_status_effects: Dictionary = {}
 @export var spell_projectile_collision_layer: int = 0
 @export var spell_projectile_collision_mask: int = 1
 
+@export_group("Ranged Attack")
+@export var ranged_attack_cooldown: float = 0.65
+@export var ranged_projectile_collision_layer: int = 0
+@export var ranged_projectile_collision_mask: int = 1
+
 func _ready() -> void:
     add_to_group("player")
 
@@ -212,6 +217,9 @@ func _physics_process(delta: float) -> void:
 
     if Input.is_action_just_pressed("interact"):
         _try_interact()
+
+    if InputMap.has_action("ranged_attack") and Input.is_action_just_pressed("ranged_attack"):
+        _try_ranged_attack()
 
     if Input.is_action_just_pressed("attack"):
         _try_attack()
@@ -406,6 +414,7 @@ func add_inventory_item(item_id: String, item_name: String, quantity: int = 1) -
                 print("Stacked inventory item: ", clean_item_name, " x", item["quantity"])
                 _show_reward_notification("Received: " + clean_item_name + " x" + str(safe_quantity))
                 _handle_spell_book_acquisition(clean_item_id)
+                _handle_key_item_acquisition(clean_item_id)
                 _notify_ui_stats_changed()
                 return
 
@@ -418,12 +427,14 @@ func add_inventory_item(item_id: String, item_name: String, quantity: int = 1) -
         print("Added stackable inventory item: ", clean_item_name, " x", safe_quantity)
         _show_reward_notification("Received: " + clean_item_name + " x" + str(safe_quantity))
         _handle_spell_book_acquisition(clean_item_id)
+        _handle_key_item_acquisition(clean_item_id)
         _notify_ui_stats_changed()
         return
 
     if has_inventory_item(clean_item_id):
         print("Inventory already has item: ", clean_item_name)
         _handle_spell_book_acquisition(clean_item_id)
+        _handle_key_item_acquisition(clean_item_id)
         _notify_ui_stats_changed()
         return
 
@@ -436,6 +447,7 @@ func add_inventory_item(item_id: String, item_name: String, quantity: int = 1) -
     print("Added to inventory: ", clean_item_name)
     _show_reward_notification("Received: " + clean_item_name)
     _handle_spell_book_acquisition(clean_item_id)
+    _handle_key_item_acquisition(clean_item_id)
     _notify_ui_stats_changed()
 
 func _handle_spell_book_acquisition(item_id: String) -> void:
@@ -448,6 +460,23 @@ func _handle_spell_book_acquisition(item_id: String) -> void:
     _unlock_mana_and_focus_from_first_spell_book()
 
 
+func _handle_key_item_acquisition(item_id: String) -> void:
+    var clean_item_id := item_id.strip_edges()
+
+    if clean_item_id == "":
+        return
+
+    if not ItemDatabase.is_key_item(clean_item_id):
+        return
+
+    var story_flag := ItemDatabase.get_story_flag_on_acquire(clean_item_id)
+
+    if story_flag.strip_edges() == "":
+        return
+
+    SaveManager.set_flag(story_flag, true)
+    print("Key item acquisition flag set: ", story_flag)
+    
 func _unlock_mana_and_focus_from_first_spell_book() -> bool:
     if character_stats == null:
         return false
@@ -619,7 +648,7 @@ func _is_stackable_inventory_item(item_id: String) -> bool:
     if clean_item_id == "":
         return false
 
-    return ItemDatabase.get_item_type(clean_item_id) == "consumable"
+    return ItemDatabase.is_stackable_item(clean_item_id)
 
 
 func _initialize_currencies() -> void:
@@ -1578,7 +1607,99 @@ func _try_interact() -> void:
     if nearby_interactable.has_method("interact"):
         nearby_interactable.interact(self)
 
+func _try_ranged_attack() -> void:
+    if is_defeated:
+        return
 
+    if is_dialogue_active():
+        return
+
+    if is_attacking:
+        return
+
+    if cooldown_timer > 0.0:
+        return
+
+    if character_stats.equipped_ranged_weapon_id.strip_edges() == "":
+        print("No ranged weapon equipped.")
+        return
+
+    var ranged_weapon_id := character_stats.equipped_ranged_weapon_id
+
+    if ItemDatabase.weapon_requires_ammo(ranged_weapon_id):
+        var ammo_item_id := ItemDatabase.get_weapon_ammo_item_id(ranged_weapon_id)
+        var ammo_per_shot := ItemDatabase.get_weapon_ammo_per_shot(ranged_weapon_id)
+
+        if ammo_item_id.strip_edges() == "":
+            print("Ranged weapon requires ammo but has no ammo item id: ", ranged_weapon_id)
+            return
+
+        if not _has_inventory_quantity(ammo_item_id, ammo_per_shot):
+            print("No ammo for ranged weapon. Need: ", ItemDatabase.get_item_name(ammo_item_id))
+            return
+
+        var removed_ammo := remove_inventory_item(ammo_item_id, ammo_per_shot)
+
+        if not removed_ammo:
+            print("Failed to remove ammo for ranged weapon.")
+            return
+
+    _fire_ranged_weapon_projectile(ranged_weapon_id)
+
+    cooldown_timer = ranged_attack_cooldown
+    print("Player fired ranged weapon: ", ItemDatabase.get_item_name(ranged_weapon_id))
+
+
+func _fire_ranged_weapon_projectile(ranged_weapon_id: String) -> void:
+    var cast_direction := _get_last_direction_vector()
+
+    if cast_direction == Vector2.ZERO:
+        cast_direction = Vector2.DOWN
+
+    var projectile := PlayerRangedProjectile.new()
+    projectile.name = "PlayerRangedProjectile"
+
+    var spawn_offset := ItemDatabase.get_weapon_projectile_spawn_offset(ranged_weapon_id)
+    projectile.global_position = global_position + (cast_direction.normalized() * spawn_offset)
+    projectile.collision_layer = ranged_projectile_collision_layer
+    projectile.collision_mask = ranged_projectile_collision_mask
+
+    projectile.setup(
+        self,
+        cast_direction,
+        get_ranged_attack_damage(),
+        character_stats.get_equipped_ranged_weapon_damage_types(),
+        ItemDatabase.get_weapon_projectile_speed(ranged_weapon_id),
+        ItemDatabase.get_weapon_projectile_range(ranged_weapon_id),
+        ItemDatabase.get_weapon_projectile_hit_radius(ranged_weapon_id),
+        ItemDatabase.get_weapon_projectile_color(ranged_weapon_id)
+    )
+
+    var current_scene := get_tree().current_scene
+
+    if current_scene != null:
+        current_scene.add_child(projectile)
+    else:
+        get_parent().add_child(projectile)
+
+
+func _has_inventory_quantity(item_id: String, required_quantity: int) -> bool:
+    var clean_item_id := item_id.strip_edges()
+
+    if clean_item_id == "":
+        return false
+
+    var safe_required_quantity: int = maxi(1, required_quantity)
+
+    for item in inventory:
+        if str(item.get("id", "")) != clean_item_id:
+            continue
+
+        var quantity: int = int(item.get("quantity", 1))
+        return quantity >= safe_required_quantity
+
+    return false
+    
 func _try_attack() -> void:
     if is_defeated:
         return

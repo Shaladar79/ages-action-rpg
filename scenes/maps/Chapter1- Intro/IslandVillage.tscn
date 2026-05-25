@@ -27,7 +27,6 @@ script = ExtResource("4_h83v4")
 item_id = "sling_ammo"
 quantity = 5
 price_amount = 5
-required_flag = "village_sling_unlocked"
 metadata/_custom_type_script = "uid://dmhim3ohrnvcm"
 
 [sub_resource type="Resource" id="Resource_7gjs6"]

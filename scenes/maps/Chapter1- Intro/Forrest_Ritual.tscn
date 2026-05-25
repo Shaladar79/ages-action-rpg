@@ -42,6 +42,7 @@ position = Vector2(745, 139)
 spawn_id = "FromBoss"
 
 [node name="Mapcollition" type="Node2D" parent="." unique_id=1032453725]
+visible = false
 
 [node name="StaticBody2D" type="StaticBody2D" parent="Mapcollition" unique_id=1587029483]
 

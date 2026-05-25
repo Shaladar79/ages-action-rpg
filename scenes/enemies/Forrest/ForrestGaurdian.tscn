@@ -204,6 +204,8 @@ xp_reward = 30
 damage_types = 2
 drop_item_1_id = "spell_book_tangle_foot"
 drop_item_1_chance_percent = 100.0
+drop_item_2_id = "forrest_guardian_essence"
+drop_item_2_chance_percent = 100.0
 drop_currency_chance_percent = 100.0
 drop_currency_min_amount = 30
 drop_currency_max_amount = 50
@@ -260,7 +262,7 @@ projectile_texture = ExtResource("2_550x5")
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=1603053430]
 sprite_frames = SubResource("SpriteFrames_4y5pf")
 animation = &"walk_up"
-frame_progress = 0.23092432
+frame_progress = 0.24867386
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1422066732]
 visible = false
