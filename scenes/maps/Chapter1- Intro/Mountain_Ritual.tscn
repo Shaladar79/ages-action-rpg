@@ -1,0 +1,33 @@
+[gd_scene format=3 uid="uid://ryayouqsy1sv"]
+
+[ext_resource type="Texture2D" uid="uid://mx51lg3u6ntu" path="res://art/maps/mountain_ritual_2.png" id="1_on4j2"]
+[ext_resource type="PackedScene" uid="uid://d2qyxdpcmw4x0" path="res://scenes/objects/map_spawn_point.tscn" id="2_j31pl"]
+[ext_resource type="PackedScene" uid="uid://cihgogaol4td8" path="res://scenes/objects/map_transition_area.tscn" id="3_cgpc3"]
+[ext_resource type="PackedScene" uid="uid://ds0nibabilemd" path="res://scenes/player/Player.tscn" id="4_60uwm"]
+
+[node name="MountainRitual" type="Node2D" unique_id=1422192774]
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=443069074]
+position = Vector2(627, 626)
+texture = ExtResource("1_on4j2")
+
+[node name="FromSummit" parent="." unique_id=366895598 instance=ExtResource("2_j31pl")]
+position = Vector2(616, 1015)
+spawn_id = "FromSummit"
+
+[node name="ToSummit" parent="." unique_id=1344752193 instance=ExtResource("3_cgpc3")]
+position = Vector2(616, 1138)
+target_scene_path = "uid://d2dj8pxxgihm4"
+target_spawn_id = "FromRitual"
+
+[node name="Player" parent="." unique_id=949372820 instance=ExtResource("4_60uwm")]
+position = Vector2(631, 1030)
+
+[node name="ToBoss" parent="." unique_id=1515055089 instance=ExtResource("3_cgpc3")]
+position = Vector2(673, 55)
+target_scene_path = "uid://k4v8e4ru253e"
+target_spawn_id = "FromRitual"
+
+[node name="FromBoss" parent="." unique_id=270121536 instance=ExtResource("2_j31pl")]
+position = Vector2(639, 147)
+spawn_id = "FromBoss"

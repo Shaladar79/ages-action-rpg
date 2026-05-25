@@ -1,0 +1,25 @@
+[gd_scene format=3 uid="uid://k4v8e4ru253e"]
+
+[ext_resource type="Texture2D" uid="uid://bp36akyvtung8" path="res://art/maps/mountain_boss.png" id="1_xwcxs"]
+[ext_resource type="PackedScene" uid="uid://d2qyxdpcmw4x0" path="res://scenes/objects/map_spawn_point.tscn" id="2_8q2gy"]
+[ext_resource type="PackedScene" uid="uid://cihgogaol4td8" path="res://scenes/objects/map_transition_area.tscn" id="3_okfgq"]
+[ext_resource type="PackedScene" uid="uid://ds0nibabilemd" path="res://scenes/player/Player.tscn" id="4_38p3s"]
+
+[node name="MountainBoss" type="Node2D" unique_id=1231829728]
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1971183551]
+position = Vector2(629, 624)
+texture = ExtResource("1_xwcxs")
+
+[node name="FromRitual" parent="." unique_id=366895598 instance=ExtResource("2_8q2gy")]
+position = Vector2(601, 861)
+spawn_id = "FromRitual"
+
+[node name="MapTransitionArea" parent="." unique_id=1344752193 instance=ExtResource("3_okfgq")]
+position = Vector2(555, 986)
+scale = Vector2(1.5, 1.5)
+target_scene_path = "uid://ryayouqsy1sv"
+target_spawn_id = "FromBoss"
+
+[node name="Player" parent="." unique_id=949372820 groups=["player"] instance=ExtResource("4_38p3s")]
+position = Vector2(648, 830)

@@ -22,3 +22,12 @@ spawn_id = "FromSlopes"
 
 [node name="Player" parent="." unique_id=949372820 groups=["player"] instance=ExtResource("4_0dvwj")]
 position = Vector2(707, 958)
+
+[node name="ToRitual" parent="." unique_id=644173259 instance=ExtResource("2_7l1ou")]
+position = Vector2(786, 46)
+target_scene_path = "uid://ryayouqsy1sv"
+target_spawn_id = "FromSummit"
+
+[node name="FromRitual" parent="." unique_id=1188400218 instance=ExtResource("3_0dvwj")]
+position = Vector2(750, 110)
+spawn_id = "FromRitual"
