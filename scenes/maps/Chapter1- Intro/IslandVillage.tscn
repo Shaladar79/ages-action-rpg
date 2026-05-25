@@ -14,88 +14,27 @@
 [ext_resource type="PackedScene" uid="uid://pyq76iw1lw5d" path="res://scenes/objects/save_totem.tscn" id="11_know0"]
 [ext_resource type="PackedScene" uid="uid://s2g52egtcgbs" path="res://scenes/objects/pickups/testitem.tscn" id="12_ub0y7"]
 
-[sub_resource type="Resource" id="Resource_7gjs6"]
-script = ExtResource("6_7sfwb")
-objective_id = "campfire"
-objective_type = 3
-metadata/_custom_type_script = "uid://pomcudkoxce3"
-
-[sub_resource type="Resource" id="Resource_f2evy"]
-script = ExtResource("5_ub0y7")
-quest_id = "check_the_fire"
-quest_title = "Camp Fire"
-quest_type = 0
-started_flag = "ceck_the_fire_start"
-ready_to_turn_in_flag = "checked _the_fire"
-completed_flag = "checked_fire_comp"
-first_time_dialogue = "Go make sure the fire is out"
-active_dialogue = "Did you check it?"
-ready_to_turn_in_dialogue = "Was it out"
-completed_dialogue = "Good, Talk to me again i hace another task for you."
-objectives = Array[ExtResource("6_7sfwb")]([SubResource("Resource_7gjs6")])
-metadata/_custom_type_script = "uid://dt5yvut01s10s"
-
-[sub_resource type="Resource" id="Resource_i3jri"]
-script = ExtResource("6_7sfwb")
-objective_id = "beatle_dead"
-objective_type = 1
-metadata/_custom_type_script = "uid://pomcudkoxce3"
-
-[sub_resource type="Resource" id="Resource_pxthl"]
-script = ExtResource("5_ub0y7")
-quest_id = "kill_beatle"
-quest_title = "Invasive Cretures"
-quest_type = 0
-started_flag = "kill_beatle_start"
-ready_to_turn_in_flag = "kill_beatle_done"
-completed_flag = "kill_beatle_comp"
-first_time_dialogue = "Kill that beatle that got into town"
-active_dialogue = "Go kill it"
-ready_to_turn_in_dialogue = "You Killed it"
-completed_dialogue = "Good Job come back to me, for another job."
-objectives = Array[ExtResource("6_7sfwb")]([SubResource("Resource_i3jri")])
-metadata/_custom_type_script = "uid://dt5yvut01s10s"
-
-[sub_resource type="Resource" id="Resource_ub0y7"]
-script = ExtResource("6_7sfwb")
-objective_id = "get_shirt"
-objective_type = 2
-metadata/_custom_type_script = "uid://pomcudkoxce3"
-
 [sub_resource type="Resource" id="Resource_7sfwb"]
-script = ExtResource("5_ub0y7")
-quest_id = "get_shirt"
-quest_title = "Get Shirt"
-quest_type = 0
-started_flag = "get_shirt_start"
-ready_to_turn_in_flag = "got_shit"
-completed_flag = "shirt_comp"
-first_time_dialogue = "get my shit from by the shop"
-active_dialogue = "go get it"
-ready_to_turn_in_dialogue = "you got it"
-completed_dialogue = "thanks, come back for more work"
-objectives = Array[ExtResource("6_7sfwb")]([SubResource("Resource_ub0y7")])
-metadata/_custom_type_script = "uid://dt5yvut01s10s"
+script = ExtResource("6_7sfwb")
+objective_id = "kill_rockspitters"
+objective_type = 1
+objective_text = "Kill Rock Spitters On the Slopes"
+required_amount = 10
+completed_flag = "VillageBounty1Clr"
+metadata/_custom_type_script = "uid://pomcudkoxce3"
 
 [sub_resource type="Resource" id="Resource_3djgd"]
-script = ExtResource("6_7sfwb")
-objective_id = "rabbit"
-objective_type = 4
-metadata/_custom_type_script = "uid://pomcudkoxce3"
-
-[sub_resource type="Resource" id="Resource_h83v4"]
 script = ExtResource("5_ub0y7")
-quest_id = "talk_rabbit"
-quest_title = "Talt to The Rabbit"
-quest_type = 0
-started_flag = "rabbit_start"
-ready_to_turn_in_flag = "rabbit_talk"
-completed_flag = "rabbit_comp"
-first_time_dialogue = "Talk to the rabbit"
-active_dialogue = "He dont bite"
-ready_to_turn_in_dialogue = "How was He"
-completed_dialogue = "He is Nice, Come back i have more things for you to do"
-objectives = Array[ExtResource("6_7sfwb")]([SubResource("Resource_3djgd")])
+quest_id = "village_rockspitter_clear"
+quest_title = "The Angry Mountain"
+started_flag = "KillRockSpitterStart"
+ready_to_turn_in_flag = "KillRockSpitterDone"
+completed_flag = "KillRockSpitterComp"
+first_time_dialogue = "Hey Man you look tough. You see the montain is getting angry. So you see the Rock  Spitters look like they are going to move this way, can you go Kill the Rock Spitters on the Slopes."
+active_dialogue = "Did you kill the yet?"
+ready_to_turn_in_dialogue = "Oh, Good we are safer now that you cleared them out."
+completed_dialogue = "Oh I think I know why the Rock Spitters were moving this way. Speak to me again I'll tell you more."
+objectives = Array[ExtResource("6_7sfwb")]([SubResource("Resource_7sfwb")])
 metadata/_custom_type_script = "uid://dt5yvut01s10s"
 
 [node name="IslandVillage" type="Node2D" unique_id=634947960]
@@ -115,7 +54,7 @@ rotation = 0.058428537
 
 [node name="QuestGiver" parent="Ysort" unique_id=1663897061 instance=ExtResource("4_lgn6g")]
 position = Vector2(818, 191)
-quests = Array[ExtResource("5_ub0y7")]([SubResource("Resource_f2evy"), SubResource("Resource_pxthl"), SubResource("Resource_7sfwb"), SubResource("Resource_h83v4")])
+quests = Array[ExtResource("5_ub0y7")]([SubResource("Resource_3djgd")])
 
 [node name="QuestProgressArea" parent="Ysort" unique_id=1142422050 instance=ExtResource("7_3djgd")]
 visible = false

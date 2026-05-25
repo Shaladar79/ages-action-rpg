@@ -10,7 +10,6 @@
 [ext_resource type="PackedScene" uid="uid://diepcak1mm2tn" path="res://scenes/enemies/Slopes/Rock_Spitter.tscn" id="7_4prd7"]
 [ext_resource type="PackedScene" uid="uid://corrah5u0halh" path="res://scenes/objects/EchoDialogueTrigger.tscn" id="7_5obdd"]
 [ext_resource type="PackedScene" uid="uid://o8j2dacnrsjb" path="res://scenes/enemies/Slopes/Earthling.tscn" id="8_5obdd"]
-[ext_resource type="PackedScene" uid="uid://c7ww4rahpm4ls" path="res://scenes/enemies/Slopes/Rock_Turret_Mini_Boss.tscn" id="11_i456y"]
 [ext_resource type="PackedScene" uid="uid://b81kib11b5cms" path="res://scenes/objects/Containers/LootContainer_pouch.tscn" id="12_adn6g"]
 [ext_resource type="Texture2D" uid="uid://dgy60dy11p0s5" path="res://art/Assets/icons/fullcolor/individual_32x32/icon256.png" id="13_adn6g"]
 [ext_resource type="Texture2D" uid="uid://cm4g7v2pey1iy" path="res://art/Assets/icons/fullcolor/individual_32x32/icon175.png" id="14_xyeje"]
@@ -25,9 +24,9 @@ monsters_respawn_by_default = true
 [node name="Node" type="Node" parent="." unique_id=1069077796]
 script = ExtResource("2_usf74")
 required_kills = 10
-target_node_path = NodePath("../Monsters/RockTurretMiniBoss")
+unlocked_flag = ""
 count_only_monsters_in_group = true
-eligible_monster_group = "slopes_rock_spitter_kill_count"
+eligible_monster_group = ""
 
 [node name="MapImage" type="Sprite2D" parent="." unique_id=520401794]
 position = Vector2(729, 550)
@@ -238,99 +237,130 @@ For now, your feet are your shield."
 [node name="Monsters" type="Node2D" parent="." unique_id=209942388]
 
 [node name="RockSpitter" parent="Monsters" unique_id=165711745 instance=ExtResource("7_4prd7")]
-position = Vector2(584, 223)
-persistent_id = "RS_1"
+position = Vector2(505, 220)
+persistent_id = ""
+require_active_quest_to_spawn = true
+required_active_quest_id = "village_rockspitter_clear"
+quest_progress_enabled = true
+quest_id = "village_rockspitter_clear"
+objective_id = "kill_rockspitters"
 
-[node name="RockSpitter2" parent="Monsters" unique_id=412149953 instance=ExtResource("7_4prd7")]
-position = Vector2(295, 586)
-persistent_id = "RS_2"
+[node name="RockSpitter3" parent="Monsters" unique_id=837009814 instance=ExtResource("7_4prd7")]
+position = Vector2(225, 434)
+persistent_id = ""
+require_active_quest_to_spawn = true
+required_active_quest_id = "village_rockspitter_clear"
+quest_progress_enabled = true
+quest_id = "village_rockspitter_clear"
+objective_id = "kill_rockspitters"
 
-[node name="RockSpitter3" parent="Monsters" unique_id=1552881211 instance=ExtResource("7_4prd7")]
-position = Vector2(925, 369)
-persistent_id = "RS_3"
-drop_currency_min_amount = 2
-drop_currency_max_amount = 2
+[node name="RockSpitter5" parent="Monsters" unique_id=824860344 instance=ExtResource("7_4prd7")]
+position = Vector2(932, 176)
+persistent_id = ""
+require_active_quest_to_spawn = true
+required_active_quest_id = "village_rockspitter_clear"
+quest_progress_enabled = true
+quest_id = "village_rockspitter_clear"
+objective_id = "kill_rockspitters"
 
-[node name="RockSpitter4" parent="Monsters" unique_id=343713712 instance=ExtResource("7_4prd7")]
-position = Vector2(1285, 402)
-persistent_id = "RS_4"
+[node name="RockSpitter4" parent="Monsters" unique_id=1255100999 instance=ExtResource("7_4prd7")]
+position = Vector2(1230, 324)
+persistent_id = ""
+require_active_quest_to_spawn = true
+required_active_quest_id = "village_rockspitter_clear"
+quest_progress_enabled = true
+quest_id = "village_rockspitter_clear"
+objective_id = "kill_rockspitters"
 
-[node name="RockSpitter5" parent="Monsters" unique_id=420897154 instance=ExtResource("7_4prd7")]
-position = Vector2(444, 775)
-persistent_id = "RS_5"
+[node name="RockSpitter2" parent="Monsters" unique_id=180467620 instance=ExtResource("7_4prd7")]
+position = Vector2(719, 441)
+persistent_id = ""
+require_active_quest_to_spawn = true
+required_active_quest_id = "village_rockspitter_clear"
+quest_progress_enabled = true
+quest_id = "village_rockspitter_clear"
+objective_id = "kill_rockspitters"
 
-[node name="RockSpitter6" parent="Monsters" unique_id=739308055 instance=ExtResource("7_4prd7")]
-position = Vector2(691, 972)
-persistent_id = "RS_6"
+[node name="RockSpitter6" parent="Monsters" unique_id=1298467058 instance=ExtResource("7_4prd7")]
+position = Vector2(735, 676)
+persistent_id = ""
+require_active_quest_to_spawn = true
+required_active_quest_id = "village_rockspitter_clear"
+quest_progress_enabled = true
+quest_id = "village_rockspitter_clear"
+objective_id = "kill_rockspitters"
 
-[node name="RockSpitter7" parent="Monsters" unique_id=849516143 instance=ExtResource("7_4prd7")]
-position = Vector2(183, 918)
-persistent_id = "RS_7"
+[node name="RockSpitter7" parent="Monsters" unique_id=1218345866 instance=ExtResource("7_4prd7")]
+position = Vector2(1097, 666)
+persistent_id = ""
+require_active_quest_to_spawn = true
+required_active_quest_id = "village_rockspitter_clear"
+quest_progress_enabled = true
+quest_id = "village_rockspitter_clear"
+objective_id = "kill_rockspitters"
 
-[node name="RockSpitter8" parent="Monsters" unique_id=1656490551 instance=ExtResource("7_4prd7")]
-position = Vector2(891, 599)
-persistent_id = "RS_8"
+[node name="RockSpitter10" parent="Monsters" unique_id=1571295014 instance=ExtResource("7_4prd7")]
+position = Vector2(699, 962)
+persistent_id = ""
+require_active_quest_to_spawn = true
+required_active_quest_id = "village_rockspitter_clear"
+quest_progress_enabled = true
+quest_id = "village_rockspitter_clear"
+objective_id = "kill_rockspitters"
 
-[node name="RockSpitter9" parent="Monsters" unique_id=1374426528 instance=ExtResource("7_4prd7")]
-position = Vector2(1297, 713)
-persistent_id = "RS_9"
+[node name="RockSpitter9" parent="Monsters" unique_id=1406748345 instance=ExtResource("7_4prd7")]
+position = Vector2(285, 848)
+persistent_id = ""
+require_active_quest_to_spawn = true
+required_active_quest_id = "village_rockspitter_clear"
+quest_progress_enabled = true
+quest_id = "village_rockspitter_clear"
+objective_id = "kill_rockspitters"
 
-[node name="RockSpitter10" parent="Monsters" unique_id=846974716 instance=ExtResource("7_4prd7")]
-position = Vector2(1199, 535)
-persistent_id = "RS_10"
+[node name="RockSpitter8" parent="Monsters" unique_id=1507302087 instance=ExtResource("7_4prd7")]
+position = Vector2(1166, 927)
+persistent_id = ""
+require_active_quest_to_spawn = true
+required_active_quest_id = "village_rockspitter_clear"
+quest_progress_enabled = true
+quest_id = "village_rockspitter_clear"
+objective_id = "kill_rockspitters"
+
+[node name="StartCavern Earthling4" parent="Monsters" unique_id=1984709987 instance=ExtResource("8_5obdd")]
+position = Vector2(904, 365)
+persistent_id = "Earthling_4"
+
+[node name="StartCavern Earthling3" parent="Monsters" unique_id=2123901375 instance=ExtResource("8_5obdd")]
+position = Vector2(510, 408)
+persistent_id = "Earthling_3"
+
+[node name="StartCavern Earthling2" parent="Monsters" unique_id=469209005 instance=ExtResource("8_5obdd")]
+position = Vector2(176, 339)
+persistent_id = "Earthling_2"
 
 [node name="StartCavern Earthling" parent="Monsters" unique_id=1655329841 instance=ExtResource("8_5obdd")]
-position = Vector2(340, 288)
+position = Vector2(324, 227)
+persistent_id = "Earthling_1"
 
-[node name="StartCavern Earthling2" parent="Monsters" unique_id=216314616 instance=ExtResource("8_5obdd")]
-position = Vector2(405, 152)
+[node name="StartCavern Earthling5" parent="Monsters" unique_id=1499351915 instance=ExtResource("8_5obdd")]
+position = Vector2(1059, 182)
+persistent_id = "Earthling_5"
 
-[node name="StartCavern Earthling3" parent="Monsters" unique_id=1134797703 instance=ExtResource("8_5obdd")]
-position = Vector2(429, 502)
+[node name="StartCavern Earthling6" parent="Monsters" unique_id=844893979 instance=ExtResource("8_5obdd")]
+position = Vector2(840, 719)
+persistent_id = "Earthling_6"
 
-[node name="StartCavern Earthling4" parent="Monsters" unique_id=649889750 instance=ExtResource("8_5obdd")]
-position = Vector2(148, 498)
+[node name="StartCavern Earthling7" parent="Monsters" unique_id=3354512 instance=ExtResource("8_5obdd")]
+position = Vector2(1030, 616)
+persistent_id = "Earthling_7"
 
-[node name="StartCavern Earthling5" parent="Monsters" unique_id=1401040897 instance=ExtResource("8_5obdd")]
-position = Vector2(973, 78)
+[node name="StartCavern Earthling8" parent="Monsters" unique_id=695017089 instance=ExtResource("8_5obdd")]
+position = Vector2(319, 934)
+persistent_id = "Earthling_8"
 
-[node name="StartCavern Earthling6" parent="Monsters" unique_id=271601789 instance=ExtResource("8_5obdd")]
-position = Vector2(1240, 317)
-
-[node name="StartCavern Earthling7" parent="Monsters" unique_id=576321855 instance=ExtResource("8_5obdd")]
-position = Vector2(1107, 207)
-monster_level = 1
-drop_currency_chance_percent = 60.4
-
-[node name="StartCavern Earthling8" parent="Monsters" unique_id=1402277123 instance=ExtResource("8_5obdd")]
-position = Vector2(311, 921)
-
-[node name="StartCavern Earthling10" parent="Monsters" unique_id=710842495 instance=ExtResource("8_5obdd")]
-position = Vector2(1124, 927)
-
-[node name="StartCavern Earthling12" parent="Monsters" unique_id=1315866852 instance=ExtResource("8_5obdd")]
-position = Vector2(726, 672)
-
-[node name="StartCavern Earthling13" parent="Monsters" unique_id=190312992 instance=ExtResource("8_5obdd")]
-position = Vector2(580, 872)
-
-[node name="StartCavern Earthling14" parent="Monsters" unique_id=1874700023 instance=ExtResource("8_5obdd")]
-position = Vector2(823, 844)
-
-[node name="StartCavern Earthling15" parent="Monsters" unique_id=1302311915 instance=ExtResource("8_5obdd")]
-position = Vector2(1011, 759)
-
-[node name="RockTurretMiniBoss" parent="Monsters" unique_id=425000271 instance=ExtResource("11_i456y")]
-position = Vector2(731, 468)
-scale = Vector2(0.6, 0.6)
-persistent_id = "rockturretminiboss"
-max_hit_points = 40
-defense = 1
-drop_item_1_id = "amulet_of_minor_defense"
-drop_item_2_chance_percent = 100.0
-melee_damage = 0
-aoe_damage = 8
-burst_damage_types = 1
+[node name="StartCavern Earthling9" parent="Monsters" unique_id=1916812895 instance=ExtResource("8_5obdd")]
+position = Vector2(1016, 762)
+persistent_id = "Earthling_9"
 
 [node name="Loot" type="Node2D" parent="." unique_id=777198081]
 

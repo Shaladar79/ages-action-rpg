@@ -246,7 +246,7 @@ radius = 31.257
 size = Vector2(41, 46)
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_bgjfe"]
-radius = 219.52904
+radius = 26.305893
 
 [node name="RockSpitter" type="CharacterBody2D" unique_id=165711745 groups=["slopes_rock_spitter_kill_count"]]
 script = ExtResource("1_3h42a")
@@ -259,7 +259,6 @@ xp_reward = 3
 drop_currency_chance_percent = 50.5
 move_speed = 20.0
 detection_range = 200.0
-can_attack_player = false
 ranged_damage = 4
 ranged_damage_types = 1
 special_attacks_enabled = true
@@ -276,14 +275,14 @@ visible = false
 shape = SubResource("CircleShape2D_y112c")
 
 [node name="Hurtbox" type="Area2D" parent="." unique_id=1989481142]
-visible = false
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Hurtbox" unique_id=1919857365]
+visible = false
 position = Vector2(0.5, 0)
 shape = SubResource("RectangleShape2D_853ht")
 
 [node name="AttackArea" type="Area2D" parent="." unique_id=1236585486]
-visible = false
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="AttackArea" unique_id=1442215314]
+visible = false
 shape = SubResource("CircleShape2D_bgjfe")

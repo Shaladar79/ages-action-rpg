@@ -21,6 +21,13 @@ enum AttackStyle {
 @export var monster_name: String = "Monster"
 @export var monster_level: int = 0
 
+@export_group("Quest Spawn Gate")
+@export var require_active_quest_to_spawn: bool = false
+@export var required_active_quest_id: String = ""
+@export var remove_if_quest_ready_to_turn_in: bool = true
+@export var remove_if_quest_completed: bool = true
+@export var quest_spawn_gate_debug_prints: bool = true
+
 @export_group("Core Stats")
 @export var max_hit_points: int = 3
 @export var defense: int = 0
@@ -310,6 +317,10 @@ var flash_tween: Tween = null
 
 
 func _ready() -> void:
+    if _should_remove_because_quest_spawn_gate():
+        queue_free()
+        return
+
     if _should_remove_because_defeated_in_save():
         queue_free()
         return
@@ -371,6 +382,35 @@ func _apply_legacy_attack_defaults() -> void:
 
     if damage_types != DamageTypes.NONE:
         melee_damage_types = damage_types
+
+
+func _should_remove_because_quest_spawn_gate() -> bool:
+    if not require_active_quest_to_spawn:
+        return false
+
+    var clean_quest_id := required_active_quest_id.strip_edges()
+
+    if clean_quest_id == "":
+        if quest_spawn_gate_debug_prints:
+            push_warning(monster_name + " requires active quest to spawn but required_active_quest_id is blank.")
+        return true
+
+    if remove_if_quest_completed and QuestManager.is_quest_completed(clean_quest_id):
+        if quest_spawn_gate_debug_prints:
+            print(monster_name, " removed because required quest is completed: ", clean_quest_id)
+        return true
+
+    if not QuestManager.is_quest_active(clean_quest_id):
+        if quest_spawn_gate_debug_prints:
+            print(monster_name, " removed because required quest is not active: ", clean_quest_id)
+        return true
+
+    if remove_if_quest_ready_to_turn_in and QuestManager.is_quest_ready_to_turn_in(clean_quest_id):
+        if quest_spawn_gate_debug_prints:
+            print(monster_name, " removed because required quest is ready to turn in: ", clean_quest_id)
+        return true
+
+    return false
 
 
 func _should_remove_because_defeated_in_save() -> bool:
