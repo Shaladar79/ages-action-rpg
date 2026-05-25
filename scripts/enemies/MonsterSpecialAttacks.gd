@@ -6,6 +6,7 @@ enum SpecialChoice {
     AOE,
     SLAM,
     WAVE,
+    BREATH,
     BURST,
     PROJECTILE
 }
@@ -18,6 +19,7 @@ var current_special_locks_movement: bool = false
 var aoe_special_timer: float = 0.0
 var slam_special_timer: float = 0.0
 var wave_special_timer: float = 0.0
+var breath_special_timer: float = 0.0
 var burst_special_timer: float = 0.0
 var projectile_special_timer: float = 0.0
 var special_global_timer: float = 0.0
@@ -44,6 +46,9 @@ func update_special_timers(delta: float) -> void:
 
     if wave_special_timer > 0.0:
         wave_special_timer -= delta
+
+    if breath_special_timer > 0.0:
+        breath_special_timer -= delta
 
     if burst_special_timer > 0.0:
         burst_special_timer -= delta
@@ -87,28 +92,32 @@ func try_start_special_attack() -> bool:
     var choice := _choose_special_attack()
 
     match choice:
-        SpecialChoice.AOE:
-            _start_aoe_special()
-            return true
+      SpecialChoice.AOE:
+        _start_aoe_special()
+        return true
 
-        SpecialChoice.SLAM:
-            _start_slam_special()
-            return true
+      SpecialChoice.SLAM:
+        _start_slam_special()
+        return true
 
-        SpecialChoice.WAVE:
-            _start_wave_special()
-            return true
+      SpecialChoice.WAVE:
+        _start_wave_special()
+        return true
 
-        SpecialChoice.BURST:
-            _start_burst_special()
-            return true
+      SpecialChoice.BREATH:
+        _start_breath_special()
+        return true
 
-        SpecialChoice.PROJECTILE:
-            _start_projectile_special()
-            return true
+      SpecialChoice.BURST:
+        _start_burst_special()
+        return true
 
-        _:
-            return false
+      SpecialChoice.PROJECTILE:
+        _start_projectile_special()
+        return true
+        
+      _:
+        return false
 
 
 func clear_all_special_visuals() -> void:
@@ -134,6 +143,9 @@ func _choose_special_attack() -> SpecialChoice:
     if monster.wave_enabled and wave_special_timer <= 0.0 and distance_to_player <= monster.wave_trigger_range:
         return SpecialChoice.WAVE
 
+    if monster.breath_enabled and breath_special_timer <= 0.0 and distance_to_player <= monster.breath_trigger_range:
+        return SpecialChoice.BREATH
+
     if monster.aoe_enabled and aoe_special_timer <= 0.0 and distance_to_player <= monster.aoe_trigger_range:
         return SpecialChoice.AOE
 
@@ -144,7 +156,6 @@ func _choose_special_attack() -> SpecialChoice:
         return SpecialChoice.PROJECTILE
 
     return SpecialChoice.NONE
-
 
 func _start_aoe_special() -> void:
     if monster == null:
@@ -192,7 +203,9 @@ func _start_aoe_special() -> void:
         monster.aoe_status_effect_id,
         monster.aoe_status_effect_duration,
         monster.aoe_status_move_speed_multiplier,
-        monster.aoe_status_damage_per_tick)
+        monster.aoe_status_damage_per_tick,
+        monster.aoe_damage_types
+    )
 
     _end_special()
 
@@ -248,7 +261,9 @@ func _start_slam_special() -> void:
         monster.slam_status_effect_id,
         monster.slam_status_effect_duration,
         monster.slam_status_move_speed_multiplier,
-        monster.slam_status_damage_per_tick)
+        monster.slam_status_damage_per_tick,
+        monster.slam_damage_types
+    )
 
     _end_special()
 
@@ -319,6 +334,232 @@ func _start_wave_special() -> void:
             await monster.get_tree().create_timer(monster.wave_section_delay).timeout
 
     _end_special()
+
+func _start_breath_special() -> void:
+    if monster == null:
+        return
+
+    if is_using_special_attack:
+        return
+
+    is_using_special_attack = true
+    current_special_locks_movement = monster.breath_lock_movement
+    breath_special_timer = monster.breath_cooldown
+    special_global_timer = monster.special_global_cooldown
+
+    _flash_monster_for_special_attack()
+
+    var resolved_direction := _get_resolved_breath_direction()
+    var breath_cells := _get_breath_cell_positions(resolved_direction)
+
+    var telegraph := _create_breath_telegraph(
+        breath_cells,
+        monster.breath_unit_size,
+        monster.breath_telegraph_color
+    )
+
+    print(monster.monster_name, " begins breath special. Direction: ", resolved_direction)
+
+    if monster.breath_windup_time > 0.0:
+        await monster.get_tree().create_timer(monster.breath_windup_time).timeout
+
+    if not _is_monster_valid_for_special():
+        if is_instance_valid(telegraph):
+            _remove_telegraph_from_active_list(telegraph)
+            telegraph.queue_free()
+
+        _end_special()
+        return
+
+    await _flash_and_clear_telegraph(telegraph)
+
+    if not _is_monster_valid_for_special():
+        _end_special()
+        return
+
+    _hit_player_if_in_breath_cells(
+        breath_cells,
+        monster.breath_unit_size,
+        monster.breath_damage,
+        monster.breath_damage_types,
+        "Breath"
+    )
+
+    _end_special()
+
+func _get_resolved_breath_direction() -> String:
+    if monster == null:
+        return "down"
+
+    var selected_direction := monster.breath_direction.strip_edges().to_lower()
+
+    if selected_direction != "toward_player":
+        return selected_direction
+
+    var player := monster.get_tree().get_first_node_in_group("player") as Node2D
+
+    if player == null:
+        return monster.last_direction
+
+    var to_player := player.global_position - monster.global_position
+
+    if absf(to_player.x) >= absf(to_player.y):
+        if to_player.x < 0.0:
+            return "left"
+
+        return "right"
+
+    if to_player.y < 0.0:
+        return "up"
+
+    return "down"
+
+
+func _get_breath_cell_positions(resolved_direction: String) -> Array[Vector2]:
+    var cells: Array[Vector2] = []
+
+    if monster == null:
+        return cells
+
+    var safe_length: int = maxi(1, monster.breath_length_units)
+    var unit_size: float = maxf(1.0, monster.breath_unit_size)
+
+    var forward := Vector2.DOWN
+    var side := Vector2.RIGHT
+
+    match resolved_direction:
+        "up":
+            forward = Vector2.UP
+            side = Vector2.RIGHT
+
+        "down":
+            forward = Vector2.DOWN
+            side = Vector2.RIGHT
+
+        "left":
+            forward = Vector2.LEFT
+            side = Vector2.DOWN
+
+        "right":
+            forward = Vector2.RIGHT
+            side = Vector2.DOWN
+
+        _:
+            forward = Vector2.DOWN
+            side = Vector2.RIGHT
+
+    for row_index in range(safe_length):
+        var row_number := row_index + 1
+        var side_radius := row_index
+        var row_center := monster.global_position + (forward * unit_size * float(row_number))
+
+        for side_index in range(-side_radius, side_radius + 1):
+            var cell_position := row_center + (side * unit_size * float(side_index))
+            cells.append(cell_position)
+
+    return cells
+
+
+func _create_breath_telegraph(
+    cell_positions: Array[Vector2],
+    unit_size: float,
+    telegraph_color: Color
+) -> Polygon2D:
+    var half_size := unit_size * 0.5
+
+    var combined_polygon := Polygon2D.new()
+    combined_polygon.name = "BossBreathTelegraph"
+    combined_polygon.color = telegraph_color
+    combined_polygon.z_index = monster.telegraph_z_index
+    combined_polygon.z_as_relative = false
+
+    # Polygon2D cannot naturally draw many separated squares as one clean polygon,
+    # so this parent polygon is just tracked/cleared while square children display the cone.
+    combined_polygon.polygon = PackedVector2Array([
+        Vector2(-0.5, -0.5),
+        Vector2(0.5, -0.5),
+        Vector2(0.5, 0.5),
+        Vector2(-0.5, 0.5)
+    ])
+    combined_polygon.visible = false
+
+    var current_scene := monster.get_tree().current_scene
+
+    if current_scene != null:
+        current_scene.add_child(combined_polygon)
+    else:
+        monster.add_child(combined_polygon)
+
+    for index in range(cell_positions.size()):
+        var cell := Polygon2D.new()
+        cell.name = "BossBreathCell" + str(index + 1)
+        cell.color = telegraph_color
+        cell.polygon = PackedVector2Array([
+            Vector2(-half_size, -half_size),
+            Vector2(half_size, -half_size),
+            Vector2(half_size, half_size),
+            Vector2(-half_size, half_size)
+        ])
+        cell.global_position = cell_positions[index]
+        cell.z_index = monster.telegraph_z_index
+        cell.z_as_relative = false
+        combined_polygon.add_child(cell)
+
+    _track_telegraph(combined_polygon)
+
+    return combined_polygon
+
+
+func _hit_player_if_in_breath_cells(
+    cell_positions: Array[Vector2],
+    unit_size: float,
+    damage_amount: int,
+    attack_damage_types: int,
+    attack_name: String
+) -> void:
+    if monster == null:
+        return
+
+    var player := monster.get_tree().get_first_node_in_group("player") as Node2D
+
+    if player == null:
+        return
+
+    var half_size := unit_size * 0.5
+    var hit_player := false
+
+    for cell_position in cell_positions:
+        var local_player_position := player.global_position - cell_position
+
+        if absf(local_player_position.x) > half_size:
+            continue
+
+        if absf(local_player_position.y) > half_size:
+            continue
+
+        hit_player = true
+        break
+
+    if not hit_player:
+        print(monster.monster_name, " ", attack_name, " missed player.")
+        return
+
+    if damage_amount > 0:
+        _damage_player_from_special(player, damage_amount, attack_damage_types)
+        print(monster.monster_name, " ", attack_name, " hit player for base damage: ", damage_amount)
+    else:
+        print(monster.monster_name, " ", attack_name, " hit player.")
+
+        _apply_configured_status_to_player(
+        player,
+        monster.breath_status_effect_enabled,
+        monster.breath_status_effect_id,
+        monster.breath_status_effect_duration,
+        monster.breath_status_move_speed_multiplier,
+        attack_name,
+        monster.breath_status_damage_per_tick,
+        monster.breath_damage_types
+    )
 
 func _start_burst_special() -> void:
     if monster == null:
@@ -620,7 +861,8 @@ func _apply_burst_status_to_player(player: Node2D) -> void:
         monster.burst_status_effect_duration,
         monster.burst_status_move_speed_multiplier,
         "Burst",
-        monster.burst_status_damage_per_tick
+        monster.burst_status_damage_per_tick,
+        monster.burst_damage_types
     )
 
 func _on_single_projectile_body_entered(body: Node2D, projectile: Area2D) -> void:
@@ -898,7 +1140,8 @@ func _apply_configured_status_to_player(
     status_duration: float,
     status_move_speed_multiplier: float,
     source_name: String,
-    status_damage_per_tick: int = 1
+    status_damage_per_tick: int = 1,
+    status_damage_types: int = DamageTypes.NONE
 ) -> void:
     if monster == null:
         return
@@ -921,9 +1164,13 @@ func _apply_configured_status_to_player(
         return
 
     var status_effect_data := {
-        StatusEffects.KEY_MOVE_SPEED_MULTIPLIER: status_move_speed_multiplier,
-        StatusEffects.KEY_DAMAGE_PER_TICK: status_damage_per_tick
+        StatusEffects.KEY_MOVE_SPEED_MULTIPLIER: status_move_speed_multiplier
     }
+
+    if clean_status_id == StatusEffects.STATUS_BURNING:
+        status_effect_data[StatusEffects.KEY_DAMAGE_PER_TICK] = status_damage_per_tick
+        status_effect_data[StatusEffects.KEY_DAMAGE_TYPES] = status_damage_types
+        status_effect_data[StatusEffects.KEY_IGNORE_DEFENSE] = true
 
     var applied: bool = player.apply_status_effect(
         clean_status_id,
@@ -941,7 +1188,9 @@ func _apply_configured_status_to_player(
             " duration: ",
             status_duration,
             " damage per tick: ",
-            status_damage_per_tick
+            status_damage_per_tick,
+            " damage types: ",
+            DamageTypes.get_damage_type_names(status_damage_types)
         )
 
 func _hit_player_if_in_special_radius(
@@ -954,7 +1203,8 @@ func _hit_player_if_in_special_radius(
     status_effect_id: String = "",
     status_duration: float = 0.0,
     status_move_speed_multiplier: float = 1.0,
-    status_damage_per_tick: int = 1
+    status_damage_per_tick: int = 1,
+    status_damage_types: int = DamageTypes.NONE
 ) -> void:
     if monster == null:
         return
@@ -976,14 +1226,15 @@ func _hit_player_if_in_special_radius(
     else:
         print(monster.monster_name, " ", attack_name, " hit player.")
 
-        _apply_configured_status_to_player(
+    _apply_configured_status_to_player(
         player,
         status_enabled,
         status_effect_id,
         status_duration,
         status_move_speed_multiplier,
         attack_name,
-        status_damage_per_tick
+        status_damage_per_tick,
+        status_damage_types
     )
 
 func _hit_player_if_in_special_rectangle(
@@ -998,7 +1249,8 @@ func _hit_player_if_in_special_rectangle(
     status_effect_id: String = "",
     status_duration: float = 0.0,
     status_move_speed_multiplier: float = 1.0,
-    status_damage_per_tick: int = 1
+    status_damage_per_tick: int = 1,
+    status_damage_types: int = DamageTypes.NONE
 ) -> void:
     if monster == null:
         return
@@ -1037,14 +1289,15 @@ func _hit_player_if_in_special_rectangle(
     else:
         print(monster.monster_name, " ", attack_name, " hit player.")
 
-        _apply_configured_status_to_player(
+    _apply_configured_status_to_player(
         player,
         status_enabled,
         status_effect_id,
         status_duration,
         status_move_speed_multiplier,
         attack_name,
-        status_damage_per_tick
+        status_damage_per_tick,
+        status_damage_types
     )
 
 func _damage_player_from_special(player: Node2D, damage_amount: int, attack_damage_types: int) -> void:
@@ -1258,5 +1511,6 @@ func _apply_projectile_status_to_player(player: Node2D) -> void:
         monster.projectile_status_effect_duration,
         monster.projectile_status_move_speed_multiplier,
         "Projectile",
-        monster.projectile_status_damage_per_tick
+        monster.projectile_status_damage_per_tick,
+        monster.projectile_damage_types
     )

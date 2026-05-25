@@ -276,6 +276,38 @@ var wave_damage_types: int = DamageTypes.BASHING
 @export var wave_status_move_speed_multiplier: float = 1.0
 @export var wave_status_damage_per_tick: int = 1
 
+@export_group("Special Breath Attack")
+@export var breath_enabled: bool = false
+@export_enum("left", "right", "up", "down", "toward_player") var breath_direction: String = "toward_player"
+@export var breath_lock_movement: bool = true
+@export var breath_damage: int = 2
+@export_flags(
+    "Bashing",
+    "Slashing",
+    "Chopping",
+    "Piercing",
+    "Fire",
+    "Ice",
+    "Lightning",
+    "Acid",
+    "Light",
+    "Shadow"
+)
+var breath_damage_types: int = DamageTypes.FIRE
+@export var breath_trigger_range: float = 220.0
+@export var breath_unit_size: float = 24.0
+@export var breath_length_units: int = 5
+@export var breath_windup_time: float = 0.75
+@export var breath_cooldown: float = 7.0
+@export var breath_telegraph_color: Color = Color(1.0, 0.35, 0.05, 0.35)
+
+@export_group("Special Breath Status Effect")
+@export var breath_status_effect_enabled: bool = false
+@export var breath_status_effect_id: String = ""
+@export var breath_status_effect_duration: float = 0.0
+@export var breath_status_move_speed_multiplier: float = 1.0
+@export var breath_status_damage_per_tick: int = 1
+
 @export_group("Special Burst Attack")
 @export var burst_enabled: bool = false
 @export var burst_lock_movement: bool = false
