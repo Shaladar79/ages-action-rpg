@@ -72,6 +72,8 @@ var hud_quest_panel: Panel = null
 var hud_quest_title_label: Label = null
 var hud_quest_rows_container: VBoxContainer = null
 
+var quest_tracker_ui: QuestTrackerUiController = null
+
 var equipment_slot_container: VBoxContainer = null
 var equipment_slot_option_buttons: Dictionary = {}
 
@@ -940,59 +942,11 @@ func _create_hud_info_panel() -> void:
 
 
 func _create_hud_quest_panel() -> void:
-    if hud_quest_panel != null:
+    if quest_tracker_ui != null:
         return
 
-    hud_quest_panel = Panel.new()
-    hud_quest_panel.name = "HudQuestPanel"
-
-    # Add directly to the CanvasLayer, not under HUD.
-    # This makes right-side anchoring use the full game window.
-    add_child(hud_quest_panel)
-
-    hud_quest_panel.anchor_left = 1.0
-    hud_quest_panel.anchor_right = 1.0
-    hud_quest_panel.anchor_top = 0.0
-    hud_quest_panel.anchor_bottom = 0.0
-
-    hud_quest_panel.offset_left = -360.0
-    hud_quest_panel.offset_right = -20.0
-    hud_quest_panel.offset_top = 16.0
-    hud_quest_panel.offset_bottom = 270.0
-
-    hud_quest_panel.custom_minimum_size = Vector2(340.0, 254.0)
-    hud_quest_panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
-    hud_quest_panel.visible = false
-
-    var margin := MarginContainer.new()
-    margin.name = "HudQuestMargin"
-    margin.anchor_left = 0.0
-    margin.anchor_right = 1.0
-    margin.anchor_top = 0.0
-    margin.anchor_bottom = 1.0
-    margin.offset_left = 10.0
-    margin.offset_right = -10.0
-    margin.offset_top = 8.0
-    margin.offset_bottom = -8.0
-    margin.mouse_filter = Control.MOUSE_FILTER_IGNORE
-    hud_quest_panel.add_child(margin)
-
-    var main_vbox := VBoxContainer.new()
-    main_vbox.name = "HudQuestVBox"
-    main_vbox.mouse_filter = Control.MOUSE_FILTER_IGNORE
-    margin.add_child(main_vbox)
-
-    hud_quest_title_label = Label.new()
-    hud_quest_title_label.name = "HudQuestTitleLabel"
-    hud_quest_title_label.text = "Tracked Quests"
-    hud_quest_title_label.add_theme_font_size_override("font_size", 16)
-    hud_quest_title_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
-    main_vbox.add_child(hud_quest_title_label)
-
-    hud_quest_rows_container = VBoxContainer.new()
-    hud_quest_rows_container.name = "HudQuestRows"
-    hud_quest_rows_container.mouse_filter = Control.MOUSE_FILTER_IGNORE
-    main_vbox.add_child(hud_quest_rows_container)
+    quest_tracker_ui = QuestTrackerUiController.new()
+    quest_tracker_ui.setup(self)
 
 
 func _move_existing_resource_label_to_hud_row(label: Label) -> void:
@@ -1014,36 +968,10 @@ func _move_existing_resource_label_to_hud_row(label: Label) -> void:
 
 
 func refresh_quest_display() -> void:
-    if hud_quest_panel == null:
+    if quest_tracker_ui == null:
         return
 
-    if hud_quest_rows_container == null:
-        return
-
-    for child in hud_quest_rows_container.get_children():
-        child.queue_free()
-
-    if QuestManager == null:
-        hud_quest_panel.visible = false
-        return
-
-    if not QuestManager.has_method("get_tracked_quests"):
-        hud_quest_panel.visible = false
-        return
-
-    var tracked_quests: Array = QuestManager.get_tracked_quests()
-
-    if tracked_quests.is_empty():
-        hud_quest_panel.visible = false
-        return
-
-    hud_quest_panel.visible = true
-
-    for quest_data in tracked_quests:
-        if typeof(quest_data) != TYPE_DICTIONARY:
-            continue
-
-        _add_hud_quest_row(quest_data)
+    quest_tracker_ui.refresh_quest_display()
 
 
 func _add_hud_quest_row(quest_data: Dictionary) -> void:
