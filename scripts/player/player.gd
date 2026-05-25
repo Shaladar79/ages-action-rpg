@@ -41,7 +41,6 @@ const CURRENCY_DISPLAY_NAMES: Dictionary = {
 @onready var animated_sprite: AnimatedSprite2D = $AnimatedSprite2D
 @onready var attack_area: Area2D = $AttackArea
 @onready var attack_collision: CollisionShape2D = $AttackArea/CollisionShape2D
-@onready var dialogue_bubble: Node2D = $DialogueBubble
 @onready var weapon_sprite: Sprite2D = get_node_or_null("WeaponSprite") as Sprite2D
 
 var character_stats: CharacterStats = CharacterStats.new()
@@ -1258,10 +1257,6 @@ func hide_dialogue() -> void:
     if game_ui != null and game_ui.has_method("hide_story_dialogue"):
         game_ui.hide_story_dialogue()
         return
-
-    if dialogue_bubble != null and dialogue_bubble.has_method("hide_dialogue"):
-        dialogue_bubble.hide_dialogue()
-
 
 func is_dialogue_active() -> bool:
     var game_ui := _get_game_ui()

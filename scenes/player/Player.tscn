@@ -2,7 +2,6 @@
 
 [ext_resource type="Script" uid="uid://clw4trxet62jj" path="res://scripts/player/player.gd" id="1_gfjak"]
 [ext_resource type="Texture2D" uid="uid://xreanjpv5wv7" path="res://art/characters/player/Gene_Vis_sprite.png" id="2_524rm"]
-[ext_resource type="Script" uid="uid://drrvu6g7hnmpk" path="res://scripts/ui/dialogue_bubble.gd" id="3_4kuee"]
 [ext_resource type="Texture2D" uid="uid://cgp8rhibrpqu4" path="res://art/weapons/Clubs/T1/stone_club.png" id="4_524rm"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_tpg5x"]
@@ -234,30 +233,6 @@ monitorable = false
 visible = false
 shape = SubResource("RectangleShape2D_4kuee")
 disabled = true
-
-[node name="DialogueBubble" type="Node2D" parent="." unique_id=117541722]
-position = Vector2(-117, -73)
-script = ExtResource("3_4kuee")
-
-[node name="DialoguePanel" type="Panel" parent="DialogueBubble" unique_id=1674102342]
-custom_minimum_size = Vector2(240, 56)
-offset_left = 1.0
-offset_right = 41.0
-offset_bottom = 40.0
-
-[node name="DialogueLabel" type="RichTextLabel" parent="DialogueBubble/DialoguePanel" unique_id=291518509]
-layout_mode = 1
-anchors_preset = -1
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = 8.0
-offset_top = 6.0
-offset_right = -8.0
-offset_bottom = -6.0
-theme_override_font_sizes/normal_font_size = 10
-bbcode_enabled = true
-text = "Test"
-scroll_active = false
 
 [node name="WeaponSprite" type="Sprite2D" parent="." unique_id=126568166]
 position = Vector2(0, -2.3841858e-07)
