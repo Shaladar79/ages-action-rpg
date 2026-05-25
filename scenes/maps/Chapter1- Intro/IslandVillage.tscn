@@ -35,6 +35,35 @@ active_dialogue = "Did you kill the yet?"
 ready_to_turn_in_dialogue = "Oh, Good we are safer now that you cleared them out."
 completed_dialogue = "Oh I think I know why the Rock Spitters were moving this way. Speak to me again I'll tell you more."
 objectives = Array[ExtResource("6_7sfwb")]([SubResource("Resource_7sfwb")])
+reward_xp = 10
+reward_currency_id = "shines"
+reward_currency_amount = 50
+metadata/_custom_type_script = "uid://dt5yvut01s10s"
+
+[sub_resource type="Resource" id="Resource_h83v4"]
+script = ExtResource("6_7sfwb")
+objective_id = "kill_turret"
+objective_type = 1
+objective_text = "Kill The Rock Turret On the Slopes"
+metadata/_custom_type_script = "uid://pomcudkoxce3"
+
+[sub_resource type="Resource" id="Resource_know0"]
+script = ExtResource("5_ub0y7")
+quest_id = "kill_turret"
+quest_title = "Rock Spitter Eater"
+started_flag = "kill_turret_start"
+ready_to_turn_in_flag = "kill_turret_done"
+completed_flag = "kill_turret_comp"
+first_time_dialogue = "It seems the Rock Spitters were being chased by a Rock Turret, It's a nasty creature from the summit. Go kill it in the slopes."
+active_dialogue = "Go Kill The Rock Turret"
+ready_to_turn_in_dialogue = "I bet that was hard, Her is your reward."
+completed_dialogue = "Come speak to me again later ill have more work for you."
+objectives = Array[ExtResource("6_7sfwb")]([SubResource("Resource_h83v4")])
+reward_xp = 15
+reward_currency_id = "shines"
+reward_currency_amount = 20
+reward_item_1_id = "amulet_of_minor_defense"
+reward_item_1_quantity = 1
 metadata/_custom_type_script = "uid://dt5yvut01s10s"
 
 [node name="IslandVillage" type="Node2D" unique_id=634947960]
@@ -54,7 +83,7 @@ rotation = 0.058428537
 
 [node name="QuestGiver" parent="Ysort" unique_id=1663897061 instance=ExtResource("4_lgn6g")]
 position = Vector2(818, 191)
-quests = Array[ExtResource("5_ub0y7")]([SubResource("Resource_3djgd")])
+quests = Array[ExtResource("5_ub0y7")]([SubResource("Resource_3djgd"), SubResource("Resource_know0")])
 
 [node name="QuestProgressArea" parent="Ysort" unique_id=1142422050 instance=ExtResource("7_3djgd")]
 visible = false

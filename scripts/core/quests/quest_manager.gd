@@ -111,7 +111,7 @@ func add_objective_progress(quest_id: String, objective_id: String, amount: int 
     return true
 
 
-func complete_quest(quest_id: String) -> bool:
+func complete_quest(quest_id: String, reward_player: Node = null) -> bool:
     var clean_quest_id := quest_id.strip_edges()
 
     if clean_quest_id == "":
@@ -121,6 +121,12 @@ func complete_quest(quest_id: String) -> bool:
         return false
 
     var quest_data: Dictionary = active_quests[clean_quest_id]
+
+    if reward_player == null:
+        reward_player = get_tree().get_first_node_in_group("player")
+
+    _apply_quest_rewards(quest_data, reward_player)
+
     var completed_flag: String = str(quest_data.get("completed_flag", "")).strip_edges()
 
     if completed_flag != "":
@@ -189,8 +195,6 @@ func is_quest_completed(quest_id: String) -> bool:
     if active_quests.has(clean_quest_id):
         return false
 
-    # Default completed-flag convention.
-    # QuestGiver still checks the exact QuestEntry.completed_flag directly.
     var completed_flag := "quest_" + clean_quest_id + "_completed"
 
     return SaveManager.is_flag_set(completed_flag)
@@ -403,7 +407,14 @@ func _build_quest_data_from_entry(quest_entry: QuestEntry) -> Dictionary:
         "completed_flag": quest_entry.completed_flag,
         "completion_mode": completion_mode_string,
         "ready_to_turn_in": false,
-        "objectives": objectives
+        "objectives": objectives,
+        "reward_xp": maxi(0, quest_entry.reward_xp),
+        "reward_currency_id": quest_entry.reward_currency_id,
+        "reward_currency_amount": maxi(0, quest_entry.reward_currency_amount),
+        "reward_item_1_id": quest_entry.reward_item_1_id,
+        "reward_item_1_quantity": maxi(0, quest_entry.reward_item_1_quantity),
+        "reward_item_2_id": quest_entry.reward_item_2_id,
+        "reward_item_2_quantity": maxi(0, quest_entry.reward_item_2_quantity)
     }
 
 
@@ -432,6 +443,67 @@ func _check_quest_ready_or_complete(quest_id: String) -> void:
         return
 
     mark_quest_ready_to_turn_in(clean_quest_id)
+
+
+func _apply_quest_rewards(quest_data: Dictionary, reward_player: Node) -> void:
+    if reward_player == null:
+        print("Quest rewards skipped because reward player is null.")
+        return
+
+    var reward_xp: int = int(quest_data.get("reward_xp", 0))
+
+    if reward_xp > 0:
+        if reward_player.has_method("gain_xp"):
+            reward_player.gain_xp(reward_xp)
+            print("Quest reward XP granted: ", reward_xp)
+        else:
+            push_warning("Quest reward XP failed. Player is missing gain_xp().")
+
+    var reward_currency_id: String = str(quest_data.get("reward_currency_id", "")).strip_edges()
+    var reward_currency_amount: int = int(quest_data.get("reward_currency_amount", 0))
+
+    if reward_currency_id != "" and reward_currency_amount > 0:
+        if reward_player.has_method("add_currency"):
+            reward_player.add_currency(reward_currency_id, reward_currency_amount)
+            print("Quest reward currency granted: ", reward_currency_id, " x", reward_currency_amount)
+        else:
+            push_warning("Quest reward currency failed. Player is missing add_currency().")
+
+    _grant_item_reward(
+        reward_player,
+        str(quest_data.get("reward_item_1_id", "")),
+        int(quest_data.get("reward_item_1_quantity", 0)),
+        "Item Reward 1"
+    )
+
+    _grant_item_reward(
+        reward_player,
+        str(quest_data.get("reward_item_2_id", "")),
+        int(quest_data.get("reward_item_2_quantity", 0)),
+        "Item Reward 2"
+    )
+
+
+func _grant_item_reward(reward_player: Node, item_id: String, quantity: int, reward_label: String) -> void:
+    var clean_item_id := item_id.strip_edges()
+    var clean_quantity: int = maxi(0, quantity)
+
+    if clean_item_id == "":
+        return
+
+    if clean_quantity <= 0:
+        return
+
+    if not reward_player.has_method("add_inventory_item"):
+        push_warning("Quest " + reward_label + " failed. Player is missing add_inventory_item().")
+        return
+
+    var item_name := ItemDatabase.get_item_name(clean_item_id)
+
+    for _index in range(clean_quantity):
+        reward_player.add_inventory_item(clean_item_id, item_name)
+
+    print("Quest reward item granted: ", item_name, " x", clean_quantity)
 
 
 func _notify_quest_ui_changed() -> void:

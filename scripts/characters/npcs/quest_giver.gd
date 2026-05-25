@@ -42,7 +42,7 @@ func interact(player: Node) -> void:
         return
 
     if QuestManager.is_quest_ready_to_turn_in(quest.quest_id):
-        _complete_quest(quest)
+        _complete_quest(quest, player)
         _show_dialogue_text(quest.ready_to_turn_in_dialogue)
         return
 
@@ -124,11 +124,11 @@ func _start_quest(quest: QuestEntry) -> void:
         print("Quest giver start quest result: ", started, " quest: ", quest.quest_id)
 
 
-func _complete_quest(quest: QuestEntry) -> void:
+func _complete_quest(quest: QuestEntry, player: Node) -> void:
     if quest == null:
         return
 
-    var completed := QuestManager.complete_quest(quest.quest_id)
+    var completed := QuestManager.complete_quest(quest.quest_id, player)
 
     if debug_prints:
         print("Quest giver complete quest result: ", completed, " quest: ", quest.quest_id)

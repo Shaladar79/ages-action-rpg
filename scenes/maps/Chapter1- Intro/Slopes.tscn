@@ -8,8 +8,8 @@
 [ext_resource type="PackedScene" uid="uid://ds0nibabilemd" path="res://scenes/player/Player.tscn" id="4_4prd7"]
 [ext_resource type="PackedScene" uid="uid://cihgogaol4td8" path="res://scenes/objects/map_transition_area.tscn" id="5_5obdd"]
 [ext_resource type="PackedScene" uid="uid://diepcak1mm2tn" path="res://scenes/enemies/Slopes/Rock_Spitter.tscn" id="7_4prd7"]
-[ext_resource type="PackedScene" uid="uid://corrah5u0halh" path="res://scenes/objects/EchoDialogueTrigger.tscn" id="7_5obdd"]
 [ext_resource type="PackedScene" uid="uid://o8j2dacnrsjb" path="res://scenes/enemies/Slopes/Earthling.tscn" id="8_5obdd"]
+[ext_resource type="PackedScene" uid="uid://c7ww4rahpm4ls" path="res://scenes/enemies/Slopes/Rock_Turret_Mini_Boss.tscn" id="11_i456y"]
 [ext_resource type="PackedScene" uid="uid://b81kib11b5cms" path="res://scenes/objects/Containers/LootContainer_pouch.tscn" id="12_adn6g"]
 [ext_resource type="Texture2D" uid="uid://dgy60dy11p0s5" path="res://art/Assets/icons/fullcolor/individual_32x32/icon256.png" id="13_adn6g"]
 [ext_resource type="Texture2D" uid="uid://cm4g7v2pey1iy" path="res://art/Assets/icons/fullcolor/individual_32x32/icon175.png" id="14_xyeje"]
@@ -206,34 +206,6 @@ position = Vector2(690, 1090)
 target_scene_path = "uid://2j7r845rkdbh"
 target_spawn_id = "FromSlopes"
 
-[node name="EchoRangedLesson1" parent="." unique_id=280110426 instance=ExtResource("7_5obdd")]
-visible = false
-position = Vector2(312, 228)
-trigger_id = "echo_slopes_ranged_lesson"
-story_flag = "slopes_ranged_lesson_seen"
-dialogue_text = "The creatures ahead are different.
-Some will not wait for you to come close.
-They strike from a distance and force you to move.
-Watch the space between you and your enemy.
-A ranged attacker is most dangerous when you stand still.
-Close the gap, dodge the shot, then strike when you can.
-You do not yet have a weapon to answer them from afar.
-For now, your feet are your shield."
-
-[node name="EchoRangedLesson2" parent="." unique_id=793020127 instance=ExtResource("7_5obdd")]
-visible = false
-position = Vector2(189, 278)
-trigger_id = "echo_slopes_ranged_lesson"
-story_flag = "slopes_ranged_lesson_seen"
-dialogue_text = "The creatures ahead are different.
-Some will not wait for you to come close.
-They strike from a distance and force you to move.
-Watch the space between you and your enemy.
-A ranged attacker is most dangerous when you stand still.
-Close the gap, dodge the shot, then strike when you can.
-You do not yet have a weapon to answer them from afar.
-For now, your feet are your shield."
-
 [node name="Monsters" type="Node2D" parent="." unique_id=209942388]
 
 [node name="RockSpitter" parent="Monsters" unique_id=165711745 instance=ExtResource("7_4prd7")]
@@ -399,3 +371,11 @@ opened_message = "You find 50 shines"
 drop_currency_id = "shines"
 drop_currency_min_amount = 20
 drop_currency_max_amount = 20
+
+[node name="RockTurretMiniBoss" parent="." unique_id=425000271 instance=ExtResource("11_i456y")]
+position = Vector2(618, 915)
+require_active_quest_to_spawn = true
+required_active_quest_id = "kill_turret"
+quest_progress_enabled = true
+quest_id = "kill_turret"
+objective_id = "kill_turret"

@@ -38,6 +38,18 @@ enum CompletionMode {
 @export_group("Objectives")
 @export var objectives: Array[QuestObjectiveEntry] = []
 
+@export_group("Rewards")
+@export var reward_xp: int = 0
+
+@export var reward_currency_id: String = ""
+@export var reward_currency_amount: int = 0
+
+@export var reward_item_1_id: String = ""
+@export var reward_item_1_quantity: int = 0
+
+@export var reward_item_2_id: String = ""
+@export var reward_item_2_quantity: int = 0
+
 @export_group("Behavior")
 @export var start_on_interact: bool = true
 @export var completion_mode: CompletionMode = CompletionMode.RETURN_TO_QUEST_GIVER

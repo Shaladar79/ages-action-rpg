@@ -287,9 +287,10 @@ height = 48.0
 size = Vector2(32, 39)
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_7v1po"]
-radius = 35.22783
+radius = 30.184616
 
 [node name="ForrestBeatle" type="CharacterBody2D" unique_id=1159453956]
+scale = Vector2(0.6, 0.6)
 script = ExtResource("1_1ukgy")
 persistent_id = "FB_1"
 monster_name = "Forrest Beatle"
@@ -297,20 +298,19 @@ monster_level = 5
 max_hit_points = 12
 defense = 2
 xp_reward = 3
+damage_types = 2
 drop_currency_chance_percent = 100.0
 drop_currency_min_amount = 3
 drop_currency_max_amount = 5
 weakness_types = 16
-damage_types = 2
-can_attack_player = false
 melee_damage = 4
 melee_damage_types = 2
 special_attacks_enabled = true
 slam_enabled = true
-slam_length = 30.0
+slam_length = 48.0
 slam_width = 24.0
-slam_trigger_range = 34.0
-slam_windup_time = 0.2
+slam_trigger_range = 40.0
+slam_windup_time = 0.4
 slam_cooldown = 2.0
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=1603053430]
@@ -331,5 +331,4 @@ shape = SubResource("RectangleShape2D_0skxw")
 [node name="AttackArea" type="Area2D" parent="." unique_id=704896010]
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="AttackArea" unique_id=106745185]
-visible = false
 shape = SubResource("CircleShape2D_7v1po")
