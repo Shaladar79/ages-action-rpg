@@ -68,10 +68,6 @@ var hud_name_label: Label = null
 var hud_level_label: Label = null
 var hud_resource_row: HBoxContainer = null
 
-var hud_quest_panel: Panel = null
-var hud_quest_title_label: Label = null
-var hud_quest_rows_container: VBoxContainer = null
-
 var quest_tracker_ui: QuestTrackerUiController = null
 
 var equipment_slot_container: VBoxContainer = null
@@ -972,76 +968,6 @@ func refresh_quest_display() -> void:
         return
 
     quest_tracker_ui.refresh_quest_display()
-
-
-func _add_hud_quest_row(quest_data: Dictionary) -> void:
-    if hud_quest_rows_container == null:
-        return
-
-    var quest_title := str(quest_data.get("title", "Quest")).strip_edges()
-
-    if quest_title == "":
-        quest_title = "Quest"
-
-    var quest_label := Label.new()
-    quest_label.name = "QuestTitleLabel"
-    quest_label.text = quest_title
-    quest_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-    quest_label.add_theme_font_size_override("font_size", 14)
-    quest_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
-    hud_quest_rows_container.add_child(quest_label)
-
-    var objectives: Dictionary = quest_data.get("objectives", {})
-
-    if objectives.is_empty():
-        var objective_text := str(quest_data.get("objective_text", "")).strip_edges()
-
-        if objective_text != "":
-            _add_hud_objective_label(objective_text, false, 0, 0)
-
-        return
-
-    for objective_id in objectives.keys():
-        var objective_data = objectives.get(objective_id, {})
-
-        if typeof(objective_data) != TYPE_DICTIONARY:
-            continue
-
-        var objective_dict: Dictionary = objective_data
-        var text := str(objective_dict.get("text", "")).strip_edges()
-        var current_amount := int(objective_dict.get("current", 0))
-        var required_amount := int(objective_dict.get("required", 1))
-        var completed := bool(objective_dict.get("completed", false))
-
-        if text == "":
-            text = str(objective_id)
-
-        _add_hud_objective_label(text, completed, current_amount, required_amount)
-
-
-func _add_hud_objective_label(objective_text: String, completed: bool, current_amount: int, required_amount: int) -> void:
-    if hud_quest_rows_container == null:
-        return
-
-    var line := "- " + objective_text
-
-    if required_amount > 1:
-        line += " " + str(current_amount) + " / " + str(required_amount)
-
-    if completed:
-        line = "✓ " + objective_text
-
-        if required_amount > 1:
-            line += " " + str(current_amount) + " / " + str(required_amount)
-
-    var label := Label.new()
-    label.name = "QuestObjectiveLabel"
-    label.text = line
-    label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-    label.add_theme_font_size_override("font_size", 12)
-    label.mouse_filter = Control.MOUSE_FILTER_IGNORE
-    hud_quest_rows_container.add_child(label)
-
 
 func _create_equipment_slot_panel() -> void:
     if equipment_slot_container != null:
