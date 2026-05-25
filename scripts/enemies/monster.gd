@@ -308,6 +308,39 @@ var breath_damage_types: int = DamageTypes.FIRE
 @export var breath_status_move_speed_multiplier: float = 1.0
 @export var breath_status_damage_per_tick: int = 1
 
+@export_group("Special Eruption Attack")
+@export var eruption_enabled: bool = false
+@export var eruption_lock_movement: bool = true
+@export var eruption_damage: int = 2
+@export_flags(
+    "Bashing",
+    "Slashing",
+    "Chopping",
+    "Piercing",
+    "Fire",
+    "Ice",
+    "Lightning",
+    "Acid",
+    "Light",
+    "Shadow"
+)
+var eruption_damage_types: int = DamageTypes.FIRE
+@export var eruption_trigger_range: float = 240.0
+@export var eruption_count: int = 5
+@export var eruption_placement_radius: float = 96.0
+@export var eruption_blast_radius: float = 28.0
+@export var eruption_windup_time: float = 0.7
+@export var eruption_delay_between_blasts: float = 0.25
+@export var eruption_cooldown: float = 8.0
+@export var eruption_telegraph_color: Color = Color(1.0, 0.2, 0.0, 0.35)
+
+@export_group("Special Eruption Status Effect")
+@export var eruption_status_effect_enabled: bool = false
+@export var eruption_status_effect_id: String = ""
+@export var eruption_status_effect_duration: float = 0.0
+@export var eruption_status_move_speed_multiplier: float = 1.0
+@export var eruption_status_damage_per_tick: int = 1
+
 @export_group("Special Burst Attack")
 @export var burst_enabled: bool = false
 @export var burst_lock_movement: bool = false

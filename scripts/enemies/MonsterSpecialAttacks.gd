@@ -7,6 +7,7 @@ enum SpecialChoice {
     SLAM,
     WAVE,
     BREATH,
+    ERUPTION,
     BURST,
     PROJECTILE
 }
@@ -20,6 +21,7 @@ var aoe_special_timer: float = 0.0
 var slam_special_timer: float = 0.0
 var wave_special_timer: float = 0.0
 var breath_special_timer: float = 0.0
+var eruption_special_timer: float = 0.0
 var burst_special_timer: float = 0.0
 var projectile_special_timer: float = 0.0
 var special_global_timer: float = 0.0
@@ -49,6 +51,9 @@ func update_special_timers(delta: float) -> void:
 
     if breath_special_timer > 0.0:
         breath_special_timer -= delta
+
+    if eruption_special_timer > 0.0:
+        eruption_special_timer -= delta
 
     if burst_special_timer > 0.0:
         burst_special_timer -= delta
@@ -92,32 +97,36 @@ func try_start_special_attack() -> bool:
     var choice := _choose_special_attack()
 
     match choice:
-      SpecialChoice.AOE:
-        _start_aoe_special()
-        return true
+        SpecialChoice.AOE:
+            _start_aoe_special()
+            return true
 
-      SpecialChoice.SLAM:
-        _start_slam_special()
-        return true
+        SpecialChoice.SLAM:
+            _start_slam_special()
+            return true
 
-      SpecialChoice.WAVE:
-        _start_wave_special()
-        return true
+        SpecialChoice.WAVE:
+            _start_wave_special()
+            return true
 
-      SpecialChoice.BREATH:
-        _start_breath_special()
-        return true
+        SpecialChoice.BREATH:
+            _start_breath_special()
+            return true
 
-      SpecialChoice.BURST:
-        _start_burst_special()
-        return true
+        SpecialChoice.ERUPTION:
+            _start_eruption_special()
+            return true
 
-      SpecialChoice.PROJECTILE:
-        _start_projectile_special()
-        return true
-        
-      _:
-        return false
+        SpecialChoice.BURST:
+            _start_burst_special()
+            return true
+
+        SpecialChoice.PROJECTILE:
+            _start_projectile_special()
+            return true
+
+        _:
+            return false
 
 
 func clear_all_special_visuals() -> void:
@@ -145,6 +154,9 @@ func _choose_special_attack() -> SpecialChoice:
 
     if monster.breath_enabled and breath_special_timer <= 0.0 and distance_to_player <= monster.breath_trigger_range:
         return SpecialChoice.BREATH
+
+    if monster.eruption_enabled and eruption_special_timer <= 0.0 and distance_to_player <= monster.eruption_trigger_range:
+        return SpecialChoice.ERUPTION
 
     if monster.aoe_enabled and aoe_special_timer <= 0.0 and distance_to_player <= monster.aoe_trigger_range:
         return SpecialChoice.AOE
@@ -334,6 +346,98 @@ func _start_wave_special() -> void:
             await monster.get_tree().create_timer(monster.wave_section_delay).timeout
 
     _end_special()
+
+func _start_eruption_special() -> void:
+    if monster == null:
+        return
+
+    if is_using_special_attack:
+        return
+
+    if monster.player_target == null:
+        return
+
+    is_using_special_attack = true
+    current_special_locks_movement = monster.eruption_lock_movement
+    eruption_special_timer = monster.eruption_cooldown
+    special_global_timer = monster.special_global_cooldown
+
+    _flash_monster_for_special_attack()
+
+    var first_blast_position: Vector2 = monster.player_target.global_position
+    var eruption_positions := _get_eruption_positions(first_blast_position)
+
+    print(monster.monster_name, " begins eruption special. Count: ", eruption_positions.size())
+
+    for eruption_index in range(eruption_positions.size()):
+        if not _is_monster_valid_for_special():
+            _clear_active_telegraphs()
+            _end_special()
+            return
+
+        var eruption_position: Vector2 = eruption_positions[eruption_index]
+
+        var telegraph := _create_circle_telegraph(
+            eruption_position,
+            monster.eruption_blast_radius,
+            monster.eruption_telegraph_color
+        )
+
+        if monster.eruption_windup_time > 0.0:
+            await monster.get_tree().create_timer(monster.eruption_windup_time).timeout
+
+        if not _is_monster_valid_for_special():
+            if is_instance_valid(telegraph):
+                _remove_telegraph_from_active_list(telegraph)
+                telegraph.queue_free()
+
+            _end_special()
+            return
+
+        await _flash_and_clear_telegraph(telegraph)
+
+        if not _is_monster_valid_for_special():
+            _end_special()
+            return
+
+        _hit_player_if_in_special_radius(
+            eruption_position,
+            monster.eruption_blast_radius,
+            monster.eruption_damage,
+            monster.eruption_damage_types,
+            "Eruption " + str(eruption_index + 1),
+            monster.eruption_status_effect_enabled,
+            monster.eruption_status_effect_id,
+            monster.eruption_status_effect_duration,
+            monster.eruption_status_move_speed_multiplier,
+            monster.eruption_status_damage_per_tick,
+            monster.eruption_damage_types
+        )
+
+        if eruption_index < eruption_positions.size() - 1 and monster.eruption_delay_between_blasts > 0.0:
+            await monster.get_tree().create_timer(monster.eruption_delay_between_blasts).timeout
+
+    _end_special()
+
+func _get_eruption_positions(first_blast_position: Vector2) -> Array[Vector2]:
+    var positions: Array[Vector2] = []
+
+    if monster == null:
+        return positions
+
+    var safe_count: int = maxi(1, monster.eruption_count)
+    var safe_placement_radius: float = maxf(0.0, monster.eruption_placement_radius)
+
+    positions.append(first_blast_position)
+
+    for index in range(1, safe_count):
+        var random_angle := randf_range(0.0, TAU)
+        var random_distance := randf_range(0.0, safe_placement_radius)
+        var offset := Vector2(cos(random_angle), sin(random_angle)) * random_distance
+
+        positions.append(first_blast_position + offset)
+
+    return positions
 
 func _start_breath_special() -> void:
     if monster == null:
