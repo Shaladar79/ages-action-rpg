@@ -3,6 +3,9 @@ extends Node
 var pending_spawn_id: String = ""
 var pending_player_data: Dictionary = {}
 
+var pending_respawn_position_enabled: bool = false
+var pending_respawn_position: Vector2 = Vector2.ZERO
+
 
 func set_pending_spawn(spawn_id: String) -> void:
     pending_spawn_id = spawn_id
@@ -21,6 +24,28 @@ func consume_pending_spawn() -> String:
 
 func clear_pending_spawn() -> void:
     pending_spawn_id = ""
+
+
+func set_pending_respawn_position(respawn_position: Vector2) -> void:
+    pending_respawn_position_enabled = true
+    pending_respawn_position = respawn_position
+    print("Pending respawn position set: ", pending_respawn_position)
+
+
+func has_pending_respawn_position() -> bool:
+    return pending_respawn_position_enabled
+
+
+func consume_pending_respawn_position() -> Vector2:
+    var respawn_position := pending_respawn_position
+    pending_respawn_position_enabled = false
+    pending_respawn_position = Vector2.ZERO
+    return respawn_position
+
+
+func clear_pending_respawn_position() -> void:
+    pending_respawn_position_enabled = false
+    pending_respawn_position = Vector2.ZERO
 
 
 func store_player_data(player: Node) -> void:
@@ -81,6 +106,7 @@ func clear_pending_player_data() -> void:
 func clear_all_transition_data() -> void:
     clear_pending_spawn()
     clear_pending_player_data()
+    clear_pending_respawn_position()
 
 
 func _build_character_stats_data(stats: CharacterStats) -> Dictionary:

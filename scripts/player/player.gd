@@ -114,6 +114,15 @@ func _apply_startup_position_if_needed() -> void:
     if SceneTransitionManager.has_pending_player_data():
         SceneTransitionManager.apply_player_data(self)
 
+    if SceneTransitionManager.has_pending_respawn_position():
+        var respawn_position: Vector2 = SceneTransitionManager.consume_pending_respawn_position()
+        global_position = respawn_position
+        velocity = Vector2.ZERO
+        _notify_ui_stats_changed()
+        show_dialogue("You return to the totem.")
+        print("Player moved to pending respawn position: ", respawn_position)
+        return
+
     if SceneTransitionManager.has_pending_spawn():
         var spawn_id: String = SceneTransitionManager.consume_pending_spawn()
         _move_to_map_spawn(spawn_id)
@@ -1645,8 +1654,13 @@ func _respawn_player() -> void:
 
     hide_dialogue()
 
-    global_position = RespawnManager.get_respawn_position()
-    velocity = Vector2.ZERO
+    var respawn_scene_path: String = RespawnManager.get_respawn_scene_path()
+    var respawn_position: Vector2 = RespawnManager.get_respawn_position()
+    var current_scene := get_tree().current_scene
+    var current_scene_path := ""
+
+    if current_scene != null:
+        current_scene_path = current_scene.scene_file_path
 
     character_stats.current_health = character_stats.max_health
 
@@ -1664,6 +1678,22 @@ func _respawn_player() -> void:
     if animated_sprite != null:
         animated_sprite.visible = true
         animated_sprite.play("idle_" + last_direction)
+
+    if respawn_scene_path.strip_edges() != "" and respawn_scene_path != current_scene_path:
+        SceneTransitionManager.store_player_data(self)
+        SceneTransitionManager.clear_pending_spawn()
+        SceneTransitionManager.set_pending_respawn_position(respawn_position)
+
+        print("Changing scene for cross-map respawn.")
+        print("Current scene: ", current_scene_path)
+        print("Respawn scene: ", respawn_scene_path)
+        print("Respawn position: ", respawn_position)
+
+        get_tree().change_scene_to_file(respawn_scene_path)
+        return
+
+    global_position = respawn_position
+    velocity = Vector2.ZERO
 
     show_dialogue("You return to the totem.")
     _notify_ui_stats_changed()
