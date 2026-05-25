@@ -10,11 +10,6 @@ extends CanvasLayer
 @onready var character_screen: Control = $CharacterScreen
 @onready var character_panel: Panel = $CharacterScreen/Panel
 
-@onready var save_prompt: Control = get_node_or_null("SavePrompt") as Control
-@onready var save_prompt_message_label: Label = get_node_or_null("SavePrompt/Panel/MessageLabel") as Label
-@onready var save_yes_button: Button = get_node_or_null("SavePrompt/Panel/YesButton") as Button
-@onready var save_no_button: Button = get_node_or_null("SavePrompt/Panel/NoButton") as Button
-
 var player: Node = null
 
 var quest_tracker_ui: QuestTrackerUiController = null
@@ -351,13 +346,7 @@ func _create_save_prompt_ui() -> void:
         return
 
     save_prompt_ui = SavePromptUiController.new()
-    save_prompt_ui.setup(
-        self,
-        save_prompt,
-        save_prompt_message_label,
-        save_yes_button,
-        save_no_button
-    )
+    save_prompt_ui.setup(self)
 
 
 func _create_hud_quest_panel() -> void:
