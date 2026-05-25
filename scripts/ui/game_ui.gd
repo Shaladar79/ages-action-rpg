@@ -12,28 +12,6 @@ const HOTBAR_SLOT_COUNT: int = 5
 @onready var character_screen: Control = $CharacterScreen
 @onready var character_panel: Panel = $CharacterScreen/Panel
 
-@onready var title_label: Label = $CharacterScreen/Panel/TitleLabel
-@onready var character_name_label: Label = $CharacterScreen/Panel/CharacterNameLabel
-@onready var level_label: Label = $CharacterScreen/Panel/LevelLabel
-@onready var xp_label: Label = $CharacterScreen/Panel/XpLabel
-@onready var stat_points_label: Label = get_node_or_null("CharacterScreen/Panel/StatPointsLabel") as Label
-@onready var ability_points_label: Label = get_node_or_null("CharacterScreen/Panel/AbilityPointsLabel") as Label
-
-@onready var sheet_health_label: Label = get_node_or_null("CharacterScreen/Panel/Health") as Label
-@onready var sheet_mana_label: Label = get_node_or_null("CharacterScreen/Panel/Mana") as Label
-@onready var sheet_stamina_label: Label = get_node_or_null("CharacterScreen/Panel/Stamina") as Label
-
-@onready var attack_label: Label = find_child("atk_lbl", true, false) as Label
-@onready var defense_label: Label = find_child("def_lbl", true, false) as Label
-
-@onready var attributes_label: Label = get_node_or_null("CharacterScreen/Panel/AttributesPanel_base/Attribute_panel_att/AttributesLabel") as Label
-@onready var might_label: Label = get_node_or_null("CharacterScreen/Panel/AttributesPanel_base/Attribute_panel_att/Might") as Label
-@onready var agility_label: Label = get_node_or_null("CharacterScreen/Panel/AttributesPanel_base/Attribute_panel_att/Agility") as Label
-@onready var toughness_label: Label = get_node_or_null("CharacterScreen/Panel/AttributesPanel_base/Attribute_panel_att/Toughness") as Label
-@onready var endurance_label: Label = get_node_or_null("CharacterScreen/Panel/AttributesPanel_base/Attribute_panel_att/Endurance") as Label
-@onready var focus_label: Label = get_node_or_null("CharacterScreen/Panel/AttributesPanel_base/Attribute_panel_att/Focus") as Label
-@onready var speed_label: Label = get_node_or_null("CharacterScreen/Panel/AttributesPanel_base/Attribute_panel_att/Speed") as Label
-
 @onready var add_might_button: Button = get_node_or_null("CharacterScreen/Panel/AttributesPanel_base/Attribute_panel_att/AddMightButton") as Button
 @onready var add_agility_button: Button = get_node_or_null("CharacterScreen/Panel/AttributesPanel_base/Attribute_panel_att/AddAgilityButton") as Button
 @onready var add_toughness_button: Button = get_node_or_null("CharacterScreen/Panel/AttributesPanel_base/Attribute_panel_att/AddToughnessButton") as Button
@@ -58,6 +36,7 @@ var hud_ui: HudUiController = null
 var character_sheet_list_ui: CharacterSheetListUiController = null
 var hotbar_assignment_ui: HotbarAssignmentUiController = null
 var equipment_slot_ui: EquipmentSlotUiController = null
+var character_sheet_stats_ui: CharacterSheetStatsUiController = null
 
 var hud_refresh_timer: float = 0.0
 var hud_refresh_interval: float = 0.25
@@ -86,11 +65,11 @@ func _ready() -> void:
     _create_hud_quest_panel()
     _create_story_dialogue_panel()
     _create_shop_panel()
+    _create_character_sheet_stats_ui()
     _create_equipment_slot_ui()
     _create_hotbar_assignment_ui()
     _create_character_sheet_list_ui()
-    _position_character_sheet_header_labels()
-    _hide_locked_resources_and_stats()
+    _hide_locked_stat_buttons()
     _connect_buttons()
     _update_hud()
     _update_character_screen()
@@ -150,38 +129,6 @@ func _event_is_pause_pressed(event: InputEvent) -> bool:
         return key_event.keycode == KEY_P or key_event.physical_keycode == KEY_P
 
     return false
-
-
-func _position_character_sheet_header_labels() -> void:
-    if character_name_label != null:
-        character_name_label.anchor_left = 0.0
-        character_name_label.anchor_right = 0.0
-        character_name_label.anchor_top = 0.0
-        character_name_label.anchor_bottom = 0.0
-        character_name_label.offset_left = 16.0
-        character_name_label.offset_right = 260.0
-        character_name_label.offset_top = 20.0
-        character_name_label.offset_bottom = 46.0
-
-    if level_label != null:
-        level_label.anchor_left = 0.0
-        level_label.anchor_right = 0.0
-        level_label.anchor_top = 0.0
-        level_label.anchor_bottom = 0.0
-        level_label.offset_left = 270.0
-        level_label.offset_right = 390.0
-        level_label.offset_top = 20.0
-        level_label.offset_bottom = 46.0
-
-    if xp_label != null:
-        xp_label.anchor_left = 0.0
-        xp_label.anchor_right = 0.0
-        xp_label.anchor_top = 0.0
-        xp_label.anchor_bottom = 0.0
-        xp_label.offset_left = 400.0
-        xp_label.offset_right = 560.0
-        xp_label.offset_top = 20.0
-        xp_label.offset_bottom = 46.0
 
 
 func _ensure_pause_input_action() -> void:
@@ -468,6 +415,14 @@ func _create_equipment_slot_ui() -> void:
     )
 
 
+func _create_character_sheet_stats_ui() -> void:
+    if character_sheet_stats_ui != null:
+        return
+
+    character_sheet_stats_ui = CharacterSheetStatsUiController.new()
+    character_sheet_stats_ui.setup(character_panel)
+
+
 func refresh_quest_display() -> void:
     if quest_tracker_ui == null:
         return
@@ -482,16 +437,7 @@ func _hide_sheet_list() -> void:
     character_sheet_list_ui.hide_sheet_list()
 
 
-func _hide_locked_resources_and_stats() -> void:
-    if ability_points_label != null:
-        ability_points_label.visible = false
-
-    if endurance_label != null:
-        endurance_label.visible = false
-
-    if focus_label != null:
-        focus_label.visible = false
-
+func _hide_locked_stat_buttons() -> void:
     if add_endurance_button != null:
         add_endurance_button.visible = false
         add_endurance_button.disabled = true
@@ -556,38 +502,15 @@ func _update_hud() -> void:
 func _update_character_screen() -> void:
     var stats := _get_stats()
 
-    title_label.text = "Character Sheet"
+    if character_sheet_stats_ui != null:
+        character_sheet_stats_ui.update_character_sheet(stats)
 
     if stats == null:
-        character_name_label.text = "No Character"
-        level_label.text = "Level: --"
-        xp_label.text = "XP: -- / --"
-
-        if stat_points_label != null:
-            stat_points_label.text = "Stat Points: --"
-
-        _clear_sheet_resources()
-        _clear_attributes_panel()
-        _clear_combat_stats()
         _set_stat_buttons_disabled(true)
         _update_equipment_slot_panel()
         _update_hotbar_assignment_panel()
         return
 
-    character_name_label.text = stats.character_name
-    level_label.text = "Level: " + str(stats.level)
-    xp_label.text = "XP: %s / %s" % [stats.xp, stats.xp_to_next_level]
-
-    if stat_points_label != null:
-        stat_points_label.text = "Stat Points: " + str(stats.stat_points)
-
-    if ability_points_label != null:
-        ability_points_label.text = "Ability Points: " + str(stats.ability_points)
-        ability_points_label.visible = false
-
-    _update_sheet_resources(stats)
-    _update_attributes_panel(stats)
-    _update_combat_stats(stats)
     _set_stat_buttons_disabled(stats.stat_points <= 0)
     _update_equipment_slot_panel()
     _update_hotbar_assignment_panel()
@@ -605,106 +528,6 @@ func _update_hotbar_assignment_panel() -> void:
         return
 
     hotbar_assignment_ui.update_hotbar_assignment_panel()
-
-
-func _clear_sheet_resources() -> void:
-    if sheet_health_label != null:
-        sheet_health_label.text = "Health: -- / --"
-
-    if sheet_mana_label != null:
-        sheet_mana_label.visible = false
-        sheet_mana_label.text = ""
-
-    if sheet_stamina_label != null:
-        sheet_stamina_label.visible = false
-        sheet_stamina_label.text = ""
-
-
-func _update_sheet_resources(stats: CharacterStats) -> void:
-    if sheet_health_label != null:
-        sheet_health_label.text = "Health: %s / %s" % [stats.current_health, stats.max_health]
-
-    if sheet_mana_label != null:
-        sheet_mana_label.visible = stats.has_mana_resource
-
-        if stats.has_mana_resource:
-            sheet_mana_label.text = "Mana: %s / %s" % [stats.current_mana, stats.max_mana]
-        else:
-            sheet_mana_label.text = ""
-
-    if sheet_stamina_label != null:
-        sheet_stamina_label.visible = stats.has_stamina_resource
-
-        if stats.has_stamina_resource:
-            sheet_stamina_label.text = "Stamina: %s / %s" % [stats.current_stamina, stats.max_stamina]
-        else:
-            sheet_stamina_label.text = ""
-
-
-func _clear_attributes_panel() -> void:
-    if attributes_label != null:
-        attributes_label.text = "Attributes"
-
-    if might_label != null:
-        might_label.text = "Might: --"
-
-    if agility_label != null:
-        agility_label.text = "Agility: --"
-
-    if toughness_label != null:
-        toughness_label.text = "Toughness: --"
-
-    if endurance_label != null:
-        endurance_label.text = "Endurance: --"
-        endurance_label.visible = false
-
-    if focus_label != null:
-        focus_label.text = "Focus: --"
-        focus_label.visible = false
-
-    if speed_label != null:
-        speed_label.text = "Speed: --"
-
-
-func _update_attributes_panel(stats: CharacterStats) -> void:
-    if attributes_label != null:
-        attributes_label.text = "Attributes"
-
-    if might_label != null:
-        might_label.text = "Might: " + str(stats.might)
-
-    if agility_label != null:
-        agility_label.text = "Agility: " + str(stats.agility)
-
-    if toughness_label != null:
-        toughness_label.text = "Toughness: " + str(stats.toughness)
-
-    if endurance_label != null:
-        endurance_label.text = "Endurance: " + str(stats.endurance)
-        endurance_label.visible = false
-
-    if focus_label != null:
-        focus_label.text = "Focus: " + str(stats.focus)
-        focus_label.visible = false
-
-    if speed_label != null:
-        speed_label.text = "Speed: " + str(stats.speed)
-
-
-func _clear_combat_stats() -> void:
-    if attack_label != null:
-        attack_label.text = "Attack: --"
-
-    if defense_label != null:
-        defense_label.text = "Defense: --"
-
-
-func _update_combat_stats(stats: CharacterStats) -> void:
-    if attack_label != null:
-        attack_label.text = "Melee Attack: " + str(stats.get_melee_attack())
-
-    if defense_label != null:
-        defense_label.text = "Defense: " + str(stats.get_defense())
 
 
 func _set_stat_buttons_disabled(disabled: bool) -> void:
@@ -727,16 +550,6 @@ func _set_stat_buttons_disabled(disabled: bool) -> void:
     if add_focus_button != null:
         add_focus_button.disabled = true
         add_focus_button.visible = false
-
-
-func _player_has_item(item_id: String) -> bool:
-    if player == null:
-        return false
-
-    if not player.has_method("has_inventory_item"):
-        return false
-
-    return player.has_inventory_item(item_id)
 
 
 func _spend_stat_point(stat_id: String) -> void:
