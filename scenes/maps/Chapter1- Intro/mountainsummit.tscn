@@ -1,8 +1,24 @@
 [gd_scene format=3 uid="uid://d2dj8pxxgihm4"]
 
 [ext_resource type="Texture2D" uid="uid://cdu2hjbdnyhw6" path="res://art/maps/MountainSummit.png" id="1_rmru7"]
+[ext_resource type="PackedScene" uid="uid://cihgogaol4td8" path="res://scenes/objects/map_transition_area.tscn" id="2_7l1ou"]
+[ext_resource type="PackedScene" uid="uid://d2qyxdpcmw4x0" path="res://scenes/objects/map_spawn_point.tscn" id="3_0dvwj"]
+[ext_resource type="PackedScene" uid="uid://ds0nibabilemd" path="res://scenes/player/Player.tscn" id="4_0dvwj"]
 
 [node name="Summit" type="Node2D" unique_id=1213367326]
 
 [node name="MapImage" type="Sprite2D" parent="." unique_id=978306677]
+position = Vector2(727, 545)
 texture = ExtResource("1_rmru7")
+
+[node name="ToSlopes" parent="." unique_id=1344752193 instance=ExtResource("2_7l1ou")]
+position = Vector2(725, 1031)
+target_scene_path = "uid://chph8q00qw2nc"
+target_spawn_id = "FromSummit"
+
+[node name="FromSlopes" parent="." unique_id=366895598 instance=ExtResource("3_0dvwj")]
+position = Vector2(719, 936)
+spawn_id = "FromSlopes"
+
+[node name="Player" parent="." unique_id=949372820 groups=["player"] instance=ExtResource("4_0dvwj")]
+position = Vector2(707, 958)

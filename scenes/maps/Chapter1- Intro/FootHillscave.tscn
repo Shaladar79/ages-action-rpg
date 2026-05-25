@@ -1,0 +1,37 @@
+[gd_scene format=3 uid="uid://bhtlegsafc2mj"]
+
+[ext_resource type="Texture2D" uid="uid://b1euygw2mhtfy" path="res://art/maps/cave_volcaniccave.png" id="1_rqo2q"]
+[ext_resource type="PackedScene" uid="uid://cihgogaol4td8" path="res://scenes/objects/map_transition_area.tscn" id="2_l4v4r"]
+[ext_resource type="PackedScene" uid="uid://d2qyxdpcmw4x0" path="res://scenes/objects/map_spawn_point.tscn" id="3_ssplw"]
+[ext_resource type="PackedScene" uid="uid://ds0nibabilemd" path="res://scenes/player/Player.tscn" id="4_xnhdc"]
+
+[node name="FootHillscave" type="Node2D" unique_id=644050731]
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1638557816]
+position = Vector2(726, 544)
+texture = ExtResource("1_rqo2q")
+
+[node name="Player" parent="." unique_id=949372820 groups=["player"] instance=ExtResource("4_xnhdc")]
+position = Vector2(1289, 151)
+
+[node name="MapSpawns" type="Node2D" parent="." unique_id=1229036644]
+
+[node name="FromFoothills" parent="MapSpawns" unique_id=366895598 instance=ExtResource("3_ssplw")]
+position = Vector2(1277, 175)
+spawn_id = "FromFoothills"
+
+[node name="FromCaveRitual" parent="MapSpawns" unique_id=813232813 instance=ExtResource("3_ssplw")]
+position = Vector2(126, 1042)
+spawn_id = "FromRitual"
+
+[node name="MapTrans" type="Node2D" parent="." unique_id=1261238227]
+
+[node name="ToFoothills" parent="MapTrans" unique_id=1344752193 instance=ExtResource("2_l4v4r")]
+position = Vector2(1329, 70)
+target_scene_path = "uid://2j7r845rkdbh"
+target_spawn_id = "FromCave"
+
+[node name="ToCaveRitual" parent="MapTrans" unique_id=1276731504 instance=ExtResource("2_l4v4r")]
+position = Vector2(163, 958)
+target_scene_path = "uid://baxj5bwchnbd3"
+target_spawn_id = "FromCave"

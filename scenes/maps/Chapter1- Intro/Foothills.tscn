@@ -39,9 +39,14 @@ spawn_id = "FromCave"
 position = Vector2(1323, 957)
 spawn_id = "FromVillage"
 
+[node name="MapTransitionArea" parent="SpawnPoints" unique_id=1344752193 instance=ExtResource("5_4fcvj")]
+position = Vector2(686, 500)
+target_scene_path = "uid://bhtlegsafc2mj"
+target_spawn_id = "FromFoothills"
+
 [node name="SceneChange" type="Node2D" parent="." unique_id=1312051351]
 
-[node name="ToSlopes" parent="SceneChange" unique_id=1344752193 instance=ExtResource("5_4fcvj")]
+[node name="ToSlopes" parent="SceneChange" unique_id=685557158 instance=ExtResource("5_4fcvj")]
 position = Vector2(646, 29)
 target_scene_path = "uid://chph8q00qw2nc"
 target_spawn_id = "FromFoothills"
@@ -244,8 +249,3 @@ position = Vector2(934, 555)
 [node name="SaveTotem" parent="Ysort" unique_id=528667636 instance=ExtResource("6_u052n")]
 position = Vector2(464, 120)
 respawn_id = "Foothills_Save"
-
-[node name="MapTransitionArea" parent="Ysort" unique_id=501144357 instance=ExtResource("5_4fcvj")]
-position = Vector2(693, 496)
-target_scene_path = "uid://c1apyoqrt6kwb"
-target_spawn_id = "FromFoothills"

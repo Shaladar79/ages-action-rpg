@@ -1,8 +1,8 @@
 [gd_scene format=3 uid="uid://baxj5bwchnbd3"]
 
 [ext_resource type="Texture2D" uid="uid://cotl276kdx5v1" path="res://art/maps/fireportal.png" id="1_djena"]
-[ext_resource type="PackedScene" uid="uid://cihgogaol4td8" path="res://scenes/objects/map_transition_area.tscn" id="2_n73kn"]
-[ext_resource type="PackedScene" uid="uid://d2qyxdpcmw4x0" path="res://scenes/objects/map_spawn_point.tscn" id="3_ddp54"]
+[ext_resource type="PackedScene" uid="uid://d2qyxdpcmw4x0" path="res://scenes/objects/map_spawn_point.tscn" id="3_n73kn"]
+[ext_resource type="PackedScene" uid="uid://cihgogaol4td8" path="res://scenes/objects/map_transition_area.tscn" id="4_ddp54"]
 [ext_resource type="PackedScene" uid="uid://ds0nibabilemd" path="res://scenes/player/Player.tscn" id="4_n037p"]
 
 [node name="FootHillsCaveRitual" type="Node2D" unique_id=594081172]
@@ -11,14 +11,27 @@
 position = Vector2(727, 546)
 texture = ExtResource("1_djena")
 
-[node name="ToCaveEnt" parent="." unique_id=1344752193 instance=ExtResource("2_n73kn")]
-position = Vector2(1195, 101)
-target_scene_path = "uid://b0lu42p7dhwm"
-target_spawn_id = "FromRitual"
+[node name="Player" parent="." unique_id=949372820 groups=["player"] instance=ExtResource("4_n037p")]
+position = Vector2(1087, 279)
 
-[node name="MapSpawnPoint" parent="." unique_id=366895598 instance=ExtResource("3_ddp54")]
-position = Vector2(1122, 218)
+[node name="MapSpawns" type="Node2D" parent="." unique_id=1062603159]
+
+[node name="FromCave" parent="MapSpawns" unique_id=366895598 instance=ExtResource("3_n73kn")]
+position = Vector2(1137, 189)
 spawn_id = "FromCave"
 
-[node name="Player" parent="." unique_id=949372820 instance=ExtResource("4_n037p")]
-position = Vector2(1158, 174)
+[node name="FromBoss" parent="MapSpawns" unique_id=1271340064 instance=ExtResource("3_n73kn")]
+position = Vector2(244, 958)
+spawn_id = "FromBoss"
+
+[node name="MapTrans" type="Node2D" parent="." unique_id=1070811240]
+
+[node name="ToCave" parent="MapTrans" unique_id=1344752193 instance=ExtResource("4_ddp54")]
+position = Vector2(1192, 106)
+target_scene_path = "uid://bhtlegsafc2mj"
+target_spawn_id = "FromRitual"
+
+[node name="ToBoss" parent="MapTrans" unique_id=1542563385 instance=ExtResource("4_ddp54")]
+position = Vector2(173, 1027)
+target_scene_path = "uid://dwvjdkpq8eebq"
+target_spawn_id = "FromRitual"

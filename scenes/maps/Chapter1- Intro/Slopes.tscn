@@ -200,11 +200,17 @@ spawn_id = "FromFoothills"
 
 [node name="ToSummit" parent="MapChange" unique_id=1344752193 instance=ExtResource("5_5obdd")]
 position = Vector2(424, 19)
+target_scene_path = "uid://d2dj8pxxgihm4"
+target_spawn_id = "FromSlopes"
 
 [node name="ToFoothills" parent="MapChange" unique_id=555040427 instance=ExtResource("5_5obdd")]
 position = Vector2(690, 1090)
 target_scene_path = "uid://2j7r845rkdbh"
 target_spawn_id = "FromSlopes"
+
+[node name="MapSpawnPoint" parent="MapChange" unique_id=1016572605 instance=ExtResource("3_1p2iq")]
+position = Vector2(427, 94)
+spawn_id = "FromSummit"
 
 [node name="Monsters" type="Node2D" parent="." unique_id=209942388]
 

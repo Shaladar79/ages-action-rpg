@@ -1,8 +1,23 @@
 [gd_scene format=3 uid="uid://dwvjdkpq8eebq"]
 
 [ext_resource type="Texture2D" uid="uid://rmprnf6h3cud" path="res://art/maps/volcano boss arena.png" id="1_277la"]
+[ext_resource type="PackedScene" uid="uid://cihgogaol4td8" path="res://scenes/objects/map_transition_area.tscn" id="2_8yl2j"]
+[ext_resource type="PackedScene" uid="uid://d2qyxdpcmw4x0" path="res://scenes/objects/map_spawn_point.tscn" id="3_ws501"]
+[ext_resource type="PackedScene" uid="uid://ds0nibabilemd" path="res://scenes/player/Player.tscn" id="4_fcae8"]
 
 [node name="FoothillsCaveBoss" type="Node2D" unique_id=251262397]
 
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=693322395]
+position = Vector2(721, 544)
 texture = ExtResource("1_277la")
+
+[node name="ToRitual" parent="." unique_id=1344752193 instance=ExtResource("2_8yl2j")]
+position = Vector2(281, 1032)
+target_scene_path = "uid://baxj5bwchnbd3"
+target_spawn_id = "FromBoss"
+
+[node name="FromRitual" parent="." unique_id=366895598 instance=ExtResource("3_ws501")]
+position = Vector2(336, 934)
+
+[node name="Player" parent="." unique_id=949372820 groups=["player"] instance=ExtResource("4_fcae8")]
+position = Vector2(351, 983)
