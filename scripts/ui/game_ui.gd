@@ -1,7 +1,5 @@
 extends CanvasLayer
 
-const HOTBAR_SLOT_COUNT: int = 5
-
 @onready var hud_health_label: Label = get_node_or_null("HUD/Health") as Label
 @onready var hud_mana_label: Label = get_node_or_null("HUD/Mana") as Label
 @onready var hud_stamina_label: Label = get_node_or_null("HUD/Stamina") as Label
@@ -11,15 +9,6 @@ const HOTBAR_SLOT_COUNT: int = 5
 
 @onready var character_screen: Control = $CharacterScreen
 @onready var character_panel: Panel = $CharacterScreen/Panel
-
-@onready var add_might_button: Button = get_node_or_null("CharacterScreen/Panel/AttributesPanel_base/Attribute_panel_att/AddMightButton") as Button
-@onready var add_agility_button: Button = get_node_or_null("CharacterScreen/Panel/AttributesPanel_base/Attribute_panel_att/AddAgilityButton") as Button
-@onready var add_toughness_button: Button = get_node_or_null("CharacterScreen/Panel/AttributesPanel_base/Attribute_panel_att/AddToughnessButton") as Button
-@onready var add_speed_button: Button = get_node_or_null("CharacterScreen/Panel/AttributesPanel_base/Attribute_panel_att/AddSpeedButton") as Button
-@onready var add_endurance_button: Button = get_node_or_null("CharacterScreen/Panel/AttributesPanel_base/Attribute_panel_att/AddEnduranceButton") as Button
-@onready var add_focus_button: Button = get_node_or_null("CharacterScreen/Panel/AttributesPanel_base/Attribute_panel_att/AddFocusButton") as Button
-
-@onready var close_button: Button = $CharacterScreen/Panel/CloseButton
 
 @onready var save_prompt: Control = get_node_or_null("SavePrompt") as Control
 @onready var save_prompt_message_label: Label = get_node_or_null("SavePrompt/Panel/MessageLabel") as Label
@@ -37,6 +26,7 @@ var character_sheet_list_ui: CharacterSheetListUiController = null
 var hotbar_assignment_ui: HotbarAssignmentUiController = null
 var equipment_slot_ui: EquipmentSlotUiController = null
 var character_sheet_stats_ui: CharacterSheetStatsUiController = null
+var character_sheet_buttons_ui: CharacterSheetButtonsUiController = null
 
 var hud_refresh_timer: float = 0.0
 var hud_refresh_interval: float = 0.25
@@ -66,11 +56,10 @@ func _ready() -> void:
     _create_story_dialogue_panel()
     _create_shop_panel()
     _create_character_sheet_stats_ui()
+    _create_character_sheet_buttons_ui()
     _create_equipment_slot_ui()
     _create_hotbar_assignment_ui()
     _create_character_sheet_list_ui()
-    _hide_locked_stat_buttons()
-    _connect_buttons()
     _update_hud()
     _update_character_screen()
     refresh_quest_display()
@@ -423,6 +412,18 @@ func _create_character_sheet_stats_ui() -> void:
     character_sheet_stats_ui.setup(character_panel)
 
 
+func _create_character_sheet_buttons_ui() -> void:
+    if character_sheet_buttons_ui != null:
+        return
+
+    character_sheet_buttons_ui = CharacterSheetButtonsUiController.new()
+    character_sheet_buttons_ui.setup(
+        self,
+        character_panel,
+        Callable(self, "_get_player_for_ui_controller")
+    )
+
+
 func refresh_quest_display() -> void:
     if quest_tracker_ui == null:
         return
@@ -435,33 +436,6 @@ func _hide_sheet_list() -> void:
         return
 
     character_sheet_list_ui.hide_sheet_list()
-
-
-func _hide_locked_stat_buttons() -> void:
-    if add_endurance_button != null:
-        add_endurance_button.visible = false
-        add_endurance_button.disabled = true
-
-    if add_focus_button != null:
-        add_focus_button.visible = false
-        add_focus_button.disabled = true
-
-
-func _connect_buttons() -> void:
-    if close_button != null and not close_button.pressed.is_connected(_on_close_button_pressed):
-        close_button.pressed.connect(_on_close_button_pressed)
-
-    if add_might_button != null and not add_might_button.pressed.is_connected(_on_add_might_button_pressed):
-        add_might_button.pressed.connect(_on_add_might_button_pressed)
-
-    if add_agility_button != null and not add_agility_button.pressed.is_connected(_on_add_agility_button_pressed):
-        add_agility_button.pressed.connect(_on_add_agility_button_pressed)
-
-    if add_toughness_button != null and not add_toughness_button.pressed.is_connected(_on_add_toughness_button_pressed):
-        add_toughness_button.pressed.connect(_on_add_toughness_button_pressed)
-
-    if add_speed_button != null and not add_speed_button.pressed.is_connected(_on_add_speed_button_pressed):
-        add_speed_button.pressed.connect(_on_add_speed_button_pressed)
 
 
 func _refresh_player_reference() -> void:
@@ -505,13 +479,9 @@ func _update_character_screen() -> void:
     if character_sheet_stats_ui != null:
         character_sheet_stats_ui.update_character_sheet(stats)
 
-    if stats == null:
-        _set_stat_buttons_disabled(true)
-        _update_equipment_slot_panel()
-        _update_hotbar_assignment_panel()
-        return
+    if character_sheet_buttons_ui != null:
+        character_sheet_buttons_ui.update_stat_buttons(stats)
 
-    _set_stat_buttons_disabled(stats.stat_points <= 0)
     _update_equipment_slot_panel()
     _update_hotbar_assignment_panel()
 
@@ -528,59 +498,3 @@ func _update_hotbar_assignment_panel() -> void:
         return
 
     hotbar_assignment_ui.update_hotbar_assignment_panel()
-
-
-func _set_stat_buttons_disabled(disabled: bool) -> void:
-    if add_might_button != null:
-        add_might_button.disabled = disabled
-
-    if add_agility_button != null:
-        add_agility_button.disabled = disabled
-
-    if add_toughness_button != null:
-        add_toughness_button.disabled = disabled
-
-    if add_speed_button != null:
-        add_speed_button.disabled = disabled
-
-    if add_endurance_button != null:
-        add_endurance_button.disabled = true
-        add_endurance_button.visible = false
-
-    if add_focus_button != null:
-        add_focus_button.disabled = true
-        add_focus_button.visible = false
-
-
-func _spend_stat_point(stat_id: String) -> void:
-    if player == null:
-        return
-
-    if not player.has_method("spend_stat_point"):
-        return
-
-    var spent: bool = player.spend_stat_point(stat_id)
-
-    if spent:
-        _update_hud()
-        _update_character_screen()
-
-
-func _on_add_might_button_pressed() -> void:
-    _spend_stat_point("might")
-
-
-func _on_add_agility_button_pressed() -> void:
-    _spend_stat_point("agility")
-
-
-func _on_add_toughness_button_pressed() -> void:
-    _spend_stat_point("toughness")
-
-
-func _on_add_speed_button_pressed() -> void:
-    _spend_stat_point("speed")
-
-
-func _on_close_button_pressed() -> void:
-    close_character_screen()
