@@ -77,17 +77,17 @@ func add_xp(amount: int) -> bool:
 func level_up() -> void:
     level += 1
     xp = 0
-    stat_points += 1
+    stat_points += level
     ability_points += 1
     xp_to_next_level = get_xp_required_for_current_level()
 
     recalculate_derived_stats(true)
 
     print("Level up! New level: ", level)
-    print("Stat Points: ", stat_points)
+    print("Gained Stat Points: ", level)
+    print("Total Stat Points: ", stat_points)
     print("Ability Points: ", ability_points)
     print("Next Level XP: ", xp_to_next_level)
-
 
 func get_xp_required_for_current_level() -> int:
     match level:

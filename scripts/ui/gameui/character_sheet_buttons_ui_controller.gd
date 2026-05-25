@@ -36,27 +36,80 @@ func update_stat_buttons(stats: CharacterStats) -> void:
         _set_stat_buttons_disabled(true)
         return
 
-    var no_stat_points := stats.stat_points <= 0
-
-    if add_might_button != null:
-        add_might_button.disabled = no_stat_points
-
-    if add_agility_button != null:
-        add_agility_button.disabled = no_stat_points
-
-    if add_toughness_button != null:
-        add_toughness_button.disabled = no_stat_points
-
-    if add_speed_button != null:
-        add_speed_button.disabled = no_stat_points
+    _update_button_for_stat(add_might_button, stats, "might", true)
+    _update_button_for_stat(add_agility_button, stats, "agility", true)
+    _update_button_for_stat(add_toughness_button, stats, "toughness", true)
+    _update_button_for_stat(add_speed_button, stats, "speed", true)
 
     if add_endurance_button != null:
         add_endurance_button.visible = false
         add_endurance_button.disabled = true
+        add_endurance_button.tooltip_text = "Endurance is not available yet."
 
-    if add_focus_button != null:
-        add_focus_button.visible = stats.has_mana_resource
-        add_focus_button.disabled = no_stat_points or not stats.has_mana_resource
+    _update_button_for_stat(add_focus_button, stats, "focus", stats.has_mana_resource)
+
+
+func _update_button_for_stat(button: Button, stats: CharacterStats, stat_id: String, should_be_visible: bool) -> void:
+    if button == null:
+        return
+
+    button.visible = should_be_visible
+
+    if not should_be_visible:
+        button.disabled = true
+        button.tooltip_text = ""
+        return
+
+    var cost := 1
+
+    if stats.has_method("get_stat_point_cost"):
+        cost = stats.get_stat_point_cost(stat_id)
+    else:
+        cost = _get_fallback_stat_cost(stats, stat_id)
+
+    var can_afford := stats.stat_points >= cost
+
+    button.disabled = not can_afford
+    button.text = "+"
+
+    if can_afford:
+        button.tooltip_text = "Increase %s. Cost: %s stat point%s." % [
+            stat_id.capitalize(),
+            cost,
+            _get_plural_suffix(cost)
+        ]
+    else:
+        button.tooltip_text = "Need %s stat point%s to increase %s. Available: %s." % [
+            cost,
+            _get_plural_suffix(cost),
+            stat_id.capitalize(),
+            stats.stat_points
+        ]
+
+
+func _get_fallback_stat_cost(stats: CharacterStats, stat_id: String) -> int:
+    match stat_id:
+        "might":
+            return maxi(1, stats.might)
+        "agility":
+            return maxi(1, stats.agility)
+        "toughness":
+            return maxi(1, stats.toughness)
+        "speed":
+            return maxi(1, stats.speed)
+        "endurance":
+            return maxi(1, stats.endurance)
+        "focus":
+            return maxi(1, stats.focus)
+        _:
+            return 1
+
+
+func _get_plural_suffix(value: int) -> String:
+    if value == 1:
+        return ""
+
+    return "s"
 
 
 func _create_character_sheet_buttons() -> void:
