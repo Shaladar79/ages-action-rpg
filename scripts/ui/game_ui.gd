@@ -57,7 +57,6 @@ const HOTBAR_SLOT_COUNT: int = 5
 @onready var save_no_button: Button = get_node_or_null("SavePrompt/Panel/NoButton") as Button
 
 var player: Node = null
-var pending_save_player: Node = null
 
 var hud_hotbar_layer: Control = null
 var hud_hotbar_container: HBoxContainer = null
@@ -69,6 +68,7 @@ var hud_level_label: Label = null
 var hud_resource_row: HBoxContainer = null
 
 var quest_tracker_ui: QuestTrackerUiController = null
+var save_prompt_ui: SavePromptUiController = null
 
 var equipment_slot_container: VBoxContainer = null
 var equipment_slot_option_buttons: Dictionary = {}
@@ -133,9 +133,7 @@ func _ready() -> void:
     character_screen.visible = false
     interaction_prompt.visible = false
 
-    if save_prompt != null:
-       save_prompt.visible = false
-
+    _create_save_prompt_ui()
     _create_hotbar_hud()
     _create_hud_info_panel()
     _create_hud_quest_panel()
@@ -187,7 +185,7 @@ func _input(event: InputEvent) -> void:
             get_viewport().set_input_as_handled()
             return
 
-    if save_prompt != null and save_prompt.visible:
+    if save_prompt_ui != null and save_prompt_ui.is_visible():
         return
 
     if shop_layer != null and shop_layer.visible:
@@ -722,7 +720,7 @@ func should_block_player_interact() -> bool:
     if shop_layer != null and shop_layer.visible:
         return true
 
-    if save_prompt != null and save_prompt.visible:
+    if save_prompt_ui != null and save_prompt_ui.is_visible():
         return true
 
     if character_screen != null and character_screen.visible:
@@ -773,33 +771,17 @@ func refresh_character_display() -> void:
 
 
 func show_save_prompt(save_player: Node, message: String = "Do you want to save your game?") -> void:
-    pending_save_player = save_player
+    if save_prompt_ui == null:
+        _create_save_prompt_ui()
 
-    if save_prompt == null:
-        print("Save prompt UI is missing.")
-        return
-
-    if save_prompt_message_label != null:
-        save_prompt_message_label.text = message
-
-    character_screen.visible = false
-    _set_character_screen_pause(false)
-
-    if shop_layer != null and shop_layer.visible:
-        hide_shop()
-
-    interaction_prompt.visible = false
-    save_prompt.visible = true
-    _set_save_prompt_pause(true)
+    save_prompt_ui.show_save_prompt(save_player, message)
 
 
 func hide_save_prompt() -> void:
-    pending_save_player = null
+    if save_prompt_ui == null:
+        return
 
-    if save_prompt != null:
-        save_prompt.visible = false
-
-    _set_save_prompt_pause(false)
+    save_prompt_ui.hide_save_prompt()
 
 
 func toggle_character_screen() -> void:
@@ -820,7 +802,7 @@ func toggle_character_screen() -> void:
 
 
 func open_character_screen() -> void:
-    if save_prompt != null and save_prompt.visible:
+    if save_prompt_ui != null and save_prompt_ui.is_visible():
         return
 
     if shop_layer != null and shop_layer.visible:
@@ -936,7 +918,19 @@ func _create_hud_info_panel() -> void:
     _move_existing_resource_label_to_hud_row(hud_mana_label)
     _move_existing_resource_label_to_hud_row(hud_stamina_label)
 
+func _create_save_prompt_ui() -> void:
+    if save_prompt_ui != null:
+        return
 
+    save_prompt_ui = SavePromptUiController.new()
+    save_prompt_ui.setup(
+        self,
+        save_prompt,
+        save_prompt_message_label,
+        save_yes_button,
+        save_no_button
+    )
+    
 func _create_hud_quest_panel() -> void:
     if quest_tracker_ui != null:
         return
@@ -1337,11 +1331,6 @@ func _connect_buttons() -> void:
     if add_speed_button != null and not add_speed_button.pressed.is_connected(_on_add_speed_button_pressed):
         add_speed_button.pressed.connect(_on_add_speed_button_pressed)
 
-    if save_yes_button != null and not save_yes_button.pressed.is_connected(_on_save_yes_button_pressed):
-        save_yes_button.pressed.connect(_on_save_yes_button_pressed)
-
-    if save_no_button != null and not save_no_button.pressed.is_connected(_on_save_no_button_pressed):
-        save_no_button.pressed.connect(_on_save_no_button_pressed)
 
 
 func _refresh_player_reference() -> void:
@@ -1999,24 +1988,3 @@ func _on_equip_accessory_button_pressed() -> void:
 
 func _on_close_button_pressed() -> void:
     close_character_screen()
-
-
-func _on_save_yes_button_pressed() -> void:
-    if pending_save_player == null:
-        hide_save_prompt()
-        return
-
-    var saved := SaveManager.save_game(pending_save_player)
-
-    if saved:
-        if pending_save_player.has_method("show_dialogue"):
-            pending_save_player.show_dialogue("Game saved.")
-    else:
-        if pending_save_player.has_method("show_dialogue"):
-            pending_save_player.show_dialogue("Save failed.")
-
-    hide_save_prompt()
-
-
-func _on_save_no_button_pressed() -> void:
-    hide_save_prompt()
