@@ -1,0 +1,18 @@
+[gd_scene format=3 uid="uid://cxmjxgggvevd3"]
+
+[ext_resource type="Texture2D" uid="uid://s0ucftkgcgm4" path="res://art/Assets/RPG Monsters Mega Pack/Monsters/TB_Monster_030/TB_Monster_030_B_Single_Sprites/TB_Monster_030_B_4.png" id="1_4yqqa"]
+[ext_resource type="Script" uid="uid://cbjx3pdqm7xwo" path="res://scripts/interactions/rest_area_interactable.gd" id="2_xai7s"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_hbq4w"]
+radius = 30.083218
+
+[node name="RestAreaInteractable" type="Area2D" unique_id=1223462845]
+script = ExtResource("2_xai7s")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=672884101]
+texture = ExtResource("1_4yqqa")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1913440826]
+shape = SubResource("CircleShape2D_hbq4w")
+
+[node name="RespawnMarker" type="Marker2D" parent="." unique_id=1468893805]

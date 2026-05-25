@@ -11,6 +11,7 @@
 [ext_resource type="PackedScene" uid="uid://clxr5342eb6d" path="res://scenes/objects/questmarkers/QuestProgressArea.tscn" id="7_3djgd"]
 [ext_resource type="PackedScene" uid="uid://cfokf5kfxdijr" path="res://scenes/enemies/Foothills/Forrest_Beatle.tscn" id="8_h83v4"]
 [ext_resource type="PackedScene" uid="uid://b0kjoqowqeyvs" path="res://scenes/objects/questmarkers/QuestTalkTarget.tscn" id="9_7sfwb"]
+[ext_resource type="PackedScene" uid="uid://cxmjxgggvevd3" path="res://scenes/objects/restareas/RestAreaInteractable.tscn" id="11_3djgd"]
 [ext_resource type="PackedScene" uid="uid://pyq76iw1lw5d" path="res://scenes/objects/save_totem.tscn" id="11_know0"]
 [ext_resource type="PackedScene" uid="uid://s2g52egtcgbs" path="res://scenes/objects/pickups/testitem.tscn" id="12_ub0y7"]
 
@@ -112,6 +113,13 @@ disappear_on_open = true
 quest_progress_enabled = true
 quest_id = "get_shirt"
 objective_id = "get_shirt"
+
+[node name="RestAreaInteractable" parent="Ysort" unique_id=434468176 instance=ExtResource("11_3djgd")]
+position = Vector2(595, 602)
+can_save = true
+show_save_prompt_after_rest = true
+acts_as_respawn_point = true
+respawn_id = "cillage_inn"
 
 [node name="MapSpawns" type="Node2D" parent="." unique_id=1571131686]
 visible = false
