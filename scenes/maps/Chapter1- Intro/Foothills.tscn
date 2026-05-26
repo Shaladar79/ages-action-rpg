@@ -9,6 +9,7 @@
 [ext_resource type="PackedScene" uid="uid://diepcak1mm2tn" path="res://scenes/enemies/Slopes/Rock_Spitter.tscn" id="7_lrl8g"]
 [ext_resource type="PackedScene" uid="uid://o8j2dacnrsjb" path="res://scenes/enemies/Slopes/Earthling.tscn" id="8_n3spi"]
 [ext_resource type="PackedScene" uid="uid://cfokf5kfxdijr" path="res://scenes/enemies/Foothills/Forrest_Beatle.tscn" id="9_5tkt1"]
+[ext_resource type="PackedScene" uid="uid://m6huaw6v41g3" path="res://scenes/objects/pickups/PickupItem_Bundle_Sticks.tscn" id="10_n3spi"]
 
 [node name="FootHills" type="Node2D" unique_id=511221108]
 
@@ -249,3 +250,7 @@ position = Vector2(934, 555)
 [node name="SaveTotem" parent="Ysort" unique_id=528667636 instance=ExtResource("6_u052n")]
 position = Vector2(464, 120)
 respawn_id = "Foothills_Save"
+
+[node name="StickBundle" parent="Ysort" unique_id=1484649167 instance=ExtResource("10_n3spi")]
+position = Vector2(235, 416)
+disappear_on_open = true

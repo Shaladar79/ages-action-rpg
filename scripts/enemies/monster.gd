@@ -449,10 +449,6 @@ var active_status_effects: Dictionary = {}
 var last_player_weapon_mastery_id: String = ""
 
 func _ready() -> void:
-    if _should_remove_because_quest_spawn_gate():
-        queue_free()
-        return
-
     if _should_remove_because_defeated_in_save():
         queue_free()
         return
@@ -469,10 +465,59 @@ func _ready() -> void:
     _start_default_animation()
     _connect_attack_area()
 
+    if require_active_quest_to_spawn:
+     _refresh_quest_spawn_gate_visibility()
 
+func _refresh_quest_spawn_gate_visibility() -> void:
+    if not require_active_quest_to_spawn:
+        return
+
+    var clean_quest_id := required_active_quest_id.strip_edges()
+
+    if clean_quest_id == "":
+        if quest_spawn_gate_debug_prints:
+            push_warning(monster_name + " requires active quest to spawn but required_active_quest_id is blank.")
+        visible = false
+        _set_quest_gated_collision_enabled(false)
+        return
+
+    if remove_if_quest_completed and QuestManager.is_quest_completed(clean_quest_id):
+        if quest_spawn_gate_debug_prints and visible:
+            print(monster_name, " hidden because required quest is completed: ", clean_quest_id)
+        visible = false
+        _set_quest_gated_collision_enabled(false)
+        return
+
+    if remove_if_quest_ready_to_turn_in and QuestManager.is_quest_ready_to_turn_in(clean_quest_id):
+        if quest_spawn_gate_debug_prints and visible:
+            print(monster_name, " hidden because required quest is ready to turn in: ", clean_quest_id)
+        visible = false
+        _set_quest_gated_collision_enabled(false)
+        return
+
+    if not QuestManager.is_quest_active(clean_quest_id):
+        if quest_spawn_gate_debug_prints and visible:
+            print(monster_name, " hidden because required quest is not active: ", clean_quest_id)
+        visible = false
+        _set_quest_gated_collision_enabled(false)
+        return
+
+    if not visible and quest_spawn_gate_debug_prints:
+        print(monster_name, " shown because required quest is active: ", clean_quest_id)
+
+    visible = true
+    _set_quest_gated_collision_enabled(true)
+    
 func _physics_process(delta: float) -> void:
     if is_dead:
         return
+
+    if require_active_quest_to_spawn:
+        _refresh_quest_spawn_gate_visibility()
+
+        if not visible:
+            velocity = Vector2.ZERO
+            return
 
     _update_attack_timers(delta)
     _update_status_effects(delta)
@@ -1149,7 +1194,7 @@ func die(player: Node2D = null) -> void:
     if _should_save_defeat_state():
         SaveManager.mark_monster_defeated(persistent_id)
 
-        _report_quest_kill_progress()
+    _report_quest_kill_progress()
 
     _award_weapon_mastery_kill_if_eligible(player)
     _award_xp_to_player_if_eligible(player)
@@ -1419,6 +1464,27 @@ func _get_map_monsters_respawn_by_default() -> bool:
 
     return map_settings.monsters_respawn_by_default
 
+func _set_quest_gated_collision_enabled(enabled: bool) -> void:
+    set_deferred("collision_layer", 1 if enabled else 0)
+    set_deferred("collision_mask", 1 if enabled else 0)
+
+    for child in get_children():
+        _set_collision_enabled_recursive(child, enabled)
+
+
+func _set_collision_enabled_recursive(node: Node, enabled: bool) -> void:
+    if node is CollisionShape2D:
+        node.set_deferred("disabled", not enabled)
+
+    if node is CollisionPolygon2D:
+        node.set_deferred("disabled", not enabled)
+
+    if node is Area2D:
+        node.set_deferred("monitoring", enabled)
+        node.set_deferred("monitorable", enabled)
+
+    for child in node.get_children():
+        _set_collision_enabled_recursive(child, enabled)
 
 func _disable_all_collision_shapes(node: Node) -> void:
     for child in node.get_children():

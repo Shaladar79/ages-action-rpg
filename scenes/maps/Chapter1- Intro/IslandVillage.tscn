@@ -5,22 +5,20 @@
 [ext_resource type="PackedScene" uid="uid://3j1f8tltg0sj" path="res://scenes/npcs/shopkeepers/ShopKeeper_RealmVultar.tscn" id="3_i8oeu"]
 [ext_resource type="PackedScene" uid="uid://cihgogaol4td8" path="res://scenes/objects/map_transition_area.tscn" id="3_jjnn0"]
 [ext_resource type="PackedScene" uid="uid://ds0nibabilemd" path="res://scenes/player/Player.tscn" id="4_4ciox"]
-[ext_resource type="Script" uid="uid://dmhim3ohrnvcm" path="res://scripts/core/shop_stock_entry.gd" id="4_h83v4"]
+[ext_resource type="Script" path="res://scripts/core/shop_stock_entry.gd" id="4_h83v4"]
 [ext_resource type="PackedScene" uid="uid://b4x6xea46nwp1" path="res://scenes/npcs/questgivers/Vultar/QuestGiver.tscn" id="4_lgn6g"]
 [ext_resource type="Script" uid="uid://dt5yvut01s10s" path="res://scripts/core/quests/quest_entry.gd" id="5_ub0y7"]
 [ext_resource type="Script" uid="uid://pomcudkoxce3" path="res://scripts/core/quests/quest_objective_entry.gd" id="6_7sfwb"]
-[ext_resource type="PackedScene" uid="uid://clxr5342eb6d" path="res://scenes/objects/questmarkers/QuestProgressArea.tscn" id="7_3djgd"]
-[ext_resource type="PackedScene" uid="uid://cfokf5kfxdijr" path="res://scenes/enemies/Foothills/Forrest_Beatle.tscn" id="8_h83v4"]
-[ext_resource type="PackedScene" uid="uid://b0kjoqowqeyvs" path="res://scenes/objects/questmarkers/QuestTalkTarget.tscn" id="9_7sfwb"]
-[ext_resource type="PackedScene" uid="uid://cxmjxgggvevd3" path="res://scenes/objects/restareas/RestAreaInteractable.tscn" id="11_3djgd"]
+[ext_resource type="PackedScene" uid="uid://uh4h4tdjb2i6" path="res://scenes/npcs/questgivers/Questmover.tscn" id="8_ub0y7"]
 [ext_resource type="PackedScene" uid="uid://pyq76iw1lw5d" path="res://scenes/objects/save_totem.tscn" id="11_know0"]
-[ext_resource type="PackedScene" uid="uid://s2g52egtcgbs" path="res://scenes/objects/pickups/testitem.tscn" id="12_ub0y7"]
+[ext_resource type="PackedScene" uid="uid://cfokf5kfxdijr" path="res://scenes/enemies/Foothills/Forrest_Beatle.tscn" id="13_3djgd"]
+[ext_resource type="PackedScene" uid="uid://5qorurcn4toh" path="res://scenes/objects/movemarkers/QuestMoveMarker.tscn" id="13_7sfwb"]
 
 [sub_resource type="Resource" id="Resource_nqxse"]
 script = ExtResource("4_h83v4")
 item_id = "healing_tonic"
 price_amount = 30
-metadata/_custom_type_script = "uid://dmhim3ohrnvcm"
+required_flag = "beatle_1_comp"
 
 [sub_resource type="Resource" id="Resource_27f20"]
 script = ExtResource("4_h83v4")
@@ -28,14 +26,12 @@ item_id = "sling_ammo"
 quantity = 5
 price_amount = 20
 required_flag = "sling_found"
-metadata/_custom_type_script = "uid://dmhim3ohrnvcm"
 
 [sub_resource type="Resource" id="Resource_7gjs6"]
 script = ExtResource("4_h83v4")
 item_id = "mana_tonic"
 price_amount = 50
 required_flag = "mana_unlocked"
-metadata/_custom_type_script = "uid://dmhim3ohrnvcm"
 
 [sub_resource type="Resource" id="Resource_7sfwb"]
 script = ExtResource("6_7sfwb")
@@ -53,6 +49,7 @@ quest_title = "The Angry Mountain"
 started_flag = "KillRockSpitterStart"
 ready_to_turn_in_flag = "KillRockSpitterDone"
 completed_flag = "KillRockSpitterComp"
+required_flag = "beatle_1_comp"
 first_time_dialogue = "Hey Man you look tough. You see the montain is getting angry. So you see the Rock  Spitters look like they are going to move this way, can you go Kill the Rock Spitters on the Slopes."
 active_dialogue = "Did you kill the yet?"
 ready_to_turn_in_dialogue = "Oh, Good we are safer now that you cleared them out."
@@ -65,34 +62,102 @@ metadata/_custom_type_script = "uid://dt5yvut01s10s"
 
 [sub_resource type="Resource" id="Resource_h83v4"]
 script = ExtResource("6_7sfwb")
-objective_id = "kill_turret"
+objective_id = "turret_dead"
 objective_type = 1
-objective_text = "Kill The Rock Turret On the Slopes"
+objective_text = "Kill Turret"
 metadata/_custom_type_script = "uid://pomcudkoxce3"
 
 [sub_resource type="Resource" id="Resource_know0"]
 script = ExtResource("5_ub0y7")
 quest_id = "kill_turret"
-quest_title = "Rock Spitter Eater"
-started_flag = "kill_turret_start"
-ready_to_turn_in_flag = "kill_turret_done"
-completed_flag = "kill_turret_comp"
-first_time_dialogue = "It seems the Rock Spitters were being chased by a Rock Turret, It's a nasty creature from the summit. Go kill it in the slopes."
-active_dialogue = "Go Kill The Rock Turret"
-ready_to_turn_in_dialogue = "I bet that was hard, Her is your reward."
-completed_dialogue = "Come speak to me again later ill have more work for you."
+quest_title = "Kill Turret The Rock Beast"
+started_flag = "turret_start"
+ready_to_turn_in_flag = "turret_done"
+completed_flag = "turret_comp"
+first_time_dialogue = "I've fiqured out why the Rock Spitters were moving towards the village, Turret the Rock Beast that eats Rockspitters was hunting them. Kill it to make sure it dosent happen again."
+active_dialogue = "Go Kill Turret"
+ready_to_turn_in_dialogue = "You killed turret, please except these rewards."
+completed_dialogue = "Thanks for your help, Return to the guy at the entrance of the village he should have more work for you."
 objectives = Array[ExtResource("6_7sfwb")]([SubResource("Resource_h83v4")])
-reward_xp = 15
+reward_xp = 25
+reward_currency_id = "shines"
+reward_currency_amount = 50
+reward_item_1_id = "amulet_of_minor_defense"
+metadata/_custom_type_script = "uid://dt5yvut01s10s"
+
+[sub_resource type="Resource" id="Resource_i3jri"]
+script = ExtResource("5_ub0y7")
+quest_id = "Find The Elder"
+quest_type = 0
+required_flag = "sling_found"
+metadata/_custom_type_script = "uid://dt5yvut01s10s"
+
+[sub_resource type="Resource" id="Resource_ub0y7"]
+script = ExtResource("6_7sfwb")
+objective_id = "kill_fb"
+objective_type = 1
+objective_text = "Kill the Invasive Beatle"
+metadata/_custom_type_script = "uid://pomcudkoxce3"
+
+[sub_resource type="Resource" id="Resource_f2evy"]
+script = ExtResource("5_ub0y7")
+quest_id = "village_fb"
+quest_title = "Forrest Beatle Invasion 1"
+quest_type = 0
+started_flag = "village_beatle"
+ready_to_turn_in_flag = "1_beatle_dead"
+completed_flag = "beatle_1_comp"
+first_time_dialogue = "Welcome to our village, Id like to talk more but we have had a Forrest Beatle make its way into the village, and its didrupting our shop. If you could kill it. The shop will start selling Healing Tonics again."
+active_dialogue = "Go kill that Forrest Beatle, its on the west end of town."
+ready_to_turn_in_dialogue = "It's dead, good."
+completed_dialogue = "The shop is open now, but the villager in the west of town has some work for you, He will teach you about bounty quests and factions."
+objectives = Array[ExtResource("6_7sfwb")]([SubResource("Resource_ub0y7")])
+reward_xp = 5
+reward_currency_id = "shines"
+reward_currency_amount = 30
+metadata/_custom_type_script = "uid://dt5yvut01s10s"
+
+[sub_resource type="Resource" id="Resource_pxthl"]
+script = ExtResource("6_7sfwb")
+objective_id = "sling_sticks"
+objective_type = 2
+objective_text = "Find The Bundle of Sticks in Foothills the objective"
+metadata/_custom_type_script = "uid://pomcudkoxce3"
+
+[sub_resource type="Resource" id="Resource_3oof0"]
+script = ExtResource("6_7sfwb")
+objective_id = "fiber_bundle"
+objective_type = 2
+objective_text = "Get the Fiber Bundle From Forrest. the objective"
+metadata/_custom_type_script = "uid://pomcudkoxce3"
+
+[sub_resource type="Resource" id="Resource_lgn6g"]
+script = ExtResource("5_ub0y7")
+quest_id = "get_sling"
+quest_title = "Get A Sling"
+quest_type = 0
+started_flag = "collect_sling_parts"
+ready_to_turn_in_flag = "parts_colleted"
+completed_flag = "sling_found"
+required_flag = "kill_turret_comp"
+first_time_dialogue = "So most of out villagers have a sling its a ranged weapon that will allow yoou to kill at a distance. Gather A Bundle of Sticks, A Strong Fiber Bundle"
+active_dialogue = "You can find the Bundle of Sticks on in the Foothills. And you can find The Stong Fiber Bundle in the Forrest."
+ready_to_turn_in_dialogue = "Yes you have found everything you need. Here is your sling and some ammo you can buy more ammo from the shop."
+completed_dialogue = "Ok with the Sling you can now help with some more, issues in town  Go see the villager by the east tent."
+objectives = Array[ExtResource("6_7sfwb")]([SubResource("Resource_pxthl"), SubResource("Resource_3oof0")])
+reward_xp = 5
 reward_currency_id = "shines"
 reward_currency_amount = 20
-reward_item_1_id = "amulet_of_minor_defense"
+reward_item_1_id = "sling"
 reward_item_1_quantity = 1
+reward_item_2_id = "sling_ammo"
+reward_item_2_quantity = 5
 metadata/_custom_type_script = "uid://dt5yvut01s10s"
 
 [node name="IslandVillage" type="Node2D" unique_id=634947960]
 
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=262002603]
-position = Vector2(726, 545)
+position = Vector2(729, 546)
 texture = ExtResource("1_qg4p0")
 
 [node name="Ysort" type="Node2D" parent="." unique_id=1908140036]
@@ -105,44 +170,30 @@ position = Vector2(425.99997, 269.99997)
 rotation = 0.058428537
 stock = Array[ExtResource("4_h83v4")]([SubResource("Resource_nqxse"), SubResource("Resource_27f20"), SubResource("Resource_7gjs6")])
 
-[node name="QuestGiver" parent="Ysort" unique_id=1663897061 instance=ExtResource("4_lgn6g")]
-position = Vector2(818, 191)
+[node name="BountyMan" parent="Ysort" unique_id=1663897061 instance=ExtResource("4_lgn6g")]
+position = Vector2(199, 563.99994)
+rotation = -0.07866487
 quests = Array[ExtResource("5_ub0y7")]([SubResource("Resource_3djgd"), SubResource("Resource_know0")])
 
-[node name="QuestProgressArea" parent="Ysort" unique_id=1142422050 instance=ExtResource("7_3djgd")]
-visible = false
-position = Vector2(590, 340)
-quest_id = "check_the_fire"
-objective_id = "campfire"
-persistent_id = "campfire_walk"
+[node name="MainQuestgiver" parent="Ysort" unique_id=1819078454 instance=ExtResource("4_lgn6g")]
+position = Vector2(828, 195)
+quests = Array[ExtResource("5_ub0y7")]([SubResource("Resource_i3jri")])
 
-[node name="ForrestBeatle" parent="Ysort" unique_id=1159453956 instance=ExtResource("8_h83v4")]
-position = Vector2(75, 162)
-respawn_mode = 2
-quest_progress_enabled = true
-quest_id = "kill_beatle"
-objective_id = "beatle_dead"
-slam_windup_time = 0.5
+[node name="VillageIntoQuestsStory" parent="Ysort" unique_id=67510783 instance=ExtResource("4_lgn6g")]
+position = Vector2(625, 224)
+npc_name = "Rastor"
+quests = Array[ExtResource("5_ub0y7")]([SubResource("Resource_f2evy"), SubResource("Resource_lgn6g")])
 
-[node name="QuestTalkTarget" parent="Ysort" unique_id=413590697 instance=ExtResource("9_7sfwb")]
-position = Vector2(206, 580)
-quest_id = "talk_rabbit"
-objective_id = "rabbit"
+[node name="Questmover2" parent="Ysort/VillageIntoQuestsStory" unique_id=1534153564 instance=ExtResource("8_ub0y7")]
+position = Vector2(-10, 6)
+trigger_type = 1
+required_quest_id = "sling_found"
+completion_save_flag = "VillageIntro_gone"
+path_marker_paths = Array[NodePath]([NodePath("../../../Movemarkers/VillageIntroQuests/IntroMove1"), NodePath("../../../Movemarkers/VillageIntroQuests/IntroMove2"), NodePath("../../../Movemarkers/VillageIntroQuests/IntroMove3")])
 
-[node name="Testitem" parent="Ysort" unique_id=1484649167 instance=ExtResource("12_ub0y7")]
-position = Vector2(385, 318)
-persistent_id = "shirt"
-disappear_on_open = true
-quest_progress_enabled = true
-quest_id = "get_shirt"
-objective_id = "get_shirt"
-
-[node name="RestAreaInteractable" parent="Ysort" unique_id=434468176 instance=ExtResource("11_3djgd")]
-position = Vector2(595, 602)
-can_save = true
-show_save_prompt_after_rest = true
-acts_as_respawn_point = true
-respawn_id = "cillage_inn"
+[node name="OptionalQuestman" parent="Ysort" unique_id=1483698885 instance=ExtResource("4_lgn6g")]
+position = Vector2(534, 317)
+quests = Array[ExtResource("5_ub0y7")]([])
 
 [node name="MapSpawns" type="Node2D" parent="." unique_id=1571131686]
 visible = false
@@ -266,3 +317,24 @@ polygon = PackedVector2Array(91, 309, 61, 343, 52, 389, 88, 394, 102, 354, 116, 
 [node name="SaveTotem" parent="." unique_id=528667636 instance=ExtResource("11_know0")]
 position = Vector2(474, 150)
 respawn_id = "island_village"
+
+[node name="Movemarkers" type="Node2D" parent="." unique_id=977577434]
+
+[node name="VillageIntroQuests" type="Node2D" parent="Movemarkers" unique_id=1419897404]
+
+[node name="IntroMove1" parent="Movemarkers/VillageIntroQuests" unique_id=175386698 instance=ExtResource("13_7sfwb")]
+position = Vector2(581, 236)
+
+[node name="IntroMove2" parent="Movemarkers/VillageIntroQuests" unique_id=1921989764 instance=ExtResource("13_7sfwb")]
+position = Vector2(538, 111)
+
+[node name="IntroMove3" parent="Movemarkers/VillageIntroQuests" unique_id=1589454468 instance=ExtResource("13_7sfwb")]
+position = Vector2(547, 24)
+
+[node name="ForrestBeatle" parent="." unique_id=1159453956 instance=ExtResource("13_3djgd")]
+position = Vector2(271, 139)
+require_active_quest_to_spawn = true
+required_active_quest_id = "village_fb"
+quest_progress_enabled = true
+quest_id = "village_fb"
+objective_id = "kill_fb"

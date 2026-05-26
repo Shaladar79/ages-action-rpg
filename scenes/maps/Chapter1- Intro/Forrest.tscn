@@ -9,6 +9,7 @@
 [ext_resource type="PackedScene" uid="uid://b1f5ymlfthloy" path="res://scenes/enemies/Forrest/Forrest_Beatle_Forrest.tscn" id="6_p0vgl"]
 [ext_resource type="PackedScene" uid="uid://uotvxe6pd51s" path="res://scenes/enemies/Forrest/ThornShot.tscn" id="7_484se"]
 [ext_resource type="PackedScene" uid="uid://b81kib11b5cms" path="res://scenes/objects/Containers/LootContainer_pouch.tscn" id="9_n611n"]
+[ext_resource type="PackedScene" uid="uid://ux2gpesk1o4b" path="res://scenes/objects/pickups/PickupItem_.Bundle_StrongFiber.tscn" id="10_ytmsj"]
 
 [node name="Forrest" type="Node2D" unique_id=489099902]
 
@@ -176,3 +177,10 @@ polygon = PackedVector2Array(961, 829, 1006, 831, 1018, 873, 1040, 901, 1061, 91
 position = Vector2(1052, 277)
 persistent_id = "tanglebook_test"
 drop_item_id = "spell_book_tangle_foot"
+
+[node name="StrongFiber" parent="." unique_id=1484649167 instance=ExtResource("10_ytmsj")]
+position = Vector2(1033, 151)
+disappear_on_open = true
+quest_progress_enabled = true
+quest_id = "get_sling"
+objective_id = "fiber_bundle"

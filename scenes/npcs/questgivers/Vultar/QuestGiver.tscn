@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://b4x6xea46nwp1"]
 
-[ext_resource type="Script" uid="uid://ckick67t4d3to" path="res://scripts/characters/npcs/quest_giver.gd" id="1_48lvm"]
+[ext_resource type="Script" uid="uid://ckick67t4d3to" path="res://scripts/core/quests/quest_giver.gd" id="1_48lvm"]
 [ext_resource type="Texture2D" uid="uid://d0kcgxlie1vcu" path="res://art/characters/NPC/Vultar_QuestGiver.png" id="1_ccnkj"]
 [ext_resource type="Script" uid="uid://dt5yvut01s10s" path="res://scripts/core/quests/quest_entry.gd" id="2_0771m"]
 [ext_resource type="Script" uid="uid://pomcudkoxce3" path="res://scripts/core/quests/quest_objective_entry.gd" id="3_gsmfx"]

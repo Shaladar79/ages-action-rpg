@@ -1,0 +1,17 @@
+[gd_scene format=3 uid="uid://c1kt4amhakkjt"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_n7hgx"]
+size = Vector2(1100.0011, 2581.252)
+
+[node name="Weaponanimation" type="Area2D" unique_id=2007290886]
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=211486673]
+scale = Vector2(0.1, 0.1)
+animation = &"attack_down"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="AnimatedSprite2D" unique_id=778256322]
+position = Vector2(3.8146973e-06, 130)
+scale = Vector2(0.09999987, 0.09999987)
+shape = SubResource("RectangleShape2D_n7hgx")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=2023477496]

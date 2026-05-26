@@ -1,0 +1,29 @@
+[gd_scene format=3 uid="uid://m6huaw6v41g3"]
+
+[ext_resource type="Script" uid="uid://yoa0aycbm38n" path="res://scripts/Objects/loot_container.gd" id="1_meqwm"]
+[ext_resource type="Texture2D" uid="uid://dmcdtrfg2lajp" path="res://art/Assets/icons/fullcolor/individual_24x24/icon485.png" id="2_meqwm"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_j2qar"]
+radius = 17.029387
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_nb5bg"]
+
+[node name="StickBundle" type="Area2D" unique_id=1484649167]
+script = ExtResource("1_meqwm")
+quest_progress_enabled = true
+quest_id = "get_sling"
+objective_id = "sling_sticks"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1643627818]
+visible = false
+shape = SubResource("CircleShape2D_j2qar")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1545699406]
+scale = Vector2(1.5, 1.5)
+texture = ExtResource("2_meqwm")
+
+[node name="StaticBody2D" type="StaticBody2D" parent="." unique_id=429468860]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D" unique_id=869563566]
+visible = false
+shape = SubResource("CircleShape2D_nb5bg")

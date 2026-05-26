@@ -127,6 +127,9 @@ func complete_quest(quest_id: String, reward_player: Node = null) -> bool:
 
     _apply_quest_rewards(quest_data, reward_player)
 
+    var default_completed_flag := "quest_" + clean_quest_id + "_completed"
+    SaveManager.set_flag(default_completed_flag, true)
+
     var completed_flag: String = str(quest_data.get("completed_flag", "")).strip_edges()
 
     if completed_flag != "":

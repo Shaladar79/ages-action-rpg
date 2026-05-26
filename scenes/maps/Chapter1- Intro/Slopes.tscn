@@ -29,7 +29,7 @@ count_only_monsters_in_group = true
 eligible_monster_group = ""
 
 [node name="MapImage" type="Sprite2D" parent="." unique_id=520401794]
-position = Vector2(729, 550)
+position = Vector2(727, 551)
 texture = ExtResource("2_440q3")
 
 [node name="MapCollisions_Top" type="Node2D" parent="." unique_id=802038249]
@@ -214,90 +214,90 @@ spawn_id = "FromSummit"
 
 [node name="Monsters" type="Node2D" parent="." unique_id=209942388]
 
-[node name="RockSpitter" parent="Monsters" unique_id=165711745 instance=ExtResource("7_4prd7")]
-position = Vector2(505, 220)
-persistent_id = ""
-require_active_quest_to_spawn = true
-required_active_quest_id = "village_rockspitter_clear"
-quest_progress_enabled = true
-quest_id = "village_rockspitter_clear"
-objective_id = "kill_rockspitters"
-
-[node name="RockSpitter3" parent="Monsters" unique_id=837009814 instance=ExtResource("7_4prd7")]
-position = Vector2(225, 434)
-persistent_id = ""
-require_active_quest_to_spawn = true
-required_active_quest_id = "village_rockspitter_clear"
-quest_progress_enabled = true
-quest_id = "village_rockspitter_clear"
-objective_id = "kill_rockspitters"
-
-[node name="RockSpitter5" parent="Monsters" unique_id=824860344 instance=ExtResource("7_4prd7")]
-position = Vector2(932, 176)
-persistent_id = ""
-require_active_quest_to_spawn = true
-required_active_quest_id = "village_rockspitter_clear"
-quest_progress_enabled = true
-quest_id = "village_rockspitter_clear"
-objective_id = "kill_rockspitters"
-
-[node name="RockSpitter4" parent="Monsters" unique_id=1255100999 instance=ExtResource("7_4prd7")]
-position = Vector2(1230, 324)
-persistent_id = ""
-require_active_quest_to_spawn = true
-required_active_quest_id = "village_rockspitter_clear"
-quest_progress_enabled = true
-quest_id = "village_rockspitter_clear"
-objective_id = "kill_rockspitters"
-
-[node name="RockSpitter2" parent="Monsters" unique_id=180467620 instance=ExtResource("7_4prd7")]
-position = Vector2(719, 441)
-persistent_id = ""
-require_active_quest_to_spawn = true
-required_active_quest_id = "village_rockspitter_clear"
-quest_progress_enabled = true
-quest_id = "village_rockspitter_clear"
-objective_id = "kill_rockspitters"
-
-[node name="RockSpitter6" parent="Monsters" unique_id=1298467058 instance=ExtResource("7_4prd7")]
-position = Vector2(735, 676)
-persistent_id = ""
-require_active_quest_to_spawn = true
-required_active_quest_id = "village_rockspitter_clear"
-quest_progress_enabled = true
-quest_id = "village_rockspitter_clear"
-objective_id = "kill_rockspitters"
-
-[node name="RockSpitter7" parent="Monsters" unique_id=1218345866 instance=ExtResource("7_4prd7")]
-position = Vector2(1097, 666)
-persistent_id = ""
-require_active_quest_to_spawn = true
-required_active_quest_id = "village_rockspitter_clear"
-quest_progress_enabled = true
-quest_id = "village_rockspitter_clear"
-objective_id = "kill_rockspitters"
-
-[node name="RockSpitter10" parent="Monsters" unique_id=1571295014 instance=ExtResource("7_4prd7")]
-position = Vector2(699, 962)
-persistent_id = ""
-require_active_quest_to_spawn = true
-required_active_quest_id = "village_rockspitter_clear"
-quest_progress_enabled = true
-quest_id = "village_rockspitter_clear"
-objective_id = "kill_rockspitters"
-
-[node name="RockSpitter9" parent="Monsters" unique_id=1406748345 instance=ExtResource("7_4prd7")]
-position = Vector2(285, 848)
-persistent_id = ""
-require_active_quest_to_spawn = true
-required_active_quest_id = "village_rockspitter_clear"
-quest_progress_enabled = true
-quest_id = "village_rockspitter_clear"
-objective_id = "kill_rockspitters"
-
 [node name="RockSpitter8" parent="Monsters" unique_id=1507302087 instance=ExtResource("7_4prd7")]
-position = Vector2(1166, 927)
-persistent_id = ""
+position = Vector2(695, 960)
+persistent_id = "RS_2"
+require_active_quest_to_spawn = true
+required_active_quest_id = "village_rockspitter_clear"
+quest_progress_enabled = true
+quest_id = "village_rockspitter_clear"
+objective_id = "kill_rockspitters"
+
+[node name="RockSpitter12" parent="Monsters" unique_id=165711745 instance=ExtResource("7_4prd7")]
+position = Vector2(656, 668)
+persistent_id = "RS_2"
+require_active_quest_to_spawn = true
+required_active_quest_id = "village_rockspitter_clear"
+quest_progress_enabled = true
+quest_id = "village_rockspitter_clear"
+objective_id = "kill_rockspitters"
+
+[node name="RockSpitter13" parent="Monsters" unique_id=64229357 instance=ExtResource("7_4prd7")]
+position = Vector2(732, 450)
+persistent_id = "RS_2"
+require_active_quest_to_spawn = true
+required_active_quest_id = "village_rockspitter_clear"
+quest_progress_enabled = true
+quest_id = "village_rockspitter_clear"
+objective_id = "kill_rockspitters"
+
+[node name="RockSpitter15" parent="Monsters" unique_id=420902564 instance=ExtResource("7_4prd7")]
+position = Vector2(197, 418)
+persistent_id = "RS_2"
+require_active_quest_to_spawn = true
+required_active_quest_id = "village_rockspitter_clear"
+quest_progress_enabled = true
+quest_id = "village_rockspitter_clear"
+objective_id = "kill_rockspitters"
+
+[node name="RockSpitter16" parent="Monsters" unique_id=1510657484 instance=ExtResource("7_4prd7")]
+position = Vector2(508, 208)
+persistent_id = "RS_2"
+require_active_quest_to_spawn = true
+required_active_quest_id = "village_rockspitter_clear"
+quest_progress_enabled = true
+quest_id = "village_rockspitter_clear"
+objective_id = "kill_rockspitters"
+
+[node name="RockSpitter17" parent="Monsters" unique_id=176670339 instance=ExtResource("7_4prd7")]
+position = Vector2(921, 122)
+persistent_id = "RS_2"
+require_active_quest_to_spawn = true
+required_active_quest_id = "village_rockspitter_clear"
+quest_progress_enabled = true
+quest_id = "village_rockspitter_clear"
+objective_id = "kill_rockspitters"
+
+[node name="RockSpitter14" parent="Monsters" unique_id=76150295 instance=ExtResource("7_4prd7")]
+position = Vector2(1231, 316)
+persistent_id = "RS_2"
+require_active_quest_to_spawn = true
+required_active_quest_id = "village_rockspitter_clear"
+quest_progress_enabled = true
+quest_id = "village_rockspitter_clear"
+objective_id = "kill_rockspitters"
+
+[node name="RockSpitter11" parent="Monsters" unique_id=946230515 instance=ExtResource("7_4prd7")]
+position = Vector2(1128, 635)
+persistent_id = "RS_2"
+require_active_quest_to_spawn = true
+required_active_quest_id = "village_rockspitter_clear"
+quest_progress_enabled = true
+quest_id = "village_rockspitter_clear"
+objective_id = "kill_rockspitters"
+
+[node name="RockSpitter10" parent="Monsters" unique_id=502085834 instance=ExtResource("7_4prd7")]
+position = Vector2(286, 848)
+persistent_id = "RS_2"
+require_active_quest_to_spawn = true
+required_active_quest_id = "village_rockspitter_clear"
+quest_progress_enabled = true
+quest_id = "village_rockspitter_clear"
+objective_id = "kill_rockspitters"
+
+[node name="RockSpitter9" parent="Monsters" unique_id=610778721 instance=ExtResource("7_4prd7")]
+position = Vector2(1149, 908)
+persistent_id = "RS_2"
 require_active_quest_to_spawn = true
 required_active_quest_id = "village_rockspitter_clear"
 quest_progress_enabled = true
@@ -379,9 +379,11 @@ drop_currency_min_amount = 20
 drop_currency_max_amount = 20
 
 [node name="RockTurretMiniBoss" parent="." unique_id=425000271 instance=ExtResource("11_i456y")]
-position = Vector2(618, 915)
+position = Vector2(734, 649)
 require_active_quest_to_spawn = true
 required_active_quest_id = "kill_turret"
+max_hit_points = 30
+xp_reward = 20
 quest_progress_enabled = true
 quest_id = "kill_turret"
-objective_id = "kill_turret"
+objective_id = "turret_dead"

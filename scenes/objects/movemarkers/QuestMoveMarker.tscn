@@ -1,0 +1,9 @@
+[gd_scene format=3 uid="uid://5qorurcn4toh"]
+
+[ext_resource type="Texture2D" uid="uid://7pk6aey40maj" path="res://art/Assets/icons/fullcolor/individual_24x24/icon086.png" id="1_snwme"]
+
+[node name="QuestMoveMarker" type="Marker2D" unique_id=175386698]
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=749970499]
+scale = Vector2(1, 0.9)
+texture = ExtResource("1_snwme")
