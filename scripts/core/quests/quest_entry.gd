@@ -50,6 +50,11 @@ enum CompletionMode {
 @export var reward_item_2_id: String = ""
 @export var reward_item_2_quantity: int = 0
 
+@export_group("Faction Rewards")
+@export var is_faction_quest: bool = false
+@export var reward_faction_id: String = ""
+@export var reward_faction_points: int = 0
+
 @export_group("Behavior")
 @export var start_on_interact: bool = true
 @export var completion_mode: CompletionMode = CompletionMode.RETURN_TO_QUEST_GIVER

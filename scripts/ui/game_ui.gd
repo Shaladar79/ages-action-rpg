@@ -31,7 +31,6 @@ var story_dialogue_pause_active: bool = false
 var save_prompt_pause_active: bool = false
 var shop_pause_active: bool = false
 
-
 func _ready() -> void:
     add_to_group("interaction_ui")
     print("GameUi ready. Script path: ", get_script().resource_path)
@@ -93,7 +92,7 @@ func _input(event: InputEvent) -> void:
             get_viewport().set_input_as_handled()
 
         return
-
+   
     if event.is_action_pressed("character_screen"):
         toggle_character_screen()
         get_viewport().set_input_as_handled()
@@ -148,7 +147,6 @@ func _refresh_pause_state() -> void:
 
     get_tree().paused = should_pause
     print("Pause state refreshed. Paused: ", should_pause)
-
 
 func _set_character_screen_pause(active: bool) -> void:
     character_screen_pause_active = active
@@ -249,6 +247,8 @@ func hide_shop() -> void:
     shop_ui.hide_shop()
 
 
+
+
 func is_story_dialogue_active() -> bool:
     if dialogue_ui == null:
         return false
@@ -269,6 +269,12 @@ func is_save_prompt_visible() -> bool:
 
     return save_prompt_ui.is_visible()
 
+func refresh_faction_display() -> void:
+    if character_sheet_list_ui == null:
+        return
+
+    if character_sheet_list_ui.has_method("refresh_faction_display"):
+        character_sheet_list_ui.refresh_faction_display()
 
 func should_block_player_interact() -> bool:
     if is_story_dialogue_active():
@@ -280,6 +286,7 @@ func should_block_player_interact() -> bool:
     if is_shop_visible():
         return true
 
+        
     if is_save_prompt_visible():
         return true
 

@@ -43,6 +43,9 @@ func clear_runtime_world_state() -> void:
     persistent_object_positions.clear()
     story_flags.clear()
 
+    if FactionManager != null and FactionManager.has_method("clear_faction_state"):
+        FactionManager.clear_faction_state()
+
 
 func mark_monster_defeated(monster_persistent_id: String) -> void:
     if monster_persistent_id.strip_edges() == "":
@@ -259,6 +262,7 @@ func save_game(player: Node) -> bool:
         "inventory": _get_player_inventory(player),
         "hotbar_slots": _get_player_hotbar_slots(player),
         "currency_data": _get_player_currency_save_data(player),
+        "faction_data": _get_faction_save_data(),
         "respawn": _build_respawn_data(),
         "quest_data": _get_quest_save_data(),
         "world_state": _build_world_state_data()
@@ -311,6 +315,7 @@ func load_game_from_menu() -> void:
     pending_loaded_data = save_data
     _apply_world_state_data(save_data)
     _apply_quest_data(save_data)
+    _apply_faction_data(save_data)
 
     var scene_path: String = save_data.get("scene_path", "")
 
@@ -341,6 +346,7 @@ func apply_pending_loaded_data(player: Node) -> void:
     _apply_inventory(player, pending_loaded_data)
     _apply_hotbar_slots(player, pending_loaded_data)
     _apply_currency_data(player, pending_loaded_data)
+    _apply_faction_data(pending_loaded_data)
     _apply_respawn_data(pending_loaded_data)
     _apply_world_state_data(pending_loaded_data)
     _apply_quest_data(pending_loaded_data)
@@ -446,6 +452,27 @@ func _apply_currency_data(player: Node, save_data: Dictionary) -> void:
 
     push_warning("Player does not have set_currency_save_data(). Currency data was not loaded.")
 
+func _get_faction_save_data() -> Dictionary:
+    if FactionManager == null:
+        return {}
+
+    if FactionManager.has_method("get_faction_save_data"):
+        return FactionManager.get_faction_save_data()
+
+    return {}
+
+
+func _apply_faction_data(save_data: Dictionary) -> void:
+    var saved_faction_data: Dictionary = save_data.get("faction_data", {})
+
+    if FactionManager == null:
+        return
+
+    if FactionManager.has_method("load_faction_save_data"):
+        FactionManager.load_faction_save_data(saved_faction_data)
+        return
+
+    push_warning("FactionManager does not have load_faction_save_data(). Faction data was not loaded.")
 
 func _get_quest_save_data() -> Dictionary:
     if QuestManager == null:

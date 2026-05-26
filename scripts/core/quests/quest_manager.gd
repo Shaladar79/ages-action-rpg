@@ -408,13 +408,18 @@ func _build_quest_data_from_entry(quest_entry: QuestEntry) -> Dictionary:
         "completion_mode": completion_mode_string,
         "ready_to_turn_in": false,
         "objectives": objectives,
+
         "reward_xp": maxi(0, quest_entry.reward_xp),
         "reward_currency_id": quest_entry.reward_currency_id,
         "reward_currency_amount": maxi(0, quest_entry.reward_currency_amount),
         "reward_item_1_id": quest_entry.reward_item_1_id,
         "reward_item_1_quantity": maxi(0, quest_entry.reward_item_1_quantity),
         "reward_item_2_id": quest_entry.reward_item_2_id,
-        "reward_item_2_quantity": maxi(0, quest_entry.reward_item_2_quantity)
+        "reward_item_2_quantity": maxi(0, quest_entry.reward_item_2_quantity),
+
+        "is_faction_quest": false,
+        "reward_faction_id": "",
+        "reward_faction_points": 0
     }
 
 
@@ -483,6 +488,47 @@ func _apply_quest_rewards(quest_data: Dictionary, reward_player: Node) -> void:
         int(quest_data.get("reward_item_2_quantity", 0)),
         "Item Reward 2"
     )
+
+    _grant_faction_reward(quest_data)
+
+func _grant_faction_reward(quest_data: Dictionary) -> void:
+    if not bool(quest_data.get("is_faction_quest", false)):
+        return
+
+    var faction_id: String = str(quest_data.get("reward_faction_id", "")).strip_edges()
+    var faction_points: int = int(quest_data.get("reward_faction_points", 0))
+
+    if faction_id == "":
+        return
+
+    if faction_points == 0:
+        return
+
+    if FactionManager == null:
+        push_warning("Quest faction reward failed. FactionManager is missing.")
+        return
+
+    if not FactionManager.has_method("add_faction_points"):
+        push_warning("Quest faction reward failed. FactionManager is missing add_faction_points().")
+        return
+
+    var granted := FactionManager.add_faction_points(faction_id, faction_points)
+
+    if not granted:
+        push_warning("Quest faction reward failed for faction: " + faction_id)
+        return
+
+    var faction_name := faction_id
+
+    if FactionDatabase.faction_exists(faction_id):
+        faction_name = FactionDatabase.get_faction_name(faction_id)
+
+    if faction_points > 0:
+        _show_reward_notification("Gained: " + str(faction_points) + " " + faction_name + " Faction")
+    else:
+        _show_reward_notification("Lost: " + str(abs(faction_points)) + " " + faction_name + " Faction")
+
+    print("Quest faction reward granted: ", faction_id, " ", faction_points)
 
 func _grant_item_reward(reward_player: Node, item_id: String, quantity: int, reward_label: String) -> void:
     var clean_item_id := item_id.strip_edges()

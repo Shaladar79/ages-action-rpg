@@ -23,6 +23,7 @@ RespawnManager="*uid://2igm5tue23x5"
 SaveManager="*uid://pxolsc0gtgmm"
 SceneTransitionManager="*uid://cc1eyfq00es7s"
 QuestManager="*uid://pfynp8y3ybqv"
+FactionManager="*uid://d0ie25rdnhf6e"
 
 [display]
 
