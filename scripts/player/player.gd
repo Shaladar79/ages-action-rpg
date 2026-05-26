@@ -320,7 +320,36 @@ func take_status_tick_damage(incoming_damage: int, incoming_damage_types: int = 
 
     if character_stats.current_health <= 0:
         _on_player_defeated()
-        
+ 
+func gain_xp(amount: int) -> bool:
+    if is_defeated:
+        return false
+
+    if amount <= 0:
+        return false
+
+    if character_stats == null:
+        return false
+
+    var previous_level: int = character_stats.level
+    var leveled_up := character_stats.add_xp(amount)
+    var current_level: int = character_stats.level
+
+    print("Player gained XP: ", amount)
+    print("Player XP: ", character_stats.xp, " / ", character_stats.xp_to_next_level)
+
+    _notify_ui_stats_changed()
+
+    if leveled_up:
+        print("Player leveled up from ", previous_level, " to ", current_level)
+
+        if not SaveManager.is_flag_set("level_up_lesson_seen"):
+            _show_first_level_up_lesson()
+        else:
+            print("Level-up lesson already seen. Skipping repeated level-up dialogue.")
+
+    return leveled_up
+       
 func _show_first_level_up_lesson() -> void:
     if SaveManager.is_flag_set("level_up_lesson_seen"):
         return

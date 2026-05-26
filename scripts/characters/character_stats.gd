@@ -106,8 +106,15 @@ func get_xp_required_for_current_level() -> int:
 
 
 func spend_stat_point(stat_id: String) -> bool:
-    if stat_points <= 0:
-        print("No stat points available.")
+    var cost := get_stat_point_cost(stat_id)
+
+    if cost <= 0:
+        push_warning("Unknown stat id: " + stat_id)
+        return false
+
+    if stat_points < cost:
+        print("Not enough stat points for: ", stat_id)
+        print("Required: ", cost, " Available: ", stat_points)
         return false
 
     match stat_id:
@@ -127,15 +134,37 @@ func spend_stat_point(stat_id: String) -> bool:
             push_warning("Unknown stat id: " + stat_id)
             return false
 
-    stat_points -= 1
+    stat_points -= cost
     recalculate_derived_stats(true)
 
-    print("Spent stat point on: ", stat_id)
+    print("Spent stat points on: ", stat_id)
+    print("Cost: ", cost)
     print("Remaining Stat Points: ", stat_points)
 
     return true
+func get_stat_point_cost(stat_id: String) -> int:
+    match stat_id:
+        "might":
+            return maxi(1, might)
 
+        "agility":
+            return maxi(1, agility)
 
+        "toughness":
+            return maxi(1, toughness)
+
+        "endurance":
+            return maxi(1, endurance)
+
+        "focus":
+            return maxi(1, focus)
+
+        "speed":
+            return maxi(1, speed - 9)
+
+        _:
+            return 0
+            
 func unlock_mana_resource(fill_current_mana: bool = true) -> bool:
     var was_locked := not has_mana_resource
 

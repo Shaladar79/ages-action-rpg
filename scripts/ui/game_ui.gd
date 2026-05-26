@@ -308,6 +308,8 @@ func refresh_character_display() -> void:
     _update_hud()
     _update_character_screen()
     refresh_quest_display()
+    refresh_faction_display()
+    refresh_mastery_display()
 
 
 func show_save_prompt(save_player: Node, message: String = "Do you want to save your game?") -> void:
