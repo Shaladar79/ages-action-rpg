@@ -45,7 +45,31 @@ func clear_runtime_world_state() -> void:
 
     if FactionManager != null and FactionManager.has_method("clear_faction_state"):
         FactionManager.clear_faction_state()
+    
+    if MasteryManager != null and MasteryManager.has_method("clear_mastery_state"):
+        MasteryManager.clear_mastery_state()
 
+func _get_mastery_save_data() -> Dictionary:
+    if MasteryManager == null:
+        return {}
+
+    if MasteryManager.has_method("get_mastery_save_data"):
+        return MasteryManager.get_mastery_save_data()
+
+    return {}
+
+
+func _apply_mastery_data(save_data: Dictionary) -> void:
+    var saved_mastery_data: Dictionary = save_data.get("mastery_data", {})
+
+    if MasteryManager == null:
+        return
+
+    if MasteryManager.has_method("load_mastery_save_data"):
+        MasteryManager.load_mastery_save_data(saved_mastery_data)
+        return
+
+    push_warning("MasteryManager does not have load_mastery_save_data(). Mastery data was not loaded.")
 
 func mark_monster_defeated(monster_persistent_id: String) -> void:
     if monster_persistent_id.strip_edges() == "":
@@ -263,6 +287,7 @@ func save_game(player: Node) -> bool:
         "hotbar_slots": _get_player_hotbar_slots(player),
         "currency_data": _get_player_currency_save_data(player),
         "faction_data": _get_faction_save_data(),
+        "mastery_data": _get_mastery_save_data(),
         "respawn": _build_respawn_data(),
         "quest_data": _get_quest_save_data(),
         "world_state": _build_world_state_data()
@@ -316,6 +341,7 @@ func load_game_from_menu() -> void:
     _apply_world_state_data(save_data)
     _apply_quest_data(save_data)
     _apply_faction_data(save_data)
+    _apply_mastery_data(save_data)
 
     var scene_path: String = save_data.get("scene_path", "")
 
@@ -347,6 +373,7 @@ func apply_pending_loaded_data(player: Node) -> void:
     _apply_hotbar_slots(player, pending_loaded_data)
     _apply_currency_data(player, pending_loaded_data)
     _apply_faction_data(pending_loaded_data)
+    _apply_mastery_data(pending_loaded_data)
     _apply_respawn_data(pending_loaded_data)
     _apply_world_state_data(pending_loaded_data)
     _apply_quest_data(pending_loaded_data)

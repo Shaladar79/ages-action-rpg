@@ -24,6 +24,7 @@ SaveManager="*uid://pxolsc0gtgmm"
 SceneTransitionManager="*uid://cc1eyfq00es7s"
 QuestManager="*uid://pfynp8y3ybqv"
 FactionManager="*uid://d0ie25rdnhf6e"
+MasteryManager="*uid://crh5mdyo82eci"
 
 [display]
 

@@ -129,12 +129,16 @@ func _try_hit_target(target: Node) -> void:
     if target.is_in_group("player"):
         return
 
-    if not target.has_method("take_damage_with_types") and not target.has_method("take_damage"):
+    if not target.has_method("take_ranged_damage_from_player") \
+            and not target.has_method("take_damage_with_types") \
+            and not target.has_method("take_damage"):
         return
 
     has_hit = true
 
-    if target.has_method("take_damage_with_types"):
+    if target.has_method("take_ranged_damage_from_player"):
+        target.take_ranged_damage_from_player(damage_amount, damage_types, caster)
+    elif target.has_method("take_damage_with_types"):
         target.take_damage_with_types(damage_amount, damage_types, caster)
     elif target.has_method("take_damage"):
         target.take_damage(damage_amount)

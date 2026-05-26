@@ -276,6 +276,13 @@ func refresh_faction_display() -> void:
     if character_sheet_list_ui.has_method("refresh_faction_display"):
         character_sheet_list_ui.refresh_faction_display()
 
+func refresh_mastery_display() -> void:
+    if character_sheet_list_ui == null:
+        return
+
+    if character_sheet_list_ui.has_method("refresh_mastery_display"):
+        character_sheet_list_ui.refresh_mastery_display()
+        
 func should_block_player_interact() -> bool:
     if is_story_dialogue_active():
         return true

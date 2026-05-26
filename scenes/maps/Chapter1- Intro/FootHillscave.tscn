@@ -69,18 +69,6 @@ texture = ExtResource("1_rqo2q")
 
 [node name="Player" parent="." unique_id=949372820 groups=["player"] instance=ExtResource("4_xnhdc")]
 position = Vector2(1289, 151)
-attack_damage_window = null
-weapon_visual_duration = null
-base_attack_cooldown = null
-attack_speed_bonus_per_agility = null
-respawn_delay = null
-spell_projectile_speed = null
-spell_projectile_spawn_offset = null
-spell_projectile_collision_layer = null
-spell_projectile_collision_mask = null
-ranged_attack_cooldown = null
-ranged_projectile_collision_layer = null
-ranged_projectile_collision_mask = null
 
 [node name="Monsters" type="Node2D" parent="." unique_id=1587593676]
 

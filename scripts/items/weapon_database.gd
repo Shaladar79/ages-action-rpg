@@ -21,6 +21,8 @@ static func get_item_data(item_id: String) -> Dictionary:
                     "breakable_tool"
                 ],
 
+                "weapon_mastery_id": MasteryDatabase.WEAPON_CLUB,
+
                 "attack_bonus": 1,
                 "damage_types": DamageTypes.BASHING,
 
@@ -40,6 +42,8 @@ static func get_item_data(item_id: String) -> Dictionary:
                     "ranged_weapon",
                     "sling"
                 ],
+
+                "weapon_mastery_id": MasteryDatabase.WEAPON_SLING,
 
                 "attack_bonus": 1,
                 "damage_types": DamageTypes.BASHING,

@@ -192,6 +192,24 @@ static func get_weapon_projectile_spawn_offset(item_id: String) -> float:
 
     return float(item_data.get("projectile_spawn_offset", 18.0))
 
+static func get_weapon_mastery_id(item_id: String) -> String:
+    var item_data := get_item_data(item_id)
+
+    if item_data.is_empty():
+        return ""
+
+    var mastery_id := str(item_data.get("weapon_mastery_id", "")).strip_edges()
+
+    if mastery_id != "":
+        return mastery_id
+
+    if item_data.has("breakable_tool_tag"):
+        mastery_id = str(item_data.get("breakable_tool_tag", "")).strip_edges()
+
+        if mastery_id != "":
+            return mastery_id
+
+    return item_id.strip_edges()
 
 static func get_weapon_projectile_color(item_id: String) -> Color:
     var item_data := get_item_data(item_id)

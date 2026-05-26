@@ -1066,11 +1066,55 @@ func get_equipped_accessory_2_name() -> String:
 
 
 func get_attack_damage() -> int:
-    return character_stats.get_attack()
+    var base_damage: int = character_stats.get_attack()
+    var mastery_id := get_equipped_melee_weapon_mastery_id()
 
+    if mastery_id.strip_edges() == "":
+        return base_damage
+
+    if MasteryManager == null:
+        return base_damage
+
+    var multiplier: float = MasteryManager.get_weapon_damage_multiplier(mastery_id)
+
+    return maxi(1, int(ceil(float(base_damage) * multiplier)))
+
+func get_equipped_melee_weapon_mastery_id() -> String:
+    if character_stats == null:
+        return ""
+
+    var weapon_id := character_stats.equipped_melee_weapon_id.strip_edges()
+
+    if weapon_id == "":
+        return ""
+
+    return ItemDatabase.get_weapon_mastery_id(weapon_id)
+
+
+func get_equipped_ranged_weapon_mastery_id() -> String:
+    if character_stats == null:
+        return ""
+
+    var weapon_id := character_stats.equipped_ranged_weapon_id.strip_edges()
+
+    if weapon_id == "":
+        return ""
+
+    return ItemDatabase.get_weapon_mastery_id(weapon_id)
 
 func get_ranged_attack_damage() -> int:
-    return character_stats.get_ranged_attack()
+    var base_damage: int = character_stats.get_ranged_attack()
+    var mastery_id := get_equipped_ranged_weapon_mastery_id()
+
+    if mastery_id.strip_edges() == "":
+        return base_damage
+
+    if MasteryManager == null:
+        return base_damage
+
+    var multiplier: float = MasteryManager.get_weapon_damage_multiplier(mastery_id)
+
+    return maxi(1, int(ceil(float(base_damage) * multiplier)))
 
 
 func get_defense() -> int:
@@ -1435,11 +1479,30 @@ func _use_hotbar_spell_book(slot_number: int, item_id: String) -> bool:
             )
 
     _set_hotbar_slot_cooldown(slot_number, cooldown)
+    _record_spell_school_mastery_cast(item_id)
 
     print("Cast spell from hotbar slot ", slot_number, ": ", ItemDatabase.get_spell_name(item_id))
     _notify_ui_stats_changed()
 
     return true
+    
+func _record_spell_school_mastery_cast(item_id: String) -> void:
+    var spell_school := ItemDatabase.get_spell_school(item_id).strip_edges()
+
+    if spell_school == "":
+        return
+
+    if MasteryManager == null:
+        return
+
+    if not MasteryManager.has_method("add_school_cast"):
+        return
+
+    var added := MasteryManager.add_school_cast(spell_school, 1)
+
+    if added:
+        print("School mastery cast added: ", spell_school)    
+    
 func _cast_self_buff_spell(item_id: String, status_effect: String, status_duration: float) -> void:
     var status_effect_data := {
         StatusEffects.KEY_MOVE_SPEED_MULTIPLIER: ItemDatabase.get_spell_move_speed_multiplier(item_id)

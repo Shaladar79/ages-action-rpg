@@ -446,6 +446,8 @@ var flash_tween: Tween = null
 
 var active_status_effects: Dictionary = {}
 
+var last_player_weapon_mastery_id: String = ""
+
 func _ready() -> void:
     if _should_remove_because_quest_spawn_gate():
         queue_free()
@@ -1012,6 +1014,7 @@ func take_damage_from_player(damage_amount: int, player: Node2D) -> void:
         return
 
     var incoming_damage_types := DamageTypes.NONE
+    last_player_weapon_mastery_id = ""
 
     if player != null and player.has_method("get_character_stats"):
         var stats: CharacterStats = player.get_character_stats()
@@ -1019,13 +1022,31 @@ func take_damage_from_player(damage_amount: int, player: Node2D) -> void:
         if stats != null:
             incoming_damage_types = stats.get_equipped_weapon_damage_types()
 
+    if player != null and player.has_method("get_equipped_melee_weapon_mastery_id"):
+        last_player_weapon_mastery_id = player.get_equipped_melee_weapon_mastery_id()
+
     _apply_damage(damage_amount, incoming_damage_types, player)
 
+func take_ranged_damage_from_player(
+    damage_amount: int,
+    incoming_damage_types: int,
+    player: Node2D
+) -> void:
+    if is_dead:
+        return
+
+    last_player_weapon_mastery_id = ""
+
+    if player != null and player.has_method("get_equipped_ranged_weapon_mastery_id"):
+        last_player_weapon_mastery_id = player.get_equipped_ranged_weapon_mastery_id()
+
+    _apply_damage(damage_amount, incoming_damage_types, player)
 
 func take_damage(damage_amount: int) -> void:
     if is_dead:
         return
 
+    last_player_weapon_mastery_id = ""
     _apply_damage(damage_amount, DamageTypes.NONE, null)
 
 
@@ -1033,6 +1054,7 @@ func take_damage_with_types(damage_amount: int, incoming_damage_types: int, atta
     if is_dead:
         return
 
+    last_player_weapon_mastery_id = ""
     _apply_damage(damage_amount, incoming_damage_types, attacker)
 
 
@@ -1127,8 +1149,9 @@ func die(player: Node2D = null) -> void:
     if _should_save_defeat_state():
         SaveManager.mark_monster_defeated(persistent_id)
 
-    _report_quest_kill_progress()
+        _report_quest_kill_progress()
 
+    _award_weapon_mastery_kill_if_eligible(player)
     _award_xp_to_player_if_eligible(player)
     _roll_drops_for_player(player)
     monster_defeated.emit(self, player)
@@ -1303,6 +1326,27 @@ func _get_game_ui() -> Node:
 
     return null
 
+func _award_weapon_mastery_kill_if_eligible(player: Node2D) -> void:
+    if player == null:
+        last_player_weapon_mastery_id = ""
+        return
+
+    var mastery_id := last_player_weapon_mastery_id.strip_edges()
+    last_player_weapon_mastery_id = ""
+
+    if mastery_id == "":
+        return
+
+    if MasteryManager == null:
+        return
+
+    if not MasteryManager.has_method("add_weapon_kill"):
+        return
+
+    var added := MasteryManager.add_weapon_kill(mastery_id, 1)
+
+    if added:
+        print(monster_name, " awarded weapon mastery kill: ", mastery_id)
 
 func _award_xp_to_player_if_eligible(player: Node2D) -> void:
     if player == null:
