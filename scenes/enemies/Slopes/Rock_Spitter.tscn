@@ -254,9 +254,9 @@ script = ExtResource("1_3h42a")
 persistent_id = "RS_"
 monster_name = "Rock Spitter Lv3"
 monster_level = 3
-max_hit_points = 6
+max_hit_points = 10
 defense = 1
-xp_reward = 3
+xp_reward = 5
 drop_currency_chance_percent = 50.5
 move_speed = 20.0
 detection_range = 200.0
@@ -264,8 +264,9 @@ ranged_damage = 4
 ranged_damage_types = 1
 special_attacks_enabled = true
 projectile_enabled = true
-projectile_damage = 3
+projectile_damage = 5
 projectile_texture = ExtResource("2_hagbl")
+projectile_use_line_telegraph = false
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=1026028676]
 sprite_frames = SubResource("SpriteFrames_fvuhv")

@@ -4,6 +4,7 @@
 [ext_resource type="Texture2D" uid="uid://d0kcgxlie1vcu" path="res://art/characters/NPC/Vultar_QuestGiver.png" id="1_ccnkj"]
 [ext_resource type="Script" uid="uid://dt5yvut01s10s" path="res://scripts/core/quests/quest_entry.gd" id="2_0771m"]
 [ext_resource type="Script" uid="uid://pomcudkoxce3" path="res://scripts/core/quests/quest_objective_entry.gd" id="3_gsmfx"]
+[ext_resource type="Texture2D" uid="uid://dyu17wmfc675" path="res://art/Assets/NewSprites/Vultar_QuestGiver.png" id="4_52vxj"]
 
 [sub_resource type="Resource" id="Resource_gsmfx"]
 script = ExtResource("3_gsmfx")
@@ -27,16 +28,16 @@ completed_dialogue = "You have already helped us."
 objectives = Array[ExtResource("3_gsmfx")]([SubResource("Resource_gsmfx")])
 metadata/_custom_type_script = "uid://dt5yvut01s10s"
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_48lvm"]
-atlas = ExtResource("1_ccnkj")
+[sub_resource type="AtlasTexture" id="AtlasTexture_0aher"]
+atlas = ExtResource("4_52vxj")
 region = Rect2(72, 0, 72, 72)
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_0771m"]
-atlas = ExtResource("1_ccnkj")
+[sub_resource type="AtlasTexture" id="AtlasTexture_nwffr"]
+atlas = ExtResource("4_52vxj")
 region = Rect2(72, 72, 72, 72)
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_gsmfx"]
-atlas = ExtResource("1_ccnkj")
+[sub_resource type="AtlasTexture" id="AtlasTexture_6mcy2"]
+atlas = ExtResource("4_52vxj")
 region = Rect2(72, 144, 72, 72)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_52vxj"]
@@ -99,7 +100,7 @@ region = Rect2(144, 216, 72, 72)
 animations = [{
 "frames": [{
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_48lvm")
+"texture": SubResource("AtlasTexture_0aher")
 }],
 "loop": true,
 "name": &"idle_down",
@@ -107,7 +108,7 @@ animations = [{
 }, {
 "frames": [{
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_0771m")
+"texture": SubResource("AtlasTexture_nwffr")
 }],
 "loop": true,
 "name": &"idle_left",
@@ -115,7 +116,7 @@ animations = [{
 }, {
 "frames": [{
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_gsmfx")
+"texture": SubResource("AtlasTexture_6mcy2")
 }],
 "loop": true,
 "name": &"idle_right",

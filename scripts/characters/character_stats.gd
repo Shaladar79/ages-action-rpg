@@ -281,7 +281,10 @@ func get_melee_attack() -> int:
 
 
 func get_ranged_attack() -> int:
-    return base_attack + agility + _get_equipped_ranged_weapon_attack_bonus()
+    var weapon_damage: int = _get_equipped_ranged_weapon_attack_bonus()
+    var agility_bonus: int = int(floor(float(agility) / 2.0))
+
+    return base_attack + weapon_damage + agility_bonus
 
 
 func get_defense() -> int:

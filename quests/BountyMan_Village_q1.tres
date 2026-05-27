@@ -1,0 +1,31 @@
+[gd_resource type="Resource" script_class="QuestEntry" format=3 uid="uid://dq4416vvcbyof"]
+
+[ext_resource type="Script" uid="uid://pomcudkoxce3" path="res://scripts/core/quests/quest_objective_entry.gd" id="1_bv81e"]
+[ext_resource type="Script" uid="uid://dt5yvut01s10s" path="res://scripts/core/quests/quest_entry.gd" id="2_6x388"]
+
+[sub_resource type="Resource" id="Resource_7sfwb"]
+script = ExtResource("1_bv81e")
+objective_id = "kill_rockspitters"
+objective_type = 1
+objective_text = "Kill Rock Spitters On the Slopes"
+required_amount = 10
+completed_flag = "VillageBounty1Clr"
+metadata/_custom_type_script = "uid://pomcudkoxce3"
+
+[resource]
+script = ExtResource("2_6x388")
+quest_id = "village_rockspitter_clear"
+quest_title = "The Angry Mountain"
+started_flag = "KillRockSpitterStart"
+ready_to_turn_in_flag = "KillRockSpitterDone"
+completed_flag = "KillRockSpitterComp"
+required_flag = "beatle_1_comp"
+first_time_dialogue = "Hey Man you look tough. You see the montain is getting angry. So you see the Rock  Spitters look like they are going to move this way, can you go Kill the Rock Spitters on the Slopes."
+active_dialogue = "Did you kill the yet?"
+ready_to_turn_in_dialogue = "Oh, Good we are safer now that you cleared them out."
+completed_dialogue = "Oh I think I know why the Rock Spitters were moving this way. Speak to me again I'll tell you more."
+objectives = Array[ExtResource("1_bv81e")]([SubResource("Resource_7sfwb")])
+reward_xp = 10
+reward_currency_id = "shines"
+reward_currency_amount = 50
+metadata/_custom_type_script = "uid://dt5yvut01s10s"

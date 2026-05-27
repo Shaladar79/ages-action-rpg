@@ -1,0 +1,30 @@
+[gd_resource type="Resource" script_class="QuestEntry" format=3 uid="uid://vwu5d8tk5vcy"]
+
+[ext_resource type="Script" uid="uid://pomcudkoxce3" path="res://scripts/core/quests/quest_objective_entry.gd" id="1_3q7ue"]
+[ext_resource type="Script" uid="uid://dt5yvut01s10s" path="res://scripts/core/quests/quest_entry.gd" id="2_nypte"]
+
+[sub_resource type="Resource" id="Resource_h83v4"]
+script = ExtResource("1_3q7ue")
+objective_id = "turret_dead"
+objective_type = 1
+objective_text = "Kill Turret"
+metadata/_custom_type_script = "uid://pomcudkoxce3"
+
+[resource]
+script = ExtResource("2_nypte")
+quest_id = "kill_turret"
+quest_title = "Kill Turret The Rock Beast"
+started_flag = "turret_start"
+ready_to_turn_in_flag = "turret_done"
+completed_flag = "turret_comp"
+first_time_dialogue = "I've fiqured out why the Rock Spitters were moving towards the village, Turret the Rock Beast that eats Rockspitters was hunting them. Kill it to make sure it dosent happen again."
+active_dialogue = "Go Kill Turret"
+ready_to_turn_in_dialogue = "You killed turret, please except these rewards."
+completed_dialogue = "Thanks for your help, Return to the guy at the entrance of the village he should have more work for you."
+objectives = Array[ExtResource("1_3q7ue")]([SubResource("Resource_h83v4")])
+reward_xp = 25
+reward_currency_id = "shines"
+reward_currency_amount = 50
+reward_item_1_id = "amulet_of_minor_defense"
+reward_item_1_quantity = 1
+metadata/_custom_type_script = "uid://dt5yvut01s10s"

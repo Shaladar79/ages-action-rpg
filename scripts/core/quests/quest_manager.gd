@@ -420,9 +420,9 @@ func _build_quest_data_from_entry(quest_entry: QuestEntry) -> Dictionary:
         "reward_item_2_id": quest_entry.reward_item_2_id,
         "reward_item_2_quantity": maxi(0, quest_entry.reward_item_2_quantity),
 
-        "is_faction_quest": false,
-        "reward_faction_id": "",
-        "reward_faction_points": 0
+        "is_faction_quest": quest_entry.is_faction_quest,
+        "reward_faction_id": quest_entry.reward_faction_id,
+        "reward_faction_points": quest_entry.reward_faction_points
     }
 
 

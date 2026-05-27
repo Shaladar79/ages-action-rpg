@@ -1,0 +1,29 @@
+[gd_resource type="Resource" script_class="QuestEntry" format=3 uid="uid://dm0t6hd0pa1h6"]
+
+[ext_resource type="Script" uid="uid://pomcudkoxce3" path="res://scripts/core/quests/quest_objective_entry.gd" id="1_ki4ug"]
+[ext_resource type="Script" uid="uid://dt5yvut01s10s" path="res://scripts/core/quests/quest_entry.gd" id="2_hecxt"]
+
+[sub_resource type="Resource" id="Resource_ub0y7"]
+script = ExtResource("1_ki4ug")
+objective_id = "kill_fb"
+objective_type = 1
+objective_text = "Kill the Invasive Beatle"
+metadata/_custom_type_script = "uid://pomcudkoxce3"
+
+[resource]
+script = ExtResource("2_hecxt")
+quest_id = "village_fb"
+quest_title = "Forrest Beatle Invasion 1"
+quest_type = 0
+started_flag = "village_beatle"
+ready_to_turn_in_flag = "1_beatle_dead"
+completed_flag = "beatle_1_comp"
+first_time_dialogue = "Welcome to our village, Id like to talk more but we have had a Forrest Beatle make its way into the village, and its didrupting our shop. If you could kill it. The shop will start selling Healing Tonics again."
+active_dialogue = "Go kill that Forrest Beatle, its on the west end of town."
+ready_to_turn_in_dialogue = "It's dead, good."
+completed_dialogue = "The shop is open now, but the villager in the west of town has some work for you, He will teach you about bounty quests and factions."
+objectives = Array[ExtResource("1_ki4ug")]([SubResource("Resource_ub0y7")])
+reward_xp = 5
+reward_currency_id = "shines"
+reward_currency_amount = 30
+metadata/_custom_type_script = "uid://dt5yvut01s10s"

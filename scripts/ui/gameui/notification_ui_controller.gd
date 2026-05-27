@@ -1,9 +1,14 @@
 extends RefCounted
 class_name NotificationUiController
 
+const MAX_VISIBLE_NOTIFICATIONS: int = 3
+
 var root_ui: CanvasLayer = null
 var notification_layer: Control = null
 var notification_stack: VBoxContainer = null
+
+var notification_queue: Array[Dictionary] = []
+var visible_notification_count: int = 0
 
 
 func setup(ui_root: CanvasLayer) -> void:
@@ -28,6 +33,24 @@ func show_notification(message: String, duration: float = 2.4) -> void:
     if notification_stack == null:
         return
 
+    var safe_duration := maxf(0.5, duration)
+
+    if visible_notification_count >= MAX_VISIBLE_NOTIFICATIONS:
+        notification_queue.append({
+            "message": clean_message,
+            "duration": safe_duration
+        })
+        return
+
+    _display_notification(clean_message, safe_duration)
+
+
+func _display_notification(message: String, duration: float) -> void:
+    if notification_stack == null:
+        return
+
+    visible_notification_count += 1
+
     var panel := Panel.new()
     panel.name = "NotificationPanel"
     panel.custom_minimum_size = Vector2(320.0, 42.0)
@@ -49,7 +72,7 @@ func show_notification(message: String, duration: float = 2.4) -> void:
 
     var label := Label.new()
     label.name = "NotificationLabel"
-    label.text = clean_message
+    label.text = message
     label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
     label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
     label.add_theme_font_size_override("font_size", 14)
@@ -59,11 +82,9 @@ func show_notification(message: String, duration: float = 2.4) -> void:
     notification_stack.add_child(panel)
     notification_stack.move_child(panel, notification_stack.get_child_count() - 1)
 
-    var safe_duration := maxf(0.5, duration)
-
     var tween := panel.create_tween()
     tween.tween_property(panel, "modulate:a", 1.0, 0.12)
-    tween.tween_interval(safe_duration)
+    tween.tween_interval(duration)
     tween.tween_property(panel, "modulate:a", 0.0, 0.25)
     tween.finished.connect(_on_notification_finished.bind(panel))
 
@@ -105,10 +126,27 @@ func _create_notification_layer() -> void:
 
 
 func _on_notification_finished(panel: Panel) -> void:
-    if panel == null:
+    if panel != null and is_instance_valid(panel):
+        panel.queue_free()
+
+    visible_notification_count = maxi(0, visible_notification_count - 1)
+
+    call_deferred("_show_next_queued_notification")
+
+
+func _show_next_queued_notification() -> void:
+    if notification_queue.is_empty():
         return
 
-    if not is_instance_valid(panel):
+    if visible_notification_count >= MAX_VISIBLE_NOTIFICATIONS:
         return
 
-    panel.queue_free()
+    var queued_notification: Dictionary = notification_queue.pop_front()
+    var message: String = str(queued_notification.get("message", "")).strip_edges()
+    var duration: float = float(queued_notification.get("duration", 2.4))
+
+    if message == "":
+        _show_next_queued_notification()
+        return
+
+    _display_notification(message, duration)

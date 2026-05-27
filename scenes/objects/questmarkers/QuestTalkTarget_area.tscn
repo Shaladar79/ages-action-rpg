@@ -1,6 +1,6 @@
-[gd_scene format=3 uid="uid://b0kjoqowqeyvs"]
+[gd_scene format=3 uid="uid://c5t3nudr4wcur"]
 
-[ext_resource type="Script" uid="uid://bctg4pa746qnq" path="res://scripts/core/quests/quest_talk_target.gd" id="1_jwtyi"]
+[ext_resource type="Script" uid="uid://bctg4pa746qnq" path="res://scripts/core/quests/quest_talk_target.gd" id="1_axk0j"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_jwtyi"]
 size = Vector2(85, 44)
@@ -9,8 +9,8 @@ size = Vector2(85, 44)
 radius = 14.0
 height = 46.0
 
-[node name="QuestTalkTarget" type="Area2D" unique_id=413590697]
-script = ExtResource("1_jwtyi")
+[node name="QuestTalkTarget_area" type="Area2D" unique_id=413590697]
+script = ExtResource("1_axk0j")
 
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=1962099922]
 
