@@ -135,7 +135,7 @@ quests = Array[ExtResource("6_0oqv1")]([SubResource("Resource_lxxaf")])
 scale = Vector2(0.99999994, 0.99999994)
 script = ExtResource("5_64815")
 
-[node name="CharacterBody2D" type="AnimatedSprite2D" parent="." unique_id=740833633]
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=740833633]
 sprite_frames = SubResource("SpriteFrames_aedj1")
 animation = &"idle_left"
 

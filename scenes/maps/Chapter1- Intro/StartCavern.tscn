@@ -13,6 +13,7 @@
 [ext_resource type="PackedScene" uid="uid://ds0nibabilemd" path="res://scenes/player/Player.tscn" id="11_vfogo"]
 [ext_resource type="Script" uid="uid://c7moacun6f3ci" path="res://scripts/characters/npcs/BackgroundFiles/npc_movement_event_entry.gd" id="12_g1fv5"]
 [ext_resource type="PackedScene" uid="uid://c54peu6mqtky8" path="res://scenes/objects/CollectableClub.tscn" id="12_iyco4"]
+[ext_resource type="Resource" uid="uid://brh3cbe1p8qpg" path="res://quests/RealmOfVultar/StarterCavern/starter_push_rock_lesson.tres" id="12_pbla5"]
 [ext_resource type="PackedScene" uid="uid://pyq76iw1lw5d" path="res://scenes/objects/save_totem.tscn" id="13_7iida"]
 [ext_resource type="Resource" uid="uid://dftku7fp24wd6" path="res://quests/RealmOfVultar/StarterCavern/starter_movement_lesson.tres" id="13_gpagj"]
 [ext_resource type="Script" uid="uid://dt5yvut01s10s" path="res://scripts/core/quests/quest_entry.gd" id="13_wqcy6"]
@@ -28,7 +29,16 @@ script = ExtResource("12_g1fv5")
 event_id = "echo_move_after_movement_quest_started"
 required_flag = "starter_movement_lesson_started"
 completion_save_flag = "echo_moved_after_movement_quest_started"
-target_marker_path = NodePath("../../../EchoSpiritMarker_MovementQuestEnd")
+target_marker_path = NodePath("../../QuestStuff/Markers/EchoSpiritMarker_MovementQuestEnd")
+hide_after_fade_out = false
+metadata/_custom_type_script = "uid://c7moacun6f3ci"
+
+[sub_resource type="Resource" id="Resource_g1fv5"]
+script = ExtResource("12_g1fv5")
+event_id = "echo_move_after_push_rock_quest_started"
+required_flag = "starter_push_rock_lesson_started"
+completion_save_flag = "echo_moved_after_push_rock_quest_started"
+target_marker_path = NodePath("../../QuestStuff/Markers/EchoSpiritMarker_PushRockQuestEnd2")
 hide_after_fade_out = false
 metadata/_custom_type_script = "uid://c7moacun6f3ci"
 
@@ -98,13 +108,13 @@ position = Vector2(158, 371)
 
 [node name="TransitionArea" parent="Objects" unique_id=600252779 instance=ExtResource("4_gpagj")]
 visible = false
-position = Vector2(565, 1074)
+position = Vector2(582, 1119)
 target_marker_path = NodePath("../Marker")
 target_spawn_id = ""
 
 [node name="TransitionArea2" parent="Objects" unique_id=520088292 instance=ExtResource("4_gpagj")]
 visible = false
-position = Vector2(1403, 729)
+position = Vector2(1427, 750)
 target_marker_path = NodePath("../Marker2")
 target_spawn_id = "Marker2"
 
@@ -120,11 +130,10 @@ position = Vector2(1294, 564)
 position = Vector2(407, 536)
 scale = Vector2(0.9, 0.9)
 persistent_id = "PushRock"
-
-[node name="PushRock3" parent="Objects" unique_id=171120929 instance=ExtResource("5_vpebn")]
-position = Vector2(391.00003, 732)
-scale = Vector2(0.9, 0.9)
-persistent_id = "PushRock3"
+quest_id = "starter_push_rock_lesson"
+objective_id = "push_loose_rock_01"
+quest_progress_flag = "starter_push_rock_moved"
+required_flag = "starter_push_rock_lesson_started"
 
 [node name="PushRock5" parent="Objects" unique_id=387110213 instance=ExtResource("5_vpebn")]
 position = Vector2(204, 789)
@@ -206,9 +215,37 @@ position = Vector2(1269, 442)
 persistent_id = "BreakRock13"
 max_hit_points = 2
 
-[node name="Monsters" type="Node2D" parent="." unique_id=1278830268]
+[node name="YSortWorld" type="Node2D" parent="." unique_id=965274766]
+y_sort_enabled = true
 
-[node name="ScBoss" parent="Monsters" unique_id=1453354898 instance=ExtResource("7_g1fv5")]
+[node name="Player" parent="YSortWorld" unique_id=949372820 groups=["player"] instance=ExtResource("11_vfogo")]
+position = Vector2(145, 356)
+
+[node name="EchoSpirit" parent="YSortWorld" unique_id=1989954759 instance=ExtResource("10_vpebn")]
+position = Vector2(188, 363)
+npc_name = "EchoSpirit"
+face_player_on_enter_range = true
+
+[node name="Dialouge" parent="YSortWorld/EchoSpirit" index="0" unique_id=114600574]
+base_dialogue_text = ""
+base_speaker_name_override = "Echo Spirit"
+
+[node name="movement" parent="YSortWorld/EchoSpirit" index="1" unique_id=2116308213]
+movement_events = Array[Resource]([SubResource("Resource_wqcy6"), SubResource("Resource_g1fv5")])
+auto_check_events = false
+
+[node name="Quest" parent="YSortWorld/EchoSpirit" index="2" unique_id=1651262223]
+quests = Array[ExtResource("13_wqcy6")]([ExtResource("13_gpagj"), ExtResource("12_pbla5")])
+trigger_movement_after_start_dialogue = true
+
+[node name="Shop" parent="YSortWorld/EchoSpirit" index="3" unique_id=1154396758]
+enabled = false
+
+[node name="Monsters" type="Node2D" parent="YSortWorld/EchoSpirit" unique_id=1278830268]
+position = Vector2(-234.99998, -453.74997)
+scale = Vector2(1.2499999, 1.2499999)
+
+[node name="ScBoss" parent="YSortWorld/EchoSpirit/Monsters" unique_id=1453354898 instance=ExtResource("7_g1fv5")]
 position = Vector2(1211, 296)
 script = ExtResource("8_wqcy6")
 persistent_id = "SCBoss"
@@ -226,71 +263,46 @@ aoe_damage_types = 1
 aoe_cooldown = 5.0
 slam_width = 48.0
 
-[node name="StartCavern Earthling" parent="Monsters" unique_id=1655329841 instance=ExtResource("9_yytj5")]
+[node name="StartCavern Earthling" parent="YSortWorld/EchoSpirit/Monsters" unique_id=1655329841 instance=ExtResource("9_yytj5")]
 position = Vector2(829, 441)
 persistent_id = "SCEarth1"
 drop_currency_max_amount = 4
 
-[node name="StartCavern Earthling2" parent="Monsters" unique_id=1629732996 instance=ExtResource("9_yytj5")]
+[node name="StartCavern Earthling2" parent="YSortWorld/EchoSpirit/Monsters" unique_id=1629732996 instance=ExtResource("9_yytj5")]
 position = Vector2(741, 578)
 persistent_id = "SCEarth2"
 
-[node name="StartCavern Earthling3" parent="Monsters" unique_id=1093796272 instance=ExtResource("9_yytj5")]
+[node name="StartCavern Earthling3" parent="YSortWorld/EchoSpirit/Monsters" unique_id=1093796272 instance=ExtResource("9_yytj5")]
 position = Vector2(861, 647)
 persistent_id = "SCEarth3"
 
-[node name="StartCavern Earthling4" parent="Monsters" unique_id=810886055 instance=ExtResource("9_yytj5")]
+[node name="StartCavern Earthling4" parent="YSortWorld/EchoSpirit/Monsters" unique_id=810886055 instance=ExtResource("9_yytj5")]
 position = Vector2(759, 697)
 persistent_id = "SCEarth4"
 
-[node name="StartCavern Earthling5" parent="Monsters" unique_id=14868799 instance=ExtResource("9_yytj5")]
+[node name="StartCavern Earthling5" parent="YSortWorld/EchoSpirit/Monsters" unique_id=14868799 instance=ExtResource("9_yytj5")]
 position = Vector2(1212, 706)
 persistent_id = "SCEarth5"
 
-[node name="StartCavern Earthling6" parent="Monsters" unique_id=1366198870 instance=ExtResource("9_yytj5")]
+[node name="StartCavern Earthling6" parent="YSortWorld/EchoSpirit/Monsters" unique_id=1366198870 instance=ExtResource("9_yytj5")]
 position = Vector2(1220, 580)
 persistent_id = "SCEarth6"
 
-[node name="StartCavern Earthling7" parent="Monsters" unique_id=235897523 instance=ExtResource("9_yytj5")]
+[node name="StartCavern Earthling7" parent="YSortWorld/EchoSpirit/Monsters" unique_id=235897523 instance=ExtResource("9_yytj5")]
 position = Vector2(1280, 497)
 persistent_id = "SCEarth7"
 
-[node name="StartCavern Earthling8" parent="Monsters" unique_id=798555463 instance=ExtResource("9_yytj5")]
+[node name="StartCavern Earthling8" parent="YSortWorld/EchoSpirit/Monsters" unique_id=798555463 instance=ExtResource("9_yytj5")]
 position = Vector2(1174, 545)
 persistent_id = "SCEarth8"
 
-[node name="StartCavern Earthling9" parent="Monsters" unique_id=328998222 instance=ExtResource("9_yytj5")]
+[node name="StartCavern Earthling9" parent="YSortWorld/EchoSpirit/Monsters" unique_id=328998222 instance=ExtResource("9_yytj5")]
 position = Vector2(1290, 616)
 persistent_id = "SCEarth9"
 
-[node name="StartCavern Earthling10" parent="Monsters" unique_id=2013640142 instance=ExtResource("9_yytj5")]
+[node name="StartCavern Earthling10" parent="YSortWorld/EchoSpirit/Monsters" unique_id=2013640142 instance=ExtResource("9_yytj5")]
 position = Vector2(1141, 507)
 persistent_id = "SCEarth10"
-
-[node name="YSortWorld" type="Node2D" parent="." unique_id=965274766]
-y_sort_enabled = true
-
-[node name="EchoSpirit" parent="YSortWorld" unique_id=1989954759 instance=ExtResource("10_vpebn")]
-position = Vector2(188, 363)
-npc_name = "EchoSpirit"
-
-[node name="Dialouge" parent="YSortWorld/EchoSpirit" index="0" unique_id=114600574]
-base_dialogue_text = ""
-base_speaker_name_override = "Echo Spirit"
-
-[node name="movement" parent="YSortWorld/EchoSpirit" index="1" unique_id=2116308213]
-movement_events = Array[Resource]([SubResource("Resource_wqcy6")])
-auto_check_events = false
-
-[node name="Quest" parent="YSortWorld/EchoSpirit" index="2" unique_id=1651262223]
-quests = Array[ExtResource("13_wqcy6")]([ExtResource("13_gpagj")])
-trigger_movement_after_start_dialogue = true
-
-[node name="Shop" parent="YSortWorld/EchoSpirit" index="3" unique_id=1154396758]
-enabled = false
-
-[node name="Player" parent="YSortWorld" unique_id=949372820 groups=["player"] instance=ExtResource("11_vfogo")]
-position = Vector2(145, 356)
 
 [node name="CollectableClub" parent="YSortWorld" unique_id=524225198 instance=ExtResource("12_iyco4")]
 z_index = -1
@@ -316,6 +328,28 @@ position = Vector2(1332, 846)
 persistent_id = "HT_2"
 drop_item_id = "healing_tonic"
 
+[node name="QuestStuff" type="Node2D" parent="YSortWorld" unique_id=572489815]
+
+[node name="Markers" type="Node2D" parent="YSortWorld/QuestStuff" unique_id=36210484]
+
+[node name="EchoSpiritMarker_MovementQuestEnd" parent="YSortWorld/QuestStuff/Markers" unique_id=175386698 instance=ExtResource("22_2ewpr")]
+position = Vector2(341, 545)
+
+[node name="EchoSpiritMarker_PushRockQuestEnd2" parent="YSortWorld/QuestStuff/Markers" unique_id=1082482695 instance=ExtResource("22_2ewpr")]
+position = Vector2(309, 810)
+
+[node name="ProgressAreas" type="Node2D" parent="YSortWorld/QuestStuff" unique_id=2048571248]
+
+[node name="QuestProgressArea" parent="YSortWorld/QuestStuff/ProgressAreas" unique_id=1142422050 instance=ExtResource("14_vpebn")]
+position = Vector2(251, 519)
+scale = Vector2(1.2, 1.2)
+collision_mask = 255
+quest_id = "starter_movement_lesson"
+objective_id = "reach_echo_spirit_location_01"
+persistent_id = "starter_movement_lesson_target_area_01"
+remove_if_already_triggered = false
+required_flag = "starter_movement_lesson_started"
+
 [node name="MapTransitionArea" parent="." unique_id=1344752193 instance=ExtResource("15_ayirs")]
 visible = false
 position = Vector2(1299, 198)
@@ -326,18 +360,5 @@ target_spawn_id = "From_Start_Cavern"
 visible = false
 position = Vector2(1299, 199)
 rotation = -0.009365366
-
-[node name="EchoSpiritMarker_MovementQuestEnd" parent="." unique_id=175386698 instance=ExtResource("22_2ewpr")]
-position = Vector2(341, 545)
-
-[node name="QuestProgressArea" parent="." unique_id=1142422050 instance=ExtResource("14_vpebn")]
-position = Vector2(251, 519)
-scale = Vector2(1.2, 1.2)
-collision_mask = 255
-quest_id = "starter_movement_lesson"
-objective_id = "reach_echo_spirit_location_01"
-persistent_id = "starter_movement_lesson_target_area_01"
-remove_if_already_triggered = false
-required_flag = "starter_movement_lesson_started"
 
 [editable path="YSortWorld/EchoSpirit"]
