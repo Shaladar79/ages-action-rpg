@@ -12,17 +12,20 @@
 [ext_resource type="PackedScene" uid="uid://bglm47en21e7h" path="res://scenes/npcs/RealmVultar/questgivers/EchoSpirit.tscn" id="10_vpebn"]
 [ext_resource type="PackedScene" uid="uid://ds0nibabilemd" path="res://scenes/player/Player.tscn" id="11_vfogo"]
 [ext_resource type="Script" uid="uid://c7moacun6f3ci" path="res://scripts/characters/npcs/BackgroundFiles/npc_movement_event_entry.gd" id="12_g1fv5"]
-[ext_resource type="PackedScene" uid="uid://c54peu6mqtky8" path="res://scenes/objects/CollectableClub.tscn" id="12_iyco4"]
 [ext_resource type="Resource" uid="uid://brh3cbe1p8qpg" path="res://quests/RealmOfVultar/StarterCavern/starter_push_rock_lesson.tres" id="12_pbla5"]
 [ext_resource type="PackedScene" uid="uid://pyq76iw1lw5d" path="res://scenes/objects/save_totem.tscn" id="13_7iida"]
+[ext_resource type="Resource" uid="uid://mjkj8vwrk34i" path="res://quests/RealmOfVultar/StarterCavern/starter_puzzle_reset_lesson.tres" id="13_g1fv5"]
 [ext_resource type="Resource" uid="uid://dftku7fp24wd6" path="res://quests/RealmOfVultar/StarterCavern/starter_movement_lesson.tres" id="13_gpagj"]
 [ext_resource type="Script" uid="uid://dt5yvut01s10s" path="res://scripts/core/quests/quest_entry.gd" id="13_wqcy6"]
 [ext_resource type="PackedScene" uid="uid://clxr5342eb6d" path="res://scenes/objects/questmarkers/QuestProgressArea.tscn" id="14_vpebn"]
+[ext_resource type="Resource" uid="uid://jw5ckppwb6vu" path="res://quests/RealmOfVultar/StarterCavern/starter_hotbar_and_club_lesson.tres" id="14_wqcy6"]
 [ext_resource type="PackedScene" uid="uid://bql24l7sa24cp" path="res://scenes/objects/PuzzleResetStone.tscn" id="14_xv4x6"]
 [ext_resource type="PackedScene" uid="uid://cihgogaol4td8" path="res://scenes/objects/map_transition_area.tscn" id="15_ayirs"]
 [ext_resource type="PackedScene" uid="uid://b81kib11b5cms" path="res://scenes/objects/Containers/LootContainer_pouch.tscn" id="18_ipecf"]
 [ext_resource type="PackedScene" uid="uid://c22k78g2y6kpn" path="res://scenes/objects/BossGateBlocker.tscn" id="18_x63im"]
 [ext_resource type="PackedScene" uid="uid://5qorurcn4toh" path="res://scenes/objects/movemarkers/QuestMoveMarker.tscn" id="22_2ewpr"]
+[ext_resource type="Texture2D" uid="uid://clp6kh04xasj6" path="res://art/Assets/icons/fullcolor/individual_24x24/icon492.png" id="22_vfogo"]
+[ext_resource type="PackedScene" uid="uid://bivuhglads85l" path="res://scenes/objects/Containers/LootContainer_Club.tscn" id="22_yytj5"]
 
 [sub_resource type="Resource" id="Resource_wqcy6"]
 script = ExtResource("12_g1fv5")
@@ -40,6 +43,24 @@ required_flag = "starter_push_rock_lesson_started"
 completion_save_flag = "echo_moved_after_push_rock_quest_started"
 target_marker_path = NodePath("../../QuestStuff/Markers/EchoSpiritMarker_PushRockQuestEnd2")
 hide_after_fade_out = false
+metadata/_custom_type_script = "uid://c7moacun6f3ci"
+
+[sub_resource type="Resource" id="Resource_yytj5"]
+script = ExtResource("12_g1fv5")
+event_id = "echo_move_after_puzzle_reset_quest_started"
+required_flag = "starter_puzzle_reset_lesson_started"
+completion_save_flag = "echo_moved_after_puzzle_reset_quest_started"
+target_marker_path = NodePath("../../QuestStuff/Markers/EchoSpiritMarker_PuzzleQuestEnd3")
+hide_after_fade_out = false
+metadata/_custom_type_script = "uid://c7moacun6f3ci"
+
+[sub_resource type="Resource" id="Resource_2ewpr"]
+script = ExtResource("12_g1fv5")
+event_id = "echo_move_after_hotbar_and_club_quest_started"
+required_flag = "starter_hotbar_and_club_lesson_started"
+required_quest_id = "echo_moved_after_hotbar_and_club_quest_started"
+completion_save_flag = "echo_moved_after_hotbar_and_club_quest_started"
+target_marker_path = NodePath("../../QuestStuff/Markers/EchoSpiritMarker_MovementQuestEnd")
 metadata/_custom_type_script = "uid://c7moacun6f3ci"
 
 [node name="StartCavern" type="Node2D" unique_id=102575327]
@@ -70,13 +91,13 @@ polygon = PackedVector2Array(249, 8, 247, 145, 329, 277, 379, 313, 421, 441, 386
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="CollisionWalls/Bot_Left" unique_id=1044849009]
 position = Vector2(-1, 4)
-polygon = PackedVector2Array(368, 587, 371, 621, 369, 637, 340, 670, 331, 704, 301, 712, 271, 718, 262, 735, 245, 752, 241, 732, 227, 717, 204, 714, 184, 715, 168, 722, 160, 717, 146, 722, 132, 729, 129, 746, 116, 753, 107, 760, 100, 769, 77, 770, 69, 777, 54, 786, 119, 839, 114, 849, 115, 854, 115, 864, 118, 859, 130, 868, 122, 931, 170, 959, 188, 955, 204, 949, 206, 951, 209, 947, 216, 946, 213, 908, 230, 905, 238, 941, 257, 952, 290, 976, 299, 979, 304, 960, 311, 969, 313, 985, 323, 994, 356, 991, 364, 964, 373, 990, 373, 1082, 1, 1084, 2, 596)
+polygon = PackedVector2Array(368, 587, 371, 621, 369, 637, 340, 670, 331, 704, 301, 712, 271, 718, 262, 735, 277, 780, 221, 790, 207, 777, 227, 717, 204, 714, 184, 715, 168, 722, 160, 717, 146, 722, 132, 729, 118, 732, 107, 742, 98, 753, 88, 761, 67, 789, 68, 807, 87, 830, 95, 847, 101, 859, 106, 863, 115, 864, 124, 869, 130, 868, 154, 873, 181, 867, 180, 954, 204, 949, 206, 951, 209, 947, 216, 946, 212, 926, 231, 923, 238, 941, 257, 952, 290, 976, 299, 979, 304, 960, 311, 969, 313, 985, 323, 994, 356, 991, 364, 964, 373, 990, 373, 1082, 1, 1084, 2, 596)
 
 [node name="Cen_Strip_L" type="StaticBody2D" parent="CollisionWalls" unique_id=1177781128]
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="CollisionWalls/Cen_Strip_L" unique_id=1287960065]
 position = Vector2(-1, 1)
-polygon = PackedVector2Array(372, 997, 424, 1003, 434, 976, 442, 990, 465, 948, 453, 920, 433, 914, 407, 904, 384, 912, 370, 901, 356, 900, 334, 891, 284, 919, 283, 901, 289, 881, 291, 872, 322, 834, 332, 766, 352, 813, 431, 809, 448, 761, 431, 712, 438, 713, 449, 701, 452, 688, 434, 678, 446, 658, 445, 625, 429, 606, 414, 578, 477, 571, 491, 509, 480, 490, 470, 471, 467, 441, 487, 428, 470, 414, 483, 384, 462, 361, 444, 343, 440, 325, 443, 305, 449, 290, 462, 288, 476, 282, 485, 278, 498, 264, 507, 264, 524, 254, 533, 239, 542, 231, 565, 221, 582, 217, 599, 225, 613, 231, 632, 230, 660, 220, 677, 212, 697, 209, 703, 204, 724, 181, 739, 183, 747, 185, 757, 178, 762, 173, 766, 166, 775, 163, 787, 153, 805, 143, 814, 137, 826, 122, 838, 123, 849, 127, 854, 143, 865, 169, 875, 191, 867, 207, 862, 225, 848, 239, 826, 253, 819, 265, 801, 273, 784, 287, 761, 280, 740, 282, 735, 303, 740, 320, 729, 342, 723, 359, 709, 362, 707, 383, 681, 394, 682, 425, 692, 465, 691, 525, 700, 595, 680, 622, 660, 662, 649, 708, 625, 729, 617, 749, 619, 775, 609, 797, 616, 823, 627, 860, 622, 885, 635, 895, 645, 917, 607, 974, 579, 1004, 556, 1046, 547, 1084, 372, 1082)
+polygon = PackedVector2Array(372, 997, 424, 1003, 434, 976, 442, 990, 465, 948, 453, 920, 433, 914, 407, 904, 384, 912, 370, 901, 356, 900, 334, 891, 284, 919, 283, 901, 289, 881, 291, 872, 299, 828, 332, 766, 347, 760, 384, 745, 402, 730, 431, 712, 438, 713, 449, 701, 452, 688, 434, 678, 446, 658, 445, 625, 429, 606, 414, 578, 477, 571, 491, 509, 480, 490, 470, 471, 467, 441, 487, 428, 470, 414, 483, 384, 462, 361, 444, 343, 440, 325, 443, 305, 449, 290, 462, 288, 476, 282, 485, 278, 498, 264, 507, 264, 524, 254, 533, 239, 542, 231, 565, 221, 582, 217, 599, 225, 613, 231, 632, 230, 660, 220, 677, 212, 697, 209, 703, 204, 724, 181, 739, 183, 747, 185, 757, 178, 762, 173, 766, 166, 775, 163, 787, 153, 805, 143, 814, 137, 826, 122, 838, 123, 849, 127, 854, 143, 865, 169, 875, 191, 867, 207, 862, 225, 848, 239, 826, 253, 819, 265, 801, 273, 784, 287, 761, 280, 740, 282, 735, 303, 740, 320, 729, 342, 723, 359, 709, 362, 707, 383, 681, 394, 682, 425, 692, 465, 691, 525, 700, 595, 680, 622, 660, 662, 649, 708, 625, 729, 617, 749, 619, 775, 609, 797, 616, 823, 627, 860, 622, 885, 635, 895, 645, 917, 607, 974, 579, 1004, 556, 1046, 547, 1084, 372, 1082)
 
 [node name="Cen_Top" type="StaticBody2D" parent="CollisionWalls" unique_id=356009182]
 
@@ -130,20 +151,37 @@ position = Vector2(1294, 564)
 position = Vector2(407, 536)
 scale = Vector2(0.9, 0.9)
 persistent_id = "PushRock"
+max_push_count = 1
 quest_id = "starter_push_rock_lesson"
 objective_id = "push_loose_rock_01"
 quest_progress_flag = "starter_push_rock_moved"
 required_flag = "starter_push_rock_lesson_started"
 
 [node name="PushRock5" parent="Objects" unique_id=387110213 instance=ExtResource("5_vpebn")]
-position = Vector2(204, 789)
+position = Vector2(184, 806)
 scale = Vector2(0.8, 0.8)
 persistent_id = "PushRock3"
+max_push_count = 1
+quest_id = "starter_puzzle_reset_lesson"
+objective_id = "move_puzzle_stone_01"
+quest_progress_flag = "starter_puzzle_stone_moved"
+required_flag = "starter_puzzle_reset_lesson_started"
+
+[node name="PushRock6" parent="Objects" unique_id=2072501554 instance=ExtResource("5_vpebn")]
+position = Vector2(128, 841)
+scale = Vector2(0.8, 0.8)
+persistent_id = "PushRock6"
+max_push_count = 1
 
 [node name="PushRock7" parent="Objects" unique_id=1554864028 instance=ExtResource("5_vpebn")]
-position = Vector2(232, 846)
+position = Vector2(226, 858)
 scale = Vector2(0.8, 0.8)
 persistent_id = "PushRock7"
+max_push_count = 1
+quest_id = "starter_puzzle_reset_lesson"
+objective_id = "move_puzzle_stone_01"
+quest_progress_flag = "starter_puzzle_stone_moved"
+required_flag = "starter_puzzle_reset_lesson_started"
 
 [node name="PushRock2" parent="Objects" unique_id=1334004705 instance=ExtResource("5_vpebn")]
 position = Vector2(459, 240)
@@ -231,11 +269,12 @@ base_dialogue_text = ""
 base_speaker_name_override = "Echo Spirit"
 
 [node name="movement" parent="YSortWorld/EchoSpirit" index="1" unique_id=2116308213]
-movement_events = Array[Resource]([SubResource("Resource_wqcy6"), SubResource("Resource_g1fv5")])
+movement_events = Array[Resource]([SubResource("Resource_wqcy6"), SubResource("Resource_g1fv5"), SubResource("Resource_yytj5"), SubResource("Resource_2ewpr")])
+persistent_movement_id = "echo_spirit_starter_cavern"
 auto_check_events = false
 
 [node name="Quest" parent="YSortWorld/EchoSpirit" index="2" unique_id=1651262223]
-quests = Array[ExtResource("13_wqcy6")]([ExtResource("13_gpagj"), ExtResource("12_pbla5")])
+quests = Array[ExtResource("13_wqcy6")]([ExtResource("13_gpagj"), ExtResource("12_pbla5"), ExtResource("13_g1fv5"), ExtResource("14_wqcy6")])
 trigger_movement_after_start_dialogue = true
 
 [node name="Shop" parent="YSortWorld/EchoSpirit" index="3" unique_id=1154396758]
@@ -304,24 +343,34 @@ persistent_id = "SCEarth9"
 position = Vector2(1141, 507)
 persistent_id = "SCEarth10"
 
-[node name="CollectableClub" parent="YSortWorld" unique_id=524225198 instance=ExtResource("12_iyco4")]
-z_index = -1
-position = Vector2(412, 973)
-persistent_id = "Stone_Club1"
-auto_equip_on_pickup = true
-
 [node name="SaveTotem" parent="YSortWorld" unique_id=528667636 instance=ExtResource("13_7iida")]
-position = Vector2(870, 80)
+position = Vector2(331, 722)
 
 [node name="PuzzleResetStone" parent="YSortWorld" unique_id=244382430 instance=ExtResource("14_xv4x6")]
-position = Vector2(289, 734)
+position = Vector2(301, 752)
 scale = Vector2(0.2, 0.2)
 push_object_paths = Array[NodePath]([NodePath("../../Objects/PushRock5"), NodePath("../../Objects/PushRock7")])
+quest_id = "starter_puzzle_reset_lesson"
+objective_id = "use_puzzle_reset_stone_01"
+quest_progress_flag = "Quest Progress Flag:starter_puzzle_reset_used"
+required_flag = "starter_puzzle_reset_lesson_started"
 
 [node name="LootContainer_HealingTonic" parent="YSortWorld" unique_id=1056668251 instance=ExtResource("18_ipecf")]
-position = Vector2(127, 822)
+position = Vector2(131, 762)
 persistent_id = "HT_1"
 drop_item_id = "healing_tonic"
+quest_progress_enabled = true
+quest_id = "starter_puzzle_reset_lesson"
+objective_id = "collect_puzzle_pouch_01"
+
+[node name="LootContainer_StoneClub" parent="YSortWorld" unique_id=401070892 instance=ExtResource("22_yytj5")]
+position = Vector2(422.00003, 960)
+scale = Vector2(0.6, 0.6)
+closed_texture = ExtResource("22_vfogo")
+drop_item_id = "club"
+quest_progress_enabled = true
+quest_id = "starter_hotbar_and_club_lesson"
+objective_id = "pickup_stone_club_01"
 
 [node name="LootContainer_HealingTonic2" parent="YSortWorld" unique_id=1498576120 instance=ExtResource("18_ipecf")]
 position = Vector2(1332, 846)
@@ -333,10 +382,15 @@ drop_item_id = "healing_tonic"
 [node name="Markers" type="Node2D" parent="YSortWorld/QuestStuff" unique_id=36210484]
 
 [node name="EchoSpiritMarker_MovementQuestEnd" parent="YSortWorld/QuestStuff/Markers" unique_id=175386698 instance=ExtResource("22_2ewpr")]
+visible = false
 position = Vector2(341, 545)
 
 [node name="EchoSpiritMarker_PushRockQuestEnd2" parent="YSortWorld/QuestStuff/Markers" unique_id=1082482695 instance=ExtResource("22_2ewpr")]
+visible = false
 position = Vector2(309, 810)
+
+[node name="EchoSpiritMarker_PuzzleQuestEnd3" parent="YSortWorld/QuestStuff/Markers" unique_id=1208148355 instance=ExtResource("22_2ewpr")]
+position = Vector2(361, 956)
 
 [node name="ProgressAreas" type="Node2D" parent="YSortWorld/QuestStuff" unique_id=2048571248]
 

@@ -10,6 +10,12 @@ const ACTION_MOVE_THEN_FADE_OUT: int = 4
 @export_group("Movement Events")
 @export var movement_events: Array[Resource] = []
 
+@export_group("Persistence")
+@export var persistent_movement_id: String = ""
+@export var load_actor_position_on_ready: bool = true
+@export var save_actor_position_after_event: bool = true
+@export var save_actor_position_after_fallback: bool = true
+
 @export_group("Fallback / Manual Event")
 @export var fallback_movement_speed: float = 60.0
 @export var fallback_target_marker_path: NodePath = NodePath("")
@@ -30,6 +36,8 @@ var _check_timer: float = 0.0
 
 func _ready() -> void:
     process_mode = Node.PROCESS_MODE_ALWAYS
+
+    call_deferred("_apply_saved_actor_position_if_needed")
 
     if debug_prints:
         print("NPCMovementModule ready: ", name)
@@ -199,6 +207,9 @@ func _run_event(event: Resource) -> void:
     if event.has_method("mark_complete"):
         event.call("mark_complete")
 
+    if save_actor_position_after_event:
+        _save_actor_position()
+
     if enable_interaction_after_event and npc_actor != null and npc_actor.has_method("set_interaction_enabled"):
         npc_actor.set_interaction_enabled(true)
 
@@ -236,6 +247,9 @@ func _run_fallback_event() -> void:
 
     npc_actor.visible = true
     await _fade_actor_to(1.0, fallback_fade_in_duration)
+
+    if save_actor_position_after_fallback:
+        _save_actor_position()
 
     if npc_actor.has_method("set_interaction_enabled"):
         npc_actor.set_interaction_enabled(true)
@@ -340,3 +354,54 @@ func _fade_actor_to(target_alpha: float, duration: float) -> void:
     tween.tween_property(npc_actor, "modulate:a", target_alpha, safe_duration)
 
     await tween.finished
+
+
+func _apply_saved_actor_position_if_needed() -> void:
+    if not load_actor_position_on_ready:
+        return
+
+    if npc_actor == null:
+        if debug_prints:
+            print("NPCMovementModule cannot load saved position yet. npc_actor is null.")
+        return
+
+    var clean_id := _get_clean_persistent_movement_id()
+
+    if clean_id == "":
+        return
+
+    if not SaveManager.has_persistent_object_position(clean_id):
+        return
+
+    var loaded_position := SaveManager.get_persistent_object_position(clean_id, npc_actor.global_position)
+    npc_actor.global_position = loaded_position
+
+    if debug_prints:
+        print("NPCMovementModule loaded actor position: ", clean_id, " ", loaded_position)
+
+
+func _save_actor_position() -> void:
+    if npc_actor == null:
+        return
+
+    var clean_id := _get_clean_persistent_movement_id()
+
+    if clean_id == "":
+        return
+
+    SaveManager.set_persistent_object_position(clean_id, npc_actor.global_position)
+
+    if debug_prints:
+        print("NPCMovementModule saved actor position: ", clean_id, " ", npc_actor.global_position)
+
+
+func _get_clean_persistent_movement_id() -> String:
+    var clean_id := persistent_movement_id.strip_edges()
+
+    if clean_id != "":
+        return clean_id
+
+    if npc_actor != null:
+        return str(npc_actor.name).strip_edges() + "_movement_position"
+
+    return ""

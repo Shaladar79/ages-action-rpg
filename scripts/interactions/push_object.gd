@@ -8,6 +8,11 @@ class_name PushObject
 @export var push_distance: float = 32.0
 @export var push_duration: float = 0.18
 
+# 0 means unlimited pushes.
+# 1 means this object can only be pushed once.
+# 2+ means this object can be pushed that many times.
+@export var max_push_count: int = 0
+
 @export_group("Quest Progress")
 @export var quest_id: String = ""
 @export var objective_id: String = ""
@@ -29,6 +34,7 @@ class_name PushObject
 
 var is_being_pushed: bool = false
 var starting_position: Vector2 = Vector2.ZERO
+var current_push_count: int = 0
 var _pending_quest_progress: bool = false
 var _quest_progress_recorded: bool = false
 
@@ -36,6 +42,7 @@ var _quest_progress_recorded: bool = false
 func _ready() -> void:
     starting_position = global_position
     _apply_saved_position_if_needed()
+    _load_push_count_state()
     _load_quest_progress_state()
 
 
@@ -50,6 +57,23 @@ func _apply_saved_position_if_needed() -> void:
 
     if debug_prints:
         print("Push object loaded at saved position: ", persistent_id, " ", global_position)
+
+
+func _load_push_count_state() -> void:
+    if persistent_id.strip_edges() == "":
+        return
+
+    if max_push_count <= 0:
+        return
+
+    for push_index in range(1, max_push_count + 1):
+        var push_flag := _get_push_count_flag(push_index)
+
+        if SaveManager.is_flag_set(push_flag):
+            current_push_count = push_index
+
+    if debug_prints and current_push_count > 0:
+        print("Push object loaded push count: ", persistent_id, " count: ", current_push_count)
 
 
 func _load_quest_progress_state() -> void:
@@ -69,6 +93,11 @@ func push_from_player(player: Node2D) -> void:
         return
 
     if player == null:
+        return
+
+    if not can_be_pushed():
+        if debug_prints:
+            print("Push object cannot be pushed anymore: ", name, " count: ", current_push_count, " max: ", max_push_count)
         return
 
     var push_direction := _get_push_direction_from_player(player)
@@ -97,12 +126,27 @@ func push_from_player(player: Node2D) -> void:
         print("Push object moved: ", push_direction)
 
 
+func can_be_pushed() -> bool:
+    if max_push_count <= 0:
+        return true
+
+    return current_push_count < max_push_count
+
+
 func reset_to_starting_position() -> void:
     if is_being_pushed:
         return
 
     global_position = starting_position
+    current_push_count = 0
     save_current_position()
+
+    if persistent_id.strip_edges() != "":
+        for push_index in range(1, max_push_count + 1):
+            var push_flag := _get_push_count_flag(push_index)
+
+            if SaveManager.is_flag_set(push_flag):
+                SaveManager.set_flag(push_flag, false)
 
     if debug_prints:
         print("Push object reset to starting position: ", name, " ", global_position)
@@ -116,6 +160,24 @@ func save_current_position() -> void:
 
     if debug_prints:
         print("Saved push object position: ", persistent_id, " ", global_position)
+
+
+func _save_push_count_state() -> void:
+    if persistent_id.strip_edges() == "":
+        return
+
+    if max_push_count <= 0:
+        return
+
+    for push_index in range(1, current_push_count + 1):
+        SaveManager.set_flag(_get_push_count_flag(push_index), true)
+
+    if debug_prints:
+        print("Saved push object push count: ", persistent_id, " count: ", current_push_count)
+
+
+func _get_push_count_flag(push_index: int) -> String:
+    return persistent_id.strip_edges() + "_push_count_" + str(push_index)
 
 
 func _get_push_direction_from_player(player: Node2D) -> Vector2:
@@ -135,7 +197,10 @@ func _get_push_direction_from_player(player: Node2D) -> Vector2:
 
 func _on_push_finished() -> void:
     is_being_pushed = false
+
+    current_push_count += 1
     save_current_position()
+    _save_push_count_state()
 
     if _pending_quest_progress:
         _pending_quest_progress = false

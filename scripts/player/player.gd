@@ -8,6 +8,11 @@ const CURRENCY_MARKS: String = "marks"
 const CURRENCY_DISPLAY_NAMES: Dictionary = {
     CURRENCY_MARKS: "Marks"
 }
+const QUEST_HOTBAR_AND_CLUB_LESSON_ID: String = "starter_hotbar_and_club_lesson"
+const QUEST_HEALING_TONIC_HOTBAR_OBJECTIVE_ID: String = "equip_healing_tonic_hotbar_01"
+const QUEST_HEALING_TONIC_HOTBAR_FLAG: String = "starter_healing_tonic_hotbar_equipped"
+
+const ITEM_HEALING_TONIC_ID: String = "healing_tonic"
 
 @export var base_move_speed: float = 120.0
 @export var move_speed_per_speed_point: float = 4.0
@@ -1212,10 +1217,36 @@ func assign_hotbar_slot(slot_number: int, item_id: String) -> bool:
     }
 
     print("Assigned hotbar slot ", slot_number, ": ", ItemDatabase.get_item_name(item_id))
+
+    _try_progress_healing_tonic_hotbar_quest(item_id)
     _notify_ui_stats_changed()
 
     return true
 
+func _try_progress_healing_tonic_hotbar_quest(item_id: String) -> void:
+    var clean_item_id := item_id.strip_edges()
+
+    if clean_item_id != ITEM_HEALING_TONIC_ID:
+        return
+
+    if SaveManager.is_flag_set(QUEST_HEALING_TONIC_HOTBAR_FLAG):
+        return
+
+    if not QuestManager.is_quest_active(QUEST_HOTBAR_AND_CLUB_LESSON_ID):
+        return
+
+    var progress_added := QuestManager.add_objective_progress(
+        QUEST_HOTBAR_AND_CLUB_LESSON_ID,
+        QUEST_HEALING_TONIC_HOTBAR_OBJECTIVE_ID,
+        1
+    )
+
+    if not progress_added:
+        print("Healing Tonic hotbar quest progress failed.")
+        return
+
+    SaveManager.set_flag(QUEST_HEALING_TONIC_HOTBAR_FLAG, true)
+    print("Healing Tonic hotbar quest objective completed.")
 
 func clear_hotbar_slot(slot_number: int) -> void:
     _initialize_hotbar_slots()

@@ -1,0 +1,51 @@
+[gd_resource type="Resource" script_class="QuestEntry" format=3 uid="uid://jw5ckppwb6vu"]
+
+[ext_resource type="Script" uid="uid://pomcudkoxce3" path="res://scripts/core/quests/quest_objective_entry.gd" id="1_x2prs"]
+[ext_resource type="Script" uid="uid://dt5yvut01s10s" path="res://scripts/core/quests/quest_entry.gd" id="2_p1bia"]
+
+[sub_resource type="Resource" id="Resource_x2prs"]
+script = ExtResource("1_x2prs")
+objective_id = "equip_healing_tonic_hotbar_01"
+objective_text = "Place a Healing Tonic on your hotbar."
+completed_flag = "starter_healing_tonic_hotbar_equipped"
+metadata/_custom_type_script = "uid://pomcudkoxce3"
+
+[sub_resource type="Resource" id="Resource_p1bia"]
+script = ExtResource("1_x2prs")
+objective_id = "pickup_stone_club_01"
+objective_type = 2
+objective_text = "Pick up the Stone Club."
+completed_flag = "starter_stone_club_picked_up"
+metadata/_custom_type_script = "uid://pomcudkoxce3"
+
+[resource]
+script = ExtResource("2_p1bia")
+quest_id = "starter_hotbar_and_club_lesson"
+quest_title = "Prepare Yourself"
+quest_type = 0
+started_flag = "starter_hotbar_and_club_lesson_started"
+ready_to_turn_in_flag = "starter_hotbar_and_club_lesson_ready"
+completed_flag = "starter_hotbar_and_club_lesson_completed"
+required_flag = "starter_puzzle_reset_lesson_completed"
+first_time_dialogue = "You found a healing tonic.
+
+Do not wait until pain teaches you its value.
+Open your inventory and place the healing tonic on your hotbar.
+
+A prepared hand survives longer than a strong one.
+
+Once it is ready, take the stone club from the ground.
+Then meet me back up the tunnel"
+active_dialogue = "Place the healing tonic on your hotbar, then pick up the stone club.
+"
+ready_to_turn_in_dialogue = "Good.
+
+A tonic can keep you standing.
+A weapon can keep danger away.
+
+You are not safe, Gene Ambrose, but you are less helpless than before."
+completed_dialogue = "You have already prepared your tonic and weapon."
+summary = "The Echo Spirit wants me to prepare a healing tonic and collect a stone club."
+objective_text = "Equip a Healing Tonic to the hotbar, pick up the Stone Club, then return to the Echo Spirit."
+objectives = Array[ExtResource("1_x2prs")]([SubResource("Resource_x2prs"), SubResource("Resource_p1bia")])
+metadata/_custom_type_script = "uid://dt5yvut01s10s"

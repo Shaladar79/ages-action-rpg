@@ -7,6 +7,7 @@ const COMPLETION_MODE_AUTO_COMPLETE: String = "auto_complete"
 const COMPLETION_MODE_RETURN_TO_QUEST_GIVER: String = "return_to_quest_giver"
 
 var active_quests: Dictionary = {}
+var completed_quest_ids: Array[String] = []
 var tracked_story_quest_id: String = ""
 var tracked_optional_quest_ids: Array[String] = []
 
@@ -21,14 +22,18 @@ func start_quest(quest_entry: QuestEntry) -> bool:
         push_warning("Cannot start quest. Quest id is blank.")
         return false
 
+    if is_quest_completed(quest_id):
+        if OS.is_debug_build():
+            print("QuestManager refused to restart completed quest: ", quest_id)
+        return false
+
     var completed_flag := quest_entry.completed_flag.strip_edges()
 
     if completed_flag != "" and SaveManager.is_flag_set(completed_flag):
-        if OS.is_debug_build():
-            print("QuestManager refused to restart completed quest by flag: ", quest_id)
-        return false
+        _mark_completed_id(quest_id)
 
-    if is_quest_completed(quest_id):
+        if OS.is_debug_build():
+            print("QuestManager refused to restart completed quest by custom flag: ", quest_id)
         return false
 
     if active_quests.has(quest_id):
@@ -127,6 +132,8 @@ func complete_quest(quest_id: String, reward_player: Node = null) -> bool:
 
     _apply_quest_rewards(quest_data, reward_player)
 
+    _mark_completed_id(clean_quest_id)
+
     var default_completed_flag := "quest_" + clean_quest_id + "_completed"
     SaveManager.set_flag(default_completed_flag, true)
 
@@ -198,9 +205,16 @@ func is_quest_completed(quest_id: String) -> bool:
     if active_quests.has(clean_quest_id):
         return false
 
+    if completed_quest_ids.has(clean_quest_id):
+        return true
+
     var completed_flag := "quest_" + clean_quest_id + "_completed"
 
-    return SaveManager.is_flag_set(completed_flag)
+    if SaveManager.is_flag_set(completed_flag):
+        _mark_completed_id(clean_quest_id)
+        return true
+
+    return false
 
 
 func track_quest(quest_id: String) -> bool:
@@ -274,6 +288,7 @@ func get_active_quest_rows() -> Array[Dictionary]:
 func get_quest_save_data() -> Dictionary:
     return {
         "active_quests": active_quests.duplicate(true),
+        "completed_quest_ids": completed_quest_ids.duplicate(),
         "tracked_story_quest_id": tracked_story_quest_id,
         "tracked_optional_quest_ids": tracked_optional_quest_ids.duplicate()
     }
@@ -281,6 +296,7 @@ func get_quest_save_data() -> Dictionary:
 
 func load_quest_save_data(saved_quest_data: Dictionary) -> void:
     active_quests.clear()
+    completed_quest_ids.clear()
     tracked_story_quest_id = ""
     tracked_optional_quest_ids.clear()
 
@@ -289,12 +305,25 @@ func load_quest_save_data(saved_quest_data: Dictionary) -> void:
         print("QuestManager loaded no saved quest data.")
         return
 
+    var saved_completed_quest_ids: Array = saved_quest_data.get("completed_quest_ids", [])
+
+    for saved_completed_id in saved_completed_quest_ids:
+        var clean_completed_id := str(saved_completed_id).strip_edges()
+
+        if clean_completed_id == "":
+            continue
+
+        _mark_completed_id(clean_completed_id)
+
     var saved_active_quests: Dictionary = saved_quest_data.get("active_quests", {})
 
     for quest_id in saved_active_quests.keys():
         var clean_quest_id := str(quest_id).strip_edges()
 
         if clean_quest_id == "":
+            continue
+
+        if completed_quest_ids.has(clean_quest_id):
             continue
 
         var quest_data = saved_active_quests.get(quest_id, {})
@@ -307,9 +336,11 @@ func load_quest_save_data(saved_quest_data: Dictionary) -> void:
         var completed_flag: String = str(typed_quest_data.get("completed_flag", "")).strip_edges()
 
         if completed_flag != "" and SaveManager.is_flag_set(completed_flag):
+            _mark_completed_id(clean_quest_id)
             continue
 
         active_quests[clean_quest_id] = typed_quest_data
+        _restore_flags_from_loaded_active_quest(typed_quest_data)
 
     var saved_story_id := str(saved_quest_data.get("tracked_story_quest_id", "")).strip_edges()
 
@@ -338,11 +369,13 @@ func load_quest_save_data(saved_quest_data: Dictionary) -> void:
     _notify_quest_ui_changed()
 
     print("QuestManager loaded active quest count: ", active_quests.size())
+    print("QuestManager loaded completed quest count: ", completed_quest_ids.size())
     print("QuestManager loaded tracked optional quest count: ", tracked_optional_quest_ids.size())
 
 
 func clear_quest_state() -> void:
     active_quests.clear()
+    completed_quest_ids.clear()
     tracked_story_quest_id = ""
     tracked_optional_quest_ids.clear()
     _notify_quest_ui_changed()
@@ -453,6 +486,43 @@ func _check_quest_ready_or_complete(quest_id: String) -> void:
     mark_quest_ready_to_turn_in(clean_quest_id)
 
 
+func _restore_flags_from_loaded_active_quest(quest_data: Dictionary) -> void:
+    var started_flag: String = str(quest_data.get("started_flag", "")).strip_edges()
+
+    if started_flag != "":
+        SaveManager.set_flag(started_flag, true)
+
+    var ready_flag: String = str(quest_data.get("ready_to_turn_in_flag", "")).strip_edges()
+
+    if ready_flag != "" and bool(quest_data.get("ready_to_turn_in", false)):
+        SaveManager.set_flag(ready_flag, true)
+
+    var objectives: Dictionary = quest_data.get("objectives", {})
+
+    for objective_id in objectives.keys():
+        var objective_data: Dictionary = objectives[objective_id]
+
+        if not bool(objective_data.get("completed", false)):
+            continue
+
+        var completed_flag: String = str(objective_data.get("completed_flag", "")).strip_edges()
+
+        if completed_flag != "":
+            SaveManager.set_flag(completed_flag, true)
+
+
+func _mark_completed_id(quest_id: String) -> void:
+    var clean_quest_id := quest_id.strip_edges()
+
+    if clean_quest_id == "":
+        return
+
+    if completed_quest_ids.has(clean_quest_id):
+        return
+
+    completed_quest_ids.append(clean_quest_id)
+
+
 func _apply_quest_rewards(quest_data: Dictionary, reward_player: Node) -> void:
     if reward_player == null:
         print("Quest rewards skipped because reward player is null.")
@@ -494,6 +564,7 @@ func _apply_quest_rewards(quest_data: Dictionary, reward_player: Node) -> void:
 
     _grant_faction_reward(quest_data)
 
+
 func _grant_faction_reward(quest_data: Dictionary) -> void:
     if not bool(quest_data.get("is_faction_quest", false)):
         return
@@ -533,6 +604,7 @@ func _grant_faction_reward(quest_data: Dictionary) -> void:
 
     print("Quest faction reward granted: ", faction_id, " ", faction_points)
 
+
 func _grant_item_reward(reward_player: Node, item_id: String, quantity: int, reward_label: String) -> void:
     var clean_item_id := item_id.strip_edges()
     var clean_quantity: int = maxi(0, quantity)
@@ -552,6 +624,7 @@ func _grant_item_reward(reward_player: Node, item_id: String, quantity: int, rew
 
     print("Quest reward item granted: ", item_name, " x", clean_quantity)
 
+
 func _show_reward_notification(message: String) -> void:
     var clean_message := message.strip_edges()
 
@@ -564,6 +637,7 @@ func _show_reward_notification(message: String) -> void:
         if ui_node != null and ui_node.has_method("show_reward_notification"):
             ui_node.show_reward_notification(clean_message)
             return
+
 
 func _notify_quest_ui_changed() -> void:
     var group_nodes := get_tree().get_nodes_in_group("interaction_ui")

@@ -1,21 +1,48 @@
 extends Area2D
 class_name PuzzleResetStone
 
+@export_group("Reset Setup")
 @export var reset_id: String = ""
 @export var push_object_paths: Array[NodePath] = []
 
+@export_group("Interaction")
 @export var interaction_prompt_text: String = "E"
 @export var reset_message: String = "The puzzle stones return to their starting places."
 
+@export_group("Quest Progress")
+@export var quest_id: String = ""
+@export var objective_id: String = ""
+@export var progress_amount: int = 1
+@export var progress_on_first_successful_reset: bool = true
+
+# Optional.
+# If filled, this flag is set after this reset stone gives quest progress.
+# Also prevents repeated quest progress if Progress On First Successful Reset is on.
+@export var quest_progress_flag: String = ""
+
+# Optional.
+# If filled, this reset stone only gives quest progress after this flag is set.
+# For the puzzle lesson, use starter_puzzle_reset_lesson_started.
+@export var required_flag: String = ""
+
+@export_group("Debug")
+@export var debug_prints: bool = true
+
 var player_in_range: Node = null
+var _quest_progress_recorded: bool = false
 
 
 func _ready() -> void:
-    body_entered.connect(_on_body_entered)
-    body_exited.connect(_on_body_exited)
+    if not body_entered.is_connected(_on_body_entered):
+        body_entered.connect(_on_body_entered)
+
+    if not body_exited.is_connected(_on_body_exited):
+        body_exited.connect(_on_body_exited)
 
     if reset_id.strip_edges() == "":
         reset_id = name
+
+    _load_quest_progress_state()
 
 
 func _process(_delta: float) -> void:
@@ -43,17 +70,105 @@ func reset_puzzle() -> void:
         push_object.reset_to_starting_position()
         reset_count += 1
 
-    print("Puzzle reset stone used: ", reset_id, " reset count: ", reset_count)
+    if debug_prints:
+        print("Puzzle reset stone used: ", reset_id, " reset count: ", reset_count)
+
+    if reset_count > 0:
+        _try_add_quest_progress()
 
     _show_reset_message()
+
+
+func _load_quest_progress_state() -> void:
+    var clean_progress_flag := quest_progress_flag.strip_edges()
+
+    if clean_progress_flag == "":
+        return
+
+    _quest_progress_recorded = SaveManager.is_flag_set(clean_progress_flag)
+
+    if debug_prints and _quest_progress_recorded:
+        print("Puzzle reset quest progress already recorded: ", clean_progress_flag)
+
+
+func _try_add_quest_progress() -> void:
+    var clean_quest_id := quest_id.strip_edges()
+    var clean_objective_id := objective_id.strip_edges()
+
+    if clean_quest_id == "":
+        return
+
+    if clean_objective_id == "":
+        return
+
+    if progress_amount <= 0:
+        return
+
+    var clean_required_flag := required_flag.strip_edges()
+
+    if clean_required_flag != "" and not SaveManager.is_flag_set(clean_required_flag):
+        if debug_prints:
+            print("Puzzle reset quest progress blocked by missing required flag: ", clean_required_flag)
+        return
+
+    if progress_on_first_successful_reset and _quest_progress_recorded:
+        if debug_prints:
+            print("Puzzle reset quest progress already recorded.")
+        return
+
+    var clean_progress_flag := quest_progress_flag.strip_edges()
+
+    if progress_on_first_successful_reset and clean_progress_flag != "" and SaveManager.is_flag_set(clean_progress_flag):
+        _quest_progress_recorded = true
+
+        if debug_prints:
+            print("Puzzle reset quest progress blocked by saved progress flag: ", clean_progress_flag)
+
+        return
+
+    if not QuestManager.is_quest_active(clean_quest_id):
+        if debug_prints:
+            print("Puzzle reset quest progress ignored because quest is not active: ", clean_quest_id)
+        return
+
+    var progress_added := QuestManager.add_objective_progress(
+        clean_quest_id,
+        clean_objective_id,
+        progress_amount
+    )
+
+    if not progress_added:
+        if debug_prints:
+            print("Puzzle reset failed to add quest progress: ", clean_quest_id, " / ", clean_objective_id)
+        return
+
+    _quest_progress_recorded = true
+
+    if clean_progress_flag != "":
+        SaveManager.set_flag(clean_progress_flag, true)
+
+        if debug_prints:
+            print("Puzzle reset set quest progress flag: ", clean_progress_flag)
+
+    if debug_prints:
+        print("Puzzle reset added quest progress: ", clean_quest_id, " / ", clean_objective_id)
 
 
 func _show_reset_message() -> void:
     var game_ui := _get_game_ui()
 
-    if game_ui != null and game_ui.has_method("show_story_message"):
-        game_ui.show_story_message(reset_message, "Reset Stone")
-        return
+    if game_ui != null:
+        if game_ui.has_method("show_notification"):
+            game_ui.show_notification(reset_message)
+            return
+
+        if game_ui.has_method("show_reward_notification"):
+            game_ui.show_reward_notification(reset_message)
+            return
+
+        if game_ui.has_method("show_story_message"):
+            game_ui.show_story_message(reset_message, "Reset Stone")
+            return
 
     if player_in_range != null and player_in_range.has_method("show_dialogue"):
         player_in_range.show_dialogue(reset_message)
