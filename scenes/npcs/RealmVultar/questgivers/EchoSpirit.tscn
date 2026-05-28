@@ -1,0 +1,154 @@
+[gd_scene format=3 uid="uid://bglm47en21e7h"]
+
+[ext_resource type="Script" uid="uid://q8c0o0dt74sn" path="res://scripts/characters/npcs/npc_actor.gd" id="1_2jhac"]
+[ext_resource type="Script" uid="uid://conwmva4cm5cu" path="res://scripts/characters/npcs/Mods/npc_dialogue_module.gd" id="2_x1nva"]
+[ext_resource type="Script" uid="uid://c3yaaxvjbhet" path="res://scripts/characters/npcs/Mods/npc_movement_module.gd" id="3_51833"]
+[ext_resource type="Script" uid="uid://ckick67t4d3to" path="res://scripts/characters/npcs/Mods/npc_quest_module.gd" id="4_fhi3u"]
+[ext_resource type="Script" uid="uid://c7moacun6f3ci" path="res://scripts/characters/npcs/BackgroundFiles/npc_movement_event_entry.gd" id="4_nxuja"]
+[ext_resource type="Script" uid="uid://dbix2kp3ktukn" path="res://scripts/characters/npcs/Mods/npc_shop_module.gd" id="5_64815"]
+[ext_resource type="Script" uid="uid://dt5yvut01s10s" path="res://scripts/core/quests/quest_entry.gd" id="6_0oqv1"]
+[ext_resource type="Script" uid="uid://pomcudkoxce3" path="res://scripts/core/quests/quest_objective_entry.gd" id="7_i7i46"]
+[ext_resource type="Texture2D" uid="uid://bs1t1ls8g3pu8" path="res://art/Assets/NewSprites/echo_spirt.png" id="9_pup0u"]
+
+[sub_resource type="Resource" id="Resource_sccoy"]
+script = ExtResource("4_nxuja")
+event_id = "move_1"
+required_flag = "move_start"
+required_quest_id = "learn_move"
+completion_save_flag = "move_1_done"
+metadata/_custom_type_script = "uid://c7moacun6f3ci"
+
+[sub_resource type="Resource" id="Resource_sov6i"]
+script = ExtResource("7_i7i46")
+objective_id = "move_hall"
+objective_text = "Use W,S,A,and D to find the Echo Spirit at the end of the hall"
+metadata/_custom_type_script = "uid://pomcudkoxce3"
+
+[sub_resource type="Resource" id="Resource_lxxaf"]
+script = ExtResource("6_0oqv1")
+quest_id = "learn_move"
+quest_title = "Walk ti the end of the tunnel"
+quest_type = 0
+started_flag = "move_start"
+ready_to_turn_in_flag = "move_done"
+completed_flag = "move_comp"
+objectives = Array[ExtResource("7_i7i46")]([SubResource("Resource_sov6i")])
+metadata/_custom_type_script = "uid://dt5yvut01s10s"
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_5vb47"]
+atlas = ExtResource("9_pup0u")
+region = Rect2(48, 96, 48, 48)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_rdkbe"]
+atlas = ExtResource("9_pup0u")
+region = Rect2(48, 144, 48, 48)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_tvsc3"]
+atlas = ExtResource("9_pup0u")
+region = Rect2(144, 48, 48, 48)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_wo65e"]
+atlas = ExtResource("9_pup0u")
+region = Rect2(48, 0, 48, 48)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_aedj1"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_5vb47")
+}],
+"loop": true,
+"name": &"idle_down",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_rdkbe")
+}],
+"loop": true,
+"name": &"idle_left",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_tvsc3")
+}],
+"loop": true,
+"name": &"idle_right",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_wo65e")
+}],
+"loop": true,
+"name": &"idle_up",
+"speed": 5.0
+}, {
+"frames": [],
+"loop": true,
+"name": &"walk_down",
+"speed": 5.0
+}, {
+"frames": [],
+"loop": true,
+"name": &"walk_left",
+"speed": 5.0
+}, {
+"frames": [],
+"loop": true,
+"name": &"walk_right",
+"speed": 5.0
+}, {
+"frames": [],
+"loop": true,
+"name": &"walk_up",
+"speed": 5.0
+}]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_l26by"]
+radius = 13.750004
+height = 37.50001
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_pxpdk"]
+radius = 25.000002
+
+[node name="EchoSpirit" type="Area2D" unique_id=1989954759]
+scale = Vector2(0.8, 0.8)
+script = ExtResource("1_2jhac")
+
+[node name="Dialouge" type="Node2D" parent="." unique_id=114600574]
+scale = Vector2(0.99999994, 0.99999994)
+script = ExtResource("2_x1nva")
+
+[node name="movement" type="Node2D" parent="." unique_id=2116308213]
+scale = Vector2(0.99999994, 0.99999994)
+script = ExtResource("3_51833")
+movement_events = Array[Resource]([SubResource("Resource_sccoy")])
+
+[node name="Quest" type="Node2D" parent="." unique_id=1651262223]
+scale = Vector2(0.99999994, 0.99999994)
+script = ExtResource("4_fhi3u")
+quests = Array[ExtResource("6_0oqv1")]([SubResource("Resource_lxxaf")])
+
+[node name="Shop" type="Node2D" parent="." unique_id=1154396758]
+scale = Vector2(0.99999994, 0.99999994)
+script = ExtResource("5_64815")
+
+[node name="CharacterBody2D" type="AnimatedSprite2D" parent="." unique_id=740833633]
+sprite_frames = SubResource("SpriteFrames_aedj1")
+animation = &"idle_left"
+
+[node name="StaticBody2D" type="StaticBody2D" parent="." unique_id=1580427796]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D" unique_id=998696121]
+visible = false
+position = Vector2(1.25, 1.249999)
+scale = Vector2(0.9999997, 0.9999997)
+shape = SubResource("CapsuleShape2D_l26by")
+debug_color = Color(0.4238206, 0.3448938, 0.9102323, 0.41960785)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1923185307]
+visible = false
+scale = Vector2(0.99999994, 0.99999994)
+shape = SubResource("CircleShape2D_pxpdk")

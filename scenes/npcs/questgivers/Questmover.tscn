@@ -1,6 +1,0 @@
-[gd_scene format=3 uid="uid://uh4h4tdjb2i6"]
-
-[ext_resource type="Script" uid="uid://c3yaaxvjbhet" path="res://scripts/core/quests/NPCQuestFlagMover.gd" id="1_s07lg"]
-
-[node name="Questmover" type="Node2D" unique_id=1534153564]
-script = ExtResource("1_s07lg")

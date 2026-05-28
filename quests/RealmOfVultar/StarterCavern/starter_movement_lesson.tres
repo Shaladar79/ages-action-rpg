@@ -1,0 +1,31 @@
+[gd_resource type="Resource" script_class="QuestEntry" format=3 uid="uid://dftku7fp24wd6"]
+
+[ext_resource type="Script" uid="uid://pomcudkoxce3" path="res://scripts/core/quests/quest_objective_entry.gd" id="1_fn2xx"]
+[ext_resource type="Script" uid="uid://dt5yvut01s10s" path="res://scripts/core/quests/quest_entry.gd" id="2_syys4"]
+
+[sub_resource type="Resource" id="Resource_fn2xx"]
+script = ExtResource("1_fn2xx")
+objective_id = "reach_echo_spirit_location_01"
+objective_type = 3
+objective_text = "Move to the Echo Spirit."
+metadata/_custom_type_script = "uid://pomcudkoxce3"
+
+[resource]
+script = ExtResource("2_syys4")
+quest_id = "starter_movement_lesson"
+quest_title = "Learn to Move"
+quest_type = 0
+started_flag = "starter_movement_lesson_started"
+ready_to_turn_in_flag = "starter_movement_lesson_ready"
+completed_flag = "starter_movement_lesson_completed"
+first_time_dialogue = "You are awake, Gene Ambrose.
+Use W, A, S, and D to move.
+Come to me, and we will see if your legs still remember the world."
+active_dialogue = "Use W, A, S, and D to move toward me."
+ready_to_turn_in_dialogue = "Good. You can still move.
+That is the first thing this place has not taken from you."
+completed_dialogue = "You have already learned how to move."
+summary = "The Echo Spirit wants me to move through the cavern."
+objective_text = "Move to the Echo Spirit's location."
+objectives = Array[ExtResource("1_fn2xx")]([SubResource("Resource_fn2xx")])
+metadata/_custom_type_script = "uid://dt5yvut01s10s"

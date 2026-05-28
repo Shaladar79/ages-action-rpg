@@ -2,74 +2,15 @@
 
 [ext_resource type="Texture2D" uid="uid://blqhbg7he1x0v" path="res://art/maps/Primative_Island_Village.png" id="1_qg4p0"]
 [ext_resource type="PackedScene" uid="uid://d2qyxdpcmw4x0" path="res://scenes/objects/map_spawn_point.tscn" id="2_4ciox"]
-[ext_resource type="PackedScene" uid="uid://3j1f8tltg0sj" path="res://scenes/npcs/shopkeepers/ShopKeeper_RealmVultar.tscn" id="3_i8oeu"]
 [ext_resource type="PackedScene" uid="uid://cihgogaol4td8" path="res://scenes/objects/map_transition_area.tscn" id="3_jjnn0"]
 [ext_resource type="PackedScene" uid="uid://ds0nibabilemd" path="res://scenes/player/Player.tscn" id="4_4ciox"]
-[ext_resource type="Script" uid="uid://dmhim3ohrnvcm" path="res://scripts/core/shop_stock_entry.gd" id="4_h83v4"]
-[ext_resource type="PackedScene" uid="uid://b4x6xea46nwp1" path="res://scenes/npcs/questgivers/Vultar/QuestGiver.tscn" id="4_lgn6g"]
-[ext_resource type="Script" uid="uid://dt5yvut01s10s" path="res://scripts/core/quests/quest_entry.gd" id="5_ub0y7"]
-[ext_resource type="Script" uid="uid://pomcudkoxce3" path="res://scripts/core/quests/quest_objective_entry.gd" id="6_7sfwb"]
-[ext_resource type="Resource" uid="uid://dq4416vvcbyof" path="res://quests/BountyMan_Village_q1.tres" id="7_3djgd"]
-[ext_resource type="Resource" uid="uid://dm0t6hd0pa1h6" path="res://quests/VillageElderQ1.tres" id="8_f2evy"]
-[ext_resource type="Resource" uid="uid://byly3lj5nd5hx" path="res://quests/VillageElderQ2.tres" id="9_i3jri"]
+[ext_resource type="PackedScene" uid="uid://bqbjuyge4dtix" path="res://scenes/npcs/RealmVultar/questgivers/BountyMan.tscn" id="9_lgn6g"]
+[ext_resource type="PackedScene" uid="uid://cy36b5giewp5r" path="res://scenes/npcs/RealmVultar/questgivers/Village_elder.tscn" id="10_ub0y7"]
+[ext_resource type="PackedScene" uid="uid://d2foxbmsil3de" path="res://scenes/npcs/RealmVultar/shopkeepers/village_shopkeeper.tscn" id="11_7sfwb"]
 [ext_resource type="PackedScene" uid="uid://pyq76iw1lw5d" path="res://scenes/objects/save_totem.tscn" id="11_know0"]
 [ext_resource type="PackedScene" uid="uid://cfokf5kfxdijr" path="res://scenes/enemies/Foothills/Forrest_Beatle.tscn" id="13_3djgd"]
-[ext_resource type="PackedScene" uid="uid://5qorurcn4toh" path="res://scenes/objects/movemarkers/QuestMoveMarker.tscn" id="13_7sfwb"]
-[ext_resource type="PackedScene" uid="uid://bdvas0ntm4sn1" path="res://scenes/npcs/questgivers/Vultar/QuestGiver_bounty_man_Vultar.tscn" id="14_3djgd"]
-[ext_resource type="PackedScene" uid="uid://bmm4kdajroshq" path="res://scenes/npcs/questgivers/Vultar/QuestGiver_village_elder.tscn" id="16_7gjs6"]
-[ext_resource type="Resource" uid="uid://vwu5d8tk5vcy" path="res://quests/BountyManQ2.tres" id="16_know0"]
 [ext_resource type="PackedScene" uid="uid://cxmjxgggvevd3" path="res://scenes/objects/restareas/RestAreaInteractable.tscn" id="17_3oof0"]
-[ext_resource type="PackedScene" uid="uid://l2r0cbgsx60i" path="res://scenes/npcs/questgivers/Vultar/QuestGiver_Optional.tscn" id="19_i3jri"]
 [ext_resource type="PackedScene" uid="uid://clxr5342eb6d" path="res://scenes/objects/questmarkers/QuestProgressArea.tscn" id="21_3oof0"]
-
-[sub_resource type="Resource" id="Resource_nqxse"]
-script = ExtResource("4_h83v4")
-item_id = "healing_tonic"
-price_amount = 30
-required_flag = "beatle_1_comp"
-
-[sub_resource type="Resource" id="Resource_27f20"]
-script = ExtResource("4_h83v4")
-item_id = "sling_ammo"
-quantity = 5
-price_amount = 20
-required_flag = "sling_found"
-
-[sub_resource type="Resource" id="Resource_7gjs6"]
-script = ExtResource("4_h83v4")
-item_id = "mana_tonic"
-price_amount = 50
-required_flag = "mana_unlocked"
-
-[sub_resource type="Resource" id="Resource_i3jri"]
-script = ExtResource("5_ub0y7")
-quest_id = "Find The Elder"
-quest_type = 0
-required_flag = "sling_found"
-metadata/_custom_type_script = "uid://dt5yvut01s10s"
-
-[sub_resource type="Resource" id="Resource_pxthl"]
-script = ExtResource("6_7sfwb")
-objective_id = "rest_spot"
-objective_type = 3
-objective_text = "Find The Southern Tent and Rest"
-metadata/_custom_type_script = "uid://pomcudkoxce3"
-
-[sub_resource type="Resource" id="Resource_3oof0"]
-script = ExtResource("5_ub0y7")
-quest_id = "rest_area"
-quest_title = "Go rest"
-quest_type = 0
-started_flag = "going_to_rest"
-ready_to_turn_in_flag = "rested"
-completed_flag = "rested_comp"
-required_flag = "sling_found"
-first_time_dialogue = "The other villagers have said you have helped them alot. I think it is time you took a rest. Go to the southern tent you can rest in there, return to me when you are rested."
-active_dialogue = "Go rest in the southern Tent."
-ready_to_turn_in_dialogue = "You look rested, Go back to the bounty man, he has some more bounty or for you. Or you can go to the eat tent and the villager there can tell you about the realm you find your self in."
-completed_dialogue = "Go see the bounty man or the villager by the east tent for work work, and remember to rest when you want."
-objectives = Array[ExtResource("6_7sfwb")]([SubResource("Resource_pxthl")])
-metadata/_custom_type_script = "uid://dt5yvut01s10s"
 
 [node name="IslandVillage" type="Node2D" unique_id=634947960]
 
@@ -81,29 +22,6 @@ texture = ExtResource("1_qg4p0")
 
 [node name="Player" parent="Ysort" unique_id=949372820 groups=["player"] instance=ExtResource("4_4ciox")]
 position = Vector2(487, 94)
-
-[node name="ShopKeeper_RealmVultar" parent="Ysort" unique_id=228929064 instance=ExtResource("3_i8oeu")]
-position = Vector2(425.99997, 269.99997)
-rotation = 0.058428537
-stock = Array[ExtResource("4_h83v4")]([SubResource("Resource_nqxse"), SubResource("Resource_27f20"), SubResource("Resource_7gjs6")])
-
-[node name="MainQuestgiver" parent="Ysort" unique_id=1819078454 instance=ExtResource("4_lgn6g")]
-position = Vector2(828, 195)
-quests = Array[ExtResource("5_ub0y7")]([SubResource("Resource_i3jri")])
-
-[node name="BountyMan" parent="Ysort" unique_id=1663897061 instance=ExtResource("14_3djgd")]
-position = Vector2(191, 562)
-npc_name = "Yarmat"
-quests = Array[ExtResource("5_ub0y7")]([ExtResource("7_3djgd"), ExtResource("16_know0")])
-
-[node name="VillageElder" parent="Ysort" unique_id=1532105560 instance=ExtResource("16_7gjs6")]
-position = Vector2(628, 219)
-npc_name = "Village Elder"
-quests = Array[ExtResource("5_ub0y7")]([ExtResource("8_f2evy"), ExtResource("9_i3jri")])
-
-[node name="QuestGiver" parent="Ysort" unique_id=1440933593 instance=ExtResource("19_i3jri")]
-position = Vector2(538, 343)
-quests = Array[ExtResource("5_ub0y7")]([SubResource("Resource_3oof0"), null])
 
 [node name="Souther Tent Restarea" parent="Ysort" unique_id=1223462845 instance=ExtResource("17_3oof0")]
 position = Vector2(588.00006, 592)
@@ -121,6 +39,10 @@ required_active_quest_id = "village_fb"
 quest_progress_enabled = true
 quest_id = "village_fb"
 objective_id = "kill_fb"
+
+[node name="SaveTotem" parent="Ysort" unique_id=528667636 instance=ExtResource("11_know0")]
+position = Vector2(474, 150)
+respawn_id = "island_village"
 
 [node name="MapSpawns" type="Node2D" parent="." unique_id=1571131686]
 visible = false
@@ -241,25 +163,26 @@ polygon = PackedVector2Array(36, 650, 67, 645, 76, 665, 96, 669, 100, 701, 65, 7
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="MapCollisions/StaticBody2D20" unique_id=910949124]
 polygon = PackedVector2Array(91, 309, 61, 343, 52, 389, 88, 394, 102, 354, 116, 330)
 
-[node name="SaveTotem" parent="." unique_id=528667636 instance=ExtResource("11_know0")]
-position = Vector2(474, 150)
-respawn_id = "island_village"
-
-[node name="Movemarkers" type="Node2D" parent="." unique_id=977577434]
-
-[node name="VillageIntroQuests" type="Node2D" parent="Movemarkers" unique_id=1419897404]
-
-[node name="IntroMove1" parent="Movemarkers/VillageIntroQuests" unique_id=175386698 instance=ExtResource("13_7sfwb")]
-position = Vector2(581, 236)
-
-[node name="IntroMove2" parent="Movemarkers/VillageIntroQuests" unique_id=1921989764 instance=ExtResource("13_7sfwb")]
-position = Vector2(538, 111)
-
-[node name="IntroMove3" parent="Movemarkers/VillageIntroQuests" unique_id=1589454468 instance=ExtResource("13_7sfwb")]
-position = Vector2(547, 24)
-
 [node name="QuestProgressArea" parent="." unique_id=1142422050 instance=ExtResource("21_3oof0")]
 position = Vector2(596, 614)
 scale = Vector2(0.7, 0.7)
 quest_id = "rest_area"
 objective_id = "rest_spot"
+
+[node name="BountyMan" parent="." unique_id=1989954759 instance=ExtResource("9_lgn6g")]
+position = Vector2(196, 567)
+
+[node name="VillageElder" parent="." unique_id=2030481730 instance=ExtResource("10_ub0y7")]
+position = Vector2(831, 215)
+
+[node name="Shopkeeper" parent="." unique_id=47737817 instance=ExtResource("11_7sfwb")]
+position = Vector2(432, 279)
+
+[node name="AnimatedSprite2D" parent="Shopkeeper" index="0" unique_id=1412114460]
+position = Vector2(-1.25, -3.75)
+
+[node name="Shop" parent="Shopkeeper" index="5" unique_id=1154396758]
+position = Vector2(1.25, -13.75)
+
+[editable path="BountyMan"]
+[editable path="Shopkeeper"]

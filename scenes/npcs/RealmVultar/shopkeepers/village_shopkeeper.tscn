@@ -1,0 +1,127 @@
+[gd_scene format=3 uid="uid://d2foxbmsil3de"]
+
+[ext_resource type="Script" uid="uid://q8c0o0dt74sn" path="res://scripts/characters/npcs/npc_actor.gd" id="1_htu5h"]
+[ext_resource type="Texture2D" uid="uid://c7uwoaq4b86qm" path="res://art/Assets/NewSprites/villager.png" id="2_rjuis"]
+[ext_resource type="Script" uid="uid://conwmva4cm5cu" path="res://scripts/characters/npcs/Mods/npc_dialogue_module.gd" id="3_jgljv"]
+[ext_resource type="Script" uid="uid://c3yaaxvjbhet" path="res://scripts/characters/npcs/Mods/npc_movement_module.gd" id="4_m87rp"]
+[ext_resource type="Script" uid="uid://ckick67t4d3to" path="res://scripts/characters/npcs/Mods/npc_quest_module.gd" id="5_wl34x"]
+[ext_resource type="Script" uid="uid://dbix2kp3ktukn" path="res://scripts/characters/npcs/Mods/npc_shop_module.gd" id="6_7wrej"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_nsw2u"]
+atlas = ExtResource("2_rjuis")
+region = Rect2(72, 0, 72, 72)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_sdx0i"]
+atlas = ExtResource("2_rjuis")
+region = Rect2(72, 72, 72, 72)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_8kh45"]
+atlas = ExtResource("2_rjuis")
+region = Rect2(72, 144, 72, 72)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_cbylc"]
+atlas = ExtResource("2_rjuis")
+region = Rect2(72, 216, 72, 72)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_48o2u"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_nsw2u")
+}],
+"loop": true,
+"name": &"idle_down",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_sdx0i")
+}],
+"loop": true,
+"name": &"idle_left",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_8kh45")
+}],
+"loop": true,
+"name": &"idle_right",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_cbylc")
+}],
+"loop": true,
+"name": &"idle_up",
+"speed": 5.0
+}, {
+"frames": [],
+"loop": true,
+"name": &"walk_down",
+"speed": 5.0
+}, {
+"frames": [],
+"loop": true,
+"name": &"walk_left",
+"speed": 5.0
+}, {
+"frames": [],
+"loop": true,
+"name": &"walk_right",
+"speed": 5.0
+}, {
+"frames": [],
+"loop": true,
+"name": &"walk_up",
+"speed": 5.0
+}]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_l26by"]
+radius = 13.750004
+height = 37.50001
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_pxpdk"]
+radius = 25.000002
+
+[node name="Village_Shopkeeper" type="Area2D" unique_id=1989954759]
+scale = Vector2(0.8, 0.8)
+script = ExtResource("1_htu5h")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=1412114460]
+scale = Vector2(0.99999994, 0.99999994)
+sprite_frames = SubResource("SpriteFrames_48o2u")
+animation = &"idle_right"
+
+[node name="StaticBody2D" type="StaticBody2D" parent="." unique_id=1580427796]
+visible = false
+scale = Vector2(0.99999994, 0.99999994)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D" unique_id=998696121]
+visible = false
+position = Vector2(1.25, 1.249999)
+scale = Vector2(0.9999997, 0.9999997)
+shape = SubResource("CapsuleShape2D_l26by")
+debug_color = Color(0.4238206, 0.3448938, 0.9102323, 0.41960785)
+
+[node name="Dialouge" type="Node2D" parent="." unique_id=114600574]
+scale = Vector2(0.99999994, 0.99999994)
+script = ExtResource("3_jgljv")
+
+[node name="movement" type="Node2D" parent="." unique_id=2116308213]
+scale = Vector2(0.99999994, 0.99999994)
+script = ExtResource("4_m87rp")
+
+[node name="Quest" type="Node2D" parent="." unique_id=1651262223]
+scale = Vector2(0.99999994, 0.99999994)
+script = ExtResource("5_wl34x")
+
+[node name="Shop" type="Node2D" parent="." unique_id=1154396758]
+scale = Vector2(0.99999994, 0.99999994)
+script = ExtResource("6_7wrej")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1923185307]
+visible = false
+scale = Vector2(0.99999994, 0.99999994)
+shape = SubResource("CircleShape2D_pxpdk")

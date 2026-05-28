@@ -9,16 +9,28 @@
 [ext_resource type="PackedScene" uid="uid://0vcalfqbsnfl" path="res://scenes/enemies/StartCavern/SC_Boss.tscn" id="7_g1fv5"]
 [ext_resource type="Script" uid="uid://cn6mnuf1x8vbq" path="res://scripts/enemies/BossMonster.gd" id="8_wqcy6"]
 [ext_resource type="PackedScene" uid="uid://bpapdn74pq4la" path="res://scenes/enemies/StartCavern/StartCavern_Earthling.tscn" id="9_yytj5"]
+[ext_resource type="PackedScene" uid="uid://bglm47en21e7h" path="res://scenes/npcs/RealmVultar/questgivers/EchoSpirit.tscn" id="10_vpebn"]
 [ext_resource type="PackedScene" uid="uid://ds0nibabilemd" path="res://scenes/player/Player.tscn" id="11_vfogo"]
+[ext_resource type="Script" uid="uid://c7moacun6f3ci" path="res://scripts/characters/npcs/BackgroundFiles/npc_movement_event_entry.gd" id="12_g1fv5"]
 [ext_resource type="PackedScene" uid="uid://c54peu6mqtky8" path="res://scenes/objects/CollectableClub.tscn" id="12_iyco4"]
 [ext_resource type="PackedScene" uid="uid://pyq76iw1lw5d" path="res://scenes/objects/save_totem.tscn" id="13_7iida"]
+[ext_resource type="Resource" uid="uid://dftku7fp24wd6" path="res://quests/RealmOfVultar/StarterCavern/starter_movement_lesson.tres" id="13_gpagj"]
+[ext_resource type="Script" uid="uid://dt5yvut01s10s" path="res://scripts/core/quests/quest_entry.gd" id="13_wqcy6"]
+[ext_resource type="PackedScene" uid="uid://clxr5342eb6d" path="res://scenes/objects/questmarkers/QuestProgressArea.tscn" id="14_vpebn"]
 [ext_resource type="PackedScene" uid="uid://bql24l7sa24cp" path="res://scenes/objects/PuzzleResetStone.tscn" id="14_xv4x6"]
 [ext_resource type="PackedScene" uid="uid://cihgogaol4td8" path="res://scenes/objects/map_transition_area.tscn" id="15_ayirs"]
-[ext_resource type="PackedScene" uid="uid://5qorurcn4toh" path="res://scenes/objects/movemarkers/QuestMoveMarker.tscn" id="17_j3sot"]
-[ext_resource type="PackedScene" uid="uid://clxr5342eb6d" path="res://scenes/objects/questmarkers/QuestProgressArea.tscn" id="18_bc5g6"]
 [ext_resource type="PackedScene" uid="uid://b81kib11b5cms" path="res://scenes/objects/Containers/LootContainer_pouch.tscn" id="18_ipecf"]
 [ext_resource type="PackedScene" uid="uid://c22k78g2y6kpn" path="res://scenes/objects/BossGateBlocker.tscn" id="18_x63im"]
-[ext_resource type="PackedScene" uid="uid://bpnbq3fsaa43h" path="res://scenes/Tutorial/EchoSpirit.tscn" id="19_gpagj"]
+[ext_resource type="PackedScene" uid="uid://5qorurcn4toh" path="res://scenes/objects/movemarkers/QuestMoveMarker.tscn" id="22_2ewpr"]
+
+[sub_resource type="Resource" id="Resource_wqcy6"]
+script = ExtResource("12_g1fv5")
+event_id = "echo_move_after_movement_quest_started"
+required_flag = "starter_movement_lesson_started"
+completion_save_flag = "echo_moved_after_movement_quest_started"
+target_marker_path = NodePath("../../../EchoSpiritMarker_MovementQuestEnd")
+hide_after_fade_out = false
+metadata/_custom_type_script = "uid://c7moacun6f3ci"
 
 [node name="StartCavern" type="Node2D" unique_id=102575327]
 position = Vector2(-7, -11)
@@ -258,6 +270,25 @@ persistent_id = "SCEarth10"
 [node name="YSortWorld" type="Node2D" parent="." unique_id=965274766]
 y_sort_enabled = true
 
+[node name="EchoSpirit" parent="YSortWorld" unique_id=1989954759 instance=ExtResource("10_vpebn")]
+position = Vector2(188, 363)
+npc_name = "EchoSpirit"
+
+[node name="Dialouge" parent="YSortWorld/EchoSpirit" index="0" unique_id=114600574]
+base_dialogue_text = ""
+base_speaker_name_override = "Echo Spirit"
+
+[node name="movement" parent="YSortWorld/EchoSpirit" index="1" unique_id=2116308213]
+movement_events = Array[Resource]([SubResource("Resource_wqcy6")])
+auto_check_events = false
+
+[node name="Quest" parent="YSortWorld/EchoSpirit" index="2" unique_id=1651262223]
+quests = Array[ExtResource("13_wqcy6")]([ExtResource("13_gpagj")])
+trigger_movement_after_start_dialogue = true
+
+[node name="Shop" parent="YSortWorld/EchoSpirit" index="3" unique_id=1154396758]
+enabled = false
+
 [node name="Player" parent="YSortWorld" unique_id=949372820 groups=["player"] instance=ExtResource("11_vfogo")]
 position = Vector2(145, 356)
 
@@ -296,22 +327,17 @@ visible = false
 position = Vector2(1299, 199)
 rotation = -0.009365366
 
-[node name="QuestMoveMarker" parent="." unique_id=175386698 instance=ExtResource("17_j3sot")]
-position = Vector2(223, 479)
+[node name="EchoSpiritMarker_MovementQuestEnd" parent="." unique_id=175386698 instance=ExtResource("22_2ewpr")]
+position = Vector2(341, 545)
 
-[node name="QuestMoveMarker2" parent="." unique_id=195815002 instance=ExtResource("17_j3sot")]
-position = Vector2(262, 525)
+[node name="QuestProgressArea" parent="." unique_id=1142422050 instance=ExtResource("14_vpebn")]
+position = Vector2(251, 519)
+scale = Vector2(1.2, 1.2)
+collision_mask = 255
+quest_id = "starter_movement_lesson"
+objective_id = "reach_echo_spirit_location_01"
+persistent_id = "starter_movement_lesson_target_area_01"
+remove_if_already_triggered = false
+required_flag = "starter_movement_lesson_started"
 
-[node name="QuestMoveMarker3" parent="." unique_id=1353750039 instance=ExtResource("17_j3sot")]
-position = Vector2(303, 545)
-
-[node name="QuestMoveMarker4" parent="." unique_id=1504336505 instance=ExtResource("17_j3sot")]
-position = Vector2(375, 544)
-
-[node name="QuestProgressArea" parent="." unique_id=1142422050 instance=ExtResource("18_bc5g6")]
-position = Vector2(339, 545)
-scale = Vector2(0.3, 0.3)
-quest_id = "learn_move"
-
-[node name="EchoSpirit" parent="." unique_id=797508733 instance=ExtResource("19_gpagj")]
-position = Vector2(181, 359)
+[editable path="YSortWorld/EchoSpirit"]

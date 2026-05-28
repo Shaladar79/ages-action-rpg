@@ -3,24 +3,10 @@ extends CharacterBody2D
 const HOTBAR_SLOT_COUNT: int = 5
 const STARTING_ARMOR_ID: String = "grass_tunic"
 
-const CURRENCY_SHINES: String = "shines"
-const CURRENCY_FIRE_ESSENCE: String = "fire_essence"
-const CURRENCY_ICE_ESSENCE: String = "ice_essence"
-const CURRENCY_LIGHTNING_ESSENCE: String = "lightning_essence"
-const CURRENCY_ACID_ESSENCE: String = "acid_essence"
-const CURRENCY_LIGHT_ESSENCE: String = "light_essence"
-const CURRENCY_SHADOW_ESSENCE: String = "shadow_essence"
-const CURRENCY_PRIMAL_ESSENCE: String = "primal_essence"
+const CURRENCY_MARKS: String = "marks"
 
 const CURRENCY_DISPLAY_NAMES: Dictionary = {
-    CURRENCY_SHINES: "Shines",
-    CURRENCY_FIRE_ESSENCE: "Fire Essence",
-    CURRENCY_ICE_ESSENCE: "Ice Essence",
-    CURRENCY_LIGHTNING_ESSENCE: "Lightning Essence",
-    CURRENCY_ACID_ESSENCE: "Acid Essence",
-    CURRENCY_LIGHT_ESSENCE: "Light Essence",
-    CURRENCY_SHADOW_ESSENCE: "Shadow Essence",
-    CURRENCY_PRIMAL_ESSENCE: "Primal Essence"
+    CURRENCY_MARKS: "Marks"
 }
 
 @export var base_move_speed: float = 120.0
@@ -74,6 +60,7 @@ var active_status_effects: Dictionary = {}
 @export var ranged_projectile_collision_layer: int = 0
 @export var ranged_projectile_collision_mask: int = 1
 
+
 func _ready() -> void:
     add_to_group("player")
 
@@ -82,7 +69,7 @@ func _ready() -> void:
     _ensure_starting_equipment()
     _disable_attack_hitbox()
     _hide_weapon_sprite()
-    
+
     if not attack_area.area_entered.is_connected(_on_attack_area_entered):
         attack_area.area_entered.connect(_on_attack_area_entered)
 
@@ -241,6 +228,7 @@ func get_current_move_speed() -> float:
 func get_current_attack_cooldown() -> float:
     return character_stats.get_attack_cooldown(base_attack_cooldown, attack_speed_bonus_per_agility)
 
+
 func apply_status_effect(status_id: String, duration: float, effect_data: Dictionary = {}) -> bool:
     if is_defeated:
         return false
@@ -295,6 +283,7 @@ func _update_status_effects(delta: float) -> void:
     for status_id in expired_status_ids:
         print("Player status expired: ", status_id)
 
+
 func take_status_tick_damage(incoming_damage: int, incoming_damage_types: int = DamageTypes.NONE) -> void:
     if is_defeated:
         return
@@ -320,7 +309,8 @@ func take_status_tick_damage(incoming_damage: int, incoming_damage_types: int = 
 
     if character_stats.current_health <= 0:
         _on_player_defeated()
- 
+
+
 func gain_xp(amount: int) -> bool:
     if is_defeated:
         return false
@@ -349,7 +339,8 @@ func gain_xp(amount: int) -> bool:
             print("Level-up lesson already seen. Skipping repeated level-up dialogue.")
 
     return leveled_up
-       
+
+
 func _show_first_level_up_lesson() -> void:
     if SaveManager.is_flag_set("level_up_lesson_seen"):
         return
@@ -362,7 +353,7 @@ func _show_first_level_up_lesson() -> void:
         "This is growth, Gene Ambrose.",
         "When you grow stronger, open your character screen.",
         "There you may shape what you become.",
-		"Strength, endurance, precision, will — each path leaves a mark."
+        "Strength, endurance, precision, will — each path leaves a mark."
     ]
 
     var game_ui := _get_game_ui()
@@ -387,6 +378,7 @@ func _get_game_ui() -> Node:
         return autoload_ui
 
     return null
+
 
 func _show_notification(message: String) -> void:
     var clean_message := message.strip_edges()
@@ -413,6 +405,7 @@ func _show_reward_notification(message: String) -> void:
         return
 
     _show_notification(clean_message)
+
 
 func spend_stat_point(stat_id: String) -> bool:
     if is_defeated:
@@ -504,6 +497,7 @@ func add_inventory_item(item_id: String, item_name: String, quantity: int = 1) -
     _handle_key_item_acquisition(clean_item_id)
     _notify_ui_stats_changed()
 
+
 func _handle_spell_book_acquisition(item_id: String) -> void:
     if item_id.strip_edges() == "":
         return
@@ -530,7 +524,8 @@ func _handle_key_item_acquisition(item_id: String) -> void:
 
     SaveManager.set_flag(story_flag, true)
     print("Key item acquisition flag set: ", story_flag)
-    
+
+
 func _unlock_mana_and_focus_from_first_spell_book() -> bool:
     if character_stats == null:
         return false
@@ -570,6 +565,7 @@ func _show_first_spell_book_lesson() -> void:
         return
 
     show_dialogue("You found a spell book. Mana and Focus are now unlocked.")
+
 
 func remove_inventory_item(item_id: String, quantity: int = 1) -> bool:
     var clean_item_id := item_id.strip_edges()
@@ -706,29 +702,19 @@ func _is_stackable_inventory_item(item_id: String) -> bool:
 
 
 func _initialize_currencies() -> void:
-    for currency_id in CURRENCY_DISPLAY_NAMES.keys():
-        var clean_currency_id := str(currency_id)
+    if not currencies.has(CURRENCY_MARKS):
+        currencies[CURRENCY_MARKS] = 0
 
-        if not currencies.has(clean_currency_id):
-            currencies[clean_currency_id] = 0
-
-
-func get_currency_display_name(currency_id: String) -> String:
-    var clean_currency_id := currency_id.strip_edges()
-
-    if CURRENCY_DISPLAY_NAMES.has(clean_currency_id):
-        return str(CURRENCY_DISPLAY_NAMES.get(clean_currency_id))
-
-    return clean_currency_id.capitalize()
+    if not discovered_currency_ids.has(CURRENCY_MARKS):
+        discovered_currency_ids.append(CURRENCY_MARKS)
 
 
-func add_currency(currency_id: String, amount: int) -> bool:
+func get_currency_display_name(_currency_id: String = CURRENCY_MARKS) -> String:
+    return "Marks"
+
+
+func add_marks(amount: int) -> bool:
     if is_defeated:
-        return false
-
-    var clean_currency_id := currency_id.strip_edges()
-
-    if clean_currency_id == "":
         return false
 
     if amount <= 0:
@@ -736,100 +722,83 @@ func add_currency(currency_id: String, amount: int) -> bool:
 
     _initialize_currencies()
 
-    var current_amount: int = int(currencies.get(clean_currency_id, 0))
-    currencies[clean_currency_id] = current_amount + amount
+    var current_amount: int = int(currencies.get(CURRENCY_MARKS, 0))
+    currencies[CURRENCY_MARKS] = current_amount + amount
 
-    _discover_currency(clean_currency_id)
+    _discover_currency(CURRENCY_MARKS)
 
-    var display_name := get_currency_display_name(clean_currency_id)
+    print("Added Marks: +", amount)
+    print("Marks total: ", currencies[CURRENCY_MARKS])
 
-    print("Added currency: ", display_name, " +", amount)
-    print("Currency total: ", currencies[clean_currency_id])
-
-    _show_reward_notification("Received: " + str(amount) + " " + display_name)
+    _show_reward_notification("Received: " + str(amount) + " Marks")
     _notify_ui_stats_changed()
 
     return true
 
 
-func spend_currency(currency_id: String, amount: int) -> bool:
-    var clean_currency_id := currency_id.strip_edges()
-
-    if clean_currency_id == "":
-        return false
-
+func spend_marks(amount: int) -> bool:
     if amount <= 0:
         return false
 
     _initialize_currencies()
 
-    var current_amount: int = int(currencies.get(clean_currency_id, 0))
+    var current_amount: int = int(currencies.get(CURRENCY_MARKS, 0))
 
     if current_amount < amount:
         return false
 
-    currencies[clean_currency_id] = current_amount - amount
-    _discover_currency(clean_currency_id)
+    currencies[CURRENCY_MARKS] = current_amount - amount
 
-    print("Spent currency: ", get_currency_display_name(clean_currency_id), " -", amount)
-    print("Currency total: ", currencies[clean_currency_id])
+    print("Spent Marks: -", amount)
+    print("Marks total: ", currencies[CURRENCY_MARKS])
 
     _notify_ui_stats_changed()
 
     return true
 
 
-func get_currency_amount(currency_id: String) -> int:
-    var clean_currency_id := currency_id.strip_edges()
+func get_marks() -> int:
+    _initialize_currencies()
+    return int(currencies.get(CURRENCY_MARKS, 0))
 
-    if clean_currency_id == "":
-        return 0
 
+func add_currency(_currency_id: String, amount: int) -> bool:
+    return add_marks(amount)
+
+
+func spend_currency(_currency_id: String, amount: int) -> bool:
+    return spend_marks(amount)
+
+
+func get_currency_amount(_currency_id: String = CURRENCY_MARKS) -> int:
+    return get_marks()
+
+
+func is_currency_discovered(_currency_id: String = CURRENCY_MARKS) -> bool:
+    _initialize_currencies()
+    return true
+
+
+func _discover_currency(_currency_id: String) -> void:
     _initialize_currencies()
 
-    return int(currencies.get(clean_currency_id, 0))
-
-
-func is_currency_discovered(currency_id: String) -> bool:
-    var clean_currency_id := currency_id.strip_edges()
-
-    if clean_currency_id == "":
-        return false
-
-    return discovered_currency_ids.has(clean_currency_id)
-
-
-func _discover_currency(currency_id: String) -> void:
-    var clean_currency_id := currency_id.strip_edges()
-
-    if clean_currency_id == "":
+    if discovered_currency_ids.has(CURRENCY_MARKS):
         return
 
-    if discovered_currency_ids.has(clean_currency_id):
-        return
-
-    discovered_currency_ids.append(clean_currency_id)
-    print("Currency discovered: ", get_currency_display_name(clean_currency_id))
+    discovered_currency_ids.append(CURRENCY_MARKS)
+    print("Currency discovered: Marks")
 
 
 func get_discovered_currency_rows() -> Array[Dictionary]:
     _initialize_currencies()
 
-    var rows: Array[Dictionary] = []
-
-    for currency_id in CURRENCY_DISPLAY_NAMES.keys():
-        var clean_currency_id := str(currency_id)
-
-        if not discovered_currency_ids.has(clean_currency_id):
-            continue
-
-        rows.append({
-            "id": clean_currency_id,
-            "name": get_currency_display_name(clean_currency_id),
-            "amount": int(currencies.get(clean_currency_id, 0))
-        })
-
-    return rows
+    return [
+        {
+            "id": CURRENCY_MARKS,
+            "name": "Marks",
+            "amount": get_marks()
+        }
+    ]
 
 
 func get_currency_save_data() -> Dictionary:
@@ -845,32 +814,16 @@ func set_currency_save_data(saved_currency_data: Dictionary) -> void:
     currencies.clear()
     discovered_currency_ids.clear()
 
-    _initialize_currencies()
-
+    var total_marks: int = 0
     var saved_currencies: Dictionary = saved_currency_data.get("currencies", {})
 
     for currency_id in saved_currencies.keys():
-        var clean_currency_id := str(currency_id).strip_edges()
+        total_marks += int(saved_currencies.get(currency_id, 0))
 
-        if clean_currency_id == "":
-            continue
+    currencies[CURRENCY_MARKS] = maxi(0, total_marks)
+    discovered_currency_ids.append(CURRENCY_MARKS)
 
-        currencies[clean_currency_id] = int(saved_currencies.get(currency_id, 0))
-
-    var saved_discovered_currency_ids: Array = saved_currency_data.get("discovered_currency_ids", [])
-
-    for currency_id in saved_discovered_currency_ids:
-        var clean_currency_id := str(currency_id).strip_edges()
-
-        if clean_currency_id == "":
-            continue
-
-        if discovered_currency_ids.has(clean_currency_id):
-            continue
-
-        discovered_currency_ids.append(clean_currency_id)
-
-    print("Currency save data loaded. Discovered count: ", discovered_currency_ids.size())
+    print("Currency save data loaded as Marks. Total Marks: ", currencies[CURRENCY_MARKS])
     _notify_ui_stats_changed()
 
 
@@ -1108,6 +1061,7 @@ func get_attack_damage() -> int:
 
     return maxi(1, int(ceil(float(base_damage) * multiplier)))
 
+
 func get_equipped_melee_weapon_mastery_id() -> String:
     if character_stats == null:
         return ""
@@ -1130,6 +1084,7 @@ func get_equipped_ranged_weapon_mastery_id() -> String:
         return ""
 
     return ItemDatabase.get_weapon_mastery_id(weapon_id)
+
 
 func get_ranged_attack_damage() -> int:
     var base_damage: int = character_stats.get_ranged_attack()
@@ -1514,7 +1469,8 @@ func _use_hotbar_spell_book(slot_number: int, item_id: String) -> bool:
     _notify_ui_stats_changed()
 
     return true
-    
+
+
 func _record_spell_school_mastery_cast(item_id: String) -> void:
     var spell_school := ItemDatabase.get_spell_school(item_id).strip_edges()
 
@@ -1530,8 +1486,9 @@ func _record_spell_school_mastery_cast(item_id: String) -> void:
     var added := MasteryManager.add_school_cast(spell_school, 1)
 
     if added:
-        print("School mastery cast added: ", spell_school)    
-    
+        print("School mastery cast added: ", spell_school)
+
+
 func _cast_self_buff_spell(item_id: String, status_effect: String, status_duration: float) -> void:
     var status_effect_data := {
         StatusEffects.KEY_MOVE_SPEED_MULTIPLIER: ItemDatabase.get_spell_move_speed_multiplier(item_id)
@@ -1556,6 +1513,7 @@ func _cast_self_buff_spell(item_id: String, status_effect: String, status_durati
         " duration: ",
         status_duration
     )
+
 
 func _spawn_spell_projectile(
         item_id: String,
@@ -1602,6 +1560,7 @@ func _spawn_spell_projectile(
     else:
         get_parent().add_child(projectile)
 
+
 func _get_last_direction_vector() -> Vector2:
     match last_direction:
         "up":
@@ -1630,6 +1589,7 @@ func _set_hotbar_slot_cooldown(slot_number: int, cooldown: float) -> void:
     slot["cooldown_remaining"] = cooldown
     hotbar_slots[slot_index] = slot
 
+
 func _use_hotbar_technique_manual(slot_number: int, item_id: String) -> bool:
     print("Technique manual hotbar use placeholder. Slot: ", slot_number, " Item: ", item_id)
     return false
@@ -1652,6 +1612,7 @@ func heal_player(heal_amount: int) -> bool:
 
     return true
 
+
 func restore_player_mana(mana_amount: int) -> bool:
     if mana_amount <= 0:
         return false
@@ -1665,6 +1626,7 @@ func restore_player_mana(mana_amount: int) -> bool:
         _notify_ui_stats_changed()
 
     return restored
+
 
 func show_dialogue(message: String, speaker_name: String = "System") -> void:
     var clean_message := message.strip_edges()
@@ -1687,6 +1649,7 @@ func hide_dialogue() -> void:
     if game_ui != null and game_ui.has_method("hide_story_dialogue"):
         game_ui.hide_story_dialogue()
         return
+
 
 func is_dialogue_active() -> bool:
     var game_ui := _get_game_ui()
@@ -1763,6 +1726,7 @@ func _try_interact() -> void:
 
     if nearby_interactable.has_method("interact"):
         nearby_interactable.interact(self)
+
 
 func _try_ranged_attack() -> void:
     if is_defeated:
@@ -1856,7 +1820,8 @@ func _has_inventory_quantity(item_id: String, required_quantity: int) -> bool:
         return quantity >= safe_required_quantity
 
     return false
-    
+
+
 func _try_attack() -> void:
     if is_defeated:
         return
@@ -1999,15 +1964,12 @@ func _damage_area_target(area: Area2D) -> void:
     if target == null:
         return
 
-    # Prevent the player from hitting their own hurtbox/child Area2D.
     if target == self:
         return
 
-    # Prevent hitting anything marked as player.
     if target.is_in_group("player"):
         return
 
-    # Prevent hitting child/owned nodes of the player.
     if self.is_ancestor_of(target):
         return
 

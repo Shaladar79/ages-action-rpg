@@ -1,0 +1,51 @@
+[gd_scene format=3 uid="uid://bpnbq3fsaa43h"]
+
+[ext_resource type="Script" uid="uid://q8c0o0dt74sn" path="res://scripts/characters/npcs/npc_actor.gd" id="1_pxpdk"]
+[ext_resource type="Script" uid="uid://conwmva4cm5cu" path="res://scripts/characters/npcs/Mods/npc_dialogue_module.gd" id="2_pjx8c"]
+[ext_resource type="Script" uid="uid://c3yaaxvjbhet" path="res://scripts/characters/npcs/Mods/npc_movement_module.gd" id="3_k51bu"]
+[ext_resource type="Script" uid="uid://ckick67t4d3to" path="res://scripts/characters/npcs/Mods/npc_quest_module.gd" id="4_5md2p"]
+[ext_resource type="Script" uid="uid://dbix2kp3ktukn" path="res://scripts/characters/npcs/Mods/npc_shop_module.gd" id="5_aedj1"]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_l26by"]
+radius = 13.750004
+height = 37.50001
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_pxpdk"]
+radius = 25.000002
+
+[node name="NpcBase" type="Area2D" unique_id=1989954759]
+scale = Vector2(0.8, 0.8)
+script = ExtResource("1_pxpdk")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=1412114460]
+scale = Vector2(0.99999994, 0.99999994)
+animation = &"idle_left"
+
+[node name="StaticBody2D" type="StaticBody2D" parent="." unique_id=1580427796]
+scale = Vector2(0.99999994, 0.99999994)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D" unique_id=998696121]
+position = Vector2(1.25, 1.249999)
+scale = Vector2(0.9999997, 0.9999997)
+shape = SubResource("CapsuleShape2D_l26by")
+debug_color = Color(0.4238206, 0.3448938, 0.9102323, 0.41960785)
+
+[node name="Dialouge" type="Node2D" parent="." unique_id=114600574]
+scale = Vector2(0.99999994, 0.99999994)
+script = ExtResource("2_pjx8c")
+
+[node name="movement" type="Node2D" parent="." unique_id=2116308213]
+scale = Vector2(0.99999994, 0.99999994)
+script = ExtResource("3_k51bu")
+
+[node name="Quest" type="Node2D" parent="." unique_id=1651262223]
+scale = Vector2(0.99999994, 0.99999994)
+script = ExtResource("4_5md2p")
+
+[node name="Shop" type="Node2D" parent="." unique_id=1154396758]
+scale = Vector2(0.99999994, 0.99999994)
+script = ExtResource("5_aedj1")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1923185307]
+scale = Vector2(0.99999994, 0.99999994)
+shape = SubResource("CircleShape2D_pxpdk")
