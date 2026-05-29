@@ -254,3 +254,5 @@ respawn_id = "Foothills_Save"
 [node name="StickBundle" parent="Ysort" unique_id=1484649167 instance=ExtResource("10_n3spi")]
 position = Vector2(235, 416)
 disappear_on_open = true
+quest_id = "village_elder_sling_materials"
+objective_id = "collect_bundle_of_sticks_01"

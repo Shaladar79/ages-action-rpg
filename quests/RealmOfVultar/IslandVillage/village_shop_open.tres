@@ -1,0 +1,48 @@
+[gd_resource type="Resource" script_class="QuestEntry" format=3 uid="uid://iptaxfcmetti"]
+
+[ext_resource type="Script" uid="uid://pomcudkoxce3" path="res://scripts/core/quests/quest_objective_entry.gd" id="1_h7llv"]
+[ext_resource type="Script" uid="uid://dt5yvut01s10s" path="res://scripts/core/quests/quest_entry.gd" id="2_4efm4"]
+
+[sub_resource type="Resource" id="Resource_h7llv"]
+script = ExtResource("1_h7llv")
+objective_id = "kill_shop_beetles_01"
+objective_type = 1
+objective_text = "Kill the invasive forest beetles."
+required_amount = 3
+completed_flag = "shop_beetles_killed"
+metadata/_custom_type_script = "uid://pomcudkoxce3"
+
+[resource]
+script = ExtResource("2_4efm4")
+quest_id = "clear_shop_beetles_lesson"
+quest_title = "Clear the InvasiveBeetles"
+quest_type = 0
+started_flag = "clear_shop_beetles_lesson_started"
+ready_to_turn_in_flag = "clear_shop_beetles_lesson_ready"
+completed_flag = "clear_shop_beetles_lesson_completed"
+required_flag = "talk_to_shopkeeper_lesson_completed"
+first_time_dialogue = "he elder sent you, then?
+
+Good. I need help before I can open the shop.
+
+Three forest beetles have gotten into my storage.
+Every time I try to open for trade, they tear through the shelves and ruin the stock.
+
+I cannot sell anything while they are still loose.
+
+Find the three beetles and kill them.
+Once they are gone, come back to me and I can open the shop again."
+active_dialogue = "The shop stays closed until those three forest beetles are dealt with.
+
+Find them, kill them, then come back to me."
+ready_to_turn_in_dialogue = "You killed them?
+
+Good. Then maybe my stock will survive longer than a morning.
+
+You have my thanks. The shop can open again.
+Take a look if you need supplies."
+completed_dialogue = "Thanks to you, the beetles are gone and the shop is open again. Go talk to the bounty man to the south he has some work for you as well, work with him the Village Elder will be ready for you soon."
+summary = "The Shopkeeper cannot open his shop because three invasive forest beetles are destroying his stock."
+objective_text = "Kill the three forest beetles troubling the Shopkeeper."
+objectives = Array[ExtResource("1_h7llv")]([SubResource("Resource_h7llv")])
+metadata/_custom_type_script = "uid://dt5yvut01s10s"

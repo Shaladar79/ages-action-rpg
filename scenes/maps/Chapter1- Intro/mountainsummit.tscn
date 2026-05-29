@@ -4,6 +4,7 @@
 [ext_resource type="PackedScene" uid="uid://cihgogaol4td8" path="res://scenes/objects/map_transition_area.tscn" id="2_7l1ou"]
 [ext_resource type="PackedScene" uid="uid://d2qyxdpcmw4x0" path="res://scenes/objects/map_spawn_point.tscn" id="3_0dvwj"]
 [ext_resource type="PackedScene" uid="uid://ds0nibabilemd" path="res://scenes/player/Player.tscn" id="4_0dvwj"]
+[ext_resource type="PackedScene" uid="uid://clxr5342eb6d" path="res://scenes/objects/questmarkers/QuestProgressArea.tscn" id="5_ks7y0"]
 
 [node name="Summit" type="Node2D" unique_id=1213367326]
 
@@ -33,6 +34,7 @@ position = Vector2(750, 110)
 spawn_id = "FromRitual"
 
 [node name="MapCollisons" type="StaticBody2D" parent="." unique_id=1944733719]
+visible = false
 
 [node name="right" type="CollisionPolygon2D" parent="MapCollisons" unique_id=927273631]
 polygon = PackedVector2Array(805, 1072, 767, 904, 789, 870, 824, 920, 906, 912, 1041, 879, 1056, 835, 1050, 804, 1119, 785, 1151, 792, 1183, 772, 1174, 715, 1155, 696, 1113, 710, 1040, 750, 1035, 709, 1015, 683, 965, 680, 947, 743, 923, 731, 895, 684, 861, 675, 807, 684, 764, 703, 778, 636, 783, 584, 773, 535, 769, 486, 810, 469, 860, 457, 886, 440, 902, 409, 928, 394, 936, 355, 950, 328, 961, 305, 988, 295, 1012, 299, 1032, 302, 1044, 315, 1053, 349, 1059, 387, 1059, 419, 1076, 450, 1120, 461, 1166, 457, 1199, 460, 1252, 440, 1256, 413, 1256, 390, 1234, 368, 1215, 366, 1176, 379, 1142, 399, 1108, 400, 1100, 368, 1095, 322, 1087, 293, 1111, 277, 1155, 246, 1177, 218, 1176, 177, 1161, 161, 1141, 148, 1117, 194, 1092, 223, 1043, 248, 1003, 262, 959, 243, 934, 261, 905, 243, 908, 210, 871, 182, 838, 172, 798, 155, 802, 120, 824, 93, 846, 62, 857, 13, 1432, 11, 1429, 394, 1409, 763, 1353, 1018)
@@ -48,3 +50,10 @@ polygon = PackedVector2Array(671, 434, 713, 479, 723, 534, 720, 596, 720, 657, 7
 
 [node name="outcropping3" type="CollisionPolygon2D" parent="MapCollisons" unique_id=1441328923]
 polygon = PackedVector2Array(418, 346, 473, 367, 514, 374, 572, 356, 597, 359, 613, 399, 594, 448, 560, 462, 532, 456, 473, 473, 450, 508, 415, 516, 393, 503, 362, 473, 345, 435, 356, 391, 387, 368)
+
+[node name="QuestProgressArea" parent="." unique_id=1142422050 instance=ExtResource("5_ks7y0")]
+position = Vector2(771, 298)
+quest_id = "village_elder_scout_danger_sites"
+objective_id = "scout_mountain_ancient_circle_01"
+persistent_id = "scouted_mountain_ancient_circle"
+required_flag = "village_elder_scout_danger_sites_started"

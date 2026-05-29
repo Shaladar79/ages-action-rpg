@@ -8,6 +8,7 @@
 [ext_resource type="Script" uid="uid://dgyphpqc2hcty" path="res://scripts/core/map_settings.gd" id="6_ts0od"]
 [ext_resource type="PackedScene" uid="uid://dojjfsgpjfm7i" path="res://scenes/enemies/cave/FireMephit.tscn" id="6_vp6hn"]
 [ext_resource type="PackedScene" uid="uid://diepcak1mm2tn" path="res://scenes/enemies/Slopes/Rock_Spitter.tscn" id="7_ts0od"]
+[ext_resource type="PackedScene" uid="uid://clxr5342eb6d" path="res://scenes/objects/questmarkers/QuestProgressArea.tscn" id="9_77bii"]
 
 [node name="FootHillscave" type="Node2D" unique_id=644050731]
 
@@ -120,9 +121,7 @@ persistent_id = ""
 monster_level = 6
 max_hit_points = 9
 defense = 2
-xp_reward = 5
 weakness_types = 128
-projectile_damage = 5
 
 [node name="RockSpitter2" parent="Monsters" unique_id=1984628985 instance=ExtResource("7_ts0od")]
 position = Vector2(1082, 412)
@@ -130,9 +129,7 @@ persistent_id = ""
 monster_level = 6
 max_hit_points = 9
 defense = 2
-xp_reward = 5
 weakness_types = 128
-projectile_damage = 5
 
 [node name="RockSpitter3" parent="Monsters" unique_id=462015200 instance=ExtResource("7_ts0od")]
 position = Vector2(212, 93)
@@ -140,9 +137,7 @@ persistent_id = ""
 monster_level = 6
 max_hit_points = 9
 defense = 2
-xp_reward = 5
 weakness_types = 128
-projectile_damage = 5
 
 [node name="FireMephit" parent="Monsters" unique_id=685716754 instance=ExtResource("6_vp6hn")]
 position = Vector2(467, 485)
@@ -180,3 +175,10 @@ target_spawn_id = "FromCave"
 position = Vector2(163, 958)
 target_scene_path = "uid://baxj5bwchnbd3"
 target_spawn_id = "FromCave"
+
+[node name="QuestProgressArea" parent="." unique_id=1142422050 instance=ExtResource("9_77bii")]
+position = Vector2(759, 473)
+quest_id = "village_elder_scout_danger_sites"
+objective_id = "scout_cave_fiery_crossroads_01"
+persistent_id = "scouted_cave_fiery_crossroads"
+required_flag = "village_elder_scout_danger_sites_started"

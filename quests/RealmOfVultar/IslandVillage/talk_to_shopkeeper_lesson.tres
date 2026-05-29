@@ -3,6 +3,46 @@
 [ext_resource type="Script" uid="uid://pomcudkoxce3" path="res://scripts/core/quests/quest_objective_entry.gd" id="1_730mv"]
 [ext_resource type="Script" uid="uid://dt5yvut01s10s" path="res://scripts/core/quests/quest_entry.gd" id="2_024c1"]
 
+[sub_resource type="Resource" id="Resource_730mv"]
+script = ExtResource("1_730mv")
+objective_id = "speak_to_shopkeeper_01"
+objective_type = 4
+objective_text = "Speak with the Shopkeeper."
+starts_completed = true
+completed_flag = "talk_to_shopkeeper_spoken_to"
+metadata/_custom_type_script = "uid://pomcudkoxce3"
+
 [resource]
 script = ExtResource("2_024c1")
+quest_id = "talk_to_shopkeeper_lesson"
+quest_title = "Speak with the Shopkeeper"
+quest_type = 0
+started_flag = "talk_to_shopkeeper_lesson_started"
+ready_to_turn_in_flag = "talk_to_shopkeeper_lesson_ready"
+completed_flag = "talk_to_shopkeeper_lesson_completed"
+required_flag = "find_village_elder_lesson_completed"
+first_time_dialogue = "You came from the cavern?
+
+Then the Echo was right to send you here.
+
+Our village can help you, but we have troubles of our own.
+The shopkeeper has supplies that could aid you, but something has kept him from properly selling his inventory.
+
+Go speak with him.
+If you can help solve his problem, his shop may become useful to you.
+
+You will find him east of here  in the Huut across from me."
+active_dialogue = "Speak with the shopkeeper.
+
+He has supplies, but something is keeping him from selling his inventory properly."
+ready_to_turn_in_dialogue = "The elder sent you?
+
+Good. I was hoping someone would come by.
+I have goods to sell, but I cannot open shop properly while this problem remains.
+
+If you are willing to help, I may be able to trade with you once this is handled."
+completed_dialogue = "Talk to me again to learn about the task i have for you."
+summary = "The Village Elder asked me to speak with the village shopkeeper."
+objective_text = "Speak with the Shopkeeper."
+objectives = Array[ExtResource("1_730mv")]([SubResource("Resource_730mv")])
 metadata/_custom_type_script = "uid://dt5yvut01s10s"

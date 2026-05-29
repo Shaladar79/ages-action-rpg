@@ -1,0 +1,73 @@
+[gd_resource type="Resource" script_class="QuestEntry" format=3 uid="uid://5npk5yh8iv5x"]
+
+[ext_resource type="Script" uid="uid://pomcudkoxce3" path="res://scripts/core/quests/quest_objective_entry.gd" id="1_hbugi"]
+[ext_resource type="Script" uid="uid://dt5yvut01s10s" path="res://scripts/core/quests/quest_entry.gd" id="2_7orni"]
+
+[sub_resource type="Resource" id="Resource_hbugi"]
+script = ExtResource("1_hbugi")
+objective_id = "collect_bundle_of_sticks_01"
+objective_type = 2
+objective_text = "Collect a bundle of sticks from the foothills."
+completed_flag = "village_elder_sling_sticks_collected"
+metadata/_custom_type_script = "uid://pomcudkoxce3"
+
+[sub_resource type="Resource" id="Resource_7orni"]
+script = ExtResource("1_hbugi")
+objective_id = "collect_strong_fiber_bundle_01"
+objective_type = 2
+objective_text = "Collect a strong fiber bundle from the forest."
+completed_flag = "village_elder_sling_fiber_collected"
+metadata/_custom_type_script = "uid://pomcudkoxce3"
+
+[resource]
+script = ExtResource("2_7orni")
+quest_id = "village_elder_sling_materials"
+quest_title = "Materials for a Sling"
+quest_type = 0
+started_flag = "village_elder_sling_materials_started"
+ready_to_turn_in_flag = "village_elder_sling_materials_ready"
+completed_flag = "village_elder_sling_materials_completed"
+required_flag = "KillRockSpitterComp"
+first_time_dialogue = "You have already done more for this village than I expected from one who arrived from the cavern.
+
+The shopkeeper has his stock again.
+The Bounty Man has seen what you can do.
+And the village is safer for it.
+
+You should not be walking these lands with only a club.
+
+As thanks, I will make you a sling, but I need the proper materials first.
+
+Bring me a bundle of sticks from the foothills and a strong fiber bundle from the forest.
+
+The foothills and forest are more dangerous than the village paths, so keep your tonic ready and do not wander carelessly.
+
+Return to me when you have both materials."
+active_dialogue = "I still need two materials before I can make your sling.
+
+Find a bundle of sticks in the foothills.
+Find a strong fiber bundle in the forest.
+
+Bring both back to me."
+ready_to_turn_in_dialogue = "Good. These will do.
+
+Good. These will do.
+
+The wood has enough spring, and the fiber is strong enough to hold tension.
+
+Give me a moment.
+
+There. Take this sling, and some stones for it.
+Keep distance when you can. Not every fight should begin with your enemy close enough to bite you."
+completed_dialogue = "I have already made your sling. Use it well. I think the bounty man is back with another task for you."
+summary = "The Village Elder wants to make me a sling, but she needs materials first."
+objective_text = "ollect a bundle of sticks from the foothills and a strong fiber bundle from the forest."
+objectives = Array[ExtResource("1_hbugi")]([SubResource("Resource_hbugi"), SubResource("Resource_7orni")])
+reward_xp = 10
+reward_currency_id = "marks"
+reward_currency_amount = 20
+reward_item_1_id = "sling"
+reward_item_1_quantity = 1
+reward_item_2_id = "sling_ammo"
+reward_item_2_quantity = 10
+metadata/_custom_type_script = "uid://dt5yvut01s10s"

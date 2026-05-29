@@ -1,0 +1,86 @@
+[gd_resource type="Resource" script_class="QuestEntry" format=3 uid="uid://nb7xvo0wwa0v"]
+
+[ext_resource type="Script" uid="uid://pomcudkoxce3" path="res://scripts/core/quests/quest_objective_entry.gd" id="1_vay5i"]
+[ext_resource type="Script" uid="uid://dt5yvut01s10s" path="res://scripts/core/quests/quest_entry.gd" id="2_wqytf"]
+
+[sub_resource type="Resource" id="Resource_vay5i"]
+script = ExtResource("1_vay5i")
+objective_id = "scout_forest_log_bridge_01"
+objective_type = 3
+objective_text = "Scout the forest log bridge."
+completed_flag = "scouted_forest_log_bridge"
+metadata/_custom_type_script = "uid://pomcudkoxce3"
+
+[sub_resource type="Resource" id="Resource_wqytf"]
+script = ExtResource("1_vay5i")
+objective_id = "scout_cave_fiery_crossroads_01"
+objective_type = 3
+objective_text = "Scout the cave crossroads leading toward the fiery depths."
+completed_flag = "scouted_cave_fiery_crossroads"
+metadata/_custom_type_script = "uid://pomcudkoxce3"
+
+[sub_resource type="Resource" id="Resource_88jmn"]
+script = ExtResource("1_vay5i")
+objective_id = "scout_mountain_ancient_circle_01"
+objective_type = 3
+objective_text = "Scout the ancient circle marking in the mountains."
+completed_flag = "scouted_mountain_ancient_circle"
+metadata/_custom_type_script = "uid://pomcudkoxce3"
+
+[sub_resource type="Resource" id="Resource_51rle"]
+script = ExtResource("1_vay5i")
+objective_id = "look_for_village_elder_01"
+objective_type = 3
+objective_text = "Look for the Village Elder in the village."
+completed_flag = "looked_for_missing_village_elder"
+metadata/_custom_type_script = "uid://pomcudkoxce3"
+
+[sub_resource type="Resource" id="Resource_mcwdu"]
+script = ExtResource("1_vay5i")
+objective_id = "talk_to_shopkeeper_about_elder_01"
+objective_type = 4
+objective_text = "Ask the Shopkeeper where the Village Elder went."
+completed_flag = "asked_shopkeeper_about_elder"
+metadata/_custom_type_script = "uid://pomcudkoxce3"
+
+[resource]
+script = ExtResource("2_wqytf")
+quest_id = "village_elder_scout_danger_sites"
+quest_title = "Scout the Dangerous Paths"
+quest_type = 0
+started_flag = "village_elder_scout_danger_sites_started"
+ready_to_turn_in_flag = "village_elder_scout_danger_sites_ready"
+completed_flag = "village_elder_scout_danger_sites_completed"
+required_flag = "turret_comp"
+first_time_dialogue = "You have grown stronger, and the village cannot remain blind to the dangers around us.
+
+There are three places I need you to scout.
+
+First, go into the forest and find the old log bridge.
+Second, enter the foothills cave and find the crossroads that leads toward the fiery depths.
+Third, climb into the mountains and find the ancient circle marking.
+
+Do not press deeper than you must.
+Look, learn, and return.
+
+These places are dangerous, but if we do not know what is stirring near the village, we will be waiting helplessly for trouble to find us."
+active_dialogue = "Scout the three dangerous paths.
+
+Find the log bridge in the forest.
+Find the cave crossroads that leads toward the fiery depths.
+Find the ancient circle marking in the mountains.
+
+Once you have seen all three, return to the village."
+ready_to_turn_in_dialogue = "You are awake.
+
+Good.
+
+What you saw matters more than you know.
+The forest, the cave, and the mountain are all beginning to stir.
+
+You have helped us prepare, but this is only the beginning."
+completed_dialogue = "You have already scouted the forest, cave, and mountains."
+summary = "The Village Elder wants me to scout three dangerous places near the village."
+objective_text = "Scout the forest log bridge, cave crossroads, and mountain ancient circle, then return to the village."
+objectives = Array[ExtResource("1_vay5i")]([SubResource("Resource_vay5i"), SubResource("Resource_wqytf"), SubResource("Resource_88jmn"), SubResource("Resource_51rle"), SubResource("Resource_mcwdu"), null])
+metadata/_custom_type_script = "uid://dt5yvut01s10s"
