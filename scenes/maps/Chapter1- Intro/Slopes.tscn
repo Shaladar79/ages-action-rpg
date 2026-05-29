@@ -12,7 +12,11 @@
 [ext_resource type="PackedScene" uid="uid://c7ww4rahpm4ls" path="res://scenes/enemies/Slopes/Rock_Turret_Mini_Boss.tscn" id="11_i456y"]
 [ext_resource type="PackedScene" uid="uid://b81kib11b5cms" path="res://scenes/objects/Containers/LootContainer_pouch.tscn" id="12_adn6g"]
 [ext_resource type="Texture2D" uid="uid://dgy60dy11p0s5" path="res://art/Assets/icons/fullcolor/individual_32x32/icon256.png" id="13_adn6g"]
+[ext_resource type="PackedScene" uid="uid://bglm47en21e7h" path="res://scenes/npcs/RealmVultar/questgivers/EchoSpirit.tscn" id="14_jxjoa"]
 [ext_resource type="Texture2D" uid="uid://cm4g7v2pey1iy" path="res://art/Assets/icons/fullcolor/individual_32x32/icon175.png" id="14_xyeje"]
+[ext_resource type="Script" uid="uid://dt5yvut01s10s" path="res://scripts/core/quests/quest_entry.gd" id="15_emt0d"]
+[ext_resource type="Resource" uid="uid://8ctifvwhbjte" path="res://quests/RealmOfVultar/StarterCavern/starter_cavern_boss_lesson.tres" id="16_5b7jx"]
+[ext_resource type="Resource" uid="uid://dldkflujcx2xl" path="res://quests/RealmOfVultar/Slopes/find_village_elder_lesson.tres" id="17_emt0d"]
 
 [node name="SlopesOfMountChonos" type="Node2D" unique_id=924677795]
 
@@ -39,7 +43,7 @@ visible = false
 
 [node name="Left_Corner" type="CollisionPolygon2D" parent="MapCollisions_Top/LeftCorner" unique_id=740450244]
 position = Vector2(-5, 8)
-polygon = PackedVector2Array(211, 161, 284, 186, 341, 145, 405, 127, 415, 120, 410, 116, 413, 98, 405, 88, 400, 96, 392, 93, 389, 59, 388, 0, 2, 19, 3, 601, 51, 605, 58, 577, 81, 560, 93, 541, 87, 518, 77, 491, 87, 516, 104, 498, 109, 473, 142, 464, 168, 436, 162, 417, 140, 390, 135, 342, 115, 285, 124, 245, 147, 213, 126, 247, 116, 283, 165, 287, 197, 226, 148, 199, 143, 161, 153, 167, 159, 153, 155, 138, 153, 121, 155, 98, 166, 87, 173, 80, 192, 81, 208, 96, 217, 112, 222, 129, 222, 150)
+polygon = PackedVector2Array(237, 159, 246, 175, 284, 186, 341, 145, 405, 127, 415, 120, 410, 116, 413, 98, 405, 88, 400, 96, 392, 93, 389, 59, 388, 0, 2, 19, 3, 601, 51, 605, 58, 577, 81, 560, 93, 541, 87, 518, 77, 491, 87, 516, 104, 498, 109, 473, 142, 464, 168, 436, 162, 417, 140, 390, 135, 342, 115, 285, 124, 245, 147, 213, 126, 247, 116, 283, 165, 287, 197, 226, 148, 199, 143, 161, 153, 167, 159, 153, 155, 138, 153, 121, 155, 98, 166, 87, 173, 80, 192, 81, 208, 96, 217, 112, 222, 129, 222, 150)
 
 [node name="Top" type="StaticBody2D" parent="MapCollisions_Top" unique_id=103562674]
 
@@ -382,8 +386,17 @@ drop_currency_max_amount = 20
 position = Vector2(734, 649)
 require_active_quest_to_spawn = true
 required_active_quest_id = "kill_turret"
-max_hit_points = 30
 xp_reward = 20
 quest_progress_enabled = true
 quest_id = "kill_turret"
 objective_id = "turret_dead"
+
+[node name="EchoSpirit" parent="." unique_id=1989954759 instance=ExtResource("14_jxjoa")]
+position = Vector2(219, 179)
+npc_name = "Echo Spirit"
+face_player_on_enter_range = true
+
+[node name="Quest" parent="EchoSpirit" index="2" unique_id=1651262223]
+quests = Array[ExtResource("15_emt0d")]([ExtResource("16_5b7jx"), ExtResource("17_emt0d")])
+
+[editable path="EchoSpirit"]

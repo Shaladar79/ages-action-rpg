@@ -47,14 +47,16 @@ func start_quest(quest_entry: QuestEntry) -> bool:
     active_quests[quest_id] = quest_data
 
     if quest_entry.started_flag.strip_edges() != "":
-        SaveManager.set_flag(quest_entry.started_flag, true)
+       SaveManager.set_flag(quest_entry.started_flag, true)
 
-    if quest_entry.track_on_hud_when_started:
-        track_quest(quest_id)
+       _check_quest_ready_or_complete(quest_id)
 
-    _notify_quest_ui_changed()
+    if quest_entry.track_on_hud_when_started and active_quests.has(quest_id):
+       track_quest(quest_id)
 
-    print("QuestManager started quest: ", quest_id)
+       _notify_quest_ui_changed()
+
+       print("QuestManager started quest: ", quest_id)
 
     return true
 

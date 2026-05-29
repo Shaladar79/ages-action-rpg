@@ -1,0 +1,9 @@
+[gd_scene format=3 uid="uid://c4112i5uhavy5"]
+
+[ext_resource type="Script" uid="uid://d4ab5r4300i0l" path="res://scripts/story/BossArenaTrigger.gd" id="1_urfmy"]
+
+[node name="BossArenaTrigger" type="Area2D" unique_id=1059733377]
+script = ExtResource("1_urfmy")
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="." unique_id=616717291]
+polygon = PackedVector2Array(16, 39, 38, 16, 38, -18, 5, -46, -35, -45, -53, -24, -52, 12, -45, 33, -24, 35)

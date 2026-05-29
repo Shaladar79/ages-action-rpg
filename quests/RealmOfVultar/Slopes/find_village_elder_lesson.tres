@@ -1,0 +1,53 @@
+[gd_resource type="Resource" script_class="QuestEntry" format=3 uid="uid://dldkflujcx2xl"]
+
+[ext_resource type="Script" uid="uid://pomcudkoxce3" path="res://scripts/core/quests/quest_objective_entry.gd" id="1_oavre"]
+[ext_resource type="Script" uid="uid://dt5yvut01s10s" path="res://scripts/core/quests/quest_entry.gd" id="2_m71wr"]
+
+[sub_resource type="Resource" id="Resource_oavre"]
+script = ExtResource("1_oavre")
+objective_id = "speak_to_village_elder_01"
+objective_type = 4
+completed_flag = "find_village_elder_spoken_to"
+metadata/_custom_type_script = "uid://pomcudkoxce3"
+
+[resource]
+script = ExtResource("2_m71wr")
+quest_id = "find_village_elder_lesson"
+quest_title = "Seek the Village"
+quest_type = 0
+started_flag = "find_village_elder_lesson_started"
+ready_to_turn_in_flag = "find_village_elder_lesson_ready"
+completed_flag = "Completed Flag:find_village_elder_lesson_completed"
+required_flag = "starter_cavern_boss_lesson_completed"
+first_time_dialogue = "You have passed through the cavern, but I cannot follow far from it.
+
+Not yet.
+
+I am only an echo, and this place is where my strength gathers.
+If I am to aid you again, I must first become stronger.
+
+For now, you must seek the village to the south.
+Travel two areas south from here and speak with the village elder.
+
+The villagers know this land better than you do.
+They can help you understand where you have arrived, and what dangers wait beyond these slopes.
+
+Do not climb higher into the mountains yet.
+Do not enter the forest.
+Do not explore the foothills cave.
+
+I will not stop you if you choose those paths, but you are not ready for what waits there.
+
+Go south. Find the village. Speak to the elder."
+active_dialogue = "The village lies two areas south of here.
+
+Do not climb higher into the mountains, enter the forest, or explore the foothills cave yet.
+Those places are dangerous, and you are not ready for them.
+
+Find the village elder."
+completed_dialogue = "You have already been sent toward the village."
+summary = "The Echo Spirit cannot travel far from the cavern yet and tells me to seek the village elder to the south.
+"
+objective_text = "Travel two areas south and speak to the Village Elder."
+objectives = Array[ExtResource("1_oavre")]([SubResource("Resource_oavre")])
+metadata/_custom_type_script = "uid://dt5yvut01s10s"

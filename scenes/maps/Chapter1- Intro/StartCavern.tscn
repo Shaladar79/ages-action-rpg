@@ -20,12 +20,18 @@
 [ext_resource type="PackedScene" uid="uid://clxr5342eb6d" path="res://scenes/objects/questmarkers/QuestProgressArea.tscn" id="14_vpebn"]
 [ext_resource type="Resource" uid="uid://jw5ckppwb6vu" path="res://quests/RealmOfVultar/StarterCavern/starter_hotbar_and_club_lesson.tres" id="14_wqcy6"]
 [ext_resource type="PackedScene" uid="uid://bql24l7sa24cp" path="res://scenes/objects/PuzzleResetStone.tscn" id="14_xv4x6"]
+[ext_resource type="Resource" uid="uid://cu8psvsitohrs" path="res://quests/RealmOfVultar/StarterCavern/starter_breakable_object_lesson.tres" id="15_2ewpr"]
 [ext_resource type="PackedScene" uid="uid://cihgogaol4td8" path="res://scenes/objects/map_transition_area.tscn" id="15_ayirs"]
+[ext_resource type="Resource" uid="uid://b5djoprrrtamy" path="res://quests/RealmOfVultar/StarterCavern/starter_save_totem_lesson.tres" id="16_vfogo"]
+[ext_resource type="Resource" uid="uid://x8ue4bkmxc4n" path="res://quests/RealmOfVultar/StarterCavern/starter_combat_intro_lesson.tres" id="17_iyco4"]
 [ext_resource type="PackedScene" uid="uid://b81kib11b5cms" path="res://scenes/objects/Containers/LootContainer_pouch.tscn" id="18_ipecf"]
 [ext_resource type="PackedScene" uid="uid://c22k78g2y6kpn" path="res://scenes/objects/BossGateBlocker.tscn" id="18_x63im"]
+[ext_resource type="Resource" uid="uid://4ugpvwmeduaa" path="res://quests/RealmOfVultar/StarterCavern/starter_monster_hunt_lesson.tres" id="21_7iida"]
 [ext_resource type="PackedScene" uid="uid://5qorurcn4toh" path="res://scenes/objects/movemarkers/QuestMoveMarker.tscn" id="22_2ewpr"]
 [ext_resource type="Texture2D" uid="uid://clp6kh04xasj6" path="res://art/Assets/icons/fullcolor/individual_24x24/icon492.png" id="22_vfogo"]
+[ext_resource type="Resource" uid="uid://8ctifvwhbjte" path="res://quests/RealmOfVultar/StarterCavern/starter_cavern_boss_lesson.tres" id="22_xv4x6"]
 [ext_resource type="PackedScene" uid="uid://bivuhglads85l" path="res://scenes/objects/Containers/LootContainer_Club.tscn" id="22_yytj5"]
+[ext_resource type="PackedScene" uid="uid://c4112i5uhavy5" path="res://scenes/objects/BossStuff/BossArenaTrigger.tscn" id="32_ayirs"]
 
 [sub_resource type="Resource" id="Resource_wqcy6"]
 script = ExtResource("12_g1fv5")
@@ -63,6 +69,49 @@ completion_save_flag = "echo_moved_after_hotbar_and_club_quest_started"
 target_marker_path = NodePath("../../QuestStuff/Markers/EchoSpiritMarker_MovementQuestEnd")
 metadata/_custom_type_script = "uid://c7moacun6f3ci"
 
+[sub_resource type="Resource" id="Resource_vfogo"]
+script = ExtResource("12_g1fv5")
+event_id = "echo_move_after_breakable_object_quest_started"
+required_flag = "starter_breakable_object_lesson_started"
+completion_save_flag = "echo_moved_after_breakable_object_quest_started"
+target_marker_path = NodePath("../../QuestStuff/Markers/EchoSpiritMarker_BreakObjectQuestEnd")
+hide_after_fade_out = false
+metadata/_custom_type_script = "uid://c7moacun6f3ci"
+
+[sub_resource type="Resource" id="Resource_xv4x6"]
+script = ExtResource("12_g1fv5")
+event_id = "echo_move_after_monster_hunt_3_kills"
+required_flag = "starter_monster_hunt_3_kills"
+required_quest_id = "Completion Save Flag:echo_moved_after_monster_hunt_3_kills"
+completion_save_flag = "Completion Save Flag: echo_moved_after_monster_hunt_3_kills"
+target_marker_path = NodePath("../../QuestStuff/Markers/EchoSpiritMarker_HuntMove1QuestEnd2")
+metadata/_custom_type_script = "uid://c7moacun6f3ci"
+
+[sub_resource type="Resource" id="Resource_ayirs"]
+script = ExtResource("12_g1fv5")
+event_id = "echo_move_after_monster_hunt_6_kills"
+required_flag = "starter_monster_hunt_6_kills"
+completion_save_flag = "echo_moved_after_monster_hunt_6_kills"
+target_marker_path = NodePath("../../QuestStuff/Markers/EchoSpiritMarker_HuntMove2QuestEnd3")
+metadata/_custom_type_script = "uid://c7moacun6f3ci"
+
+[sub_resource type="Resource" id="Resource_7iida"]
+script = ExtResource("12_g1fv5")
+event_id = "echo_move_after_monster_hunt_10_kills"
+required_flag = "starter_monster_hunt_10_kills"
+completion_save_flag = "echo_moved_after_monster_hunt_10_kills"
+target_marker_path = NodePath("../../QuestStuff/Markers/EchoSpiritMarker_HuntMove3QuestEnd")
+hide_after_fade_out = false
+metadata/_custom_type_script = "uid://c7moacun6f3ci"
+
+[sub_resource type="Resource" id="Resource_c4d2t"]
+script = ExtResource("12_g1fv5")
+event_id = "echo_fades_before_boss_exit"
+required_flag = "starter_cavern_boss_lesson_started"
+completion_save_flag = "echo_left_starter_cavern_for_boss_exit"
+movement_action = 0
+metadata/_custom_type_script = "uid://c7moacun6f3ci"
+
 [node name="StartCavern" type="Node2D" unique_id=102575327]
 position = Vector2(-7, -11)
 script = ExtResource("1_ipecf")
@@ -72,7 +121,7 @@ script = ExtResource("2_j3sot")
 
 [node name="MapImage" type="Sprite2D" parent="." unique_id=470302150]
 z_index = -100
-position = Vector2(10, 12)
+position = Vector2(6, 10)
 texture = ExtResource("3_bc5g6")
 centered = false
 
@@ -91,7 +140,7 @@ polygon = PackedVector2Array(249, 8, 247, 145, 329, 277, 379, 313, 421, 441, 386
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="CollisionWalls/Bot_Left" unique_id=1044849009]
 position = Vector2(-1, 4)
-polygon = PackedVector2Array(368, 587, 371, 621, 369, 637, 340, 670, 331, 704, 301, 712, 271, 718, 262, 735, 277, 780, 221, 790, 207, 777, 227, 717, 204, 714, 184, 715, 168, 722, 160, 717, 146, 722, 132, 729, 118, 732, 107, 742, 98, 753, 88, 761, 67, 789, 68, 807, 87, 830, 95, 847, 101, 859, 106, 863, 115, 864, 124, 869, 130, 868, 154, 873, 181, 867, 180, 954, 204, 949, 206, 951, 209, 947, 216, 946, 212, 926, 231, 923, 238, 941, 257, 952, 290, 976, 299, 979, 304, 960, 311, 969, 313, 985, 323, 994, 356, 991, 364, 964, 373, 990, 373, 1082, 1, 1084, 2, 596)
+polygon = PackedVector2Array(368, 587, 371, 621, 369, 637, 340, 670, 331, 704, 301, 712, 271, 718, 262, 735, 258, 767, 221, 790, 207, 777, 227, 717, 204, 714, 184, 715, 160, 717, 146, 722, 132, 729, 118, 732, 107, 742, 98, 753, 88, 761, 67, 789, 68, 807, 87, 830, 95, 847, 106, 863, 115, 864, 130, 868, 154, 873, 157, 901, 178, 922, 189, 925, 198, 925, 212, 926, 231, 923, 238, 941, 257, 952, 290, 976, 299, 979, 304, 960, 311, 969, 313, 985, 323, 994, 356, 991, 364, 964, 373, 990, 373, 1082, 1, 1084, 2, 596)
 
 [node name="Cen_Strip_L" type="StaticBody2D" parent="CollisionWalls" unique_id=1177781128]
 
@@ -174,9 +223,10 @@ persistent_id = "PushRock6"
 max_push_count = 1
 
 [node name="PushRock7" parent="Objects" unique_id=1554864028 instance=ExtResource("5_vpebn")]
-position = Vector2(226, 858)
+position = Vector2(217, 858)
 scale = Vector2(0.8, 0.8)
 persistent_id = "PushRock7"
+push_distance = 28.0
 max_push_count = 1
 quest_id = "starter_puzzle_reset_lesson"
 objective_id = "move_puzzle_stone_01"
@@ -190,8 +240,11 @@ persistent_id = "PushRock4"
 
 [node name="BreakableRock" parent="Objects" unique_id=1719668920 instance=ExtResource("6_pbla5")]
 position = Vector2(449.00003, 432.00003)
-persistent_id = "BreakRock"
-max_hit_points = 2
+persistent_id = "starter_breakable_rock_01"
+quest_id = "starter_breakable_object_lesson"
+objective_id = "break_weak_rock_01"
+quest_progress_flag = "starter_weak_rock_broken"
+required_flag = "starter_breakable_object_lesson_started"
 
 [node name="BreakableRock2" parent="Objects" unique_id=309177355 instance=ExtResource("6_pbla5")]
 position = Vector2(424.00003, 339.00003)
@@ -253,6 +306,143 @@ position = Vector2(1269, 442)
 persistent_id = "BreakRock13"
 max_hit_points = 2
 
+[node name="Monsters" type="Node2D" parent="." unique_id=1278830268]
+position = Vector2(1.5258789e-05, 3.0517578e-05)
+scale = Vector2(0.99999994, 0.99999994)
+
+[node name="ScBoss" parent="Monsters" unique_id=1453354898 instance=ExtResource("7_g1fv5")]
+position = Vector2(1211, 296)
+script = ExtResource("8_wqcy6")
+persistent_id = "starter_cavern_boss_01"
+monster_name = "Cavern Hulk"
+monster_level = 5
+max_hit_points = 20
+xp_reward = 6
+attack = 5
+drop_item_1_id = "healing_tonic"
+drop_item_1_chance_percent = 100.0
+drop_currency_chance_percent = 100.0
+drop_currency_min_amount = 10
+drop_currency_max_amount = 10
+move_speed = 30.0
+boss_defeated_flag = "starter_cavern_boss_defeated"
+quest_progress_enabled = true
+quest_id = "starter_cavern_boss_lesson"
+objective_id = "defeat_starter_cavern_boss_01"
+aoe_damage_types = 1
+aoe_cooldown = 5.0
+slam_width = 48.0
+
+[node name="StartCavern Earthling" parent="Monsters" unique_id=1655329841 instance=ExtResource("9_yytj5")]
+position = Vector2(802.00006, 665)
+persistent_id = "Earth_1"
+drop_currency_max_amount = 4
+quest_id = "starter_monster_hunt_lesson"
+objective_id = "kill_starter_monsters_01"
+quest_milestones_enabled = true
+milestone_1_flag = "starter_monster_hunt_3_kills"
+milestone_2_flag = "starter_monster_hunt_6_kills"
+milestone_3_flag = "starter_monster_hunt_10_kills"
+
+[node name="StartCavern Earthling8" parent="Monsters" unique_id=205960887 instance=ExtResource("9_yytj5")]
+position = Vector2(1140, 536)
+persistent_id = "Earth_8"
+drop_currency_max_amount = 4
+quest_id = "starter_monster_hunt_lesson"
+objective_id = "kill_starter_monsters_01"
+quest_milestones_enabled = true
+milestone_1_flag = "starter_monster_hunt_3_kills"
+milestone_2_flag = "starter_monster_hunt_6_kills"
+milestone_3_flag = "starter_monster_hunt_10_kills"
+
+[node name="StartCavern Earthling3" parent="Monsters" unique_id=960920315 instance=ExtResource("9_yytj5")]
+position = Vector2(809.00006, 787)
+persistent_id = "Earth_3"
+drop_currency_max_amount = 4
+quest_id = "starter_monster_hunt_lesson"
+objective_id = "kill_starter_monsters_01"
+quest_milestones_enabled = true
+milestone_1_flag = "starter_monster_hunt_3_kills"
+milestone_2_flag = "starter_monster_hunt_6_kills"
+milestone_3_flag = "starter_monster_hunt_10_kills"
+
+[node name="StartCavern Earthling4" parent="Monsters" unique_id=1704782470 instance=ExtResource("9_yytj5")]
+position = Vector2(1051, 784)
+persistent_id = "Earth_4"
+drop_currency_max_amount = 4
+quest_id = "starter_monster_hunt_lesson"
+objective_id = "kill_starter_monsters_01"
+quest_milestones_enabled = true
+milestone_1_flag = "starter_monster_hunt_3_kills"
+milestone_2_flag = "starter_monster_hunt_6_kills"
+milestone_3_flag = "starter_monster_hunt_10_kills"
+
+[node name="StartCavern Earthling5" parent="Monsters" unique_id=474422591 instance=ExtResource("9_yytj5")]
+position = Vector2(1214.0001, 705)
+persistent_id = "Earth_5"
+drop_currency_max_amount = 4
+quest_id = "starter_monster_hunt_lesson"
+objective_id = "kill_starter_monsters_01"
+quest_milestones_enabled = true
+milestone_1_flag = "starter_monster_hunt_3_kills"
+milestone_2_flag = "starter_monster_hunt_6_kills"
+milestone_3_flag = "starter_monster_hunt_10_kills"
+
+[node name="StartCavern Earthling6" parent="Monsters" unique_id=1583151896 instance=ExtResource("9_yytj5")]
+position = Vector2(1325.0001, 787)
+persistent_id = "Earth_6"
+drop_currency_max_amount = 4
+quest_id = "starter_monster_hunt_lesson"
+objective_id = "kill_starter_monsters_01"
+quest_milestones_enabled = true
+milestone_1_flag = "starter_monster_hunt_3_kills"
+milestone_2_flag = "starter_monster_hunt_6_kills"
+milestone_3_flag = "starter_monster_hunt_10_kills"
+
+[node name="StartCavern Earthling7" parent="Monsters" unique_id=1489617776 instance=ExtResource("9_yytj5")]
+position = Vector2(1269.0001, 607)
+persistent_id = "Earth_7"
+drop_currency_max_amount = 4
+quest_id = "starter_monster_hunt_lesson"
+objective_id = "kill_starter_monsters_01"
+quest_milestones_enabled = true
+milestone_1_flag = "starter_monster_hunt_3_kills"
+milestone_2_flag = "starter_monster_hunt_6_kills"
+milestone_3_flag = "starter_monster_hunt_10_kills"
+
+[node name="StartCavern Earthling10" parent="Monsters" unique_id=1921528010 instance=ExtResource("9_yytj5")]
+position = Vector2(1171.0001, 601)
+persistent_id = "Earth_10"
+drop_currency_max_amount = 4
+quest_id = "starter_monster_hunt_lesson"
+objective_id = "kill_starter_monsters_01"
+quest_milestones_enabled = true
+milestone_1_flag = "starter_monster_hunt_3_kills"
+milestone_2_flag = "starter_monster_hunt_6_kills"
+milestone_3_flag = "starter_monster_hunt_10_kills"
+
+[node name="StartCavern Earthling9" parent="Monsters" unique_id=1179515253 instance=ExtResource("9_yytj5")]
+position = Vector2(1232.0001, 531)
+persistent_id = "Earth_9"
+drop_currency_max_amount = 4
+quest_id = "starter_monster_hunt_lesson"
+objective_id = "kill_starter_monsters_01"
+quest_milestones_enabled = true
+milestone_1_flag = "starter_monster_hunt_3_kills"
+milestone_2_flag = "starter_monster_hunt_6_kills"
+milestone_3_flag = "starter_monster_hunt_10_kills"
+
+[node name="StartCavern Earthling2" parent="Monsters" unique_id=1648480600 instance=ExtResource("9_yytj5")]
+position = Vector2(710.00006, 752)
+persistent_id = "Earth_2"
+drop_currency_max_amount = 4
+quest_id = "starter_monster_hunt_lesson"
+objective_id = "kill_starter_monsters_01"
+quest_milestones_enabled = true
+milestone_1_flag = "starter_monster_hunt_3_kills"
+milestone_2_flag = "starter_monster_hunt_6_kills"
+milestone_3_flag = "starter_monster_hunt_10_kills"
+
 [node name="YSortWorld" type="Node2D" parent="." unique_id=965274766]
 y_sort_enabled = true
 
@@ -269,82 +459,22 @@ base_dialogue_text = ""
 base_speaker_name_override = "Echo Spirit"
 
 [node name="movement" parent="YSortWorld/EchoSpirit" index="1" unique_id=2116308213]
-movement_events = Array[Resource]([SubResource("Resource_wqcy6"), SubResource("Resource_g1fv5"), SubResource("Resource_yytj5"), SubResource("Resource_2ewpr")])
+movement_events = Array[Resource]([SubResource("Resource_wqcy6"), SubResource("Resource_g1fv5"), SubResource("Resource_yytj5"), SubResource("Resource_2ewpr"), SubResource("Resource_vfogo"), SubResource("Resource_xv4x6"), SubResource("Resource_ayirs"), SubResource("Resource_7iida"), SubResource("Resource_c4d2t")])
 persistent_movement_id = "echo_spirit_starter_cavern"
-auto_check_events = false
 
 [node name="Quest" parent="YSortWorld/EchoSpirit" index="2" unique_id=1651262223]
-quests = Array[ExtResource("13_wqcy6")]([ExtResource("13_gpagj"), ExtResource("12_pbla5"), ExtResource("13_g1fv5"), ExtResource("14_wqcy6")])
+quests = Array[ExtResource("13_wqcy6")]([ExtResource("13_gpagj"), ExtResource("12_pbla5"), ExtResource("13_g1fv5"), ExtResource("14_wqcy6"), ExtResource("15_2ewpr"), ExtResource("16_vfogo"), ExtResource("17_iyco4"), ExtResource("21_7iida"), ExtResource("22_xv4x6")])
 trigger_movement_after_start_dialogue = true
 
 [node name="Shop" parent="YSortWorld/EchoSpirit" index="3" unique_id=1154396758]
 enabled = false
 
-[node name="Monsters" type="Node2D" parent="YSortWorld/EchoSpirit" unique_id=1278830268]
-position = Vector2(-234.99998, -453.74997)
-scale = Vector2(1.2499999, 1.2499999)
-
-[node name="ScBoss" parent="YSortWorld/EchoSpirit/Monsters" unique_id=1453354898 instance=ExtResource("7_g1fv5")]
-position = Vector2(1211, 296)
-script = ExtResource("8_wqcy6")
-persistent_id = "SCBoss"
-monster_name = "Monster"
-max_hit_points = 20
-xp_reward = 6
-attack = 5
-drop_item_1_id = "healing_tonic"
-drop_item_1_chance_percent = 100.0
-drop_currency_chance_percent = 100.0
-drop_currency_min_amount = 10
-drop_currency_max_amount = 10
-move_speed = 30.0
-aoe_damage_types = 1
-aoe_cooldown = 5.0
-slam_width = 48.0
-
-[node name="StartCavern Earthling" parent="YSortWorld/EchoSpirit/Monsters" unique_id=1655329841 instance=ExtResource("9_yytj5")]
-position = Vector2(829, 441)
-persistent_id = "SCEarth1"
-drop_currency_max_amount = 4
-
-[node name="StartCavern Earthling2" parent="YSortWorld/EchoSpirit/Monsters" unique_id=1629732996 instance=ExtResource("9_yytj5")]
-position = Vector2(741, 578)
-persistent_id = "SCEarth2"
-
-[node name="StartCavern Earthling3" parent="YSortWorld/EchoSpirit/Monsters" unique_id=1093796272 instance=ExtResource("9_yytj5")]
-position = Vector2(861, 647)
-persistent_id = "SCEarth3"
-
-[node name="StartCavern Earthling4" parent="YSortWorld/EchoSpirit/Monsters" unique_id=810886055 instance=ExtResource("9_yytj5")]
-position = Vector2(759, 697)
-persistent_id = "SCEarth4"
-
-[node name="StartCavern Earthling5" parent="YSortWorld/EchoSpirit/Monsters" unique_id=14868799 instance=ExtResource("9_yytj5")]
-position = Vector2(1212, 706)
-persistent_id = "SCEarth5"
-
-[node name="StartCavern Earthling6" parent="YSortWorld/EchoSpirit/Monsters" unique_id=1366198870 instance=ExtResource("9_yytj5")]
-position = Vector2(1220, 580)
-persistent_id = "SCEarth6"
-
-[node name="StartCavern Earthling7" parent="YSortWorld/EchoSpirit/Monsters" unique_id=235897523 instance=ExtResource("9_yytj5")]
-position = Vector2(1280, 497)
-persistent_id = "SCEarth7"
-
-[node name="StartCavern Earthling8" parent="YSortWorld/EchoSpirit/Monsters" unique_id=798555463 instance=ExtResource("9_yytj5")]
-position = Vector2(1174, 545)
-persistent_id = "SCEarth8"
-
-[node name="StartCavern Earthling9" parent="YSortWorld/EchoSpirit/Monsters" unique_id=328998222 instance=ExtResource("9_yytj5")]
-position = Vector2(1290, 616)
-persistent_id = "SCEarth9"
-
-[node name="StartCavern Earthling10" parent="YSortWorld/EchoSpirit/Monsters" unique_id=2013640142 instance=ExtResource("9_yytj5")]
-position = Vector2(1141, 507)
-persistent_id = "SCEarth10"
-
 [node name="SaveTotem" parent="YSortWorld" unique_id=528667636 instance=ExtResource("13_7iida")]
-position = Vector2(331, 722)
+position = Vector2(872, 86)
+quest_id = "starter_save_totem_lesson"
+objective_id = "use_save_totem_01"
+quest_progress_flag = "starter_save_totem_used"
+required_flag = "starter_save_totem_lesson_started"
 
 [node name="PuzzleResetStone" parent="YSortWorld" unique_id=244382430 instance=ExtResource("14_xv4x6")]
 position = Vector2(301, 752)
@@ -382,15 +512,25 @@ drop_item_id = "healing_tonic"
 [node name="Markers" type="Node2D" parent="YSortWorld/QuestStuff" unique_id=36210484]
 
 [node name="EchoSpiritMarker_MovementQuestEnd" parent="YSortWorld/QuestStuff/Markers" unique_id=175386698 instance=ExtResource("22_2ewpr")]
-visible = false
 position = Vector2(341, 545)
 
 [node name="EchoSpiritMarker_PushRockQuestEnd2" parent="YSortWorld/QuestStuff/Markers" unique_id=1082482695 instance=ExtResource("22_2ewpr")]
-visible = false
 position = Vector2(309, 810)
 
 [node name="EchoSpiritMarker_PuzzleQuestEnd3" parent="YSortWorld/QuestStuff/Markers" unique_id=1208148355 instance=ExtResource("22_2ewpr")]
 position = Vector2(361, 956)
+
+[node name="EchoSpiritMarker_BreakObjectQuestEnd" parent="YSortWorld/QuestStuff/Markers" unique_id=844494385 instance=ExtResource("22_2ewpr")]
+position = Vector2(888, 126)
+
+[node name="EchoSpiritMarker_HuntMove1QuestEnd2" parent="YSortWorld/QuestStuff/Markers" unique_id=676814893 instance=ExtResource("22_2ewpr")]
+position = Vector2(772, 885)
+
+[node name="EchoSpiritMarker_HuntMove2QuestEnd3" parent="YSortWorld/QuestStuff/Markers" unique_id=983750473 instance=ExtResource("22_2ewpr")]
+position = Vector2(1031, 729)
+
+[node name="EchoSpiritMarker_HuntMove3QuestEnd" parent="YSortWorld/QuestStuff/Markers" unique_id=1351654975 instance=ExtResource("22_2ewpr")]
+position = Vector2(1106, 528)
 
 [node name="ProgressAreas" type="Node2D" parent="YSortWorld/QuestStuff" unique_id=2048571248]
 
@@ -404,15 +544,33 @@ persistent_id = "starter_movement_lesson_target_area_01"
 remove_if_already_triggered = false
 required_flag = "starter_movement_lesson_started"
 
+[node name="BossArenaTrigger" parent="YSortWorld/QuestStuff/ProgressAreas" unique_id=1059733377 instance=ExtResource("32_ayirs")]
+position = Vector2(1143, 445)
+boss_started_flag = "Boss Started Flag:starter_cavern_boss_fight_started"
+
+[node name="CollisionPolygon2D" parent="YSortWorld/QuestStuff/ProgressAreas/BossArenaTrigger" index="0" unique_id=616717291]
+visible = false
+position = Vector2(-1, 6)
+polygon = PackedVector2Array(231, 37, 236, -24, 7, -28, -136, -28, -117, 36)
+
+[node name="BossGateBlocker" parent="YSortWorld/QuestStuff/ProgressAreas" unique_id=2096925575 instance=ExtResource("18_x63im")]
+position = Vector2(1299, 199)
+rotation = -0.009365366
+scale = Vector2(0.99999994, 0.99999994)
+boss_started_flag = "starter_cavern_boss_fight_started"
+boss_defeated_flag = "starter_cavern_boss_defeated"
+visible_when_open = true
+
+[node name="CollisionShape2D" parent="YSortWorld/QuestStuff/ProgressAreas/BossGateBlocker" index="0" unique_id=145571068]
+position = Vector2(4.1309376, -13.961927)
+polygon = PackedVector2Array(1, -35, 30, -31, 39, 31, 13.74646, 27.129913, -18.205078, 21.83046, -22.727295, -29.214142)
+
 [node name="MapTransitionArea" parent="." unique_id=1344752193 instance=ExtResource("15_ayirs")]
 visible = false
 position = Vector2(1299, 198)
 target_scene_path = "uid://chph8q00qw2nc"
 target_spawn_id = "From_Start_Cavern"
 
-[node name="BossGateBlocker" parent="." unique_id=2096925575 instance=ExtResource("18_x63im")]
-visible = false
-position = Vector2(1299, 199)
-rotation = -0.009365366
-
 [editable path="YSortWorld/EchoSpirit"]
+[editable path="YSortWorld/QuestStuff/ProgressAreas/BossArenaTrigger"]
+[editable path="YSortWorld/QuestStuff/ProgressAreas/BossGateBlocker"]

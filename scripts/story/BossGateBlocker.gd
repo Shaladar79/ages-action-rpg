@@ -1,12 +1,26 @@
 extends StaticBody2D
 class_name BossGateBlocker
 
+@export_group("Boss Flags")
+@export var boss_started_flag: String = ""
 @export var boss_defeated_flag: String = "intro_boss_defeated"
+
+# If On, this gate only blocks after Boss Started Flag is set.
+# Use this for boss arena exits that should stay open until the player enters the arena.
+# If Off, this gate blocks immediately until Boss Defeated Flag is set.
+@export var only_block_after_boss_started: bool = true
+
+@export_group("Blocked Message")
 @export var blocked_message: String = "A corrupted force seals the way forward. Defeat the guardian to leave."
 @export var speaker_name: String = "Echo Spirit"
-
-@export var check_every_frame: bool = true
 @export var show_message_on_touch: bool = true
+
+@export_group("Behavior")
+@export var check_every_frame: bool = true
+@export var visible_when_closed: bool = true
+@export var visible_when_open: bool = false
+
+@export_group("Debug")
 @export var debug_prints: bool = true
 
 @onready var message_area: Area2D = get_node_or_null("MessageArea") as Area2D
@@ -14,11 +28,25 @@ class_name BossGateBlocker
 var player_in_message_area: Node = null
 var is_open: bool = false
 
+var _closed_collision_layer: int = 0
+var _closed_collision_mask: int = 0
+var _message_area_collision_layer: int = 0
+var _message_area_collision_mask: int = 0
+
 
 func _ready() -> void:
+    _closed_collision_layer = collision_layer
+    _closed_collision_mask = collision_mask
+
+    if message_area != null:
+        _message_area_collision_layer = message_area.collision_layer
+        _message_area_collision_mask = message_area.collision_mask
+
     if debug_prints:
         print("BossGateBlocker ready: ", name)
+        print("Boss started flag: ", boss_started_flag)
         print("Boss defeated flag: ", boss_defeated_flag)
+        print("Only block after boss started: ", only_block_after_boss_started)
         print("MessageArea found: ", message_area)
 
     _connect_message_area()
@@ -37,9 +65,6 @@ func _connect_message_area() -> void:
         push_warning("BossGateBlocker is missing child Area2D named MessageArea.")
         return
 
-    message_area.monitoring = true
-    message_area.monitorable = true
-
     if not message_area.body_entered.is_connected(_on_message_area_body_entered):
         message_area.body_entered.connect(_on_message_area_body_entered)
 
@@ -48,10 +73,13 @@ func _connect_message_area() -> void:
 
 
 func _update_gate_state(force_update: bool = false) -> void:
-    var should_be_open := SaveManager.is_flag_set(boss_defeated_flag)
+    var should_be_open := _should_gate_be_open()
 
     if debug_prints and force_update:
-        print("BossGateBlocker checking flag: ", boss_defeated_flag, " = ", should_be_open)
+        print("BossGateBlocker force check.")
+        print("Started flag: ", boss_started_flag, " = ", _is_boss_started())
+        print("Defeated flag: ", boss_defeated_flag, " = ", _is_boss_defeated())
+        print("Should be open: ", should_be_open)
 
     if should_be_open == is_open and not force_update:
         return
@@ -64,27 +92,55 @@ func _update_gate_state(force_update: bool = false) -> void:
         _close_gate()
 
 
+func _should_gate_be_open() -> bool:
+    if _is_boss_defeated():
+        return true
+
+    if only_block_after_boss_started:
+        return not _is_boss_started()
+
+    return false
+
+
+func _is_boss_started() -> bool:
+    var clean_flag := boss_started_flag.strip_edges()
+
+    if clean_flag == "":
+        return false
+
+    return SaveManager.is_flag_set(clean_flag)
+
+
+func _is_boss_defeated() -> bool:
+    var clean_flag := boss_defeated_flag.strip_edges()
+
+    if clean_flag == "":
+        return false
+
+    return SaveManager.is_flag_set(clean_flag)
+
+
 func _open_gate() -> void:
-    visible = false
-    collision_layer = 0
-    collision_mask = 0
+    visible = visible_when_open
+
+    set_deferred("collision_layer", 0)
+    set_deferred("collision_mask", 0)
     _set_collision_shapes_disabled(self, true)
 
-    if message_area != null:
-        message_area.monitoring = false
-        message_area.monitorable = false
+    _set_message_area_enabled(false)
 
     if debug_prints:
         print("Boss gate opened: ", name)
 
 
 func _close_gate() -> void:
-    visible = true
+    visible = visible_when_closed
+
+    set_deferred("collision_layer", _closed_collision_layer)
+    set_deferred("collision_mask", _closed_collision_mask)
     _set_collision_shapes_disabled(self, false)
 
-    if message_area != null:
-        message_area.monitoring = true
-        message_area.monitorable = true
+    _set_message_area_enabled(true)
 
     if debug_prints:
         print("Boss gate closed: ", name)
@@ -92,6 +148,21 @@ func _close_gate() -> void:
 
 func force_refresh_gate() -> void:
     _update_gate_state(true)
+
+
+func _set_message_area_enabled(enabled: bool) -> void:
+    if message_area == null:
+        return
+
+    message_area.set_deferred("monitoring", enabled)
+    message_area.set_deferred("monitorable", enabled)
+
+    if enabled:
+        message_area.set_deferred("collision_layer", _message_area_collision_layer)
+        message_area.set_deferred("collision_mask", _message_area_collision_mask)
+    else:
+        message_area.set_deferred("collision_layer", 0)
+        message_area.set_deferred("collision_mask", 0)
 
 
 func _show_blocked_message() -> void:

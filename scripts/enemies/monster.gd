@@ -164,6 +164,18 @@ var ranged_damage_types: int = DamageTypes.PIERCING
 @export var quest_progress_amount: int = 1
 @export var quest_progress_debug_prints: bool = true
 
+@export_group("Quest Kill Milestones")
+@export var quest_milestones_enabled: bool = false
+
+@export var milestone_1_required_amount: int = 3
+@export var milestone_1_flag: String = ""
+
+@export var milestone_2_required_amount: int = 6
+@export var milestone_2_flag: String = ""
+
+@export var milestone_3_required_amount: int = 10
+@export var milestone_3_flag: String = ""
+
 @export_group("Special Attack Controller")
 # Preferred attack system for new enemies.
 # Use this with Can Attack Player Off.
@@ -1259,6 +1271,62 @@ func _report_quest_kill_progress() -> void:
     if quest_progress_debug_prints:
         print(monster_name, " added quest kill progress: ", clean_quest_id, " / ", clean_objective_id, " +", quest_progress_amount)
 
+    _try_set_quest_kill_milestone_flags(clean_quest_id, clean_objective_id)
+
+func _try_set_quest_kill_milestone_flags(clean_quest_id: String, clean_objective_id: String) -> void:
+    if not quest_milestones_enabled:
+        return
+
+    var current_amount := _get_quest_objective_current_amount(clean_quest_id, clean_objective_id)
+
+    if current_amount <= 0:
+        return
+
+    _try_set_kill_milestone_flag(current_amount, milestone_1_required_amount, milestone_1_flag)
+    _try_set_kill_milestone_flag(current_amount, milestone_2_required_amount, milestone_2_flag)
+    _try_set_kill_milestone_flag(current_amount, milestone_3_required_amount, milestone_3_flag)
+
+
+func _try_set_kill_milestone_flag(current_amount: int, required_amount: int, flag_name: String) -> void:
+    var clean_flag := flag_name.strip_edges()
+
+    if clean_flag == "":
+        return
+
+    if required_amount <= 0:
+        return
+
+    if current_amount < required_amount:
+        return
+
+    if SaveManager.is_flag_set(clean_flag):
+        return
+
+    SaveManager.set_flag(clean_flag, true)
+
+    if quest_progress_debug_prints:
+        print(monster_name, " set quest kill milestone flag: ", clean_flag, " at ", current_amount, " kills.")
+
+
+func _get_quest_objective_current_amount(clean_quest_id: String, clean_objective_id: String) -> int:
+    if clean_quest_id == "":
+        return 0
+
+    if clean_objective_id == "":
+        return 0
+
+    if not QuestManager.active_quests.has(clean_quest_id):
+        return 0
+
+    var quest_data: Dictionary = QuestManager.active_quests.get(clean_quest_id, {})
+    var objectives: Dictionary = quest_data.get("objectives", {})
+
+    if not objectives.has(clean_objective_id):
+        return 0
+
+    var objective_data: Dictionary = objectives.get(clean_objective_id, {})
+
+    return int(objective_data.get("current", 0))
 
 func _roll_drops_for_player(player: Node2D) -> void:
     if player == null:

@@ -1,0 +1,46 @@
+[gd_resource type="Resource" script_class="QuestEntry" format=3 uid="uid://8ctifvwhbjte"]
+
+[ext_resource type="Script" uid="uid://pomcudkoxce3" path="res://scripts/core/quests/quest_objective_entry.gd" id="1_whh27"]
+[ext_resource type="Script" uid="uid://dt5yvut01s10s" path="res://scripts/core/quests/quest_entry.gd" id="2_mo2q3"]
+
+[sub_resource type="Resource" id="Resource_whh27"]
+script = ExtResource("1_whh27")
+objective_id = "defeat_starter_cavern_boss_01"
+objective_type = 1
+objective_text = "Defeat the cavern boss."
+completed_flag = "starter_cavern_boss_defeated"
+metadata/_custom_type_script = "uid://pomcudkoxce3"
+
+[resource]
+script = ExtResource("2_mo2q3")
+quest_id = "starter_cavern_boss_lesson"
+quest_title = "Quest Title:Face the Cavern Boss"
+quest_type = 0
+started_flag = "starter_cavern_boss_lesson_started"
+ready_to_turn_in_flag = "starter_cavern_boss_lesson_ready"
+completed_flag = "starter_cavern_boss_lesson_completed"
+required_flag = "starter_monster_hunt_lesson_completed"
+first_time_dialogue = "You have cleared the lesser creatures, but this cavern is not finished with you.
+
+Ahead waits the boss of this place.
+
+A mini-boss is usually drawn out by a quest, a challenge, or something you do in an area.
+A boss is different.
+
+A boss claims its arena.
+Once you step into its domain, the way out will close until it is defeated.
+
+The creature ahead must fall before you can leave this cavern.
+
+Defeat the cavern boss, then follow the path outside.
+I will meet you beyond the tunnel."
+active_dialogue = "Defeat the cavern boss. Once you enter its arena, you must win before you can leave."
+ready_to_turn_in_dialogue = "You did it.
+
+The cavern no longer holds you.
+This was your first true trial, Gene Ambrose, but it will not be your last."
+completed_dialogue = "You have already defeated the cavern boss."
+summary = "The Echo Spirit warns me about bosses and tells me to defeat the cavern boss."
+objective_text = "Defeat the cavern boss and leave the cavern."
+objectives = Array[ExtResource("1_whh27")]([SubResource("Resource_whh27")])
+metadata/_custom_type_script = "uid://dt5yvut01s10s"

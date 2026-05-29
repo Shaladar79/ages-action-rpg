@@ -1,0 +1,40 @@
+[gd_resource type="Resource" script_class="QuestEntry" format=3 uid="uid://cu8psvsitohrs"]
+
+[ext_resource type="Script" uid="uid://pomcudkoxce3" path="res://scripts/core/quests/quest_objective_entry.gd" id="1_jk5oe"]
+[ext_resource type="Script" uid="uid://dt5yvut01s10s" path="res://scripts/core/quests/quest_entry.gd" id="2_2k807"]
+
+[sub_resource type="Resource" id="Resource_jk5oe"]
+script = ExtResource("1_jk5oe")
+objective_id = "break_weak_rock_01"
+objective_text = "Break the cracked rock with the stone club."
+completed_flag = "starter_weak_rock_broken"
+metadata/_custom_type_script = "uid://pomcudkoxce3"
+
+[resource]
+script = ExtResource("2_2k807")
+quest_id = "starter_breakable_object_lesson"
+quest_title = "Break What Blocks You"
+quest_type = 0
+started_flag = "starter_breakable_object_lesson_started"
+ready_to_turn_in_flag = "starter_breakable_object_lesson_ready"
+completed_flag = "starter_breakable_object_lesson_completed"
+required_flag = "starter_hotbar_and_club_lesson_completed"
+first_time_dialogue = "Now you have a weapon.
+
+Some things in this cavern can be moved.
+Some things can be reset.
+And some things must be broken.
+
+Not every stone will yield, but weak stone can be shattered with the right tool.
+
+Use your stone club to break the cracked rock, then come back to me."
+active_dialogue = "Equip your stone club and break the cracked rock. Then return to me."
+ready_to_turn_in_dialogue = "Good.
+
+You are learning the shape of obstacles.
+Some are paths waiting to move. Some are puzzles waiting to be solved. Some are walls waiting to break."
+completed_dialogue = "You have already learned how to break weak obstacles."
+summary = "The Echo Spirit wants me to break a weak rock with the stone club."
+objective_text = "Break the cracked rock with the stone club."
+objectives = Array[ExtResource("1_jk5oe")]([SubResource("Resource_jk5oe")])
+metadata/_custom_type_script = "uid://dt5yvut01s10s"

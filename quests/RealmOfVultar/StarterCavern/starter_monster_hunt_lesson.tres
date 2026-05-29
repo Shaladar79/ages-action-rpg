@@ -1,0 +1,51 @@
+[gd_resource type="Resource" script_class="QuestEntry" format=3 uid="uid://4ugpvwmeduaa"]
+
+[ext_resource type="Script" uid="uid://pomcudkoxce3" path="res://scripts/core/quests/quest_objective_entry.gd" id="1_jo6mt"]
+[ext_resource type="Script" uid="uid://dt5yvut01s10s" path="res://scripts/core/quests/quest_entry.gd" id="2_ro2g8"]
+
+[sub_resource type="Resource" id="Resource_jo6mt"]
+script = ExtResource("1_jo6mt")
+objective_id = "kill_starter_monsters_01"
+objective_type = 1
+objective_text = "Defeat creatures in the tunnel."
+required_amount = 10
+completed_flag = "starter_monster_hunt_10_kills"
+metadata/_custom_type_script = "uid://pomcudkoxce3"
+
+[resource]
+script = ExtResource("2_ro2g8")
+quest_id = "starter_monster_hunt_lesson"
+quest_title = "Clear the Tunnel"
+quest_type = 0
+started_flag = "starter_monster_hunt_lesson_started"
+ready_to_turn_in_flag = "starter_monster_hunt_lesson_ready"
+completed_flag = "starter_monster_hunt_lesson_completed"
+required_flag = "starter_combat_intro_lesson_completed"
+first_time_dialogue = "Now the lesson becomes real.
+
+There are creatures ahead.
+Defeat them, but do not rush blindly.
+
+Watch your health.
+Use your tonic if you must.
+If you gain a level, open your character screen and spend your stat points.
+
+I will move forward as the path becomes safer.
+When enough of the creatures are gone, follow me deeper into the tunnel.
+
+Clear the creatures ahead, then return to me.
+"
+active_dialogue = "Defeat the creatures in the tunnel.
+I will move forward as the path becomes safer."
+ready_to_turn_in_dialogue = "Good.
+
+You survived the first true danger.
+You have learned that growth comes from action, not safety."
+completed_dialogue = "You have already cleared this part of the tunnel.
+"
+summary = "The Echo Spirit wants me to clear the creatures from the tunnel.
+"
+objective_text = "Defeat 10 creatures in the tunnel."
+objectives = Array[ExtResource("1_jo6mt")]([SubResource("Resource_jo6mt")])
+reward_xp = 5
+metadata/_custom_type_script = "uid://dt5yvut01s10s"

@@ -1,0 +1,55 @@
+[gd_resource type="Resource" script_class="QuestEntry" format=3 uid="uid://x8ue4bkmxc4n"]
+
+[ext_resource type="Script" uid="uid://pomcudkoxce3" path="res://scripts/core/quests/quest_objective_entry.gd" id="1_7cqce"]
+[ext_resource type="Script" uid="uid://dt5yvut01s10s" path="res://scripts/core/quests/quest_entry.gd" id="2_sxgnx"]
+
+[sub_resource type="Resource" id="Resource_7cqce"]
+script = ExtResource("1_7cqce")
+objective_id = "listen_to_combat_intro_01"
+objective_type = 4
+objective_text = "Listen to the Echo Spirit's combat lesson."
+starts_completed = true
+completed_flag = "starter_combat_intro_listened"
+metadata/_custom_type_script = "uid://pomcudkoxce3"
+
+[resource]
+script = ExtResource("2_sxgnx")
+quest_id = "starter_combat_intro_lesson"
+quest_title = "Prepare for Combat"
+quest_type = 0
+started_flag = "starter_combat_intro_lesson_started"
+ready_to_turn_in_flag = "starter_combat_intro_lesson_ready"
+completed_flag = "starter_combat_intro_lesson_completed"
+required_flag = "starter_save_totem_lesson_completed"
+first_time_dialogue = "The path ahead is no longer only stone.
+
+There are creatures in the tunnel, and they will not move aside because you ask them to.
+
+Use your weapon to attack.
+Keep moving, watch your health, and use your healing tonic if you are badly hurt.
+
+When creatures fall, you gain experience.
+With enough experience, you will gain a level.
+
+Each level grants stat points.
+You can spend stat points from your character screen to shape how you fight and survive.
+
+Might improves your physical power.
+Agility helps with quickness, ranged attacks, and attack speed.
+Toughness helps you endure damage.
+Endurance strengthens your body and survival.
+Focus strengthens magical potential and increases Mana once Mana is unlocked.
+Speed improves how quickly you move.
+
+Learn these things now.
+The next lesson will not be gentle."
+active_dialogue = "Remember what I told you. Your weapon, your tonic, and your stats all matter."
+ready_to_turn_in_dialogue = "Good.
+
+You understand enough to begin.
+Now you must prove it against living threats."
+completed_dialogue = "You have already learned the basics of combat and growth."
+summary = "The Echo Spirit explains combat, leveling, and stat points."
+objective_text = "Listen to the Echo Spirit's explanation."
+objectives = Array[ExtResource("1_7cqce")]([SubResource("Resource_7cqce")])
+metadata/_custom_type_script = "uid://dt5yvut01s10s"

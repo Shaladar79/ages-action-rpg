@@ -1,0 +1,41 @@
+[gd_resource type="Resource" script_class="QuestEntry" format=3 uid="uid://b5djoprrrtamy"]
+
+[ext_resource type="Script" uid="uid://pomcudkoxce3" path="res://scripts/core/quests/quest_objective_entry.gd" id="1_vatyg"]
+[ext_resource type="Script" uid="uid://dt5yvut01s10s" path="res://scripts/core/quests/quest_entry.gd" id="2_a7s0o"]
+
+[sub_resource type="Resource" id="Resource_vatyg"]
+script = ExtResource("1_vatyg")
+objective_id = "use_save_totem_01"
+objective_text = "Use the save totem."
+completed_flag = "starter_save_totem_used"
+metadata/_custom_type_script = "uid://pomcudkoxce3"
+
+[resource]
+script = ExtResource("2_a7s0o")
+quest_id = "starter_save_totem_lesson"
+quest_title = "Save Your Progress"
+quest_type = 0
+started_flag = "starter_save_totem_lesson_started"
+ready_to_turn_in_flag = "starter_save_totem_lesson_ready"
+completed_flag = "starter_save_totem_lesson_completed"
+required_flag = "starter_breakable_object_lesson_completed"
+first_time_dialogue = "here is one more lesson before you face true danger.
+
+That stone is a save totem.
+Use it, and your progress will be recorded.
+
+Some save totems also become respawn points.
+If you fall, Mezoria will pull you back to the last active respawn point instead of leaving you where death found you.
+
+Use the save totem now, then return to me."
+active_dialogue = "Use the save totem, then return to me."
+ready_to_turn_in_dialogue = "Good.
+
+You have marked your place in the world.
+If you are defeated, you will return to the active respawn point.
+"
+completed_dialogue = "You have already learned how save totems and respawn points work."
+summary = "The Echo Spirit wants me to use a save totem and learn how respawn points work."
+objective_text = "Use the save totem, then return to the Echo Spirit."
+objectives = Array[ExtResource("1_vatyg")]([SubResource("Resource_vatyg")])
+metadata/_custom_type_script = "uid://dt5yvut01s10s"
