@@ -6,8 +6,10 @@
 [ext_resource type="PackedScene" uid="uid://ds0nibabilemd" path="res://scenes/player/Player.tscn" id="4_4ciox"]
 [ext_resource type="PackedScene" uid="uid://bqbjuyge4dtix" path="res://scenes/npcs/RealmVultar/questgivers/BountyMan.tscn" id="9_lgn6g"]
 [ext_resource type="PackedScene" uid="uid://cy36b5giewp5r" path="res://scenes/npcs/RealmVultar/questgivers/Village_elder.tscn" id="10_ub0y7"]
+[ext_resource type="Script" uid="uid://dt5yvut01s10s" path="res://scripts/core/quests/quest_entry.gd" id="11_3djgd"]
 [ext_resource type="PackedScene" uid="uid://d2foxbmsil3de" path="res://scenes/npcs/RealmVultar/shopkeepers/village_shopkeeper.tscn" id="11_7sfwb"]
 [ext_resource type="PackedScene" uid="uid://pyq76iw1lw5d" path="res://scenes/objects/save_totem.tscn" id="11_know0"]
+[ext_resource type="Resource" uid="uid://dldkflujcx2xl" path="res://quests/RealmOfVultar/Slopes/find_village_elder_lesson.tres" id="12_h83v4"]
 [ext_resource type="PackedScene" uid="uid://cfokf5kfxdijr" path="res://scenes/enemies/Foothills/Forrest_Beatle.tscn" id="13_3djgd"]
 [ext_resource type="PackedScene" uid="uid://cxmjxgggvevd3" path="res://scenes/objects/restareas/RestAreaInteractable.tscn" id="17_3oof0"]
 [ext_resource type="PackedScene" uid="uid://clxr5342eb6d" path="res://scenes/objects/questmarkers/QuestProgressArea.tscn" id="21_3oof0"]
@@ -175,6 +177,17 @@ position = Vector2(196, 567)
 [node name="VillageElder" parent="." unique_id=2030481730 instance=ExtResource("10_ub0y7")]
 position = Vector2(831, 215)
 
+[node name="Quest" parent="VillageElder" index="1" unique_id=1651262223]
+quests = Array[ExtResource("11_3djgd")]([ExtResource("12_h83v4")])
+
+[node name="QuestProgress" parent="VillageElder" index="2" unique_id=608798097]
+quest_id = "find_village_elder_lesson"
+objective_id = "speak_to_village_elder_01"
+quest_progress_flag = "find_village_elder_spoken_to"
+required_flag = "find_village_elder_lesson_started"
+speaker_name_override = "Village Elder"
+progress_dialogue = "So you say the Echo Spirit sent you to find us.  If you can help us with a few problems our village warrior Thrang has not been see for many moons. So we have some issues that can be solved with that club of yours."
+
 [node name="Shopkeeper" parent="." unique_id=47737817 instance=ExtResource("11_7sfwb")]
 position = Vector2(432, 279)
 
@@ -185,4 +198,5 @@ position = Vector2(-1.25, -3.75)
 position = Vector2(1.25, -13.75)
 
 [editable path="BountyMan"]
+[editable path="VillageElder"]
 [editable path="Shopkeeper"]
