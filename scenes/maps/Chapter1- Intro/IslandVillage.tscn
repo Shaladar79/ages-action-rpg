@@ -185,4 +185,5 @@ position = Vector2(-1.25, -3.75)
 position = Vector2(1.25, -13.75)
 
 [editable path="BountyMan"]
+[editable path="VillageElder"]
 [editable path="Shopkeeper"]
