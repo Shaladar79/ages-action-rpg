@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="QuestEntry" format=3 uid="uid://cfc7h864dowun"]
+[gd_resource type="Resource" script_class="QuestEntry" format=3 uid="uid://vwu5d8tk5vcy"]
 
 [ext_resource type="Script" uid="uid://pomcudkoxce3" path="res://scripts/core/quests/quest_objective_entry.gd" id="1_3q7ue"]
 [ext_resource type="Script" uid="uid://dt5yvut01s10s" path="res://scripts/core/quests/quest_entry.gd" id="2_nypte"]
@@ -32,5 +32,4 @@ reward_item_1_id = "amulet_of_minor_defense"
 reward_item_1_quantity = 1
 is_faction_quest = true
 reward_faction_id = "bounty_hunters"
-reward_faction_points = 20
 metadata/_custom_type_script = "uid://dt5yvut01s10s"
