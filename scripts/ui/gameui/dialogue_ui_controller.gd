@@ -1,6 +1,8 @@
 extends RefCounted
 class_name DialogueUiController
 
+const CONTINUE_TEXT: String = "Right Mouse / Alt"
+
 var root_ui: CanvasLayer = null
 
 var story_dialogue_layer: Control = null
@@ -29,12 +31,6 @@ func process(delta: float) -> void:
 func handle_input(event: InputEvent) -> bool:
     if not story_dialogue_active:
         return false
-
-    if event is InputEventKey:
-        var key_event := event as InputEventKey
-
-        if key_event.pressed and not key_event.echo:
-            print("Story dialogue key pressed: ", key_event.keycode)
 
     if _event_is_dialogue_continue_pressed(event):
         print("Advancing story dialogue.")
@@ -189,7 +185,7 @@ func _create_story_dialogue_panel() -> void:
 
     story_dialogue_continue_label = Label.new()
     story_dialogue_continue_label.name = "ContinueLabel"
-    story_dialogue_continue_label.text = "Press E to continue"
+    story_dialogue_continue_label.text = "Press " + CONTINUE_TEXT + " to continue"
     story_dialogue_continue_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
     story_dialogue_continue_label.add_theme_font_size_override("font_size", 12)
     vbox.add_child(story_dialogue_continue_label)
@@ -224,9 +220,9 @@ func _display_current_story_dialogue_line() -> void:
 
     if story_dialogue_continue_label != null:
         if story_dialogue_index >= story_dialogue_lines.size() - 1:
-            story_dialogue_continue_label.text = "Press E to close"
+            story_dialogue_continue_label.text = "Press " + CONTINUE_TEXT + " to close"
         else:
-            story_dialogue_continue_label.text = "Press E to continue"
+            story_dialogue_continue_label.text = "Press " + CONTINUE_TEXT + " to continue"
 
 
 func _event_is_dialogue_continue_pressed(event: InputEvent) -> bool:
@@ -235,23 +231,5 @@ func _event_is_dialogue_continue_pressed(event: InputEvent) -> bool:
 
     if event.is_action_pressed("interact"):
         return true
-
-    if event.is_action_pressed("ui_accept"):
-        return true
-
-    if event is InputEventKey:
-        var key_event := event as InputEventKey
-
-        if not key_event.pressed or key_event.echo:
-            return false
-
-        if key_event.keycode == KEY_E or key_event.physical_keycode == KEY_E:
-            return true
-
-        if key_event.keycode == KEY_ENTER or key_event.keycode == KEY_KP_ENTER:
-            return true
-
-        if key_event.keycode == KEY_SPACE:
-            return true
 
     return false

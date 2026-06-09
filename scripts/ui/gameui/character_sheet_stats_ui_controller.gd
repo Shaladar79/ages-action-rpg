@@ -17,6 +17,7 @@ var sheet_mana_label: Label = null
 var sheet_stamina_label: Label = null
 
 var attack_label: Label = null
+var ranged_attack_label: Label = null
 var defense_label: Label = null
 
 var attributes_label: Label = null
@@ -42,7 +43,8 @@ func setup(panel_node: Panel) -> void:
 
 func update_character_sheet(stats: CharacterStats) -> void:
     if title_label != null:
-        title_label.text = "Character Sheet"
+        title_label.visible = false
+        title_label.text = ""
 
     if stats == null:
         clear_character_sheet()
@@ -68,6 +70,7 @@ func update_character_sheet(stats: CharacterStats) -> void:
     _update_attributes_panel(stats)
     _update_combat_stats(stats)
 
+
 func update_character_sheet_for_player(player: Node, stats: CharacterStats) -> void:
     update_character_sheet(stats)
 
@@ -77,15 +80,20 @@ func update_character_sheet_for_player(player: Node, stats: CharacterStats) -> v
     if stats == null:
         return
 
-    if defense_label == null:
-        return
+    if attack_label != null and player.has_method("get_attack_damage"):
+        attack_label.text = "Melee Attack: " + str(player.get_attack_damage())
 
-    if player.has_method("get_defense"):
+    if ranged_attack_label != null and player.has_method("get_ranged_attack_damage"):
+        ranged_attack_label.text = "Ranged Attack: " + str(player.get_ranged_attack_damage())
+
+    if defense_label != null and player.has_method("get_defense"):
         defense_label.text = "Defense: " + str(player.get_defense())
+
 
 func clear_character_sheet() -> void:
     if title_label != null:
-        title_label.text = "Character Sheet"
+        title_label.visible = false
+        title_label.text = ""
 
     if character_name_label != null:
         character_name_label.text = "No Character"
@@ -125,34 +133,36 @@ func _create_character_sheet_stats_panel() -> void:
     stats_root.mouse_filter = Control.MOUSE_FILTER_IGNORE
     character_panel.add_child(stats_root)
 
-    title_label = _create_label("TitleLabel", "Character Sheet", Vector2(16.0, 8.0), Vector2(260.0, 28.0), 20)
+    title_label = _create_label("TitleLabel", "", Vector2(8.0, 8.0), Vector2(260.0, 28.0), 20)
+    title_label.visible = false
 
-    character_name_label = _create_label("CharacterNameLabel", "No Character", Vector2(16.0, 38.0), Vector2(250.0, 24.0), 15)
-    level_label = _create_label("LevelLabel", "Level: --", Vector2(270.0, 38.0), Vector2(120.0, 24.0), 15)
-    xp_label = _create_label("XpLabel", "XP: -- / --", Vector2(400.0, 38.0), Vector2(180.0, 24.0), 15)
+    character_name_label = _create_label("CharacterNameLabel", "No Character", Vector2(8.0, 18.0), Vector2(220.0, 24.0), 15)
+    level_label = _create_label("LevelLabel", "Level: --", Vector2(125.0, 18.0), Vector2(120.0, 24.0), 15)
 
-    stat_points_label = _create_label("StatPointsLabel", "Stat Points: --", Vector2(16.0, 70.0), Vector2(180.0, 24.0), 14)
-    ability_points_label = _create_label("AbilityPointsLabel", "Ability Points: --", Vector2(200.0, 70.0), Vector2(180.0, 24.0), 14)
+    stat_points_label = _create_label("StatPointsLabel", "Stat Points: --", Vector2(8.0, 50.0), Vector2(120.0, 24.0), 14)
+    xp_label = _create_label("XpLabel", "XP: -- / --", Vector2(125.0, 50.0), Vector2(180.0, 24.0), 14)
+    ability_points_label = _create_label("AbilityPointsLabel", "Ability Points: --", Vector2(200.0, 50.0), Vector2(180.0, 24.0), 14)
     ability_points_label.visible = false
 
-    sheet_health_label = _create_label("Health", "Health: -- / --", Vector2(16.0, 104.0), Vector2(180.0, 24.0), 14)
-    sheet_mana_label = _create_label("Mana", "", Vector2(200.0, 104.0), Vector2(160.0, 24.0), 14)
-    sheet_stamina_label = _create_label("Stamina", "", Vector2(365.0, 104.0), Vector2(170.0, 24.0), 14)
+    sheet_health_label = _create_label("Health", "Health: -- / --", Vector2(8.0, 84.0), Vector2(180.0, 24.0), 14)
+    sheet_mana_label = _create_label("Mana", "", Vector2(200.0, 84.0), Vector2(160.0, 24.0), 14)
+    sheet_stamina_label = _create_label("Stamina", "", Vector2(365.0, 84.0), Vector2(170.0, 24.0), 14)
 
-    attack_label = _create_label("MeleeAttackLabel", "Attack: --", Vector2(16.0, 138.0), Vector2(180.0, 24.0), 14)
-    defense_label = _create_label("DefenseLabel", "Defense: --", Vector2(200.0, 138.0), Vector2(180.0, 24.0), 14)
+    attack_label = _create_label("MeleeAttackLabel", "Melee Attack: --", Vector2(8.0, 120.0), Vector2(220.0, 24.0), 14)
+    ranged_attack_label = _create_label("RangedAttackLabel", "Ranged Attack: --", Vector2(8.0, 150.0), Vector2(220.0, 24.0), 14)
+    defense_label = _create_label("DefenseLabel", "Defense: --", Vector2(8.0, 180.0), Vector2(220.0, 24.0), 14)
 
-    attributes_label = _create_label("AttributesLabel", "Attributes", Vector2(16.0, 180.0), Vector2(180.0, 24.0), 16)
+    attributes_label = _create_label("AttributesLabel", "Attributes", Vector2(8.0, 230.0), Vector2(180.0, 24.0), 16)
 
-    might_label = _create_label("Might", "Might: --", Vector2(24.0, 212.0), Vector2(135.0, 24.0), 14)
-    agility_label = _create_label("Agility", "Agility: --", Vector2(24.0, 242.0), Vector2(135.0, 24.0), 14)
-    toughness_label = _create_label("Toughness", "Toughness: --", Vector2(24.0, 272.0), Vector2(135.0, 24.0), 14)
-    speed_label = _create_label("Speed", "Speed: --", Vector2(24.0, 302.0), Vector2(135.0, 24.0), 14)
+    might_label = _create_label("Might", "Might: --", Vector2(16.0, 262.0), Vector2(135.0, 24.0), 14)
+    agility_label = _create_label("Agility", "Agility: --", Vector2(16.0, 292.0), Vector2(135.0, 24.0), 14)
+    toughness_label = _create_label("Toughness", "Toughness: --", Vector2(16.0, 322.0), Vector2(135.0, 24.0), 14)
+    speed_label = _create_label("Speed", "Speed: --", Vector2(16.0, 352.0), Vector2(135.0, 24.0), 14)
 
-    endurance_label = _create_label("Endurance", "Endurance: --", Vector2(24.0, 332.0), Vector2(135.0, 24.0), 14)
+    endurance_label = _create_label("Endurance", "Endurance: --", Vector2(16.0, 382.0), Vector2(135.0, 24.0), 14)
     endurance_label.visible = false
 
-    focus_label = _create_label("Focus", "Focus: --", Vector2(24.0, 362.0), Vector2(135.0, 24.0), 14)
+    focus_label = _create_label("Focus", "Focus: --", Vector2(16.0, 412.0), Vector2(135.0, 24.0), 14)
     focus_label.visible = false
 
 
@@ -297,7 +307,10 @@ func _update_attributes_panel(stats: CharacterStats) -> void:
 
 func _clear_combat_stats() -> void:
     if attack_label != null:
-        attack_label.text = "Attack: --"
+        attack_label.text = "Melee Attack: --"
+
+    if ranged_attack_label != null:
+        ranged_attack_label.text = "Ranged Attack: --"
 
     if defense_label != null:
         defense_label.text = "Defense: --"
@@ -306,6 +319,9 @@ func _clear_combat_stats() -> void:
 func _update_combat_stats(stats: CharacterStats) -> void:
     if attack_label != null:
         attack_label.text = "Melee Attack: " + str(stats.get_melee_attack())
+
+    if ranged_attack_label != null:
+        ranged_attack_label.text = "Ranged Attack: " + str(stats.get_ranged_attack())
 
     if defense_label != null:
         defense_label.text = "Defense: " + str(stats.get_defense())

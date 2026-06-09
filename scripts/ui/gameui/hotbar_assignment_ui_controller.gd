@@ -1,7 +1,8 @@
 extends RefCounted
 class_name HotbarAssignmentUiController
 
-const HOTBAR_SLOT_COUNT: int = 5
+const HOTBAR_SLOT_COUNT: int = 8
+const HOTBAR_ROWS_PER_COLUMN: int = 4
 
 var root_ui: CanvasLayer = null
 var character_panel: Panel = null
@@ -79,17 +80,34 @@ func _create_hotbar_assignment_panel() -> void:
     sheet_hotbar_container.anchor_top = 1.0
     sheet_hotbar_container.anchor_bottom = 1.0
 
-    sheet_hotbar_container.offset_left = -340.0
+    sheet_hotbar_container.offset_left = -520.0
     sheet_hotbar_container.offset_right = -16.0
-    sheet_hotbar_container.offset_top = -210.0
+    sheet_hotbar_container.offset_top = -190.0
     sheet_hotbar_container.offset_bottom = -16.0
 
-    sheet_hotbar_container.custom_minimum_size = Vector2(320.0, 190.0)
+    sheet_hotbar_container.custom_minimum_size = Vector2(500.0, 210.0)
 
     var title := Label.new()
     title.name = "HotbarAssignmentTitle"
     title.text = "Hotbar Assignment"
+    title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+    title.custom_minimum_size = Vector2(500.0, 24.0)
+    title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+    title.add_theme_font_size_override("font_size", 16)
     sheet_hotbar_container.add_child(title)
+
+    var columns_row := HBoxContainer.new()
+    columns_row.name = "HotbarAssignmentColumns"
+    columns_row.add_theme_constant_override("separation", 18)
+    sheet_hotbar_container.add_child(columns_row)
+
+    var left_column := VBoxContainer.new()
+    left_column.name = "HotbarAssignmentLeftColumn"
+    columns_row.add_child(left_column)
+
+    var right_column := VBoxContainer.new()
+    right_column.name = "HotbarAssignmentRightColumn"
+    columns_row.add_child(right_column)
 
     sheet_hotbar_option_buttons.clear()
     sheet_hotbar_clear_buttons.clear()
@@ -105,7 +123,7 @@ func _create_hotbar_assignment_panel() -> void:
 
         var option_button := OptionButton.new()
         option_button.name = "HotbarAssignOption" + str(slot_number)
-        option_button.custom_minimum_size = Vector2(210.0, 24.0)
+        option_button.custom_minimum_size = Vector2(150.0, 24.0)
         option_button.item_selected.connect(_on_hotbar_assignment_selected.bind(slot_number))
         row.add_child(option_button)
 
@@ -116,7 +134,11 @@ func _create_hotbar_assignment_panel() -> void:
         clear_button.pressed.connect(_on_hotbar_clear_button_pressed.bind(slot_number))
         row.add_child(clear_button)
 
-        sheet_hotbar_container.add_child(row)
+        if slot_number <= HOTBAR_ROWS_PER_COLUMN:
+            left_column.add_child(row)
+        else:
+            right_column.add_child(row)
+
         sheet_hotbar_option_buttons.append(option_button)
         sheet_hotbar_clear_buttons.append(clear_button)
 

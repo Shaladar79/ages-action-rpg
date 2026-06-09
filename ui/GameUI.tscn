@@ -1,9 +1,11 @@
 [gd_scene format=3 uid="uid://bxt5jfm7dnpxq"]
 
 [ext_resource type="Script" uid="uid://c4lb7if574pis" path="res://scripts/ui/game_ui.gd" id="1_7r27d"]
+[ext_resource type="Texture2D" uid="uid://ccq40q52fyo0r" path="res://art/images/title_background.png" id="2_6vdb0"]
 
 [node name="GameUi" type="CanvasLayer" unique_id=397137118]
 script = ExtResource("1_7r27d")
+character_screen_background_texture = ExtResource("2_6vdb0")
 
 [node name="HUD" type="Control" parent="." unique_id=1229583169]
 layout_mode = 3

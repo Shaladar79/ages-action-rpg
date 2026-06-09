@@ -1,7 +1,7 @@
 extends RefCounted
 class_name HudUiController
 
-const HOTBAR_SLOT_COUNT: int = 5
+const HOTBAR_SLOT_COUNT: int = 8
 
 var root_ui: CanvasLayer = null
 var player_getter: Callable = Callable()
@@ -124,7 +124,7 @@ func _create_hotbar_hud() -> void:
     hud_hotbar_container.anchor_top = 1.0
     hud_hotbar_container.anchor_bottom = 1.0
     hud_hotbar_container.offset_left = 16.0
-    hud_hotbar_container.offset_right = 396.0
+    hud_hotbar_container.offset_right = 640.0
     hud_hotbar_container.offset_top = -72.0
     hud_hotbar_container.offset_bottom = -16.0
     hud_hotbar_container.alignment = BoxContainer.ALIGNMENT_BEGIN

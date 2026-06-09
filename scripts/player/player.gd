@@ -1,6 +1,6 @@
 extends CharacterBody2D
 
-const HOTBAR_SLOT_COUNT: int = 5
+const HOTBAR_SLOT_COUNT: int = 8
 const STARTING_ARMOR_ID: String = "grass_tunic"
 
 const CURRENCY_MARKS: String = "marks"
@@ -210,10 +210,9 @@ func _physics_process(delta: float) -> void:
     if Input.is_action_just_pressed("interact"):
         _try_interact()
 
-    if InputMap.has_action("ranged_attack") and Input.is_action_just_pressed("ranged_attack"):
+    if InputMap.has_action("r_attack") and Input.is_action_just_pressed("r_attack"):
         _try_ranged_attack()
-
-    if Input.is_action_just_pressed("attack"):
+    elif InputMap.has_action("m_attack") and Input.is_action_just_pressed("m_attack"):
         _try_attack()
 
     if attack_damage_timer > 0.0:
@@ -1725,7 +1724,7 @@ func _show_interaction_prompt() -> void:
         return
 
     if interaction_ui.has_method("show_prompt"):
-        interaction_ui.show_prompt("E")
+        interaction_ui.show_prompt("🖱 Right Mouse / Alt")
 
 
 func _hide_interaction_prompt() -> void:

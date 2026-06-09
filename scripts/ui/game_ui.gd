@@ -7,6 +7,19 @@ extends CanvasLayer
 @onready var character_screen: Control = $CharacterScreen
 @onready var character_panel: Panel = $CharacterScreen/Panel
 
+@export_group("Character Screen Background")
+@export var character_screen_background_texture: Texture2D = null
+@export var character_screen_background_image_alpha: float = 0.45
+
+@export_group("Character Screen Portrait")
+@export var character_screen_portrait_texture: Texture2D = null
+@export var character_screen_portrait_alpha: float = 1.0
+@export var character_screen_portrait_position: Vector2 = Vector2(48.0, 96.0)
+@export var character_screen_portrait_size: Vector2 = Vector2(280.0, 360.0)
+
+var character_screen_background_texture_rect: TextureRect = null
+var character_screen_portrait_texture_rect: TextureRect = null
+
 var player: Node = null
 
 var quest_tracker_ui: QuestTrackerUiController = null
@@ -21,6 +34,8 @@ var character_sheet_stats_ui: CharacterSheetStatsUiController = null
 var character_sheet_buttons_ui: CharacterSheetButtonsUiController = null
 var interaction_prompt_ui: InteractionPromptUiController = null
 var notification_ui: NotificationUiController = null
+
+var main_game_ui_visibility_cache: Dictionary = {}
 
 var hud_refresh_timer: float = 0.0
 var hud_refresh_interval: float = 0.25
@@ -39,6 +54,7 @@ func _ready() -> void:
     process_mode = Node.PROCESS_MODE_ALWAYS
     player = get_tree().get_first_node_in_group("player")
     _ensure_pause_input_action()
+    _setup_character_screen_fullscreen()
 
     character_screen.visible = false
 
@@ -182,11 +198,19 @@ func show_reward_notification(message: String) -> void:
     show_notification(message, 2.6)
 
 
-func show_prompt(key_text: String = "E") -> void:
+func show_prompt(key_text: String = "🖱 Right Mouse / Alt") -> void:
     if interaction_prompt_ui == null:
         _create_interaction_prompt_ui()
 
-    interaction_prompt_ui.show_prompt(key_text)
+    if interaction_prompt_ui == null:
+        return
+
+    var clean_text := key_text.strip_edges()
+
+    if clean_text == "" or clean_text == "E":
+        clean_text = "🖱 Right Mouse / Alt"
+
+    interaction_prompt_ui.show_prompt(clean_text)
 
 
 func hide_prompt() -> void:
@@ -325,7 +349,202 @@ func hide_save_prompt() -> void:
 
     save_prompt_ui.hide_save_prompt()
 
+func _setup_character_screen_fullscreen() -> void:
+    if character_screen == null:
+        push_warning("Cannot setup character screen. CharacterScreen node is missing.")
+        return
 
+    if character_panel == null:
+        push_warning("Cannot setup character screen. CharacterScreen/Panel node is missing.")
+        return
+
+    character_screen.anchor_left = 0.0
+    character_screen.anchor_right = 1.0
+    character_screen.anchor_top = 0.0
+    character_screen.anchor_bottom = 1.0
+    character_screen.offset_left = 0.0
+    character_screen.offset_right = 0.0
+    character_screen.offset_top = 0.0
+    character_screen.offset_bottom = 0.0
+    character_screen.mouse_filter = Control.MOUSE_FILTER_STOP
+
+    character_panel.anchor_left = 0.0
+    character_panel.anchor_right = 1.0
+    character_panel.anchor_top = 0.0
+    character_panel.anchor_bottom = 1.0
+    character_panel.offset_left = 0.0
+    character_panel.offset_right = 0.0
+    character_panel.offset_top = 0.0
+    character_panel.offset_bottom = 0.0
+    character_panel.mouse_filter = Control.MOUSE_FILTER_STOP
+
+    var black_style := StyleBoxFlat.new()
+    black_style.bg_color = Color(0.0, 0.0, 0.0, 1.0)
+    character_panel.add_theme_stylebox_override("panel", black_style)
+
+    _create_character_screen_background_image()
+    _create_character_screen_portrait_image()
+
+func _create_character_screen_portrait_image() -> void:
+    if character_panel == null:
+        return
+
+    if character_screen_portrait_texture_rect != null:
+        _update_character_screen_portrait_image()
+        return
+
+    character_screen_portrait_texture_rect = TextureRect.new()
+    character_screen_portrait_texture_rect.name = "CharacterScreenPortraitImage"
+    character_screen_portrait_texture_rect.anchor_left = 0.0
+    character_screen_portrait_texture_rect.anchor_right = 0.0
+    character_screen_portrait_texture_rect.anchor_top = 0.0
+    character_screen_portrait_texture_rect.anchor_bottom = 0.0
+    character_screen_portrait_texture_rect.offset_left = character_screen_portrait_position.x
+    character_screen_portrait_texture_rect.offset_top = character_screen_portrait_position.y
+    character_screen_portrait_texture_rect.offset_right = character_screen_portrait_position.x + character_screen_portrait_size.x
+    character_screen_portrait_texture_rect.offset_bottom = character_screen_portrait_position.y + character_screen_portrait_size.y
+    character_screen_portrait_texture_rect.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+    character_screen_portrait_texture_rect.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+    character_screen_portrait_texture_rect.mouse_filter = Control.MOUSE_FILTER_IGNORE
+
+    character_panel.add_child(character_screen_portrait_texture_rect)
+
+    # Keep portrait above the background image but behind the UI controls.
+    if character_screen_background_texture_rect != null:
+        var background_index := character_screen_background_texture_rect.get_index()
+        character_panel.move_child(character_screen_portrait_texture_rect, background_index + 1)
+    else:
+        character_panel.move_child(character_screen_portrait_texture_rect, 0)
+
+    _update_character_screen_portrait_image()
+
+
+func _update_character_screen_portrait_image() -> void:
+    if character_screen_portrait_texture_rect == null:
+        return
+
+    character_screen_portrait_texture_rect.texture = character_screen_portrait_texture
+    character_screen_portrait_texture_rect.visible = character_screen_portrait_texture != null
+
+    character_screen_portrait_texture_rect.offset_left = character_screen_portrait_position.x
+    character_screen_portrait_texture_rect.offset_top = character_screen_portrait_position.y
+    character_screen_portrait_texture_rect.offset_right = character_screen_portrait_position.x + character_screen_portrait_size.x
+    character_screen_portrait_texture_rect.offset_bottom = character_screen_portrait_position.y + character_screen_portrait_size.y
+
+    character_screen_portrait_texture_rect.modulate = Color(
+        1.0,
+        1.0,
+        1.0,
+        clampf(character_screen_portrait_alpha, 0.0, 1.0)
+    )
+
+
+func set_character_screen_portrait_texture(texture: Texture2D, image_alpha: float = -1.0) -> void:
+    character_screen_portrait_texture = texture
+
+    if image_alpha >= 0.0:
+        character_screen_portrait_alpha = image_alpha
+
+    if character_screen_portrait_texture_rect == null:
+        _create_character_screen_portrait_image()
+    else:
+        _update_character_screen_portrait_image()
+
+func _create_character_screen_background_image() -> void:
+    if character_panel == null:
+        return
+
+    if character_screen_background_texture_rect != null:
+        _update_character_screen_background_image()
+        return
+
+    character_screen_background_texture_rect = TextureRect.new()
+    character_screen_background_texture_rect.name = "CharacterScreenBackgroundImage"
+    character_screen_background_texture_rect.anchor_left = 0.0
+    character_screen_background_texture_rect.anchor_right = 1.0
+    character_screen_background_texture_rect.anchor_top = 0.0
+    character_screen_background_texture_rect.anchor_bottom = 1.0
+    character_screen_background_texture_rect.offset_left = 0.0
+    character_screen_background_texture_rect.offset_right = 0.0
+    character_screen_background_texture_rect.offset_top = 0.0
+    character_screen_background_texture_rect.offset_bottom = 0.0
+    character_screen_background_texture_rect.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+    character_screen_background_texture_rect.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
+    character_screen_background_texture_rect.mouse_filter = Control.MOUSE_FILTER_IGNORE
+
+    character_panel.add_child(character_screen_background_texture_rect)
+    character_panel.move_child(character_screen_background_texture_rect, 0)
+
+    _update_character_screen_background_image()
+
+
+func _update_character_screen_background_image() -> void:
+    if character_screen_background_texture_rect == null:
+        return
+
+    character_screen_background_texture_rect.texture = character_screen_background_texture
+    character_screen_background_texture_rect.visible = character_screen_background_texture != null
+    character_screen_background_texture_rect.modulate = Color(
+        1.0,
+        1.0,
+        1.0,
+        clampf(character_screen_background_image_alpha, 0.0, 1.0)
+    )
+
+
+func set_character_screen_background_texture(texture: Texture2D, image_alpha: float = -1.0) -> void:
+    character_screen_background_texture = texture
+
+    if image_alpha >= 0.0:
+        character_screen_background_image_alpha = image_alpha
+
+    if character_screen_background_texture_rect == null:
+        _create_character_screen_background_image()
+    else:
+        _update_character_screen_background_image()
+        
+func _set_main_game_ui_visible(is_visible: bool) -> void:
+    if is_visible:
+        _restore_main_game_ui_visibility()
+        return
+
+    _cache_and_hide_main_game_ui()
+
+
+func _cache_and_hide_main_game_ui() -> void:
+    main_game_ui_visibility_cache.clear()
+
+    for child in get_children():
+        if child == null:
+            continue
+
+        if child == character_screen:
+            continue
+
+        if not child is CanvasItem:
+            continue
+
+        var canvas_child := child as CanvasItem
+        main_game_ui_visibility_cache[child] = canvas_child.visible
+        canvas_child.visible = false
+
+
+func _restore_main_game_ui_visibility() -> void:
+    for child in main_game_ui_visibility_cache.keys():
+        if child == null:
+            continue
+
+        if not is_instance_valid(child):
+            continue
+
+        if not child is CanvasItem:
+            continue
+
+        var canvas_child := child as CanvasItem
+        canvas_child.visible = bool(main_game_ui_visibility_cache[child])
+
+    main_game_ui_visibility_cache.clear()
+    
 func toggle_character_screen() -> void:
     if is_save_prompt_visible():
         return
@@ -333,14 +552,18 @@ func toggle_character_screen() -> void:
     if is_shop_visible():
         return
 
-    character_screen.visible = not character_screen.visible
-    _set_character_screen_pause(character_screen.visible)
+    var should_open := not character_screen.visible
 
-    if character_screen.visible:
+    character_screen.visible = should_open
+    _set_character_screen_pause(should_open)
+
+    if should_open:
+        _set_main_game_ui_visible(false)
         _refresh_player_reference()
         _update_character_screen()
     else:
         _hide_sheet_list()
+        _set_main_game_ui_visible(true)
 
 
 func open_character_screen() -> void:
@@ -352,6 +575,7 @@ func open_character_screen() -> void:
 
     character_screen.visible = true
     _set_character_screen_pause(true)
+    _set_main_game_ui_visible(false)
     _refresh_player_reference()
     _update_character_screen()
 
@@ -360,6 +584,7 @@ func close_character_screen() -> void:
     character_screen.visible = false
     _hide_sheet_list()
     _set_character_screen_pause(false)
+    _set_main_game_ui_visible(true)
 
 
 func _create_notification_ui() -> void:

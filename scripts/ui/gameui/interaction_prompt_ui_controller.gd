@@ -1,6 +1,8 @@
 extends RefCounted
 class_name InteractionPromptUiController
 
+const DEFAULT_INTERACTION_PROMPT: String = "🖱 Right Mouse / Alt"
+
 var root_ui: CanvasLayer = null
 
 var interaction_prompt: Control = null
@@ -20,12 +22,17 @@ func setup(ui_root: CanvasLayer) -> void:
     hide_prompt()
 
 
-func show_prompt(key_text: String = "E") -> void:
+func show_prompt(key_text: String = DEFAULT_INTERACTION_PROMPT) -> void:
     if interaction_prompt == null:
         _create_interaction_prompt()
 
+    var clean_text := key_text.strip_edges()
+
+    if clean_text == "":
+        clean_text = DEFAULT_INTERACTION_PROMPT
+
     if interaction_label != null:
-        interaction_label.text = key_text
+        interaction_label.text = clean_text
 
     if interaction_prompt != null:
         interaction_prompt.visible = true
@@ -56,8 +63,8 @@ func _create_interaction_prompt() -> void:
     interaction_prompt.anchor_right = 0.5
     interaction_prompt.anchor_top = 1.0
     interaction_prompt.anchor_bottom = 1.0
-    interaction_prompt.offset_left = -120.0
-    interaction_prompt.offset_right = 120.0
+    interaction_prompt.offset_left = -170.0
+    interaction_prompt.offset_right = 170.0
     interaction_prompt.offset_top = -120.0
     interaction_prompt.offset_bottom = -80.0
     interaction_prompt.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -81,7 +88,7 @@ func _create_interaction_prompt() -> void:
 
     interaction_label = Label.new()
     interaction_label.name = "InteractionLabel"
-    interaction_label.text = "E"
+    interaction_label.text = DEFAULT_INTERACTION_PROMPT
     interaction_label.anchor_left = 0.0
     interaction_label.anchor_right = 1.0
     interaction_label.anchor_top = 0.0
