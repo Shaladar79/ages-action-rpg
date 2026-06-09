@@ -13,6 +13,16 @@ config_version=5
 run/main_scene="uid://dp5jqgxvrcyy3"
 config/features=PackedStringArray("4.6")
 
+[autoload]
+
+RespawnManager="*uid://2igm5tue23x5"
+SaveManager="*uid://pxolsc0gtgmm"
+SceneTransitionManager="*uid://cc1eyfq00es7s"
+QuestManager="*uid://pfynp8y3ybqv"
+GameUi="*uid://bxt5jfm7dnpxq"
+FactionManager="*uid://d0ie25rdnhf6e"
+MasteryManager="*uid://crh5mdyo82eci"
+
 [physics]
 
 3d/physics_engine="Jolt Physics"

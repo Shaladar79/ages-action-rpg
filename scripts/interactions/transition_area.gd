@@ -8,7 +8,7 @@ enum TransitionType {
 
 @export var transition_type: TransitionType = TransitionType.SAME_MAP
 
-@export var target_marker_path: NodePath
+@export var target_marker_path: NodePath = NodePath("")
 @export_file("*.tscn") var target_scene_path: String = ""
 @export var target_spawn_id: String = ""
 
@@ -21,6 +21,7 @@ var player_in_area: Node2D = null
 
 func _ready() -> void:
     print("Transition loaded: ", name, " at ", global_position)
+
     if not body_entered.is_connected(_on_body_entered):
         body_entered.connect(_on_body_entered)
 
@@ -40,6 +41,9 @@ func _process(_delta: float) -> void:
 
 
 func _on_body_entered(body: Node2D) -> void:
+    if body == null:
+        return
+
     if not body.is_in_group("player"):
         return
 
@@ -59,6 +63,9 @@ func _on_body_exited(body: Node2D) -> void:
 
 
 func _try_transition(player: Node2D) -> void:
+    if player == null:
+        return
+
     if not can_transition:
         return
 
@@ -67,14 +74,11 @@ func _try_transition(player: Node2D) -> void:
             _transition_same_map(player)
 
         TransitionType.CHANGE_SCENE:
-            _transition_to_scene()
+            _transition_to_scene(player)
 
 
 func _transition_same_map(player: Node2D) -> void:
-    var marker := get_node_or_null(target_marker_path) as Node2D
-
-    if marker == null and get_tree().current_scene != null:
-        marker = get_tree().current_scene.get_node_or_null(target_marker_path) as Node2D
+    var marker := _get_target_marker()
 
     if marker == null:
         push_warning("TransitionArea has no valid target marker. Target path is: " + str(target_marker_path))
@@ -87,7 +91,7 @@ func _transition_same_map(player: Node2D) -> void:
     can_transition = true
 
 
-func _transition_to_scene() -> void:
+func _transition_to_scene(player: Node2D) -> void:
     if target_scene_path.strip_edges() == "":
         push_warning("TransitionArea target_scene_path is blank: " + name)
         return
@@ -98,14 +102,35 @@ func _transition_to_scene() -> void:
 
     can_transition = false
 
-    if player_in_area != null:
-        SceneTransitionManager.store_player_data(player_in_area)
+    if player != null:
+        SceneTransitionManager.store_player_data(player)
     else:
-        var player := get_tree().get_first_node_in_group("player")
-        if player != null:
-            SceneTransitionManager.store_player_data(player)
+        var found_player := get_tree().get_first_node_in_group("player")
+
+        if found_player != null:
+            SceneTransitionManager.store_player_data(found_player)
 
     if target_spawn_id.strip_edges() != "":
         SceneTransitionManager.set_pending_spawn(target_spawn_id)
 
     get_tree().change_scene_to_file(target_scene_path)
+
+
+func _get_target_marker() -> Node2D:
+    if target_marker_path == NodePath(""):
+        return null
+
+    var marker := get_node_or_null(target_marker_path) as Node2D
+
+    if marker != null:
+        return marker
+
+    var current_scene := get_tree().current_scene
+
+    if current_scene != null:
+        marker = current_scene.get_node_or_null(target_marker_path) as Node2D
+
+        if marker != null:
+            return marker
+
+    return null
