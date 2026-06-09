@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://do0fvrr3kej0k"
-path="res://.godot/imported/dragon_man.png-a482ed3165aadc13991892ef14b85d30.ctex"
+path="res://.godot/imported/dragon_man.png-638ea813f128ba3684c8bb3e04816636.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://art/New sprites for replacements/dragon_man.png"
-dest_files=["res://.godot/imported/dragon_man.png-a482ed3165aadc13991892ef14b85d30.ctex"]
+source_file="res://art/Assets/New sprites for replacements/dragon_man.png"
+dest_files=["res://.godot/imported/dragon_man.png-638ea813f128ba3684c8bb3e04816636.ctex"]
 
 [params]
 

@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://cafhhj8pdqcb7"
-path="res://.godot/imported/slopes_mini_boss.png-afe3f34ddd6e89775803ded15078926f.ctex"
+path="res://.godot/imported/slopes_mini_boss.png-335cd9ce8ae47636de95bde6ed39a93b.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://art/New sprites for replacements/slopes_mini_boss.png"
-dest_files=["res://.godot/imported/slopes_mini_boss.png-afe3f34ddd6e89775803ded15078926f.ctex"]
+source_file="res://art/Assets/New sprites for replacements/slopes_mini_boss.png"
+dest_files=["res://.godot/imported/slopes_mini_boss.png-335cd9ce8ae47636de95bde6ed39a93b.ctex"]
 
 [params]
 

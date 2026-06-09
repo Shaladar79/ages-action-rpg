@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://dp3e1qy7ma6vr"
-path="res://.godot/imported/Rockman.png-851f3a57ca316123faff93d9f2483c4a.ctex"
+path="res://.godot/imported/Rockman.png-9d9b94da9b38f4b2fb69ccdca3139c3e.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://art/New sprites for replacements/Rockman.png"
-dest_files=["res://.godot/imported/Rockman.png-851f3a57ca316123faff93d9f2483c4a.ctex"]
+source_file="res://art/Assets/New sprites for replacements/Rockman.png"
+dest_files=["res://.godot/imported/Rockman.png-9d9b94da9b38f4b2fb69ccdca3139c3e.ctex"]
 
 [params]
 

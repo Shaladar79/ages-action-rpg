@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://byhgpf41l3o0"
-path="res://.godot/imported/minor earth elemental.png-18ed9ec400d18115c7f0829a2eebf684.ctex"
+path="res://.godot/imported/minor earth elemental.png-d5c0817154021a65912b9f02ee9021de.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://art/New sprites for replacements/minor earth elemental.png"
-dest_files=["res://.godot/imported/minor earth elemental.png-18ed9ec400d18115c7f0829a2eebf684.ctex"]
+source_file="res://art/Assets/New sprites for replacements/minor earth elemental.png"
+dest_files=["res://.godot/imported/minor earth elemental.png-d5c0817154021a65912b9f02ee9021de.ctex"]
 
 [params]
 

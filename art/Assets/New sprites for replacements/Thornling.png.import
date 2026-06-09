@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://dqaopehgi4ryy"
-path="res://.godot/imported/Thornling.png-5908596dd4ef8bd3bc80473b88aa3548.ctex"
+path="res://.godot/imported/Thornling.png-02ca98a61163729deae52575fe243ca3.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://art/New sprites for replacements/Thornling.png"
-dest_files=["res://.godot/imported/Thornling.png-5908596dd4ef8bd3bc80473b88aa3548.ctex"]
+source_file="res://art/Assets/New sprites for replacements/Thornling.png"
+dest_files=["res://.godot/imported/Thornling.png-02ca98a61163729deae52575fe243ca3.ctex"]
 
 [params]
 
