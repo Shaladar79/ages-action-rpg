@@ -131,16 +131,16 @@ func _create_character_sheet_buttons() -> void:
 
     close_button = _create_button("CloseButton", "Close", Vector2(-100.0, 16.0), Vector2(84.0, 32.0), true)
 
-    add_might_button = _create_button("AddMightButton", "+", Vector2(160.0, 210.0), Vector2(36.0, 26.0))
-    add_agility_button = _create_button("AddAgilityButton", "+", Vector2(160.0, 240.0), Vector2(36.0, 26.0))
-    add_toughness_button = _create_button("AddToughnessButton", "+", Vector2(160.0, 270.0), Vector2(36.0, 26.0))
-    add_speed_button = _create_button("AddSpeedButton", "+", Vector2(160.0, 300.0), Vector2(36.0, 26.0))
+    add_might_button = _create_button("AddMightButton", "+", Vector2(102.0, 260.0), Vector2(28.0, 24.0))
+    add_agility_button = _create_button("AddAgilityButton", "+", Vector2(102.0, 290.0), Vector2(28.0, 24.0))
+    add_toughness_button = _create_button("AddToughnessButton", "+", Vector2(118.0, 320.0), Vector2(28.0, 24.0))
+    add_speed_button = _create_button("AddSpeedButton", "+", Vector2(102.0, 350.0), Vector2(28.0, 24.0))
 
-    add_endurance_button = _create_button("AddEnduranceButton", "+", Vector2(160.0, 330.0), Vector2(36.0, 26.0))
+    add_endurance_button = _create_button("AddEnduranceButton", "+", Vector2(130.0, 380.0), Vector2(28.0, 24.0))
     add_endurance_button.visible = false
     add_endurance_button.disabled = true
 
-    add_focus_button = _create_button("AddFocusButton", "+", Vector2(160.0, 360.0), Vector2(36.0, 26.0))
+    add_focus_button = _create_button("AddFocusButton", "+", Vector2(102.0, 410.0), Vector2(28.0, 24.0))
     add_focus_button.visible = false
     add_focus_button.disabled = true
 

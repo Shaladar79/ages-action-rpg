@@ -31,10 +31,10 @@ stretch_mode = 6
 
 [node name="MenuPanel" type="Panel" parent="." unique_id=2124682630]
 layout_mode = 0
-offset_left = 666.0
-offset_top = 401.0
-offset_right = 1006.0
-offset_bottom = 632.0
+offset_left = 505.0
+offset_top = 276.0
+offset_right = 845.0
+offset_bottom = 507.0
 
 [node name="TitleLabel" type="Label" parent="MenuPanel" unique_id=280847263]
 visible = false
@@ -44,10 +44,10 @@ offset_bottom = 23.0
 
 [node name="NewGameButton" type="Button" parent="MenuPanel" unique_id=21678906]
 layout_mode = 0
-offset_left = 114.0
-offset_top = 22.0
-offset_right = 238.0
-offset_bottom = 49.0
+offset_left = 108.0
+offset_top = 17.0
+offset_right = 232.0
+offset_bottom = 48.0
 text = "New Game"
 
 [node name="LoadGameButton" type="Button" parent="MenuPanel" unique_id=1598354401]
@@ -55,8 +55,8 @@ layout_mode = 1
 anchors_preset = -1
 anchor_right = 0.024
 anchor_bottom = 0.035
-offset_left = 114.0
-offset_top = 59.0
-offset_right = 228.84
-offset_bottom = 79.915
+offset_left = 109.0
+offset_top = 63.0
+offset_right = 223.84
+offset_bottom = 85.915
 text = "Load Game"

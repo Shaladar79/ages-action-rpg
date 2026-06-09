@@ -1,6 +1,12 @@
 extends Node
 
-const SAVE_FILE_PATH: String = "user://savegame.json"
+const SAVE_FILE_PATH: String = "user://savegame.json" # Legacy single-save path.
+
+const SAVE_DIR_PATH: String = "user://saves"
+const SAVE_INDEX_PATH: String = SAVE_DIR_PATH + "/save_index.json"
+const SAVE_FILE_PREFIX: String = "save_"
+const SAVE_FILE_EXTENSION: String = ".json"
+const LEGACY_SAVE_FILE_ID: String = "__legacy__"
 
 var pending_loaded_data: Dictionary = {}
 
@@ -20,20 +26,80 @@ var story_flags: Dictionary = {}
 
 
 func has_save_file() -> bool:
+    if not get_save_slot_rows().is_empty():
+        return true
+
     return FileAccess.file_exists(SAVE_FILE_PATH)
 
 
 func get_save_display_name() -> String:
-    if not has_save_file():
+    var rows := get_save_slot_rows()
+
+    if rows.is_empty():
         return "No Save Found"
 
-    var save_data := load_save_data()
+    var first_row: Dictionary = rows[0]
+    return str(first_row.get("display_name", "Saved Game"))
 
-    if save_data.is_empty():
-        return "No Save Found"
+func get_save_slot_rows() -> Array[Dictionary]:
+    var rows: Array[Dictionary] = []
 
-    return save_data.get("save_display_name", "Saved Game")
+    var save_index := _load_save_index()
+    var slots: Array = save_index.get("slots", [])
 
+    for slot in slots:
+        if typeof(slot) != TYPE_DICTIONARY:
+            continue
+
+        var file_id := str(slot.get("file_id", "")).strip_edges()
+
+        if file_id == "":
+            continue
+
+        var save_path := _get_save_file_path(file_id)
+
+        if not FileAccess.file_exists(save_path):
+            continue
+
+        rows.append({
+            "file_id": file_id,
+            "display_name": str(slot.get("display_name", "Saved Game")),
+            "map_name": str(slot.get("map_name", "")),
+            "character_name": str(slot.get("character_name", "")),
+            "level": int(slot.get("level", 0)),
+            "saved_at": str(slot.get("saved_at", "")),
+            "scene_path": str(slot.get("scene_path", ""))
+        })
+
+    if rows.is_empty() and FileAccess.file_exists(SAVE_FILE_PATH):
+        var legacy_data := load_save_data(LEGACY_SAVE_FILE_ID)
+
+        if not legacy_data.is_empty():
+            rows.append({
+                "file_id": LEGACY_SAVE_FILE_ID,
+                "display_name": str(legacy_data.get("save_display_name", "Legacy Save")),
+                "map_name": str(legacy_data.get("map_name", "")),
+                "character_name": str(legacy_data.get("character_stats", {}).get("character_name", "")),
+                "level": int(legacy_data.get("character_stats", {}).get("level", 0)),
+                "saved_at": str(legacy_data.get("saved_at", "")),
+                "scene_path": str(legacy_data.get("scene_path", ""))
+            })
+
+    return rows
+
+
+func get_latest_save_file_id() -> String:
+    var rows := get_save_slot_rows()
+
+    if rows.is_empty():
+        return ""
+
+    var first_row: Dictionary = rows[0]
+    return str(first_row.get("file_id", ""))
+
+
+func save_game_named(player: Node, save_name: String) -> bool:
+    return save_game(player, save_name)
 
 func clear_runtime_world_state() -> void:
     defeated_monster_ids.clear()
@@ -240,7 +306,7 @@ func clear_flag(flag_name: String) -> void:
     clear_story_flag(flag_name)
 
 
-func save_game(player: Node) -> bool:
+func save_game(player: Node, custom_save_name: String = "") -> bool:
     if player == null:
         push_warning("Cannot save game. Player is null.")
         return false
@@ -266,14 +332,30 @@ func save_game(player: Node) -> bool:
     var character_name := stats.character_name
     var level_text := "Lv" + str(stats.level)
 
-    var save_display_name := "%s - %s - %s - %s" % [
+    var generated_save_display_name := "%s - %s - %s - %s" % [
         age_name,
         map_name,
         character_name,
         level_text
     ]
 
+    var clean_custom_save_name := custom_save_name.strip_edges()
+    var save_display_name := generated_save_display_name
+
+    if clean_custom_save_name != "":
+        save_display_name = clean_custom_save_name
+
+    var existing_file_id := _find_save_file_id_by_display_name(save_display_name)
+    var save_file_id := existing_file_id
+
+    if save_file_id == "":
+        save_file_id = _get_next_save_file_id()
+
+    var saved_at := _get_current_save_timestamp()
+
     var save_data := {
+        "save_file_id": save_file_id,
+        "saved_at": saved_at,
         "save_display_name": save_display_name,
         "age_name": age_name,
         "map_name": map_name,
@@ -293,29 +375,50 @@ func save_game(player: Node) -> bool:
         "world_state": _build_world_state_data()
     }
 
-    var file := FileAccess.open(SAVE_FILE_PATH, FileAccess.WRITE)
+    if not _ensure_save_directory_exists():
+        push_warning("Could not create save directory: " + SAVE_DIR_PATH)
+        return false
+
+    var save_file_path := _get_save_file_path(save_file_id)
+    var file := FileAccess.open(save_file_path, FileAccess.WRITE)
 
     if file == null:
-        push_warning("Could not open save file for writing: " + SAVE_FILE_PATH)
+        push_warning("Could not open save file for writing: " + save_file_path)
         return false
 
     file.store_string(JSON.stringify(save_data, "\t"))
     file.close()
 
+    _upsert_save_index_entry(save_data)
+
     print("Game saved: ", save_display_name)
-    print("Save path: ", SAVE_FILE_PATH)
+    print("Save path: ", save_file_path)
 
     return true
 
 
-func load_save_data() -> Dictionary:
-    if not has_save_file():
+func load_save_data(save_file_id: String = "") -> Dictionary:
+    var clean_file_id := save_file_id.strip_edges()
+
+    if clean_file_id == "":
+        clean_file_id = get_latest_save_file_id()
+
+    var save_path := ""
+
+    if clean_file_id == LEGACY_SAVE_FILE_ID:
+        save_path = SAVE_FILE_PATH
+    elif clean_file_id != "":
+        save_path = _get_save_file_path(clean_file_id)
+    else:
+        save_path = SAVE_FILE_PATH
+
+    if not FileAccess.file_exists(save_path):
         return {}
 
-    var file := FileAccess.open(SAVE_FILE_PATH, FileAccess.READ)
+    var file := FileAccess.open(save_path, FileAccess.READ)
 
     if file == null:
-        push_warning("Could not open save file for reading: " + SAVE_FILE_PATH)
+        push_warning("Could not open save file for reading: " + save_path)
         return {}
 
     var json_text := file.get_as_text()
@@ -330,8 +433,8 @@ func load_save_data() -> Dictionary:
     return parsed
 
 
-func load_game_from_menu() -> void:
-    var save_data := load_save_data()
+func load_game_from_menu(save_file_id: String = "") -> void:
+    var save_data := load_save_data(save_file_id)
 
     if save_data.is_empty():
         print("No save data found.")
@@ -354,6 +457,7 @@ func load_game_from_menu() -> void:
         return
 
     var game_ui := get_node_or_null("/root/GameUi")
+
     if game_ui != null:
         game_ui.visible = true
 
@@ -760,3 +864,169 @@ func _get_map_name_from_scene_path(scene_path: String) -> String:
 
     var file_name := scene_path.get_file().get_basename()
     return file_name.capitalize()
+
+func _ensure_save_directory_exists() -> bool:
+    var dir := DirAccess.open("user://")
+
+    if dir == null:
+        return false
+
+    if dir.dir_exists("saves"):
+        return true
+
+    var result := dir.make_dir("saves")
+
+    return result == OK or result == ERR_ALREADY_EXISTS
+
+
+func _get_save_file_path(save_file_id: String) -> String:
+    var clean_file_id := save_file_id.strip_edges()
+
+    if clean_file_id == "":
+        clean_file_id = _get_next_save_file_id()
+
+    return SAVE_DIR_PATH + "/" + clean_file_id + SAVE_FILE_EXTENSION
+
+
+func _load_save_index() -> Dictionary:
+    if not FileAccess.file_exists(SAVE_INDEX_PATH):
+        return {
+            "slots": []
+        }
+
+    var file := FileAccess.open(SAVE_INDEX_PATH, FileAccess.READ)
+
+    if file == null:
+        return {
+            "slots": []
+        }
+
+    var json_text := file.get_as_text()
+    file.close()
+
+    var parsed = JSON.parse_string(json_text)
+
+    if typeof(parsed) != TYPE_DICTIONARY:
+        return {
+            "slots": []
+        }
+
+    if not parsed.has("slots"):
+        parsed["slots"] = []
+
+    return parsed
+
+
+func _save_save_index(save_index: Dictionary) -> bool:
+    if not _ensure_save_directory_exists():
+        return false
+
+    var file := FileAccess.open(SAVE_INDEX_PATH, FileAccess.WRITE)
+
+    if file == null:
+        push_warning("Could not write save index: " + SAVE_INDEX_PATH)
+        return false
+
+    file.store_string(JSON.stringify(save_index, "\t"))
+    file.close()
+
+    return true
+
+
+func _upsert_save_index_entry(save_data: Dictionary) -> void:
+    var save_file_id := str(save_data.get("save_file_id", "")).strip_edges()
+
+    if save_file_id == "":
+        return
+
+    var save_index := _load_save_index()
+    var slots: Array = save_index.get("slots", [])
+
+    var new_entry := {
+        "file_id": save_file_id,
+        "display_name": str(save_data.get("save_display_name", "Saved Game")),
+        "age_name": str(save_data.get("age_name", "")),
+        "map_name": str(save_data.get("map_name", "")),
+        "scene_path": str(save_data.get("scene_path", "")),
+        "character_name": str(save_data.get("character_stats", {}).get("character_name", "")),
+        "level": int(save_data.get("character_stats", {}).get("level", 0)),
+        "saved_at": str(save_data.get("saved_at", ""))
+    }
+
+    var replaced := false
+
+    for index in range(slots.size()):
+        if typeof(slots[index]) != TYPE_DICTIONARY:
+            continue
+
+        var existing_file_id := str(slots[index].get("file_id", ""))
+
+        if existing_file_id == save_file_id:
+            slots[index] = new_entry
+            replaced = true
+            break
+
+    if not replaced:
+        slots.push_front(new_entry)
+
+    save_index["slots"] = slots
+    _save_save_index(save_index)
+
+
+func _find_save_file_id_by_display_name(display_name: String) -> String:
+    var clean_display_name := display_name.strip_edges()
+
+    if clean_display_name == "":
+        return ""
+
+    var save_index := _load_save_index()
+    var slots: Array = save_index.get("slots", [])
+
+    for slot in slots:
+        if typeof(slot) != TYPE_DICTIONARY:
+            continue
+
+        var existing_display_name := str(slot.get("display_name", "")).strip_edges()
+
+        if existing_display_name == clean_display_name:
+            return str(slot.get("file_id", ""))
+
+    return ""
+
+
+func _get_next_save_file_id() -> String:
+    var save_index := _load_save_index()
+    var slots: Array = save_index.get("slots", [])
+
+    var highest_number := 0
+
+    for slot in slots:
+        if typeof(slot) != TYPE_DICTIONARY:
+            continue
+
+        var file_id := str(slot.get("file_id", ""))
+
+        if not file_id.begins_with(SAVE_FILE_PREFIX):
+            continue
+
+        var number_text := file_id.replace(SAVE_FILE_PREFIX, "")
+
+        if not number_text.is_valid_int():
+            continue
+
+        highest_number = maxi(highest_number, int(number_text))
+
+    return SAVE_FILE_PREFIX + "%03d" % [highest_number + 1]
+
+
+func _get_current_save_timestamp() -> String:
+    var datetime := Time.get_datetime_dict_from_system()
+
+    return "%04d-%02d-%02d %02d:%02d:%02d" % [
+        int(datetime.get("year", 0)),
+        int(datetime.get("month", 0)),
+        int(datetime.get("day", 0)),
+        int(datetime.get("hour", 0)),
+        int(datetime.get("minute", 0)),
+        int(datetime.get("second", 0))
+    ]

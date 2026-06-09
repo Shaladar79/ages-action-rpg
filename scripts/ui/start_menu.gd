@@ -5,9 +5,14 @@ extends Control
 @onready var new_game_button: Button = $MenuPanel/NewGameButton
 @onready var load_game_button: Button = $MenuPanel/LoadGameButton
 
+var load_saves_panel: Panel = null
+var load_saves_list: VBoxContainer = null
+var close_load_saves_button: Button = null
+
 
 func _ready() -> void:
     _hide_game_ui_autoload()
+    _create_load_saves_panel()
 
     if not new_game_button.pressed.is_connected(_on_new_game_button_pressed):
         new_game_button.pressed.connect(_on_new_game_button_pressed)
@@ -68,6 +73,121 @@ func _on_load_game_button_pressed() -> void:
         print("No save file found.")
         return
 
-    print("Loading save: ", SaveManager.get_save_display_name())
+    _refresh_load_saves_panel()
+    load_saves_panel.visible = true
+
+
+func _create_load_saves_panel() -> void:
+    if load_saves_panel != null:
+        return
+
+    load_saves_panel = Panel.new()
+    load_saves_panel.name = "CodeBuiltLoadSavesPanel"
+    load_saves_panel.anchor_left = 0.5
+    load_saves_panel.anchor_right = 0.5
+    load_saves_panel.anchor_top = 0.5
+    load_saves_panel.anchor_bottom = 0.5
+    load_saves_panel.offset_left = -300.0
+    load_saves_panel.offset_right = 300.0
+    load_saves_panel.offset_top = -220.0
+    load_saves_panel.offset_bottom = 220.0
+    load_saves_panel.custom_minimum_size = Vector2(600.0, 440.0)
+    load_saves_panel.visible = false
+    load_saves_panel.mouse_filter = Control.MOUSE_FILTER_STOP
+    add_child(load_saves_panel)
+
+    var margin := MarginContainer.new()
+    margin.name = "LoadSavesMargin"
+    margin.anchor_left = 0.0
+    margin.anchor_right = 1.0
+    margin.anchor_top = 0.0
+    margin.anchor_bottom = 1.0
+    margin.offset_left = 16.0
+    margin.offset_right = -16.0
+    margin.offset_top = 16.0
+    margin.offset_bottom = -16.0
+    load_saves_panel.add_child(margin)
+
+    var vbox := VBoxContainer.new()
+    vbox.name = "LoadSavesVBox"
+    vbox.add_theme_constant_override("separation", 10)
+    margin.add_child(vbox)
+
+    var title := Label.new()
+    title.name = "LoadSavesTitle"
+    title.text = "Load Game"
+    title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+    title.add_theme_font_size_override("font_size", 20)
+    vbox.add_child(title)
+
+    load_saves_list = VBoxContainer.new()
+    load_saves_list.name = "LoadSavesList"
+    load_saves_list.custom_minimum_size = Vector2(560.0, 320.0)
+    load_saves_list.add_theme_constant_override("separation", 6)
+    vbox.add_child(load_saves_list)
+
+    close_load_saves_button = Button.new()
+    close_load_saves_button.name = "CloseLoadSavesButton"
+    close_load_saves_button.text = "Close"
+    close_load_saves_button.custom_minimum_size = Vector2(140.0, 36.0)
+    close_load_saves_button.focus_mode = Control.FOCUS_NONE
+    close_load_saves_button.pressed.connect(_on_close_load_saves_pressed)
+    vbox.add_child(close_load_saves_button)
+
+
+func _refresh_load_saves_panel() -> void:
+    if load_saves_list == null:
+        return
+
+    for child in load_saves_list.get_children():
+        child.queue_free()
+
+    var save_rows := SaveManager.get_save_slot_rows()
+
+    if save_rows.is_empty():
+        var no_saves_label := Label.new()
+        no_saves_label.text = "No save files found."
+        no_saves_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+        load_saves_list.add_child(no_saves_label)
+        return
+
+    for save_row in save_rows:
+        if typeof(save_row) != TYPE_DICTIONARY:
+            continue
+
+        var file_id := str(save_row.get("file_id", ""))
+        var display_name := str(save_row.get("display_name", "Saved Game"))
+        var map_name := str(save_row.get("map_name", ""))
+        var level := int(save_row.get("level", 0))
+        var saved_at := str(save_row.get("saved_at", ""))
+
+        var button := Button.new()
+        button.name = "LoadSaveButton_" + file_id
+        button.focus_mode = Control.FOCUS_NONE
+        button.custom_minimum_size = Vector2(560.0, 54.0)
+
+        var button_text := display_name
+
+        if map_name != "":
+            button_text += "\n" + map_name
+
+        if level > 0:
+            button_text += " | Lv" + str(level)
+
+        if saved_at != "":
+            button_text += " | " + saved_at
+
+        button.text = button_text
+        button.pressed.connect(_on_save_slot_pressed.bind(file_id))
+
+        load_saves_list.add_child(button)
+
+
+func _on_save_slot_pressed(save_file_id: String) -> void:
+    print("Loading save file id: ", save_file_id)
     _show_game_ui_autoload()
-    SaveManager.load_game_from_menu()
+    SaveManager.load_game_from_menu(save_file_id)
+
+
+func _on_close_load_saves_pressed() -> void:
+    load_saves_panel.visible = false

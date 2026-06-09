@@ -6,6 +6,7 @@ var root_ui: CanvasLayer = null
 var save_prompt: Control = null
 var save_prompt_panel: Panel = null
 var save_prompt_message_label: Label = null
+var save_name_edit: LineEdit = null
 var save_yes_button: Button = null
 var save_no_button: Button = null
 
@@ -30,6 +31,11 @@ func show_save_prompt(save_player: Node, message: String = "Do you want to save 
 
     if save_prompt_message_label != null:
         save_prompt_message_label.text = message
+
+    if save_name_edit != null:
+        save_name_edit.text = _build_default_save_name()
+        save_name_edit.grab_focus()
+        save_name_edit.select_all()
 
     if root_ui != null:
         if root_ui.has_method("close_character_screen"):
@@ -95,11 +101,11 @@ func _create_save_prompt() -> void:
     save_prompt_panel.anchor_right = 0.5
     save_prompt_panel.anchor_top = 0.5
     save_prompt_panel.anchor_bottom = 0.5
-    save_prompt_panel.offset_left = -190.0
-    save_prompt_panel.offset_right = 190.0
-    save_prompt_panel.offset_top = -90.0
-    save_prompt_panel.offset_bottom = 90.0
-    save_prompt_panel.custom_minimum_size = Vector2(380.0, 180.0)
+    save_prompt_panel.offset_left = -230.0
+    save_prompt_panel.offset_right = 230.0
+    save_prompt_panel.offset_top = -120.0
+    save_prompt_panel.offset_bottom = 120.0
+    save_prompt_panel.custom_minimum_size = Vector2(460.0, 240.0)
     save_prompt_panel.mouse_filter = Control.MOUSE_FILTER_STOP
     save_prompt.add_child(save_prompt_panel)
 
@@ -117,36 +123,45 @@ func _create_save_prompt() -> void:
 
     var vbox := VBoxContainer.new()
     vbox.name = "SavePromptVBox"
+    vbox.add_theme_constant_override("separation", 10)
     margin.add_child(vbox)
 
     save_prompt_message_label = Label.new()
     save_prompt_message_label.name = "MessageLabel"
-    save_prompt_message_label.text = "Do you want to save your game?"
+    save_prompt_message_label.text = "Name your save file."
     save_prompt_message_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
     save_prompt_message_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
     save_prompt_message_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-    save_prompt_message_label.custom_minimum_size = Vector2(340.0, 70.0)
+    save_prompt_message_label.custom_minimum_size = Vector2(420.0, 54.0)
     save_prompt_message_label.add_theme_font_size_override("font_size", 16)
     vbox.add_child(save_prompt_message_label)
+
+    save_name_edit = LineEdit.new()
+    save_name_edit.name = "SaveNameEdit"
+    save_name_edit.placeholder_text = "Save name"
+    save_name_edit.custom_minimum_size = Vector2(420.0, 36.0)
+    save_name_edit.text_submitted.connect(_on_save_name_submitted)
+    vbox.add_child(save_name_edit)
 
     var button_row := HBoxContainer.new()
     button_row.name = "SavePromptButtonRow"
     button_row.alignment = BoxContainer.ALIGNMENT_CENTER
-    button_row.custom_minimum_size = Vector2(340.0, 44.0)
+    button_row.custom_minimum_size = Vector2(420.0, 44.0)
+    button_row.add_theme_constant_override("separation", 16)
     vbox.add_child(button_row)
 
     save_yes_button = Button.new()
-    save_yes_button.name = "YesButton"
-    save_yes_button.text = "Yes"
-    save_yes_button.custom_minimum_size = Vector2(120.0, 36.0)
+    save_yes_button.name = "SaveButton"
+    save_yes_button.text = "Save"
+    save_yes_button.custom_minimum_size = Vector2(130.0, 36.0)
     save_yes_button.focus_mode = Control.FOCUS_NONE
     save_yes_button.pressed.connect(_on_save_yes_button_pressed)
     button_row.add_child(save_yes_button)
 
     save_no_button = Button.new()
-    save_no_button.name = "NoButton"
-    save_no_button.text = "No"
-    save_no_button.custom_minimum_size = Vector2(120.0, 36.0)
+    save_no_button.name = "CancelButton"
+    save_no_button.text = "Cancel"
+    save_no_button.custom_minimum_size = Vector2(130.0, 36.0)
     save_no_button.focus_mode = Control.FOCUS_NONE
     save_no_button.pressed.connect(_on_save_no_button_pressed)
     button_row.add_child(save_no_button)
@@ -162,12 +177,46 @@ func _hide_legacy_save_prompt() -> void:
         legacy_prompt.visible = false
 
 
+func _build_default_save_name() -> String:
+    var player := pending_save_player
+
+    if player == null:
+        return "New Save"
+
+    var character_name := "Character"
+    var level_text := "Lv0"
+
+    if player.has_method("get_character_stats"):
+        var stats: CharacterStats = player.get_character_stats()
+
+        if stats != null:
+            character_name = stats.character_name
+            level_text = "Lv" + str(stats.level)
+
+    var current_scene := root_ui.get_tree().current_scene
+    var map_name := "Map"
+
+    if current_scene != null:
+        map_name = current_scene.scene_file_path.get_file().get_basename().capitalize()
+
+    return character_name + " - " + map_name + " - " + level_text
+
+
+func _on_save_name_submitted(_submitted_text: String) -> void:
+    _on_save_yes_button_pressed()
+
+
 func _on_save_yes_button_pressed() -> void:
     if pending_save_player == null:
         hide_save_prompt()
         return
 
-    var saved := SaveManager.save_game(pending_save_player)
+    var save_name := ""
+
+    if save_name_edit != null:
+        save_name = save_name_edit.text.strip_edges()
+
+    var saved := SaveManager.save_game(pending_save_player, save_name)
 
     if saved:
         if pending_save_player.has_method("show_dialogue"):
