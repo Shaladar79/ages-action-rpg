@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://belwyfwv4v6f4"
-path="res://.godot/imported/Preview_Monsters_055_060 - Copy.png-d0c5920146ca8e0db30d96391c298e9f.ctex"
+uid="uid://xvkf48akpu64"
+path="res://.godot/imported/RockSpitter_yellow_black.png-6a2cfaa141e5a048d8dfb91d452da324.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://art/Assets/RPG Monsters Mega Pack/Preview_Monsters_055_060 - Copy.png"
-dest_files=["res://.godot/imported/Preview_Monsters_055_060 - Copy.png-d0c5920146ca8e0db30d96391c298e9f.ctex"]
+source_file="res://art/Assets/New sprites for replacements/RockSpitter_yellow_black.png"
+dest_files=["res://.godot/imported/RockSpitter_yellow_black.png-6a2cfaa141e5a048d8dfb91d452da324.ctex"]
 
 [params]
 

@@ -11,6 +11,18 @@ region = Rect2(96, 96, 48, 48)
 atlas = ExtResource("2_3yx03")
 region = Rect2(48, 96, 48, 48)
 
+[sub_resource type="AtlasTexture" id="AtlasTexture_3yx03"]
+atlas = ExtResource("2_3yx03")
+region = Rect2(48, 144, 48, 48)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_xcft4"]
+atlas = ExtResource("2_3yx03")
+region = Rect2(48, 48, 48, 48)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_f4oj2"]
+atlas = ExtResource("2_3yx03")
+region = Rect2(48, 0, 48, 48)
+
 [sub_resource type="AtlasTexture" id="AtlasTexture_ac2ou"]
 atlas = ExtResource("2_3yx03")
 region = Rect2(0, 96, 48, 48)
@@ -91,6 +103,30 @@ animations = [{
 }],
 "loop": true,
 "name": &"idle_down",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_3yx03")
+}],
+"loop": true,
+"name": &"idle_left",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_xcft4")
+}],
+"loop": true,
+"name": &"idle_right",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_f4oj2")
+}],
+"loop": true,
+"name": &"idle_up",
 "speed": 5.0
 }, {
 "frames": [{
@@ -196,7 +232,7 @@ slam_cooldown = 1.5
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=1158242322]
 sprite_frames = SubResource("SpriteFrames_oxsjp")
-animation = &"walk_up"
+animation = &"idle_up"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=294619965]
 visible = false
