@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://7bj8u1ommy6b"]
 
 [ext_resource type="Script" uid="uid://piqrssdi1ltw" path="res://scripts/enemies/monster.gd" id="1_6gkhm"]
-[ext_resource type="Texture2D" uid="uid://byhgpf41l3o0" path="res://art/Assets/New sprites for replacements/minor earth elemental.png" id="2_fce4l"]
+[ext_resource type="Texture2D" uid="uid://byhgpf41l3o0" path="res://art/Assets/Game Sprite Collection New/HIJKLMN/minor earth elemental.png" id="2_fce4l"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_1hs57"]
 atlas = ExtResource("2_fce4l")

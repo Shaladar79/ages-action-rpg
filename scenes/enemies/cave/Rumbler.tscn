@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://y23yeiirbwo7"]
 
 [ext_resource type="Script" uid="uid://piqrssdi1ltw" path="res://scripts/enemies/monster.gd" id="1_pos7v"]
-[ext_resource type="Texture2D" uid="uid://dp3e1qy7ma6vr" path="res://art/Assets/New sprites for replacements/Rockman.png" id="2_pos7v"]
+[ext_resource type="Texture2D" uid="uid://dp3e1qy7ma6vr" path="res://art/Assets/Game Sprite Collection New/OPQRSTU/Rockman.png" id="2_pos7v"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_4mn5x"]
 atlas = ExtResource("2_pos7v")

@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://dbgxdvc7gp1g2"
-path="res://.godot/imported/purple_thing_rename later.png-34310666cb042865325a9f9fce0014ad.ctex"
+path="res://.godot/imported/purple_thing_rename later.png-9a7075f985a76c114e5829157d55211d.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://art/Assets/New sprites for replacements/purple_thing_rename later.png"
-dest_files=["res://.godot/imported/purple_thing_rename later.png-34310666cb042865325a9f9fce0014ad.ctex"]
+source_file="res://art/Assets/Game Sprite Collection New/OPQRSTU/purple_thing_rename later.png"
+dest_files=["res://.godot/imported/purple_thing_rename later.png-9a7075f985a76c114e5829157d55211d.ctex"]
 
 [params]
 

@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://cfokf5kfxdijr"]
 
 [ext_resource type="Script" uid="uid://piqrssdi1ltw" path="res://scripts/enemies/monster.gd" id="1_1ukgy"]
-[ext_resource type="Texture2D" uid="uid://cmfoqn3fbur21" path="res://art/Assets/New sprites for replacements/Green_beetle_man.png" id="2_1ukgy"]
+[ext_resource type="Texture2D" uid="uid://cmfoqn3fbur21" path="res://art/Assets/Game Sprite Collection New/ABCDEFG/Green_beetle_man.png" id="2_1ukgy"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_skn7k"]
 atlas = ExtResource("2_1ukgy")

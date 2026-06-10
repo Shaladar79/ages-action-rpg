@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://piqrssdi1ltw" path="res://scripts/enemies/monster.gd" id="1_ovsgc"]
 [ext_resource type="Texture2D" uid="uid://dhynaqhpip461" path="res://art/Assets/icons/fullcolor/individual_24x24/icon145.png" id="2_y3s6o"]
-[ext_resource type="Texture2D" uid="uid://keaoenrle6u6" path="res://art/Assets/New sprites for replacements/Fire_imp.png" id="3_jwiim"]
+[ext_resource type="Texture2D" uid="uid://keaoenrle6u6" path="res://art/Assets/Game Sprite Collection New/ABCDEFG/Fire_imp.png" id="3_jwiim"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_y3s6o"]
 atlas = ExtResource("3_jwiim")

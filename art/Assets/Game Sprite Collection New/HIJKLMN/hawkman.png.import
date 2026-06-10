@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://keaoenrle6u6"
-path="res://.godot/imported/Fire_imp.png-dd4f64aa2a0c380618761dc49968c6e6.ctex"
+uid="uid://qnfels4igtcv"
+path="res://.godot/imported/hawkman.png-e04dbc5c75be2a9282cf3174978813b5.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://art/Assets/New sprites for replacements/Fire_imp.png"
-dest_files=["res://.godot/imported/Fire_imp.png-dd4f64aa2a0c380618761dc49968c6e6.ctex"]
+source_file="res://art/Assets/Game Sprite Collection New/HIJKLMN/hawkman.png"
+dest_files=["res://.godot/imported/hawkman.png-e04dbc5c75be2a9282cf3174978813b5.ctex"]
 
 [params]
 

@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://qw6s2hh7mgro"
-path="res://.godot/imported/slimeman_green.png-3bceb6d8f98baa996841fb6c84bc4b89.ctex"
+uid="uid://c343ykve46njx"
+path="res://.godot/imported/Start_cave_boss.png-5b18ad1319c56c4e51c058cfa2c31729.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://art/enemies/slimeman_green.png"
-dest_files=["res://.godot/imported/slimeman_green.png-3bceb6d8f98baa996841fb6c84bc4b89.ctex"]
+source_file="res://art/Assets/Game Sprite Collection New/OPQRSTU/Start_cave_boss.png"
+dest_files=["res://.godot/imported/Start_cave_boss.png-5b18ad1319c56c4e51c058cfa2c31729.ctex"]
 
 [params]
 

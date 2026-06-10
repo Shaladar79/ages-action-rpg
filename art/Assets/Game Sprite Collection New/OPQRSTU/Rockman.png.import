@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://byhgpf41l3o0"
-path="res://.godot/imported/minor earth elemental.png-d5c0817154021a65912b9f02ee9021de.ctex"
+uid="uid://dp3e1qy7ma6vr"
+path="res://.godot/imported/Rockman.png-d70838ad559af749a60ed8dfcb13ed6f.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://art/Assets/New sprites for replacements/minor earth elemental.png"
-dest_files=["res://.godot/imported/minor earth elemental.png-d5c0817154021a65912b9f02ee9021de.ctex"]
+source_file="res://art/Assets/Game Sprite Collection New/OPQRSTU/Rockman.png"
+dest_files=["res://.godot/imported/Rockman.png-d70838ad559af749a60ed8dfcb13ed6f.ctex"]
 
 [params]
 

@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://qnfels4igtcv"
-path="res://.godot/imported/hawkman.png-b50fe6ce3b233741b3f444bcb9651472.ctex"
+uid="uid://byhgpf41l3o0"
+path="res://.godot/imported/minor earth elemental.png-c30dc99ce8105f64808b036a2a2dbcc2.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://art/Assets/New sprites for replacements/hawkman.png"
-dest_files=["res://.godot/imported/hawkman.png-b50fe6ce3b233741b3f444bcb9651472.ctex"]
+source_file="res://art/Assets/Game Sprite Collection New/HIJKLMN/minor earth elemental.png"
+dest_files=["res://.godot/imported/minor earth elemental.png-c30dc99ce8105f64808b036a2a2dbcc2.ctex"]
 
 [params]
 

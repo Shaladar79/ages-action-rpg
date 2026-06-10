@@ -6,6 +6,7 @@ const PlayerCurrencyComponentScript = preload("res://scripts/player/components/p
 const PlayerStatusComponentScript = preload("res://scripts/player/components/player_status_component.gd")
 const PlayerRangedComponentScript = preload("res://scripts/player/components/player_ranged_component.gd")
 const PlayerInteractionComponentScript = preload("res://scripts/player/components/player_interaction_component.gd")
+const PlayerHotbarComponentScript = preload("res://scripts/player/components/player_hotbar_component.gd")
 
 const HOTBAR_SLOT_COUNT: int = 8
 const STARTING_ARMOR_ID: String = "grass_tunic"
@@ -67,6 +68,7 @@ var currency_component: PlayerCurrencyComponent = null
 var status_component: PlayerStatusComponent = null
 var ranged_component: PlayerRangedComponent = null
 var interaction_component: PlayerInteractionComponent = null
+var hotbar_component: PlayerHotbarComponent = null
 
 @export_group("Spell Casting")
 @export var spell_projectile_speed: float = 260.0
@@ -101,6 +103,9 @@ func _ready() -> void:
     interaction_component = PlayerInteractionComponentScript.new()
     interaction_component.setup(self)
 
+    hotbar_component = PlayerHotbarComponentScript.new()
+    hotbar_component.setup(self)
+
     _initialize_hotbar_slots()
     _initialize_currencies()
     _ensure_starting_equipment()
@@ -114,18 +119,23 @@ func _ready() -> void:
 
 
 func _initialize_hotbar_slots() -> void:
-    if hotbar_slots.size() == HOTBAR_SLOT_COUNT:
+    if hotbar_component == null:
+        if hotbar_slots.size() == HOTBAR_SLOT_COUNT:
+            return
+
+        hotbar_slots.clear()
+
+        for slot_index in range(HOTBAR_SLOT_COUNT):
+            hotbar_slots.append({
+                "slot": slot_index + 1,
+                "item_id": "",
+                "item_type": "",
+                "cooldown_remaining": 0.0
+            })
+
         return
 
-    hotbar_slots.clear()
-
-    for slot_index in range(HOTBAR_SLOT_COUNT):
-        hotbar_slots.append({
-            "slot": slot_index + 1,
-            "item_id": "",
-            "item_type": "",
-            "cooldown_remaining": 0.0
-        })
+    hotbar_component.initialize_hotbar_slots()
 
 
 func _ensure_starting_equipment() -> void:
@@ -968,361 +978,100 @@ func get_defense() -> int:
     return character_stats.get_defense() + StatusEffects.get_defense_bonus(active_status_effects)
     
 func get_hotbar_slots() -> Array[Dictionary]:
-    _initialize_hotbar_slots()
+    if hotbar_component == null:
+        _initialize_hotbar_slots()
 
-    var saved_slots: Array[Dictionary] = []
+        var saved_slots: Array[Dictionary] = []
 
-    for slot in hotbar_slots:
-        saved_slots.append({
-            "slot": int(slot.get("slot", 0)),
-            "item_id": str(slot.get("item_id", "")),
-            "item_type": str(slot.get("item_type", "")),
-            "cooldown_remaining": float(slot.get("cooldown_remaining", 0.0))
-        })
+        for slot in hotbar_slots:
+            saved_slots.append({
+                "slot": int(slot.get("slot", 0)),
+                "item_id": str(slot.get("item_id", "")),
+                "item_type": str(slot.get("item_type", "")),
+                "cooldown_remaining": float(slot.get("cooldown_remaining", 0.0))
+            })
 
-    return saved_slots
+        return saved_slots
+
+    return hotbar_component.get_hotbar_slots()
 
 
 func set_hotbar_slots(saved_slots: Array) -> void:
-    _initialize_hotbar_slots()
+    if hotbar_component == null:
+        _initialize_hotbar_slots()
+        return
 
-    for saved_slot in saved_slots:
-        if typeof(saved_slot) != TYPE_DICTIONARY:
-            continue
-
-        var slot_number: int = int(saved_slot.get("slot", 0))
-        var item_id: String = str(saved_slot.get("item_id", ""))
-        var item_type: String = str(saved_slot.get("item_type", ""))
-        var cooldown_remaining: float = float(saved_slot.get("cooldown_remaining", 0.0))
-
-        if slot_number < 1 or slot_number > HOTBAR_SLOT_COUNT:
-            continue
-
-        var slot_index: int = slot_number - 1
-        hotbar_slots[slot_index] = {
-            "slot": slot_number,
-            "item_id": item_id,
-            "item_type": item_type,
-            "cooldown_remaining": cooldown_remaining
-        }
-
-    _clear_invalid_hotbar_slots()
-    _notify_ui_stats_changed()
+    hotbar_component.set_hotbar_slots(saved_slots)
 
 
 func assign_hotbar_slot(slot_number: int, item_id: String) -> bool:
-    _initialize_hotbar_slots()
-
-    if slot_number < 1 or slot_number > HOTBAR_SLOT_COUNT:
-        push_warning("Invalid hotbar slot: " + str(slot_number))
+    if hotbar_component == null:
         return false
 
-    if item_id.strip_edges() == "":
-        clear_hotbar_slot(slot_number)
-        return true
-
-    if not has_inventory_item(item_id):
-        push_warning("Cannot assign hotbar item. Item not in inventory: " + item_id)
-        return false
-
-    if not ItemDatabase.is_hotbar_usable(item_id):
-        push_warning("Cannot assign item to hotbar. Item is not hotbar usable: " + item_id)
-        return false
-
-    var slot_index: int = slot_number - 1
-    var item_type: String = ItemDatabase.get_item_type(item_id)
-
-    hotbar_slots[slot_index] = {
-        "slot": slot_number,
-        "item_id": item_id,
-        "item_type": item_type,
-        "cooldown_remaining": 0.0
-    }
-
-    print("Assigned hotbar slot ", slot_number, ": ", ItemDatabase.get_item_name(item_id))
-
-    _try_progress_healing_tonic_hotbar_quest(item_id)
-    _notify_ui_stats_changed()
-
-    return true
+    return hotbar_component.assign_hotbar_slot(slot_number, item_id)
 
 func _try_progress_healing_tonic_hotbar_quest(item_id: String) -> void:
-    var clean_item_id := item_id.strip_edges()
-
-    if clean_item_id != ITEM_HEALING_TONIC_ID:
+    if hotbar_component == null:
         return
 
-    if SaveManager.is_flag_set(QUEST_HEALING_TONIC_HOTBAR_FLAG):
-        return
+    hotbar_component.try_progress_healing_tonic_hotbar_quest(item_id)
 
-    if not QuestManager.is_quest_active(QUEST_HOTBAR_AND_CLUB_LESSON_ID):
-        return
-
-    var progress_added := QuestManager.add_objective_progress(
-        QUEST_HOTBAR_AND_CLUB_LESSON_ID,
-        QUEST_HEALING_TONIC_HOTBAR_OBJECTIVE_ID,
-        1
-    )
-
-    if not progress_added:
-        print("Healing Tonic hotbar quest progress failed.")
-        return
-
-    SaveManager.set_flag(QUEST_HEALING_TONIC_HOTBAR_FLAG, true)
-    print("Healing Tonic hotbar quest objective completed.")
 
 func clear_hotbar_slot(slot_number: int) -> void:
-    _initialize_hotbar_slots()
-
-    if slot_number < 1 or slot_number > HOTBAR_SLOT_COUNT:
+    if hotbar_component == null:
         return
 
-    var slot_index: int = slot_number - 1
-
-    hotbar_slots[slot_index] = {
-        "slot": slot_number,
-        "item_id": "",
-        "item_type": "",
-        "cooldown_remaining": 0.0
-    }
-
-    print("Cleared hotbar slot: ", slot_number)
-    _notify_ui_stats_changed()
+    hotbar_component.clear_hotbar_slot(slot_number)
 
 
 func _clear_hotbar_slots_for_missing_item(item_id: String) -> void:
-    _initialize_hotbar_slots()
+    if hotbar_component == null:
+        return
 
-    for slot_index in range(hotbar_slots.size()):
-        var slot: Dictionary = hotbar_slots[slot_index]
-        var slot_item_id: String = str(slot.get("item_id", ""))
-
-        if slot_item_id == item_id and not has_inventory_item(item_id):
-            var slot_number: int = int(slot.get("slot", slot_index + 1))
-            hotbar_slots[slot_index] = {
-                "slot": slot_number,
-                "item_id": "",
-                "item_type": "",
-                "cooldown_remaining": 0.0
-            }
+    hotbar_component.clear_hotbar_slots_for_missing_item(item_id)
 
 
 func _clear_invalid_hotbar_slots() -> void:
-    _initialize_hotbar_slots()
+    if hotbar_component == null:
+        return
 
-    for slot_index in range(hotbar_slots.size()):
-        var slot: Dictionary = hotbar_slots[slot_index]
-        var slot_number: int = int(slot.get("slot", slot_index + 1))
-        var item_id: String = str(slot.get("item_id", ""))
+    hotbar_component.clear_invalid_hotbar_slots()
 
-        if item_id.strip_edges() == "":
-            continue
-
-        if not has_inventory_item(item_id):
-            hotbar_slots[slot_index] = {
-                "slot": slot_number,
-                "item_id": "",
-                "item_type": "",
-                "cooldown_remaining": 0.0
-            }
-            continue
-
-        if not ItemDatabase.is_hotbar_usable(item_id):
-            hotbar_slots[slot_index] = {
-                "slot": slot_number,
-                "item_id": "",
-                "item_type": "",
-                "cooldown_remaining": 0.0
-            }
 
 
 func _update_hotbar_cooldowns(delta: float) -> void:
-    _initialize_hotbar_slots()
+    if hotbar_component == null:
+        return
 
-    for slot_index in range(hotbar_slots.size()):
-        var slot: Dictionary = hotbar_slots[slot_index]
-        var cooldown_remaining: float = float(slot.get("cooldown_remaining", 0.0))
-
-        if cooldown_remaining <= 0.0:
-            continue
-
-        cooldown_remaining = maxf(0.0, cooldown_remaining - delta)
-        slot["cooldown_remaining"] = cooldown_remaining
-        hotbar_slots[slot_index] = slot
+    hotbar_component.update_hotbar_cooldowns(delta)
 
 
 func _handle_hotbar_input() -> bool:
-    if is_dialogue_active():
+    if hotbar_component == null:
         return false
 
-    for slot_number in range(1, HOTBAR_SLOT_COUNT + 1):
-        var action_name: String = "hotbar_" + str(slot_number)
-
-        if not InputMap.has_action(action_name):
-            continue
-
-        if Input.is_action_just_pressed(action_name):
-            use_hotbar_slot(slot_number)
-            return true
-
-    return false
+    return hotbar_component.handle_hotbar_input()
 
 
 func use_hotbar_slot(slot_number: int) -> bool:
-    _initialize_hotbar_slots()
-
-    if is_defeated:
+    if hotbar_component == null:
         return false
 
-    if slot_number < 1 or slot_number > HOTBAR_SLOT_COUNT:
-        return false
-
-    var slot_index: int = slot_number - 1
-    var slot: Dictionary = hotbar_slots[slot_index]
-    var item_id: String = str(slot.get("item_id", ""))
-    var item_type: String = str(slot.get("item_type", ""))
-    var cooldown_remaining: float = float(slot.get("cooldown_remaining", 0.0))
-
-    if item_id.strip_edges() == "":
-        print("Hotbar slot ", slot_number, " is empty.")
-        return false
-
-    if not has_inventory_item(item_id):
-        print("Hotbar item missing from inventory: ", item_id)
-        clear_hotbar_slot(slot_number)
-        return false
-
-    if cooldown_remaining > 0.0:
-        print("Hotbar slot ", slot_number, " is on cooldown: ", cooldown_remaining)
-        return false
-
-    if item_type == "":
-        item_type = ItemDatabase.get_item_type(item_id)
-
-    match item_type:
-        "consumable":
-            return _use_hotbar_consumable(slot_number, item_id)
-
-        "spell_book":
-            return _use_hotbar_spell_book(slot_number, item_id)
-
-        "technique_manual":
-            return _use_hotbar_technique_manual(slot_number, item_id)
-
-        _:
-            print("Hotbar item type cannot be used yet: ", item_type)
-            return false
+    return hotbar_component.use_hotbar_slot(slot_number)
 
 
 func _use_hotbar_consumable(slot_number: int, item_id: String) -> bool:
-    var effect: String = ItemDatabase.get_consumable_effect(item_id)
+    if hotbar_component == null:
+        return false
 
-    match effect:
-        "heal":
-            var heal_amount: int = ItemDatabase.get_heal_amount(item_id)
-
-            if heal_amount <= 0:
-                print("Consumable has no heal amount: ", item_id)
-                return false
-
-            var healed: bool = heal_player(heal_amount)
-
-            if not healed:
-                print("Consumable not used. Player is already at full health.")
-                return false
-
-        "restore_mana":
-            var mana_gain: int = ItemDatabase.get_mana_gain(item_id)
-
-            if mana_gain <= 0:
-                print("Consumable has no mana gain: ", item_id)
-                return false
-
-            var restored: bool = restore_player_mana(mana_gain)
-
-            if not restored:
-                print("Consumable not used. Mana is locked or already full.")
-                return false
-
-        _:
-            print("Unknown consumable effect: ", effect)
-            return false
-
-    if ItemDatabase.is_consumed_on_use(item_id):
-        remove_inventory_item(item_id)
-
-    print("Used consumable from hotbar slot ", slot_number, ": ", ItemDatabase.get_item_name(item_id))
-    _notify_ui_stats_changed()
-
-    return true
+    return hotbar_component.use_hotbar_consumable(slot_number, item_id)
 
 
 func _use_hotbar_spell_book(slot_number: int, item_id: String) -> bool:
-    if character_stats == null:
+    if hotbar_component == null:
         return false
 
-    if not character_stats.has_mana_resource:
-        print("Cannot cast spell. Mana is not unlocked.")
-        return false
-
-    var mana_cost: int = ItemDatabase.get_spell_mana_cost(item_id)
-
-    if not character_stats.can_spend_mana(mana_cost):
-        print("Not enough Mana to cast: ", ItemDatabase.get_spell_name(item_id))
-        return false
-
-    var cooldown: float = ItemDatabase.get_spell_cooldown(item_id)
-    var cast_target: String = ItemDatabase.get_spell_cast_target(item_id)
-    var status_effect: String = ItemDatabase.get_spell_status_effect(item_id)
-    var status_duration: float = ItemDatabase.get_spell_status_duration(item_id)
-
-    if status_effect.strip_edges() == "":
-        print("Spell has no status effect: ", item_id)
-        return false
-
-    if status_duration <= 0.0:
-        print("Spell has no valid status duration: ", item_id)
-        return false
-
-    var spent := character_stats.spend_mana(mana_cost)
-
-    if not spent:
-        print("Failed to spend Mana for spell: ", ItemDatabase.get_spell_name(item_id))
-        return false
-
-    match cast_target:
-        "self":
-            _cast_self_buff_spell(item_id, status_effect, status_duration)
-
-        _:
-            var spell_range: float = ItemDatabase.get_spell_range(item_id)
-
-            if spell_range <= 0.0:
-                print("Spell has no valid range: ", item_id)
-                character_stats.restore_mana(mana_cost)
-                _notify_ui_stats_changed()
-                return false
-
-            var cast_direction := _get_last_direction_vector()
-
-            if cast_direction == Vector2.ZERO:
-                cast_direction = Vector2.DOWN
-
-            _spawn_spell_projectile(
-                item_id,
-                cast_direction,
-                spell_range,
-                status_effect,
-                status_duration
-            )
-
-    _set_hotbar_slot_cooldown(slot_number, cooldown)
-    _record_spell_school_mastery_cast(item_id)
-
-    print("Cast spell from hotbar slot ", slot_number, ": ", ItemDatabase.get_spell_name(item_id))
-    _notify_ui_stats_changed()
-
-    return true
+    return hotbar_component.use_hotbar_spell_book(slot_number, item_id)
 
 
 func _record_spell_school_mastery_cast(item_id: String) -> void:
@@ -1430,23 +1179,17 @@ func _get_last_direction_vector() -> Vector2:
 
 
 func _set_hotbar_slot_cooldown(slot_number: int, cooldown: float) -> void:
-    _initialize_hotbar_slots()
-
-    if slot_number < 1 or slot_number > HOTBAR_SLOT_COUNT:
+    if hotbar_component == null:
         return
 
-    if cooldown <= 0.0:
-        return
-
-    var slot_index := slot_number - 1
-    var slot: Dictionary = hotbar_slots[slot_index]
-    slot["cooldown_remaining"] = cooldown
-    hotbar_slots[slot_index] = slot
+    hotbar_component.set_hotbar_slot_cooldown(slot_number, cooldown)
 
 
 func _use_hotbar_technique_manual(slot_number: int, item_id: String) -> bool:
-    print("Technique manual hotbar use placeholder. Slot: ", slot_number, " Item: ", item_id)
-    return false
+    if hotbar_component == null:
+        return false
+
+    return hotbar_component.use_hotbar_technique_manual(slot_number, item_id)
 
 
 func heal_player(heal_amount: int) -> bool:

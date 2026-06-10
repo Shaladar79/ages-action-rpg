@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://domiylsrt2icw"
-path="res://.godot/imported/stoneKnight.png-f10c97fcb487004dfefacaf7a0824eec.ctex"
+uid="uid://dqaopehgi4ryy"
+path="res://.godot/imported/Thornling.png-d6d501c129c77296d483ece9c43e5893.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://art/Assets/New sprites for replacements/stoneKnight.png"
-dest_files=["res://.godot/imported/stoneKnight.png-f10c97fcb487004dfefacaf7a0824eec.ctex"]
+source_file="res://art/Assets/Game Sprite Collection New/OPQRSTU/Thornling.png"
+dest_files=["res://.godot/imported/Thornling.png-d6d501c129c77296d483ece9c43e5893.ctex"]
 
 [params]
 
