@@ -8,6 +8,7 @@ const PlayerRangedComponentScript = preload("res://scripts/player/components/pla
 const PlayerInteractionComponentScript = preload("res://scripts/player/components/player_interaction_component.gd")
 const PlayerHotbarComponentScript = preload("res://scripts/player/components/player_hotbar_component.gd")
 const PlayerMagicComponentScript = preload("res://scripts/player/components/player_magic_component.gd")
+const PlayerMeleeComponentScript = preload("res://scripts/player/components/player_melee_component.gd")
 
 const HOTBAR_SLOT_COUNT: int = 8
 const STARTING_ARMOR_ID: String = "grass_tunic"
@@ -71,6 +72,7 @@ var ranged_component: PlayerRangedComponent = null
 var interaction_component: PlayerInteractionComponent = null
 var hotbar_component: PlayerHotbarComponent = null
 var magic_component: PlayerMagicComponent = null
+var melee_component: PlayerMeleeComponent = null
 
 @export_group("Spell Casting")
 @export var spell_projectile_speed: float = 260.0
@@ -110,6 +112,9 @@ func _ready() -> void:
     
     magic_component = PlayerMagicComponentScript.new()
     magic_component.setup(self)
+
+    melee_component = PlayerMeleeComponentScript.new()
+    melee_component.setup(self)
 
     _initialize_hotbar_slots()
     _initialize_currencies()
@@ -1419,169 +1424,83 @@ func _has_inventory_quantity(item_id: String, required_quantity: int) -> bool:
 
 
 func _try_attack() -> void:
-    if is_defeated:
+    if melee_component == null:
         return
 
-    if is_dialogue_active():
-        return
-
-    if is_attacking:
-        return
-
-    if cooldown_timer > 0.0:
-        return
-
-    is_attacking = true
-    attack_damage_timer = attack_damage_window
-    weapon_visual_timer = weapon_visual_duration
-    cooldown_timer = get_current_attack_cooldown()
-    hit_targets.clear()
-
-    _position_attack_area()
-    _show_weapon_sprite_for_attack()
-    _enable_attack_hitbox()
-
-    print("Player attack: ", last_direction)
-    print("AttackArea position: ", attack_area.position)
+    melee_component.try_attack()
 
 
 func _update_attack_timers(delta: float) -> void:
-    if cooldown_timer > 0.0:
-        cooldown_timer -= delta
+    if melee_component == null:
+        return
 
-    if attack_damage_timer > 0.0:
-        attack_damage_timer -= delta
-
-        if attack_damage_timer <= 0.0:
-            attack_damage_timer = 0.0
-            _disable_attack_hitbox()
-
-    if weapon_visual_timer > 0.0:
-        weapon_visual_timer -= delta
-
-        if weapon_visual_timer <= 0.0:
-            weapon_visual_timer = 0.0
-            _hide_weapon_sprite()
-
-    if attack_damage_timer <= 0.0 and weapon_visual_timer <= 0.0:
-        is_attacking = false
+    melee_component.update_attack_timers(delta)
 
 
 func _position_attack_area() -> void:
-    match last_direction:
-        "down":
-            attack_area.position = Vector2(0, attack_offset)
-        "up":
-            attack_area.position = Vector2(0, -attack_offset)
-        "left":
-            attack_area.position = Vector2(-attack_offset, 0)
-        "right":
-            attack_area.position = Vector2(attack_offset, 0)
+    if melee_component == null:
+        return
+
+    melee_component.position_attack_area()
 
 
 func _show_weapon_sprite_for_attack() -> void:
-    if weapon_sprite == null:
+    if melee_component == null:
         return
 
-    if not has_equipped_weapon():
-        _hide_weapon_sprite()
-        return
-
-    weapon_sprite.visible = true
-    weapon_sprite.scale = weapon_visual_scale
-    weapon_sprite.flip_h = false
-    weapon_sprite.flip_v = false
-
-    match last_direction:
-        "down":
-            weapon_sprite.position = Vector2(0, weapon_visual_offset)
-            weapon_sprite.rotation_degrees = 180.0
-            weapon_sprite.z_index = 10
-        "up":
-            weapon_sprite.position = Vector2(0, -weapon_visual_offset)
-            weapon_sprite.rotation_degrees = 0.0
-            weapon_sprite.z_index = -1
-        "left":
-            weapon_sprite.position = Vector2(-weapon_visual_offset, 0)
-            weapon_sprite.rotation_degrees = -90.0
-            weapon_sprite.z_index = 10
-        "right":
-            weapon_sprite.position = Vector2(weapon_visual_offset, 0)
-            weapon_sprite.rotation_degrees = 90.0
-            weapon_sprite.z_index = 10
+    melee_component.show_weapon_sprite_for_attack()
 
 
 func _hide_weapon_sprite() -> void:
-    if weapon_sprite == null:
+    if melee_component == null:
+        if weapon_sprite != null:
+            weapon_sprite.visible = false
         return
 
-    weapon_sprite.visible = false
+    melee_component.hide_weapon_sprite()
 
 
 func _enable_attack_hitbox() -> void:
-    attack_area.monitoring = true
-    attack_area.monitorable = true
-    attack_collision.disabled = false
-    attack_area.visible = true
+    if melee_component == null:
+        attack_area.monitoring = true
+        attack_area.monitorable = true
+        attack_collision.disabled = false
+        attack_area.visible = true
+        return
+
+    melee_component.enable_attack_hitbox()
 
 
 func _disable_attack_hitbox() -> void:
-    attack_area.monitoring = false
-    attack_area.monitorable = false
-    attack_collision.disabled = true
-    attack_area.visible = false
+    if melee_component == null:
+        attack_area.monitoring = false
+        attack_area.monitorable = false
+        attack_collision.disabled = true
+        attack_area.visible = false
+        return
+
+    melee_component.disable_attack_hitbox()
 
 
 func _on_attack_area_entered(area: Area2D) -> void:
-    print("AttackArea entered area: ", area.name)
-    _damage_area_target(area)
+    if melee_component == null:
+        return
+
+    melee_component.on_attack_area_entered(area)
 
 
 func _check_attack_overlaps() -> void:
-    var overlapping_areas := attack_area.get_overlapping_areas()
+    if melee_component == null:
+        return
 
-    for area in overlapping_areas:
-        print("AttackArea overlapping: ", area.name)
-        _damage_area_target(area)
+    melee_component.check_attack_overlaps()
 
 
 func _damage_area_target(area: Area2D) -> void:
-    if is_defeated:
+    if melee_component == null:
         return
 
-    if attack_damage_timer <= 0.0:
-        return
-
-    if area == null:
-        return
-
-    var target := area.get_parent()
-
-    if target == null:
-        return
-
-    if target == self:
-        return
-
-    if target.is_in_group("player"):
-        return
-
-    if self.is_ancestor_of(target):
-        return
-
-    if hit_targets.has(target):
-        return
-
-    if target.has_method("take_damage_from_player"):
-        hit_targets.append(target)
-        target.take_damage_from_player(get_attack_damage(), self)
-        print("Hit target with player-aware damage: ", target.name)
-        return
-
-    if target.has_method("take_damage"):
-        hit_targets.append(target)
-        target.take_damage(get_attack_damage())
-        print("Hit target: ", target.name)
+    melee_component.damage_area_target(area)
 
 
 func _update_animation(input_vector: Vector2) -> void:
