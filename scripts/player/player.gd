@@ -5,6 +5,7 @@ const PlayerEquipmentComponentScript = preload("res://scripts/player/components/
 const PlayerCurrencyComponentScript = preload("res://scripts/player/components/player_currency_component.gd")
 const PlayerStatusComponentScript = preload("res://scripts/player/components/player_status_component.gd")
 const PlayerRangedComponentScript = preload("res://scripts/player/components/player_ranged_component.gd")
+const PlayerInteractionComponentScript = preload("res://scripts/player/components/player_interaction_component.gd")
 
 const HOTBAR_SLOT_COUNT: int = 8
 const STARTING_ARMOR_ID: String = "grass_tunic"
@@ -65,6 +66,7 @@ var equipment_component: PlayerEquipmentComponent = null
 var currency_component: PlayerCurrencyComponent = null
 var status_component: PlayerStatusComponent = null
 var ranged_component: PlayerRangedComponent = null
+var interaction_component: PlayerInteractionComponent = null
 
 @export_group("Spell Casting")
 @export var spell_projectile_speed: float = 260.0
@@ -95,6 +97,9 @@ func _ready() -> void:
 
     ranged_component = PlayerRangedComponentScript.new()
     ranged_component.setup(self)
+
+    interaction_component = PlayerInteractionComponentScript.new()
+    interaction_component.setup(self)
 
     _initialize_hotbar_slots()
     _initialize_currencies()
@@ -1478,103 +1483,143 @@ func restore_player_mana(mana_amount: int) -> bool:
 
 
 func show_dialogue(message: String, speaker_name: String = "System") -> void:
-    var clean_message := message.strip_edges()
+    if interaction_component == null:
+        var clean_message := message.strip_edges()
 
-    if clean_message == "":
+        if clean_message == "":
+            return
+
+        var game_ui := _get_game_ui()
+
+        if game_ui != null and game_ui.has_method("show_story_message"):
+            game_ui.show_story_message(clean_message, speaker_name)
+            return
+
+        print("Dialogue message with no GameUi available: ", clean_message)
         return
 
-    var game_ui := _get_game_ui()
+    interaction_component.show_dialogue(message, speaker_name)
 
-    if game_ui != null and game_ui.has_method("show_story_message"):
-        game_ui.show_story_message(clean_message, speaker_name)
-        return
-
-    print("Dialogue message with no GameUi available: ", clean_message)
 
 
 func hide_dialogue() -> void:
-    var game_ui := _get_game_ui()
+    if interaction_component == null:
+        var game_ui := _get_game_ui()
 
-    if game_ui != null and game_ui.has_method("hide_story_dialogue"):
-        game_ui.hide_story_dialogue()
+        if game_ui != null and game_ui.has_method("hide_story_dialogue"):
+            game_ui.hide_story_dialogue()
+
         return
+
+    interaction_component.hide_dialogue()
 
 
 func is_dialogue_active() -> bool:
-    var game_ui := _get_game_ui()
+    if interaction_component == null:
+        var game_ui := _get_game_ui()
 
-    if game_ui != null and game_ui.has_method("is_story_dialogue_active"):
-        return game_ui.is_story_dialogue_active()
+        if game_ui != null and game_ui.has_method("is_story_dialogue_active"):
+            return game_ui.is_story_dialogue_active()
 
-    return false
+        return false
+
+    return interaction_component.is_dialogue_active()
 
 
 func _notify_nearby_interactable_dialogue_closed() -> void:
-    if nearby_interactable == null:
+    if interaction_component == null:
+        if nearby_interactable == null:
+            return
+
+        if nearby_interactable.has_method("on_player_dialogue_closed"):
+            nearby_interactable.on_player_dialogue_closed(self)
+
         return
 
-    if nearby_interactable.has_method("on_player_dialogue_closed"):
-        nearby_interactable.on_player_dialogue_closed(self)
+    interaction_component.notify_nearby_interactable_dialogue_closed()
 
 
 func set_nearby_interactable(interactable: Node) -> void:
-    if is_defeated:
+    if interaction_component == null:
+        if is_defeated:
+            return
+
+        nearby_interactable = interactable
+        print("Nearby interactable: ", interactable.name)
+        _show_interaction_prompt()
         return
 
-    nearby_interactable = interactable
-    print("Nearby interactable: ", interactable.name)
-    _show_interaction_prompt()
+    interaction_component.set_nearby_interactable(interactable)
 
 
 func clear_nearby_interactable(interactable: Node) -> void:
-    if nearby_interactable != interactable:
+    if interaction_component == null:
+        if nearby_interactable != interactable:
+            return
+
+        print("Cleared interactable: ", interactable.name)
+        nearby_interactable = null
+        _hide_interaction_prompt()
         return
 
-    print("Cleared interactable: ", interactable.name)
-    nearby_interactable = null
-    _hide_interaction_prompt()
+    interaction_component.clear_nearby_interactable(interactable)
 
 
 func _show_interaction_prompt() -> void:
-    var interaction_ui := get_tree().get_first_node_in_group("interaction_ui")
+    if interaction_component == null:
+        var interaction_ui := get_tree().get_first_node_in_group("interaction_ui")
 
-    if interaction_ui == null:
-        push_warning("No node found in group: interaction_ui")
+        if interaction_ui == null:
+            push_warning("No node found in group: interaction_ui")
+            return
+
+        if interaction_ui.has_method("show_prompt"):
+            interaction_ui.show_prompt("🖱 Right Mouse / Alt")
+
         return
 
-    if interaction_ui.has_method("show_prompt"):
-        interaction_ui.show_prompt("🖱 Right Mouse / Alt")
+    interaction_component.show_interaction_prompt()
 
 
 func _hide_interaction_prompt() -> void:
-    var interaction_ui := get_tree().get_first_node_in_group("interaction_ui")
+    if interaction_component == null:
+        var interaction_ui := get_tree().get_first_node_in_group("interaction_ui")
 
-    if interaction_ui == null:
+        if interaction_ui == null:
+            return
+
+        if interaction_ui.has_method("hide_prompt"):
+            interaction_ui.hide_prompt()
+
         return
 
-    if interaction_ui.has_method("hide_prompt"):
-        interaction_ui.hide_prompt()
+    interaction_component.hide_interaction_prompt()
 
 
 func _try_interact() -> void:
-    if is_defeated:
-        return
-
-    if is_dialogue_active():
-        return
-
-    var game_ui := _get_game_ui()
-
-    if game_ui != null and game_ui.has_method("should_block_player_interact"):
-        if game_ui.should_block_player_interact():
+    if interaction_component == null:
+        if is_defeated:
             return
 
-    if nearby_interactable == null:
-        print("No nearby interactable.")
+        if is_dialogue_active():
+            return
+
+        var game_ui := _get_game_ui()
+
+        if game_ui != null and game_ui.has_method("should_block_player_interact"):
+            if game_ui.should_block_player_interact():
+                return
+
+        if nearby_interactable == null:
+            print("No nearby interactable.")
+            return
+
+        if nearby_interactable.has_method("interact"):
+            nearby_interactable.interact(self)
+
         return
 
-    if nearby_interactable.has_method("interact"):
-        nearby_interactable.interact(self)
+    interaction_component.try_interact()
 
 
 func _try_ranged_attack() -> void:
