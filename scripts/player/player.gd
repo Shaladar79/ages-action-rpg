@@ -7,6 +7,7 @@ const PlayerStatusComponentScript = preload("res://scripts/player/components/pla
 const PlayerRangedComponentScript = preload("res://scripts/player/components/player_ranged_component.gd")
 const PlayerInteractionComponentScript = preload("res://scripts/player/components/player_interaction_component.gd")
 const PlayerHotbarComponentScript = preload("res://scripts/player/components/player_hotbar_component.gd")
+const PlayerMagicComponentScript = preload("res://scripts/player/components/player_magic_component.gd")
 
 const HOTBAR_SLOT_COUNT: int = 8
 const STARTING_ARMOR_ID: String = "grass_tunic"
@@ -69,6 +70,7 @@ var status_component: PlayerStatusComponent = null
 var ranged_component: PlayerRangedComponent = null
 var interaction_component: PlayerInteractionComponent = null
 var hotbar_component: PlayerHotbarComponent = null
+var magic_component: PlayerMagicComponent = null
 
 @export_group("Spell Casting")
 @export var spell_projectile_speed: float = 260.0
@@ -105,6 +107,9 @@ func _ready() -> void:
 
     hotbar_component = PlayerHotbarComponentScript.new()
     hotbar_component.setup(self)
+    
+    magic_component = PlayerMagicComponentScript.new()
+    magic_component.setup(self)
 
     _initialize_hotbar_slots()
     _initialize_currencies()
@@ -1075,47 +1080,57 @@ func _use_hotbar_spell_book(slot_number: int, item_id: String) -> bool:
 
 
 func _record_spell_school_mastery_cast(item_id: String) -> void:
-    var spell_school := ItemDatabase.get_spell_school(item_id).strip_edges()
+    if magic_component == null:
+        var spell_school := ItemDatabase.get_spell_school(item_id).strip_edges()
 
-    if spell_school == "":
+        if spell_school == "":
+            return
+
+        if MasteryManager == null:
+            return
+
+        if not MasteryManager.has_method("add_school_cast"):
+            return
+
+        var added := MasteryManager.add_school_cast(spell_school, 1)
+
+        if added:
+            print("School mastery cast added: ", spell_school)
+
         return
 
-    if MasteryManager == null:
-        return
-
-    if not MasteryManager.has_method("add_school_cast"):
-        return
-
-    var added := MasteryManager.add_school_cast(spell_school, 1)
-
-    if added:
-        print("School mastery cast added: ", spell_school)
+    magic_component.record_spell_school_mastery_cast(item_id)
 
 
 func _cast_self_buff_spell(item_id: String, status_effect: String, status_duration: float) -> void:
-    var status_effect_data := {
-        StatusEffects.KEY_MOVE_SPEED_MULTIPLIER: ItemDatabase.get_spell_move_speed_multiplier(item_id)
-    }
+    if magic_component == null:
+        var status_effect_data := {
+            StatusEffects.KEY_MOVE_SPEED_MULTIPLIER: ItemDatabase.get_spell_move_speed_multiplier(item_id)
+        }
 
-    if status_effect == StatusEffects.STATUS_ROCK_SKIN:
-        status_effect_data[StatusEffects.KEY_DEFENSE_BONUS] = ItemDatabase.get_spell_defense_bonus(item_id)
+        if status_effect == StatusEffects.STATUS_ROCK_SKIN:
+            status_effect_data[StatusEffects.KEY_DEFENSE_BONUS] = ItemDatabase.get_spell_defense_bonus(item_id)
 
-    if status_effect == StatusEffects.STATUS_BURNING:
-        status_effect_data[StatusEffects.KEY_DAMAGE_PER_TICK] = ItemDatabase.get_spell_status_damage_per_tick(item_id)
-        status_effect_data[StatusEffects.KEY_DAMAGE_TICK_INTERVAL] = ItemDatabase.get_spell_status_tick_interval(item_id)
-        status_effect_data[StatusEffects.KEY_DAMAGE_TYPES] = ItemDatabase.get_spell_damage_types(item_id)
-        status_effect_data[StatusEffects.KEY_IGNORE_DEFENSE] = true
+        if status_effect == StatusEffects.STATUS_BURNING:
+            status_effect_data[StatusEffects.KEY_DAMAGE_PER_TICK] = ItemDatabase.get_spell_status_damage_per_tick(item_id)
+            status_effect_data[StatusEffects.KEY_DAMAGE_TICK_INTERVAL] = ItemDatabase.get_spell_status_tick_interval(item_id)
+            status_effect_data[StatusEffects.KEY_DAMAGE_TYPES] = ItemDatabase.get_spell_damage_types(item_id)
+            status_effect_data[StatusEffects.KEY_IGNORE_DEFENSE] = true
 
-    apply_status_effect(status_effect, status_duration, status_effect_data)
+        apply_status_effect(status_effect, status_duration, status_effect_data)
 
-    print(
-        "Self-cast spell applied: ",
-        ItemDatabase.get_spell_name(item_id),
-        " status: ",
-        status_effect,
-        " duration: ",
-        status_duration
-    )
+        print(
+            "Self-cast spell applied: ",
+            ItemDatabase.get_spell_name(item_id),
+            " status: ",
+            status_effect,
+            " duration: ",
+            status_duration
+        )
+
+        return
+
+    magic_component.cast_self_buff_spell(item_id, status_effect, status_duration)
 
 
 func _spawn_spell_projectile(
@@ -1125,43 +1140,54 @@ func _spawn_spell_projectile(
         status_effect: String,
         status_duration: float
 ) -> void:
-    var projectile := PlayerSpellProjectile.new()
-    projectile.name = "PlayerSpellProjectile"
+    if magic_component == null:
+        var projectile := PlayerSpellProjectile.new()
+        projectile.name = "PlayerSpellProjectile"
 
-    var spawn_position := global_position + (cast_direction.normalized() * spell_projectile_spawn_offset)
-    projectile.global_position = spawn_position
-    projectile.speed = spell_projectile_speed
-    projectile.collision_layer = spell_projectile_collision_layer
-    projectile.collision_mask = spell_projectile_collision_mask
+        var spawn_position := global_position + (cast_direction.normalized() * spell_projectile_spawn_offset)
+        projectile.global_position = spawn_position
+        projectile.speed = spell_projectile_speed
+        projectile.collision_layer = spell_projectile_collision_layer
+        projectile.collision_mask = spell_projectile_collision_mask
 
-    var status_effect_data := {
-        StatusEffects.KEY_MOVE_SPEED_MULTIPLIER: ItemDatabase.get_spell_move_speed_multiplier(item_id)
-    }
+        var status_effect_data := {
+            StatusEffects.KEY_MOVE_SPEED_MULTIPLIER: ItemDatabase.get_spell_move_speed_multiplier(item_id)
+        }
 
-    if status_effect == StatusEffects.STATUS_BURNING:
-        status_effect_data[StatusEffects.KEY_DAMAGE_PER_TICK] = ItemDatabase.get_spell_status_damage_per_tick(item_id)
-        status_effect_data[StatusEffects.KEY_DAMAGE_TICK_INTERVAL] = ItemDatabase.get_spell_status_tick_interval(item_id)
-        status_effect_data[StatusEffects.KEY_DAMAGE_TYPES] = ItemDatabase.get_spell_damage_types(item_id)
-        status_effect_data[StatusEffects.KEY_IGNORE_DEFENSE] = true
+        if status_effect == StatusEffects.STATUS_BURNING:
+            status_effect_data[StatusEffects.KEY_DAMAGE_PER_TICK] = ItemDatabase.get_spell_status_damage_per_tick(item_id)
+            status_effect_data[StatusEffects.KEY_DAMAGE_TICK_INTERVAL] = ItemDatabase.get_spell_status_tick_interval(item_id)
+            status_effect_data[StatusEffects.KEY_DAMAGE_TYPES] = ItemDatabase.get_spell_damage_types(item_id)
+            status_effect_data[StatusEffects.KEY_IGNORE_DEFENSE] = true
 
-    projectile.setup(
-        self,
-        cast_direction,
+        projectile.setup(
+            self,
+            cast_direction,
+            item_id,
+            spell_range,
+            status_effect,
+            status_duration,
+            status_effect_data,
+            ItemDatabase.get_spell_damage(item_id),
+            ItemDatabase.get_spell_damage_types(item_id)
+        )
+
+        var current_scene := get_tree().current_scene
+
+        if current_scene != null:
+            current_scene.add_child(projectile)
+        else:
+            get_parent().add_child(projectile)
+
+        return
+
+    magic_component.spawn_spell_projectile(
         item_id,
+        cast_direction,
         spell_range,
         status_effect,
-        status_duration,
-        status_effect_data,
-        ItemDatabase.get_spell_damage(item_id),
-        ItemDatabase.get_spell_damage_types(item_id)
+        status_duration
     )
-
-    var current_scene := get_tree().current_scene
-
-    if current_scene != null:
-        current_scene.add_child(projectile)
-    else:
-        get_parent().add_child(projectile)
 
 
 func _get_last_direction_vector() -> Vector2:
@@ -1211,18 +1237,21 @@ func heal_player(heal_amount: int) -> bool:
 
 
 func restore_player_mana(mana_amount: int) -> bool:
-    if mana_amount <= 0:
-        return false
+    if magic_component == null:
+        if mana_amount <= 0:
+            return false
 
-    if character_stats == null:
-        return false
+        if character_stats == null:
+            return false
 
-    var restored: bool = character_stats.restore_mana(mana_amount)
+        var restored: bool = character_stats.restore_mana(mana_amount)
 
-    if restored:
-        _notify_ui_stats_changed()
+        if restored:
+            _notify_ui_stats_changed()
 
-    return restored
+        return restored
+
+    return magic_component.restore_player_mana(mana_amount)
 
 
 func show_dialogue(message: String, speaker_name: String = "System") -> void:
