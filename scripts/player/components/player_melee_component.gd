@@ -91,23 +91,71 @@ func position_attack_area() -> void:
         return
 
     var attack_area: Area2D = player.get("attack_area") as Area2D
+    var attack_collision: CollisionShape2D = player.get("attack_collision") as CollisionShape2D
 
     if attack_area == null:
         return
 
-    var attack_offset: float = float(player.get("attack_offset"))
     var last_direction: String = str(player.get("last_direction"))
+    var half_extents := _get_attack_collision_half_extents(attack_collision)
+
+    # This pushes the attack box away from Gene so it does not sit on top of him.
+    var body_edge_padding := 4.0
+
+    if attack_collision != null:
+        attack_collision.position = Vector2.ZERO
 
     match last_direction:
         "down":
-            attack_area.position = Vector2(0, attack_offset)
-        "up":
-            attack_area.position = Vector2(0, -attack_offset)
-        "left":
-            attack_area.position = Vector2(-attack_offset, 0)
-        "right":
-            attack_area.position = Vector2(attack_offset, 0)
+            if attack_collision != null:
+                attack_collision.rotation_degrees = 0.0
 
+            attack_area.position = Vector2(0, half_extents.y + body_edge_padding)
+
+        "up":
+            if attack_collision != null:
+                attack_collision.rotation_degrees = 0.0
+
+            attack_area.position = Vector2(0, -(half_extents.y + body_edge_padding))
+
+        "left":
+            if attack_collision != null:
+                attack_collision.rotation_degrees = 90.0
+
+            attack_area.position = Vector2(-(half_extents.y + body_edge_padding), 0)
+
+        "right":
+            if attack_collision != null:
+                attack_collision.rotation_degrees = 90.0
+
+            attack_area.position = Vector2(half_extents.y + body_edge_padding, 0)
+
+        _:
+            if attack_collision != null:
+                attack_collision.rotation_degrees = 0.0
+
+            attack_area.position = Vector2(0, half_extents.y + body_edge_padding)
+
+func _get_attack_collision_half_extents(attack_collision: CollisionShape2D) -> Vector2:
+    if attack_collision == null:
+        return Vector2(12.0, 12.0)
+
+    if attack_collision.shape == null:
+        return Vector2(12.0, 12.0)
+
+    if attack_collision.shape is RectangleShape2D:
+        var rectangle_shape := attack_collision.shape as RectangleShape2D
+        return rectangle_shape.size * 0.5
+
+    if attack_collision.shape is CircleShape2D:
+        var circle_shape := attack_collision.shape as CircleShape2D
+        return Vector2(circle_shape.radius, circle_shape.radius)
+
+    if attack_collision.shape is CapsuleShape2D:
+        var capsule_shape := attack_collision.shape as CapsuleShape2D
+        return Vector2(capsule_shape.radius, capsule_shape.height * 0.5)
+
+    return Vector2(12.0, 12.0)
 
 func show_weapon_sprite_for_attack() -> void:
     if player == null:
@@ -275,21 +323,31 @@ func _show_debug_attack_visual(attack_area: Area2D, attack_collision: CollisionS
     var debug_visual := attack_area.get_node_or_null("AttackDebugVisual") as Polygon2D
 
     if debug_visual == null:
-        debug_visual = Polygon2D.new()
-        debug_visual.name = "AttackDebugVisual"
-        debug_visual.color = Color(1.0, 0.0, 0.0, 0.35)
-        debug_visual.z_index = 100
-        attack_area.add_child(debug_visual)
+       debug_visual = Polygon2D.new()
+       debug_visual.name = "AttackDebugVisual"
+       debug_visual.z_index = 100
+       attack_area.add_child(debug_visual)
+
+       debug_visual.color = Color(0.65, 0.0, 1.0, 0.35)
 
     var debug_size := Vector2(24, 24)
+    var debug_position := Vector2.ZERO
+    var debug_rotation := 0.0
 
-    if attack_collision != null and attack_collision.shape != null:
-        if attack_collision.shape is RectangleShape2D:
-            var rectangle_shape := attack_collision.shape as RectangleShape2D
-            debug_size = rectangle_shape.size
-        elif attack_collision.shape is CircleShape2D:
-            var circle_shape := attack_collision.shape as CircleShape2D
-            debug_size = Vector2(circle_shape.radius * 2.0, circle_shape.radius * 2.0)
+    if attack_collision != null:
+        debug_position = attack_collision.position
+        debug_rotation = attack_collision.rotation
+
+        if attack_collision.shape != null:
+            if attack_collision.shape is RectangleShape2D:
+                var rectangle_shape := attack_collision.shape as RectangleShape2D
+                debug_size = rectangle_shape.size
+            elif attack_collision.shape is CircleShape2D:
+                var circle_shape := attack_collision.shape as CircleShape2D
+                debug_size = Vector2(circle_shape.radius * 2.0, circle_shape.radius * 2.0)
+            elif attack_collision.shape is CapsuleShape2D:
+                var capsule_shape := attack_collision.shape as CapsuleShape2D
+                debug_size = Vector2(capsule_shape.radius * 2.0, capsule_shape.height)
 
     var half_size := debug_size * 0.5
 
@@ -300,8 +358,8 @@ func _show_debug_attack_visual(attack_area: Area2D, attack_collision: CollisionS
         Vector2(-half_size.x, half_size.y)
     ])
 
-    debug_visual.position = Vector2.ZERO
-    debug_visual.rotation = 0.0
+    debug_visual.position = debug_position
+    debug_visual.rotation = debug_rotation
     debug_visual.visible = true
 
 

@@ -1,11 +1,7 @@
 [gd_scene format=3 uid="uid://bpapdn74pq4la"]
 
 [ext_resource type="Script" uid="uid://piqrssdi1ltw" path="res://scripts/enemies/monster.gd" id="1_4ibsn"]
-[ext_resource type="Texture2D" uid="uid://byhgpf41l3o0" path="res://art/Assets/New sprites for replacements/minor earth elemental.png" id="2_3yx03"]
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_1hs57"]
-atlas = ExtResource("2_3yx03")
-region = Rect2(96, 96, 48, 48)
+[ext_resource type="Texture2D" uid="uid://byhgpf41l3o0" path="res://art/Assets/Game Sprite Collection New/HIJKLMN/minor earth elemental.png" id="2_3yx03"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_jo8lw"]
 atlas = ExtResource("2_3yx03")
@@ -89,14 +85,6 @@ region = Rect2(144, 0, 48, 48)
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_oxsjp"]
 animations = [{
-"frames": [{
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_1hs57")
-}],
-"loop": true,
-"name": &"attack",
-"speed": 5.0
-}, {
 "frames": [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_jo8lw")
@@ -232,7 +220,7 @@ slam_cooldown = 1.5
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=1158242322]
 sprite_frames = SubResource("SpriteFrames_oxsjp")
-animation = &"idle_up"
+animation = &"idle_down"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=294619965]
 visible = false
