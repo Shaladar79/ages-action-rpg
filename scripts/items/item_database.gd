@@ -211,6 +211,8 @@ static func get_weapon_mastery_id(item_id: String) -> String:
 
     return item_id.strip_edges()
 
+
+
 static func get_weapon_attack_visual_texture_path(item_id: String) -> String:
     var item_data := get_item_data(item_id)
 
