@@ -87,6 +87,42 @@ func get_save_slot_rows() -> Array[Dictionary]:
 
     return rows
 
+func delete_save_file(save_file_id: String) -> bool:
+    var clean_file_id := save_file_id.strip_edges()
+
+    if clean_file_id == "":
+        return false
+
+    if clean_file_id == LEGACY_SAVE_FILE_ID:
+        if not FileAccess.file_exists(SAVE_FILE_PATH):
+            return false
+
+        var legacy_result := DirAccess.remove_absolute(SAVE_FILE_PATH)
+
+        if legacy_result != OK:
+            push_warning("Could not delete legacy save file: " + SAVE_FILE_PATH)
+            return false
+
+        print("Deleted legacy save file.")
+        return true
+
+    var save_file_path := _get_save_file_path(clean_file_id)
+
+    if not FileAccess.file_exists(save_file_path):
+        _remove_save_index_entry(clean_file_id)
+        print("Save file was missing, removed stale index entry: ", clean_file_id)
+        return true
+
+    var result := DirAccess.remove_absolute(save_file_path)
+
+    if result != OK:
+        push_warning("Could not delete save file: " + save_file_path)
+        return false
+
+    _remove_save_index_entry(clean_file_id)
+
+    print("Deleted save file: ", clean_file_id)
+    return true
 
 func get_latest_save_file_id() -> String:
     var rows := get_save_slot_rows()
@@ -972,7 +1008,30 @@ func _upsert_save_index_entry(save_data: Dictionary) -> void:
     save_index["slots"] = slots
     _save_save_index(save_index)
 
+func _remove_save_index_entry(save_file_id: String) -> void:
+    var clean_file_id := save_file_id.strip_edges()
 
+    if clean_file_id == "":
+        return
+
+    var save_index := _load_save_index()
+    var slots: Array = save_index.get("slots", [])
+    var updated_slots: Array = []
+
+    for slot in slots:
+        if typeof(slot) != TYPE_DICTIONARY:
+            continue
+
+        var existing_file_id := str(slot.get("file_id", "")).strip_edges()
+
+        if existing_file_id == clean_file_id:
+            continue
+
+        updated_slots.append(slot)
+
+    save_index["slots"] = updated_slots
+    _save_save_index(save_index)
+    
 func _find_save_file_id_by_display_name(display_name: String) -> String:
     var clean_display_name := display_name.strip_edges()
 

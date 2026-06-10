@@ -9,10 +9,15 @@ var load_saves_panel: Panel = null
 var load_saves_list: VBoxContainer = null
 var close_load_saves_button: Button = null
 
+var delete_save_confirm_dialog: ConfirmationDialog = null
+var pending_delete_save_file_id: String = ""
+var pending_delete_save_display_name: String = ""
+
 
 func _ready() -> void:
     _hide_game_ui_autoload()
     _create_load_saves_panel()
+    _create_delete_save_confirm_dialog()
 
     if not new_game_button.pressed.is_connected(_on_new_game_button_pressed):
         new_game_button.pressed.connect(_on_new_game_button_pressed)
@@ -135,6 +140,29 @@ func _create_load_saves_panel() -> void:
     vbox.add_child(close_load_saves_button)
 
 
+func _create_delete_save_confirm_dialog() -> void:
+    if delete_save_confirm_dialog != null:
+        return
+
+    delete_save_confirm_dialog = ConfirmationDialog.new()
+    delete_save_confirm_dialog.name = "DeleteSaveConfirmDialog"
+    delete_save_confirm_dialog.title = "Delete Save File"
+    delete_save_confirm_dialog.dialog_text = "Are you sure you wish to delete this save file?"
+    delete_save_confirm_dialog.exclusive = true
+    add_child(delete_save_confirm_dialog)
+
+    delete_save_confirm_dialog.confirmed.connect(_on_delete_save_confirmed)
+
+    var ok_button := delete_save_confirm_dialog.get_ok_button()
+    var cancel_button := delete_save_confirm_dialog.get_cancel_button()
+
+    if ok_button != null:
+        ok_button.text = "Yes, Delete"
+
+    if cancel_button != null:
+        cancel_button.text = "No"
+
+
 func _refresh_load_saves_panel() -> void:
     if load_saves_list == null:
         return
@@ -161,10 +189,16 @@ func _refresh_load_saves_panel() -> void:
         var level := int(save_row.get("level", 0))
         var saved_at := str(save_row.get("saved_at", ""))
 
+        var row := HBoxContainer.new()
+        row.name = "LoadSaveRow_" + file_id
+        row.custom_minimum_size = Vector2(560.0, 54.0)
+        row.add_theme_constant_override("separation", 8)
+
         var button := Button.new()
         button.name = "LoadSaveButton_" + file_id
         button.focus_mode = Control.FOCUS_NONE
-        button.custom_minimum_size = Vector2(560.0, 54.0)
+        button.custom_minimum_size = Vector2(500.0, 54.0)
+        button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 
         var button_text := display_name
 
@@ -180,13 +214,56 @@ func _refresh_load_saves_panel() -> void:
         button.text = button_text
         button.pressed.connect(_on_save_slot_pressed.bind(file_id))
 
-        load_saves_list.add_child(button)
+        var delete_button := Button.new()
+        delete_button.name = "DeleteSaveButton_" + file_id
+        delete_button.text = "🗑"
+        delete_button.tooltip_text = "Delete save file"
+        delete_button.focus_mode = Control.FOCUS_NONE
+        delete_button.custom_minimum_size = Vector2(48.0, 54.0)
+        delete_button.pressed.connect(_on_delete_save_button_pressed.bind(file_id, display_name))
+
+        row.add_child(button)
+        row.add_child(delete_button)
+
+        load_saves_list.add_child(row)
 
 
 func _on_save_slot_pressed(save_file_id: String) -> void:
     print("Loading save file id: ", save_file_id)
     _show_game_ui_autoload()
     SaveManager.load_game_from_menu(save_file_id)
+
+
+func _on_delete_save_button_pressed(save_file_id: String, save_display_name: String) -> void:
+    pending_delete_save_file_id = save_file_id
+    pending_delete_save_display_name = save_display_name
+
+    if delete_save_confirm_dialog == null:
+        return
+
+    delete_save_confirm_dialog.dialog_text = "Are you sure you wish to delete this save file?\n\n" + save_display_name
+    delete_save_confirm_dialog.popup_centered()
+
+
+func _on_delete_save_confirmed() -> void:
+    if pending_delete_save_file_id.strip_edges() == "":
+        return
+
+    var deleted := SaveManager.delete_save_file(pending_delete_save_file_id)
+
+    if deleted:
+        print("Deleted save from load menu: ", pending_delete_save_file_id)
+    else:
+        push_warning("Failed to delete save from load menu: " + pending_delete_save_file_id)
+
+    pending_delete_save_file_id = ""
+    pending_delete_save_display_name = ""
+
+    _refresh_load_saves_panel()
+    _update_load_button()
+
+    if not SaveManager.has_save_file():
+        load_saves_panel.visible = false
 
 
 func _on_close_load_saves_pressed() -> void:
