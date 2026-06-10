@@ -4,6 +4,7 @@ const PlayerInventoryComponentScript = preload("res://scripts/player/components/
 const PlayerEquipmentComponentScript = preload("res://scripts/player/components/player_equipment_component.gd")
 const PlayerCurrencyComponentScript = preload("res://scripts/player/components/player_currency_component.gd")
 const PlayerStatusComponentScript = preload("res://scripts/player/components/player_status_component.gd")
+const PlayerRangedComponentScript = preload("res://scripts/player/components/player_ranged_component.gd")
 
 const HOTBAR_SLOT_COUNT: int = 8
 const STARTING_ARMOR_ID: String = "grass_tunic"
@@ -63,6 +64,7 @@ var inventory_component: PlayerInventoryComponent = null
 var equipment_component: PlayerEquipmentComponent = null
 var currency_component: PlayerCurrencyComponent = null
 var status_component: PlayerStatusComponent = null
+var ranged_component: PlayerRangedComponent = null
 
 @export_group("Spell Casting")
 @export var spell_projectile_speed: float = 260.0
@@ -90,6 +92,9 @@ func _ready() -> void:
 
     status_component = PlayerStatusComponentScript.new()
     status_component.setup(self)
+
+    ranged_component = PlayerRangedComponentScript.new()
+    ranged_component.setup(self)
 
     _initialize_hotbar_slots()
     _initialize_currencies()
@@ -1573,86 +1578,27 @@ func _try_interact() -> void:
 
 
 func _try_ranged_attack() -> void:
-    if is_defeated:
+    if ranged_component == null:
         return
 
-    if is_dialogue_active():
-        return
-
-    if is_attacking:
-        return
-
-    if cooldown_timer > 0.0:
-        return
-
-    if character_stats.equipped_ranged_weapon_id.strip_edges() == "":
-        print("No ranged weapon equipped.")
-        return
-
-    var ranged_weapon_id := character_stats.equipped_ranged_weapon_id
-
-    if ItemDatabase.weapon_requires_ammo(ranged_weapon_id):
-        var ammo_item_id := ItemDatabase.get_weapon_ammo_item_id(ranged_weapon_id)
-        var ammo_per_shot := ItemDatabase.get_weapon_ammo_per_shot(ranged_weapon_id)
-
-        if ammo_item_id.strip_edges() == "":
-            print("Ranged weapon requires ammo but has no ammo item id: ", ranged_weapon_id)
-            return
-
-        if not _has_inventory_quantity(ammo_item_id, ammo_per_shot):
-            print("No ammo for ranged weapon. Need: ", ItemDatabase.get_item_name(ammo_item_id))
-            return
-
-        var removed_ammo := remove_inventory_item(ammo_item_id, ammo_per_shot)
-
-        if not removed_ammo:
-            print("Failed to remove ammo for ranged weapon.")
-            return
-
-    _fire_ranged_weapon_projectile(ranged_weapon_id)
-
-    cooldown_timer = ranged_attack_cooldown
-    print("Player fired ranged weapon: ", ItemDatabase.get_item_name(ranged_weapon_id))
+    ranged_component.try_ranged_attack()
 
 
 func _fire_ranged_weapon_projectile(ranged_weapon_id: String) -> void:
-    var cast_direction := _get_last_direction_vector()
+    if ranged_component == null:
+        return
 
-    if cast_direction == Vector2.ZERO:
-        cast_direction = Vector2.DOWN
-
-    var projectile := PlayerRangedProjectile.new()
-    projectile.name = "PlayerRangedProjectile"
-
-    var spawn_offset := ItemDatabase.get_weapon_projectile_spawn_offset(ranged_weapon_id)
-    projectile.global_position = global_position + (cast_direction.normalized() * spawn_offset)
-    projectile.collision_layer = ranged_projectile_collision_layer
-    projectile.collision_mask = ranged_projectile_collision_mask
-
-    projectile.setup(
-        self,
-        cast_direction,
-        get_ranged_attack_damage(),
-        character_stats.get_equipped_ranged_weapon_damage_types(),
-        ItemDatabase.get_weapon_projectile_speed(ranged_weapon_id),
-        ItemDatabase.get_weapon_projectile_range(ranged_weapon_id),
-        ItemDatabase.get_weapon_projectile_hit_radius(ranged_weapon_id),
-        ItemDatabase.get_weapon_projectile_color(ranged_weapon_id)
-    )
-
-    var current_scene := get_tree().current_scene
-
-    if current_scene != null:
-        current_scene.add_child(projectile)
-    else:
-        get_parent().add_child(projectile)
+    ranged_component.fire_ranged_weapon_projectile(ranged_weapon_id)
 
 
 func _has_inventory_quantity(item_id: String, required_quantity: int) -> bool:
-    if inventory_component == null:
-        return false
+    if ranged_component == null:
+        if inventory_component == null:
+            return false
 
-    return inventory_component.has_inventory_quantity(item_id, required_quantity)
+        return inventory_component.has_inventory_quantity(item_id, required_quantity)
+
+    return ranged_component.has_inventory_quantity(item_id, required_quantity)
 
 
 func _try_attack() -> void:
