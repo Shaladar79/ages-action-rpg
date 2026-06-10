@@ -2,6 +2,7 @@ extends CharacterBody2D
 
 const PlayerInventoryComponentScript = preload("res://scripts/player/components/player_inventory_component.gd")
 const PlayerEquipmentComponentScript = preload("res://scripts/player/components/player_equipment_component.gd")
+const PlayerCurrencyComponentScript = preload("res://scripts/player/components/player_currency_component.gd")
 
 const HOTBAR_SLOT_COUNT: int = 8
 const STARTING_ARMOR_ID: String = "grass_tunic"
@@ -59,6 +60,7 @@ var active_status_effects: Dictionary = {}
 
 var inventory_component: PlayerInventoryComponent = null
 var equipment_component: PlayerEquipmentComponent = null
+var currency_component: PlayerCurrencyComponent = null
 
 @export_group("Spell Casting")
 @export var spell_projectile_speed: float = 260.0
@@ -75,11 +77,11 @@ var equipment_component: PlayerEquipmentComponent = null
 func _ready() -> void:
     add_to_group("player")
 
-    inventory_component = PlayerInventoryComponentScript.new()
-    inventory_component.setup(self)
-
     equipment_component = PlayerEquipmentComponentScript.new()
     equipment_component.setup(self)
+
+    currency_component = PlayerCurrencyComponentScript.new()
+    currency_component.setup(self)
 
     _initialize_hotbar_slots()
     _initialize_currencies()
@@ -577,129 +579,130 @@ func _is_stackable_inventory_item(item_id: String) -> bool:
 
 
 func _initialize_currencies() -> void:
-    if not currencies.has(CURRENCY_MARKS):
-        currencies[CURRENCY_MARKS] = 0
+    if currency_component == null:
+        if not currencies.has(CURRENCY_MARKS):
+            currencies[CURRENCY_MARKS] = 0
 
-    if not discovered_currency_ids.has(CURRENCY_MARKS):
-        discovered_currency_ids.append(CURRENCY_MARKS)
+        if not discovered_currency_ids.has(CURRENCY_MARKS):
+            discovered_currency_ids.append(CURRENCY_MARKS)
+
+        return
+
+    currency_component.initialize_currencies()
 
 
 func get_currency_display_name(_currency_id: String = CURRENCY_MARKS) -> String:
-    return "Marks"
+    if currency_component == null:
+        return "Marks"
+
+    return currency_component.get_currency_display_name(_currency_id)
 
 
 func add_marks(amount: int) -> bool:
-    if is_defeated:
+    if currency_component == null:
         return false
 
-    if amount <= 0:
-        return false
-
-    _initialize_currencies()
-
-    var current_amount: int = int(currencies.get(CURRENCY_MARKS, 0))
-    currencies[CURRENCY_MARKS] = current_amount + amount
-
-    _discover_currency(CURRENCY_MARKS)
-
-    print("Added Marks: +", amount)
-    print("Marks total: ", currencies[CURRENCY_MARKS])
-
-    _show_reward_notification("Received: " + str(amount) + " Marks")
-    _notify_ui_stats_changed()
-
-    return true
+    return currency_component.add_marks(amount)
 
 
 func spend_marks(amount: int) -> bool:
-    if amount <= 0:
+    if currency_component == null:
         return false
 
-    _initialize_currencies()
-
-    var current_amount: int = int(currencies.get(CURRENCY_MARKS, 0))
-
-    if current_amount < amount:
-        return false
-
-    currencies[CURRENCY_MARKS] = current_amount - amount
-
-    print("Spent Marks: -", amount)
-    print("Marks total: ", currencies[CURRENCY_MARKS])
-
-    _notify_ui_stats_changed()
-
-    return true
+    return currency_component.spend_marks(amount)
 
 
 func get_marks() -> int:
-    _initialize_currencies()
-    return int(currencies.get(CURRENCY_MARKS, 0))
+    if currency_component == null:
+        _initialize_currencies()
+        return int(currencies.get(CURRENCY_MARKS, 0))
+
+    return currency_component.get_marks()
 
 
 func add_currency(_currency_id: String, amount: int) -> bool:
-    return add_marks(amount)
+    if currency_component == null:
+        return add_marks(amount)
+
+    return currency_component.add_currency(_currency_id, amount)
 
 
 func spend_currency(_currency_id: String, amount: int) -> bool:
-    return spend_marks(amount)
+    if currency_component == null:
+        return spend_marks(amount)
+
+    return currency_component.spend_currency(_currency_id, amount)
 
 
 func get_currency_amount(_currency_id: String = CURRENCY_MARKS) -> int:
-    return get_marks()
+    if currency_component == null:
+        return get_marks()
+
+    return currency_component.get_currency_amount(_currency_id)
 
 
 func is_currency_discovered(_currency_id: String = CURRENCY_MARKS) -> bool:
-    _initialize_currencies()
-    return true
+    if currency_component == null:
+        _initialize_currencies()
+        return true
+
+    return currency_component.is_currency_discovered(_currency_id)
 
 
 func _discover_currency(_currency_id: String) -> void:
-    _initialize_currencies()
-
-    if discovered_currency_ids.has(CURRENCY_MARKS):
+    if currency_component == null:
+        _initialize_currencies()
         return
 
-    discovered_currency_ids.append(CURRENCY_MARKS)
-    print("Currency discovered: Marks")
+    currency_component.discover_currency(_currency_id)
 
 
 func get_discovered_currency_rows() -> Array[Dictionary]:
-    _initialize_currencies()
+    if currency_component == null:
+        _initialize_currencies()
 
-    return [
-        {
-            "id": CURRENCY_MARKS,
-            "name": "Marks",
-            "amount": get_marks()
-        }
-    ]
+        return [
+            {
+                "id": CURRENCY_MARKS,
+                "name": "Marks",
+                "amount": get_marks()
+            }
+        ]
+
+    return currency_component.get_discovered_currency_rows()
 
 
 func get_currency_save_data() -> Dictionary:
-    _initialize_currencies()
+    if currency_component == null:
+        _initialize_currencies()
 
-    return {
-        "currencies": currencies.duplicate(true),
-        "discovered_currency_ids": discovered_currency_ids.duplicate()
-    }
+        return {
+            "currencies": currencies.duplicate(true),
+            "discovered_currency_ids": discovered_currency_ids.duplicate()
+        }
+
+    return currency_component.get_currency_save_data()
 
 
 func set_currency_save_data(saved_currency_data: Dictionary) -> void:
-    currencies.clear()
-    discovered_currency_ids.clear()
+    if currency_component == null:
+        currencies.clear()
+        discovered_currency_ids.clear()
 
-    var total_marks: int = 0
-    var saved_currencies: Dictionary = saved_currency_data.get("currencies", {})
+        var total_marks: int = 0
+        var saved_currencies: Dictionary = saved_currency_data.get("currencies", {})
 
-    for currency_id in saved_currencies.keys():
-        total_marks += int(saved_currencies.get(currency_id, 0))
+        for currency_id in saved_currencies.keys():
+            total_marks += int(saved_currencies.get(currency_id, 0))
 
-    currencies[CURRENCY_MARKS] = maxi(0, total_marks)
-    discovered_currency_ids.append(CURRENCY_MARKS)
+        currencies[CURRENCY_MARKS] = maxi(0, total_marks)
+        discovered_currency_ids.append(CURRENCY_MARKS)
 
-    print("Currency save data loaded as Marks. Total Marks: ", currencies[CURRENCY_MARKS])
-    _notify_ui_stats_changed()
+        print("Currency save data loaded as Marks. Total Marks: ", currencies[CURRENCY_MARKS])
+        _notify_ui_stats_changed()
+        return
+
+    currency_component.set_currency_save_data(saved_currency_data)
 
 
 func equip_melee_weapon(item_id: String) -> bool:
