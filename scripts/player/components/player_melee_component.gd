@@ -118,17 +118,47 @@ func show_weapon_sprite_for_attack() -> void:
     if weapon_sprite == null:
         return
 
-    if player.has_method("has_equipped_weapon"):
-        if not player.has_equipped_weapon():
-            hide_weapon_sprite()
-            return
+    # Temporary first-pass behavior:
+    # Do not show a weapon image until we have real equipped weapon sprites.
+    # The melee hitbox still turns on through enable_attack_hitbox().
+    hide_weapon_sprite()
 
-    weapon_sprite.visible = true
-    weapon_sprite.scale = player.get("weapon_visual_scale")
-    weapon_sprite.flip_h = false
-    weapon_sprite.flip_v = false
+func _get_equipped_melee_weapon_id() -> String:
+    if player == null:
+        return ""
 
-    var weapon_visual_offset: float = float(player.get("weapon_visual_offset"))
+    if player.has_method("get_character_stats"):
+        var stats = player.get_character_stats()
+
+        if stats != null:
+            return str(stats.equipped_melee_weapon_id).strip_edges()
+
+    return ""
+
+
+func _apply_equipped_weapon_attack_texture(weapon_sprite: Sprite2D, equipped_weapon_id: String) -> void:
+    if weapon_sprite == null:
+        return
+
+    var texture_path := ItemDatabase.get_weapon_attack_visual_texture_path(equipped_weapon_id)
+
+    if texture_path.strip_edges() == "":
+        return
+
+    if not ResourceLoader.exists(texture_path):
+        push_warning("Weapon attack visual texture path does not exist: " + texture_path)
+        return
+
+    var loaded_texture := load(texture_path) as Texture2D
+
+    if loaded_texture == null:
+        push_warning("Weapon attack visual texture failed to load: " + texture_path)
+        return
+
+    weapon_sprite.texture = loaded_texture
+
+
+func _position_weapon_sprite_swing(weapon_sprite: Sprite2D, weapon_visual_offset: float) -> void:
     var last_direction: String = str(player.get("last_direction"))
 
     match last_direction:
@@ -149,6 +179,49 @@ func show_weapon_sprite_for_attack() -> void:
             weapon_sprite.rotation_degrees = 90.0
             weapon_sprite.z_index = 10
 
+
+func _position_weapon_sprite_thrust(weapon_sprite: Sprite2D, weapon_visual_offset: float) -> void:
+    var last_direction: String = str(player.get("last_direction"))
+
+    match last_direction:
+        "down":
+            weapon_sprite.position = Vector2(0, weapon_visual_offset)
+            weapon_sprite.rotation_degrees = 180.0
+            weapon_sprite.z_index = 10
+        "up":
+            weapon_sprite.position = Vector2(0, -weapon_visual_offset)
+            weapon_sprite.rotation_degrees = 0.0
+            weapon_sprite.z_index = -1
+        "left":
+            weapon_sprite.position = Vector2(-weapon_visual_offset, 0)
+            weapon_sprite.rotation_degrees = -90.0
+            weapon_sprite.z_index = 10
+        "right":
+            weapon_sprite.position = Vector2(weapon_visual_offset, 0)
+            weapon_sprite.rotation_degrees = 90.0
+            weapon_sprite.z_index = 10
+
+
+func _position_weapon_sprite_raise(weapon_sprite: Sprite2D, weapon_visual_offset: float) -> void:
+    var last_direction: String = str(player.get("last_direction"))
+
+    match last_direction:
+        "down":
+            weapon_sprite.position = Vector2(0, weapon_visual_offset * 0.5)
+            weapon_sprite.rotation_degrees = 0.0
+            weapon_sprite.z_index = 10
+        "up":
+            weapon_sprite.position = Vector2(0, -weapon_visual_offset)
+            weapon_sprite.rotation_degrees = 0.0
+            weapon_sprite.z_index = 10
+        "left":
+            weapon_sprite.position = Vector2(-weapon_visual_offset * 0.75, -weapon_visual_offset * 0.5)
+            weapon_sprite.rotation_degrees = 0.0
+            weapon_sprite.z_index = 10
+        "right":
+            weapon_sprite.position = Vector2(weapon_visual_offset * 0.75, -weapon_visual_offset * 0.5)
+            weapon_sprite.rotation_degrees = 0.0
+            weapon_sprite.z_index = 10
 
 func hide_weapon_sprite() -> void:
     if player == null:
@@ -173,6 +246,7 @@ func enable_attack_hitbox() -> void:
         attack_area.monitoring = true
         attack_area.monitorable = true
         attack_area.visible = true
+        _show_debug_attack_visual(attack_area, attack_collision)
 
     if attack_collision != null:
         attack_collision.disabled = false
@@ -189,10 +263,58 @@ func disable_attack_hitbox() -> void:
         attack_area.monitoring = false
         attack_area.monitorable = false
         attack_area.visible = false
+        _hide_debug_attack_visual(attack_area)
 
     if attack_collision != null:
         attack_collision.disabled = true
 
+func _show_debug_attack_visual(attack_area: Area2D, attack_collision: CollisionShape2D) -> void:
+    if attack_area == null:
+        return
+
+    var debug_visual := attack_area.get_node_or_null("AttackDebugVisual") as Polygon2D
+
+    if debug_visual == null:
+        debug_visual = Polygon2D.new()
+        debug_visual.name = "AttackDebugVisual"
+        debug_visual.color = Color(1.0, 0.0, 0.0, 0.35)
+        debug_visual.z_index = 100
+        attack_area.add_child(debug_visual)
+
+    var debug_size := Vector2(24, 24)
+
+    if attack_collision != null and attack_collision.shape != null:
+        if attack_collision.shape is RectangleShape2D:
+            var rectangle_shape := attack_collision.shape as RectangleShape2D
+            debug_size = rectangle_shape.size
+        elif attack_collision.shape is CircleShape2D:
+            var circle_shape := attack_collision.shape as CircleShape2D
+            debug_size = Vector2(circle_shape.radius * 2.0, circle_shape.radius * 2.0)
+
+    var half_size := debug_size * 0.5
+
+    debug_visual.polygon = PackedVector2Array([
+        Vector2(-half_size.x, -half_size.y),
+        Vector2(half_size.x, -half_size.y),
+        Vector2(half_size.x, half_size.y),
+        Vector2(-half_size.x, half_size.y)
+    ])
+
+    debug_visual.position = Vector2.ZERO
+    debug_visual.rotation = 0.0
+    debug_visual.visible = true
+
+
+func _hide_debug_attack_visual(attack_area: Area2D) -> void:
+    if attack_area == null:
+        return
+
+    var debug_visual := attack_area.get_node_or_null("AttackDebugVisual") as Polygon2D
+
+    if debug_visual == null:
+        return
+
+    debug_visual.visible = false
 
 func on_attack_area_entered(area: Area2D) -> void:
     if area == null:

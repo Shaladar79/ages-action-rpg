@@ -211,6 +211,46 @@ static func get_weapon_mastery_id(item_id: String) -> String:
 
     return item_id.strip_edges()
 
+static func get_weapon_attack_visual_texture_path(item_id: String) -> String:
+    var item_data := get_item_data(item_id)
+
+    if item_data.is_empty():
+        return ""
+
+    return str(item_data.get("attack_visual_texture_path", "")).strip_edges()
+
+
+static func get_weapon_attack_visual_type(item_id: String) -> String:
+    var item_data := get_item_data(item_id)
+
+    if item_data.is_empty():
+        return "swing"
+
+    return str(item_data.get("attack_visual_type", "swing")).strip_edges()
+
+
+static func get_weapon_attack_visual_offset(item_id: String, fallback_offset: float = 22.0) -> float:
+    var item_data := get_item_data(item_id)
+
+    if item_data.is_empty():
+        return fallback_offset
+
+    return float(item_data.get("attack_visual_offset", fallback_offset))
+
+
+static func get_weapon_attack_visual_scale(item_id: String, fallback_scale: Vector2 = Vector2(1.0, 1.0)) -> Vector2:
+    var item_data := get_item_data(item_id)
+
+    if item_data.is_empty():
+        return fallback_scale
+
+    var stored_scale = item_data.get("attack_visual_scale", fallback_scale)
+
+    if stored_scale is Vector2:
+        return stored_scale
+
+    return fallback_scale
+
 static func get_weapon_projectile_color(item_id: String) -> Color:
     var item_data := get_item_data(item_id)
 

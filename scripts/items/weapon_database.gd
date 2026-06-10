@@ -5,6 +5,10 @@ const ITEM_STONE_CLUB: String = "club"
 const ITEM_SLING: String = "sling"
 const ITEM_SLING_AMMO: String = "sling_ammo"
 
+const ATTACK_VISUAL_TYPE_SWING: String = "swing"
+const ATTACK_VISUAL_TYPE_THRUST: String = "thrust"
+const ATTACK_VISUAL_TYPE_RAISE: String = "raise"
+
 
 static func get_item_data(item_id: String) -> Dictionary:
     match item_id:
@@ -23,11 +27,21 @@ static func get_item_data(item_id: String) -> Dictionary:
 
                 "weapon_mastery_id": MasteryDatabase.WEAPON_CLUB,
 
-                "attack_bonus": 1,
+                "attack_bonus": 0,
                 "damage_types": DamageTypes.BASHING,
 
                 "required_for_breakables": true,
-                "breakable_tool_tag": "club"
+                "breakable_tool_tag": "club",
+
+                # First-pass melee attack visual data.
+                # Leave texture path empty to use the current WeaponSprite texture as fallback.
+                # Later, replace this with your real weapon attack image path.
+                # Example:
+                # "attack_visual_texture_path": "res://assets/weapons/club_attack.png",
+                "attack_visual_texture_path": "",
+                "attack_visual_type": ATTACK_VISUAL_TYPE_SWING,
+                "attack_visual_offset": 22.0,
+                "attack_visual_scale": Vector2(1.0, 1.0)
             }
 
         ITEM_SLING:
@@ -45,7 +59,7 @@ static func get_item_data(item_id: String) -> Dictionary:
 
                 "weapon_mastery_id": MasteryDatabase.WEAPON_SLING,
 
-                "attack_bonus": 1,
+                "attack_bonus": 0,
                 "damage_types": DamageTypes.BASHING,
 
                 "requires_ammo": true,
