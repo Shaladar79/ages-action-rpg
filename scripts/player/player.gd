@@ -3,6 +3,7 @@ extends CharacterBody2D
 const PlayerInventoryComponentScript = preload("res://scripts/player/components/player_inventory_component.gd")
 const PlayerEquipmentComponentScript = preload("res://scripts/player/components/player_equipment_component.gd")
 const PlayerCurrencyComponentScript = preload("res://scripts/player/components/player_currency_component.gd")
+const PlayerStatusComponentScript = preload("res://scripts/player/components/player_status_component.gd")
 
 const HOTBAR_SLOT_COUNT: int = 8
 const STARTING_ARMOR_ID: String = "grass_tunic"
@@ -61,6 +62,7 @@ var active_status_effects: Dictionary = {}
 var inventory_component: PlayerInventoryComponent = null
 var equipment_component: PlayerEquipmentComponent = null
 var currency_component: PlayerCurrencyComponent = null
+var status_component: PlayerStatusComponent = null
 
 @export_group("Spell Casting")
 @export var spell_projectile_speed: float = 260.0
@@ -77,11 +79,17 @@ var currency_component: PlayerCurrencyComponent = null
 func _ready() -> void:
     add_to_group("player")
 
+    inventory_component = PlayerInventoryComponentScript.new()
+    inventory_component.setup(self)
+
     equipment_component = PlayerEquipmentComponentScript.new()
     equipment_component.setup(self)
 
     currency_component = PlayerCurrencyComponentScript.new()
     currency_component.setup(self)
+
+    status_component = PlayerStatusComponentScript.new()
+    status_component.setup(self)
 
     _initialize_hotbar_slots()
     _initialize_currencies()
@@ -248,85 +256,76 @@ func get_current_attack_cooldown() -> float:
 
 
 func apply_status_effect(status_id: String, duration: float, effect_data: Dictionary = {}) -> bool:
-    if is_defeated:
-        return false
+    if status_component == null:
+        if is_defeated:
+            return false
 
-    var applied := StatusEffects.apply_status_effect(active_status_effects, status_id, duration, effect_data)
+        var applied := StatusEffects.apply_status_effect(active_status_effects, status_id, duration, effect_data)
 
-    if applied:
-        print("Player status applied/refreshed: ", status_id, " duration: ", duration)
+        if applied:
+            print("Player status applied/refreshed: ", status_id, " duration: ", duration)
 
-    return applied
+        return applied
+
+    return status_component.apply_status_effect(status_id, duration, effect_data)
 
 
 func remove_status_effect(status_id: String) -> bool:
-    var removed := StatusEffects.remove_status_effect(active_status_effects, status_id)
+    if status_component == null:
+        var removed := StatusEffects.remove_status_effect(active_status_effects, status_id)
 
-    if removed:
-        print("Player status removed: ", status_id)
+        if removed:
+            print("Player status removed: ", status_id)
 
-    return removed
+        return removed
+
+    return status_component.remove_status_effect(status_id)
 
 
 func has_status_effect(status_id: String) -> bool:
-    return StatusEffects.has_status_effect(active_status_effects, status_id)
+    if status_component == null:
+        return StatusEffects.has_status_effect(active_status_effects, status_id)
+
+    return status_component.has_status_effect(status_id)
 
 
 func _update_status_effects(delta: float) -> void:
-    var update_result := StatusEffects.update_status_effects(active_status_effects, delta)
+    if status_component == null:
+        return
 
-    var tick_events: Array = update_result.get("tick_events", [])
-
-    for tick_event in tick_events:
-        if typeof(tick_event) != TYPE_DICTIONARY:
-            continue
-
-        var damage_amount: int = int(tick_event.get("damage_amount", 0))
-        var damage_types: int = int(tick_event.get("damage_types", DamageTypes.NONE))
-        var status_id: String = str(tick_event.get("status_id", ""))
-
-        if damage_amount <= 0:
-            continue
-
-        print("Player status tick: ", status_id, " damage: ", damage_amount)
-        var ignore_defense: bool = bool(tick_event.get("ignore_defense", false))
-
-        if ignore_defense:
-            take_status_tick_damage(damage_amount, damage_types)
-        else:
-            take_damage_with_types(damage_amount, damage_types)
-
-    var expired_status_ids: Array = update_result.get("expired_status_ids", [])
-
-    for status_id in expired_status_ids:
-        print("Player status expired: ", status_id)
+    status_component.update_status_effects(delta)
 
 
 func take_status_tick_damage(incoming_damage: int, incoming_damage_types: int = DamageTypes.NONE) -> void:
-    if is_defeated:
+    if status_component == null:
+        if is_defeated:
+            return
+
+        if incoming_damage <= 0:
+            return
+
+        if incoming_damage_types != DamageTypes.NONE and _is_resistant_to_damage_types(incoming_damage_types):
+            print("Status tick negated by resistance: ", DamageTypes.get_damage_type_names(incoming_damage_types))
+            return
+
+        character_stats.current_health -= incoming_damage
+        character_stats.current_health = maxi(character_stats.current_health, 0)
+
+        print("Player took status tick damage: ", incoming_damage)
+
+        if incoming_damage_types != DamageTypes.NONE:
+            print("Status tick damage types: ", DamageTypes.get_damage_type_names(incoming_damage_types))
+
+        print("Player HP: ", character_stats.current_health, " / ", character_stats.max_health)
+
+        _notify_ui_stats_changed()
+
+        if character_stats.current_health <= 0:
+            _on_player_defeated()
+
         return
 
-    if incoming_damage <= 0:
-        return
-
-    if incoming_damage_types != DamageTypes.NONE and _is_resistant_to_damage_types(incoming_damage_types):
-        print("Status tick negated by resistance: ", DamageTypes.get_damage_type_names(incoming_damage_types))
-        return
-
-    character_stats.current_health -= incoming_damage
-    character_stats.current_health = maxi(character_stats.current_health, 0)
-
-    print("Player took status tick damage: ", incoming_damage)
-
-    if incoming_damage_types != DamageTypes.NONE:
-        print("Status tick damage types: ", DamageTypes.get_damage_type_names(incoming_damage_types))
-
-    print("Player HP: ", character_stats.current_health, " / ", character_stats.max_health)
-
-    _notify_ui_stats_changed()
-
-    if character_stats.current_health <= 0:
-        _on_player_defeated()
+    status_component.take_status_tick_damage(incoming_damage, incoming_damage_types)
 
 
 func gain_xp(amount: int) -> bool:
