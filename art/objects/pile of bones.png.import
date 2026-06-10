@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cds8kwm0dh2ul"
-path="res://.godot/imported/Preview_Monsters_037_042 - Copy.png-37945e636ee5729bf1931ec2b5ccc8d4.ctex"
+uid="uid://cn5ip8iq4q0tj"
+path="res://.godot/imported/pile of bones.png-0e04d38a2d15cd2d705783fd6bf74e27.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://art/Assets/RPG Monsters Mega Pack/Preview_Monsters_037_042 - Copy.png"
-dest_files=["res://.godot/imported/Preview_Monsters_037_042 - Copy.png-37945e636ee5729bf1931ec2b5ccc8d4.ctex"]
+source_file="res://art/objects/pile of bones.png"
+dest_files=["res://.godot/imported/pile of bones.png-0e04d38a2d15cd2d705783fd6bf74e27.ctex"]
 
 [params]
 

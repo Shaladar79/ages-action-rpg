@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://b5wjqm141nbwk"
-path="res://.godot/imported/Preview_Monsters_019_024 - Copy.png-04738e3732efda56ea3cbc68e7654267.ctex"
+uid="uid://cmfoqn3fbur21"
+path="res://.godot/imported/Green_beetle_man.png-9542d7f2f3dcbe1402f2e39245706c7d.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://art/Assets/RPG Monsters Mega Pack/Preview_Monsters_019_024 - Copy.png"
-dest_files=["res://.godot/imported/Preview_Monsters_019_024 - Copy.png-04738e3732efda56ea3cbc68e7654267.ctex"]
+source_file="res://art/Assets/New sprites for replacements/Green_beetle_man.png"
+dest_files=["res://.godot/imported/Green_beetle_man.png-9542d7f2f3dcbe1402f2e39245706c7d.ctex"]
 
 [params]
 

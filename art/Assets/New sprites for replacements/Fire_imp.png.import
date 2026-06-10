@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://drbjyg3rsg3wv"
-path="res://.godot/imported/Preview_Monsters_031_036 - Copy.png-f5c64313137258dd28ea03132f5a1a1e.ctex"
+uid="uid://keaoenrle6u6"
+path="res://.godot/imported/Fire_imp.png-dd4f64aa2a0c380618761dc49968c6e6.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://art/Assets/RPG Monsters Mega Pack/Preview_Monsters_031_036 - Copy.png"
-dest_files=["res://.godot/imported/Preview_Monsters_031_036 - Copy.png-f5c64313137258dd28ea03132f5a1a1e.ctex"]
+source_file="res://art/Assets/New sprites for replacements/Fire_imp.png"
+dest_files=["res://.godot/imported/Fire_imp.png-dd4f64aa2a0c380618761dc49968c6e6.ctex"]
 
 [params]
 

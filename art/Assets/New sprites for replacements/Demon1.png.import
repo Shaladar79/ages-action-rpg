@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dmipq0gfqvab5"
-path="res://.godot/imported/Preview_Monsters_043_048 - Copy.png-b3722c3287c500ac1afd88f1c4255f41.ctex"
+uid="uid://b2hkge2bgi5jb"
+path="res://.godot/imported/Demon1.png-d0133506659f3e79f86407494ca7d2d8.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://art/Assets/RPG Monsters Mega Pack/Preview_Monsters_043_048 - Copy.png"
-dest_files=["res://.godot/imported/Preview_Monsters_043_048 - Copy.png-b3722c3287c500ac1afd88f1c4255f41.ctex"]
+source_file="res://art/Assets/New sprites for replacements/Demon1.png"
+dest_files=["res://.godot/imported/Demon1.png-d0133506659f3e79f86407494ca7d2d8.ctex"]
 
 [params]
 

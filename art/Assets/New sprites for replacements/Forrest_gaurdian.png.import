@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cpj3nky74kh5l"
-path="res://.godot/imported/Preview_Monsters_013_018 - Copy.png-7db721c29131c8329a9965ff1ae8d635.ctex"
+uid="uid://bttlhqn648wei"
+path="res://.godot/imported/Forrest_gaurdian.png-058bc20651bcc6c892901567e49447e6.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://art/Assets/RPG Monsters Mega Pack/Preview_Monsters_013_018 - Copy.png"
-dest_files=["res://.godot/imported/Preview_Monsters_013_018 - Copy.png-7db721c29131c8329a9965ff1ae8d635.ctex"]
+source_file="res://art/Assets/New sprites for replacements/Forrest_gaurdian.png"
+dest_files=["res://.godot/imported/Forrest_gaurdian.png-058bc20651bcc6c892901567e49447e6.ctex"]
 
 [params]
 

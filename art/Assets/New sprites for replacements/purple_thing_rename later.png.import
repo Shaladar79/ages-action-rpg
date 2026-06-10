@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://j1a476pej1aj"
-path="res://.godot/imported/Preview_Monsters_025_030 - Copy.png-b23d3e951f30753d1e0e5578db99cd7e.ctex"
+uid="uid://dbgxdvc7gp1g2"
+path="res://.godot/imported/purple_thing_rename later.png-34310666cb042865325a9f9fce0014ad.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://art/Assets/RPG Monsters Mega Pack/Preview_Monsters_025_030 - Copy.png"
-dest_files=["res://.godot/imported/Preview_Monsters_025_030 - Copy.png-b23d3e951f30753d1e0e5578db99cd7e.ctex"]
+source_file="res://art/Assets/New sprites for replacements/purple_thing_rename later.png"
+dest_files=["res://.godot/imported/purple_thing_rename later.png-34310666cb042865325a9f9fce0014ad.ctex"]
 
 [params]
 
