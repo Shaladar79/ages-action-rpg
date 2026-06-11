@@ -11,183 +11,19 @@
 [ext_resource type="PackedScene" uid="uid://bpapdn74pq4la" path="res://scenes/enemies/StartCavern/StartCavern_Earthling.tscn" id="9_yytj5"]
 [ext_resource type="PackedScene" uid="uid://bglm47en21e7h" path="res://scenes/npcs/RealmVultar/questgivers/EchoSpirit.tscn" id="10_vpebn"]
 [ext_resource type="PackedScene" uid="uid://ds0nibabilemd" path="res://scenes/player/Player.tscn" id="11_vfogo"]
-[ext_resource type="Script" uid="uid://c7moacun6f3ci" path="res://scripts/characters/npcs/BackgroundFiles/npc_movement_event_entry.gd" id="12_g1fv5"]
-[ext_resource type="Resource" uid="uid://brh3cbe1p8qpg" path="res://quests/RealmOfVultar/StarterCavern/starter_push_rock_lesson.tres" id="12_pbla5"]
 [ext_resource type="PackedScene" uid="uid://pyq76iw1lw5d" path="res://scenes/objects/save_totem.tscn" id="13_7iida"]
-[ext_resource type="Resource" uid="uid://mjkj8vwrk34i" path="res://quests/RealmOfVultar/StarterCavern/starter_puzzle_reset_lesson.tres" id="13_g1fv5"]
 [ext_resource type="Script" uid="uid://dt5yvut01s10s" path="res://scripts/core/quests/quest_entry.gd" id="13_wqcy6"]
-[ext_resource type="Script" uid="uid://pomcudkoxce3" path="res://scripts/core/quests/quest_objective_entry.gd" id="14_ayirs"]
 [ext_resource type="PackedScene" uid="uid://clxr5342eb6d" path="res://scenes/objects/questmarkers/QuestProgressArea.tscn" id="14_vpebn"]
-[ext_resource type="Resource" uid="uid://jw5ckppwb6vu" path="res://quests/RealmOfVultar/StarterCavern/starter_hotbar_and_club_lesson.tres" id="14_wqcy6"]
-[ext_resource type="PackedScene" uid="uid://bql24l7sa24cp" path="res://scenes/objects/PuzzleResetStone.tscn" id="14_xv4x6"]
-[ext_resource type="Resource" uid="uid://cu8psvsitohrs" path="res://quests/RealmOfVultar/StarterCavern/starter_breakable_object_lesson.tres" id="15_2ewpr"]
+[ext_resource type="PackedScene" uid="uid://cfios20wgcga" path="res://scenes/items/RepeatObjects/PuzzleResetStone.tscn" id="14_xv4x6"]
 [ext_resource type="PackedScene" uid="uid://cihgogaol4td8" path="res://scenes/objects/map_transition_area.tscn" id="15_ayirs"]
-[ext_resource type="Resource" uid="uid://b5djoprrrtamy" path="res://quests/RealmOfVultar/StarterCavern/starter_save_totem_lesson.tres" id="16_vfogo"]
+[ext_resource type="Resource" uid="uid://dftku7fp24wd6" path="res://quests/RealmOfVultar/StarterCavern/starter_movement_lesson.tres" id="18_g1fv5"]
 [ext_resource type="PackedScene" uid="uid://b81kib11b5cms" path="res://scenes/objects/Containers/LootContainer_pouch.tscn" id="18_ipecf"]
 [ext_resource type="PackedScene" uid="uid://c22k78g2y6kpn" path="res://scenes/objects/BossGateBlocker.tscn" id="18_x63im"]
-[ext_resource type="Resource" uid="uid://4ugpvwmeduaa" path="res://quests/RealmOfVultar/StarterCavern/starter_monster_hunt_lesson.tres" id="21_7iida"]
+[ext_resource type="PackedScene" uid="uid://cmru5ku33sfh4" path="res://scenes/items/RepeatObjects/QuestBlocker.tscn" id="19_wqcy6"]
 [ext_resource type="PackedScene" uid="uid://5qorurcn4toh" path="res://scenes/objects/movemarkers/QuestMoveMarker.tscn" id="22_2ewpr"]
 [ext_resource type="Texture2D" uid="uid://clp6kh04xasj6" path="res://art/Assets/icons/fullcolor/individual_24x24/icon492.png" id="22_vfogo"]
-[ext_resource type="Resource" uid="uid://8ctifvwhbjte" path="res://quests/RealmOfVultar/StarterCavern/starter_cavern_boss_lesson.tres" id="22_xv4x6"]
 [ext_resource type="PackedScene" uid="uid://bivuhglads85l" path="res://scenes/objects/Containers/LootContainer_Club.tscn" id="22_yytj5"]
 [ext_resource type="PackedScene" uid="uid://c4112i5uhavy5" path="res://scenes/objects/BossStuff/BossArenaTrigger.tscn" id="32_ayirs"]
-
-[sub_resource type="Resource" id="Resource_7g80t"]
-script = ExtResource("12_g1fv5")
-event_id = "echo_move_after_movement_quest_started"
-required_flag = "starter_movement_lesson_started"
-completion_save_flag = "echo_moved_after_movement_quest_started"
-target_marker_path = NodePath("../../QuestStuff/Markers/EchoSpiritMarker_MovementQuestEnd")
-hide_after_fade_out = false
-metadata/_custom_type_script = "uid://c7moacun6f3ci"
-
-[sub_resource type="Resource" id="Resource_g1fv5"]
-script = ExtResource("12_g1fv5")
-event_id = "echo_move_after_push_rock_quest_started"
-required_flag = "starter_push_rock_lesson_started"
-completion_save_flag = "echo_moved_after_push_rock_quest_started"
-target_marker_path = NodePath("../../QuestStuff/Markers/EchoSpiritMarker_PushRockQuestEnd2")
-hide_after_fade_out = false
-metadata/_custom_type_script = "uid://c7moacun6f3ci"
-
-[sub_resource type="Resource" id="Resource_yytj5"]
-script = ExtResource("12_g1fv5")
-event_id = "echo_move_after_puzzle_reset_quest_started"
-required_flag = "starter_puzzle_reset_lesson_started"
-completion_save_flag = "echo_moved_after_puzzle_reset_quest_started"
-target_marker_path = NodePath("../../QuestStuff/Markers/EchoSpiritMarker_PuzzleQuestEnd3")
-hide_after_fade_out = false
-metadata/_custom_type_script = "uid://c7moacun6f3ci"
-
-[sub_resource type="Resource" id="Resource_2ewpr"]
-script = ExtResource("12_g1fv5")
-event_id = "echo_move_after_hotbar_and_club_quest_started"
-required_flag = "starter_hotbar_and_club_lesson_started"
-required_quest_id = "echo_moved_after_hotbar_and_club_quest_started"
-completion_save_flag = "echo_moved_after_hotbar_and_club_quest_started"
-target_marker_path = NodePath("../../QuestStuff/Markers/EchoSpiritMarker_Tunnel_Return_QuestEnd")
-metadata/_custom_type_script = "uid://c7moacun6f3ci"
-
-[sub_resource type="Resource" id="Resource_vfogo"]
-script = ExtResource("12_g1fv5")
-event_id = "echo_move_after_breakable_object_quest_started"
-required_flag = "starter_breakable_object_lesson_started"
-completion_save_flag = "echo_moved_after_breakable_object_quest_started"
-target_marker_path = NodePath("../../QuestStuff/Markers/EchoSpiritMarker_BreakObjectQuestEnd")
-hide_after_fade_out = false
-metadata/_custom_type_script = "uid://c7moacun6f3ci"
-
-[sub_resource type="Resource" id="Resource_xv4x6"]
-script = ExtResource("12_g1fv5")
-event_id = "echo_move_after_monster_hunt_3_kills"
-required_flag = "starter_monster_hunt_3_kills"
-required_quest_id = "Completion Save Flag:echo_moved_after_monster_hunt_3_kills"
-completion_save_flag = "Completion Save Flag: echo_moved_after_monster_hunt_3_kills"
-target_marker_path = NodePath("../../QuestStuff/Markers/EchoSpiritMarker_HuntMove1QuestEnd2")
-metadata/_custom_type_script = "uid://c7moacun6f3ci"
-
-[sub_resource type="Resource" id="Resource_ayirs"]
-script = ExtResource("12_g1fv5")
-event_id = "echo_move_after_monster_hunt_6_kills"
-required_flag = "starter_monster_hunt_6_kills"
-completion_save_flag = "echo_moved_after_monster_hunt_6_kills"
-target_marker_path = NodePath("../../QuestStuff/Markers/EchoSpiritMarker_HuntMove2QuestEnd3")
-metadata/_custom_type_script = "uid://c7moacun6f3ci"
-
-[sub_resource type="Resource" id="Resource_7iida"]
-script = ExtResource("12_g1fv5")
-event_id = "echo_move_after_monster_hunt_10_kills"
-required_flag = "starter_monster_hunt_10_kills"
-completion_save_flag = "echo_moved_after_monster_hunt_10_kills"
-target_marker_path = NodePath("../../QuestStuff/Markers/EchoSpiritMarker_HuntMove3QuestEnd")
-hide_after_fade_out = false
-metadata/_custom_type_script = "uid://c7moacun6f3ci"
-
-[sub_resource type="Resource" id="Resource_c4d2t"]
-script = ExtResource("12_g1fv5")
-event_id = "echo_fades_before_boss_exit"
-required_flag = "starter_cavern_boss_lesson_started"
-completion_save_flag = "echo_left_starter_cavern_for_boss_exit"
-movement_action = 0
-metadata/_custom_type_script = "uid://c7moacun6f3ci"
-
-[sub_resource type="Resource" id="Resource_fn2xx"]
-script = ExtResource("14_ayirs")
-objective_id = "reach_echo_spirit_location_01"
-objective_type = 3
-objective_text = "Move to the Echo Spirit."
-metadata/_custom_type_script = "uid://pomcudkoxce3"
-
-[sub_resource type="Resource" id="Resource_x63im"]
-script = ExtResource("13_wqcy6")
-quest_id = "starter_movement_lesson"
-quest_title = "Learn to Move"
-quest_type = 0
-started_flag = "starter_movement_lesson_started"
-ready_to_turn_in_flag = "starter_movement_lesson_ready"
-completed_flag = "starter_movement_lesson_completed"
-first_time_dialogue = "You are awake, Gene Ambrose.
-Use W, A, S, and D to move.
-Come to me, and we will see if your legs still remember the world."
-active_dialogue = "Use W, A, S, and D to move toward me."
-ready_to_turn_in_dialogue = "Good. You can still move.
-That is the first thing this place has not taken from you."
-completed_dialogue = "You have already learned how to move."
-summary = "The Echo Spirit wants me to move through the cavern."
-objective_text = "Move to the Echo Spirit's location."
-objectives = Array[ExtResource("14_ayirs")]([SubResource("Resource_fn2xx")])
-metadata/_custom_type_script = "uid://dt5yvut01s10s"
-
-[sub_resource type="Resource" id="Resource_7cqce"]
-script = ExtResource("14_ayirs")
-objective_id = "listen_to_combat_intro_01"
-objective_type = 4
-objective_text = "Listen to the Echo Spirit's combat lesson."
-starts_completed = true
-completed_flag = "starter_combat_intro_listened"
-metadata/_custom_type_script = "uid://pomcudkoxce3"
-
-[sub_resource type="Resource" id="Resource_yo6wr"]
-script = ExtResource("13_wqcy6")
-quest_id = "starter_combat_intro_lesson"
-quest_title = "Prepare for Combat"
-quest_type = 0
-started_flag = "starter_combat_intro_lesson_started"
-ready_to_turn_in_flag = "starter_combat_intro_lesson_ready"
-completed_flag = "starter_combat_intro_lesson_completed"
-required_flag = "starter_save_totem_lesson_completed"
-first_time_dialogue = "The path ahead is no longer only stone.
-
-There are creatures in the tunnel, and they will not move aside because you ask them to.
-
-Use your weapon to attack.
-Keep moving, watch your health, and use your healing tonic if you are badly hurt.
-
-When creatures fall, you gain experience.
-With enough experience, you will gain a level.
-
-Each level grants stat points.
-You can spend stat points from your character screen to shape how you fight and survive.
-
-Might improves your physical power.
-Agility helps with quickness, ranged attacks, and attack speed.
-Toughness helps you endure damage.
-Endurance strengthens your body and survival.
-Focus strengthens magical potential and increases Mana once Mana is unlocked.
-Speed improves how quickly you move.
-
-Learn these things now.
-The next lesson will not be gentle."
-active_dialogue = "Remember what I told you. Your weapon, your tonic, and your stats all matter."
-ready_to_turn_in_dialogue = "Good.
-
-You understand enough to begin.
-Now you must prove it against living threats."
-completed_dialogue = "You have already learned the basics of combat and growth."
-summary = "The Echo Spirit explains combat, leveling, and stat points."
-objective_text = "Listen to the Echo Spirit's explanation."
-objectives = Array[ExtResource("14_ayirs")]([SubResource("Resource_7cqce")])
-metadata/_custom_type_script = "uid://dt5yvut01s10s"
 
 [node name="StartCavern" type="Node2D" unique_id=102575327]
 position = Vector2(-7, -11)
@@ -198,7 +34,7 @@ script = ExtResource("2_j3sot")
 
 [node name="MapImage" type="Sprite2D" parent="." unique_id=470302150]
 z_index = -100
-position = Vector2(6, 10)
+position = Vector2(8, 12)
 texture = ExtResource("3_bc5g6")
 centered = false
 
@@ -223,7 +59,7 @@ polygon = PackedVector2Array(368, 587, 371, 621, 369, 637, 340, 670, 331, 704, 3
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="CollisionWalls/Cen_Strip_L" unique_id=1287960065]
 position = Vector2(-1, 1)
-polygon = PackedVector2Array(372, 997, 424, 1003, 434, 976, 442, 990, 465, 948, 453, 920, 433, 914, 407, 904, 384, 912, 370, 901, 356, 900, 334, 891, 284, 919, 283, 901, 289, 881, 291, 872, 299, 828, 332, 766, 347, 760, 384, 745, 402, 730, 431, 712, 438, 713, 449, 701, 452, 688, 434, 678, 446, 658, 445, 625, 429, 606, 414, 578, 477, 571, 491, 509, 480, 490, 470, 471, 467, 441, 487, 428, 470, 414, 483, 384, 462, 361, 444, 343, 440, 325, 443, 305, 449, 290, 462, 288, 476, 282, 485, 278, 498, 264, 507, 264, 524, 254, 533, 239, 542, 231, 565, 221, 582, 217, 599, 225, 613, 231, 632, 230, 660, 220, 677, 212, 697, 209, 703, 204, 724, 181, 739, 183, 747, 185, 757, 178, 762, 173, 766, 166, 775, 163, 787, 153, 805, 143, 814, 137, 830, 134, 840, 140, 852, 155, 860, 174, 863, 195, 867, 207, 862, 225, 848, 239, 826, 253, 819, 265, 801, 273, 784, 287, 761, 280, 740, 282, 735, 303, 740, 320, 729, 342, 723, 359, 709, 362, 707, 383, 681, 394, 682, 425, 692, 465, 691, 525, 700, 595, 680, 622, 660, 662, 649, 708, 625, 729, 617, 749, 619, 775, 609, 797, 616, 823, 627, 860, 622, 885, 635, 895, 645, 917, 607, 974, 579, 1004, 556, 1046, 547, 1084, 372, 1082)
+polygon = PackedVector2Array(372, 997, 424, 1003, 434, 976, 442, 990, 465, 948, 453, 920, 433, 914, 407, 904, 384, 912, 370, 901, 356, 900, 334, 891, 284, 919, 283, 901, 289, 881, 291, 872, 308, 830, 338, 770, 347, 760, 384, 745, 402, 730, 431, 712, 438, 713, 449, 701, 452, 688, 434, 678, 446, 658, 445, 625, 429, 606, 414, 578, 477, 571, 491, 509, 480, 490, 470, 471, 467, 441, 487, 428, 470, 414, 483, 384, 462, 361, 444, 343, 440, 325, 443, 305, 449, 290, 462, 288, 476, 282, 485, 278, 498, 264, 507, 264, 524, 254, 533, 239, 542, 231, 565, 221, 582, 217, 599, 225, 613, 231, 632, 230, 660, 220, 677, 212, 697, 209, 703, 204, 724, 181, 739, 183, 747, 185, 757, 178, 762, 173, 766, 166, 775, 163, 787, 153, 805, 143, 814, 137, 830, 134, 840, 140, 852, 155, 860, 174, 863, 195, 867, 207, 862, 225, 848, 239, 826, 253, 819, 265, 801, 273, 784, 287, 761, 280, 740, 282, 735, 303, 740, 320, 729, 342, 723, 359, 709, 362, 707, 383, 681, 394, 682, 425, 692, 465, 691, 525, 700, 595, 680, 622, 660, 662, 649, 708, 625, 729, 617, 749, 619, 775, 609, 797, 616, 823, 627, 860, 622, 885, 635, 895, 645, 917, 607, 974, 579, 1004, 556, 1046, 547, 1084, 372, 1082)
 
 [node name="Cen_Top" type="StaticBody2D" parent="CollisionWalls" unique_id=356009182]
 
@@ -520,11 +356,47 @@ milestone_1_flag = "starter_monster_hunt_3_kills"
 milestone_2_flag = "starter_monster_hunt_6_kills"
 milestone_3_flag = "starter_monster_hunt_10_kills"
 
+[node name="MapTransitionArea" parent="." unique_id=1344752193 instance=ExtResource("15_ayirs")]
+visible = false
+position = Vector2(1299, 198)
+target_scene_path = "uid://chph8q00qw2nc"
+target_spawn_id = "From_Start_Cavern"
+
+[node name="LootContainer_HealingTonic" parent="." unique_id=1056668251 instance=ExtResource("18_ipecf")]
+position = Vector2(131, 762)
+persistent_id = "HT_1"
+drop_item_id = "healing_tonic"
+quest_progress_enabled = true
+quest_id = "starter_puzzle_reset_lesson"
+objective_id = "collect_puzzle_pouch_01"
+
+[node name="LootContainer_StoneClub" parent="." unique_id=401070892 instance=ExtResource("22_yytj5")]
+position = Vector2(422.00003, 960)
+scale = Vector2(0.6, 0.6)
+closed_texture = ExtResource("22_vfogo")
+drop_item_id = "club"
+quest_progress_enabled = true
+quest_id = "starter_hotbar_and_club_lesson"
+objective_id = "pickup_stone_club_01"
+
+[node name="LootContainer_HealingTonic2" parent="." unique_id=1498576120 instance=ExtResource("18_ipecf")]
+position = Vector2(1332, 846)
+persistent_id = "HT_2"
+drop_item_id = "healing_tonic"
+
 [node name="YSortWorld" type="Node2D" parent="." unique_id=965274766]
 y_sort_enabled = true
 
+[node name="PuzzleResetStone" parent="YSortWorld" unique_id=44811575 instance=ExtResource("14_xv4x6")]
+position = Vector2(302, 741)
+
 [node name="Player" parent="YSortWorld" unique_id=949372820 groups=["player"] instance=ExtResource("11_vfogo")]
 position = Vector2(145, 356)
+base_move_speed = 120.0
+move_speed_per_speed_point = 4.0
+attack_offset = 24.0
+weapon_visual_offset = 22.0
+weapon_visual_scale = Vector2(1, 1)
 
 [node name="EchoSpirit" parent="YSortWorld" unique_id=1989954759 instance=ExtResource("10_vpebn")]
 position = Vector2(188, 363)
@@ -536,15 +408,26 @@ base_dialogue_text = ""
 base_speaker_name_override = "Echo Spirit"
 
 [node name="movement" parent="YSortWorld/EchoSpirit" index="1" unique_id=2116308213]
-movement_events = Array[Resource]([SubResource("Resource_7g80t"), SubResource("Resource_g1fv5"), SubResource("Resource_yytj5"), SubResource("Resource_2ewpr"), SubResource("Resource_vfogo"), SubResource("Resource_xv4x6"), SubResource("Resource_ayirs"), SubResource("Resource_7iida"), SubResource("Resource_c4d2t")])
+movement_events = Array[Resource]([])
 persistent_movement_id = "echo_spirit_starter_cavern"
 
 [node name="Quest" parent="YSortWorld/EchoSpirit" index="2" unique_id=1651262223]
-quests = Array[ExtResource("13_wqcy6")]([SubResource("Resource_x63im"), ExtResource("12_pbla5"), ExtResource("13_g1fv5"), ExtResource("14_wqcy6"), ExtResource("15_2ewpr"), ExtResource("16_vfogo"), SubResource("Resource_yo6wr"), ExtResource("21_7iida"), ExtResource("22_xv4x6")])
+quests = Array[ExtResource("13_wqcy6")]([ExtResource("18_g1fv5")])
 trigger_movement_after_start_dialogue = true
 
 [node name="Shop" parent="YSortWorld/EchoSpirit" index="3" unique_id=1154396758]
 enabled = false
+
+[node name="QuestBlocker" parent="YSortWorld/EchoSpirit" unique_id=2010962643 instance=ExtResource("19_wqcy6")]
+position = Vector2(-10, 43.74997)
+required_flag = "starter_movement_lesson_started"
+blocked_message = "Hey come talk to me."
+
+[node name="CollisionShape2D" parent="YSortWorld/EchoSpirit/QuestBlocker" index="0" unique_id=1340525762]
+polygon = PackedVector2Array(-99.99999, -24.999939, 94.999985, -27.499939, 94.999985, -18.749939, -102.49999, -17.499939)
+
+[node name="CollisionPolygon2D" parent="YSortWorld/EchoSpirit/QuestBlocker/MessageArea" parent_id_path=PackedInt32Array(2010962643, 312302381) index="0" unique_id=1667844793]
+polygon = PackedVector2Array(-95, -32.49994, -13.75, -23.749939, 24.999985, -22.499939, 52.499985, -28.749939, 67.499985, -39.99994, 89.999985, -26.249939, 79.999985, -11.249939, 29.999985, 2.5000305, -13.75, -1.2499695, -103.74999, -6.249939)
 
 [node name="SaveTotem" parent="YSortWorld" unique_id=528667636 instance=ExtResource("13_7iida")]
 position = Vector2(872, 86)
@@ -553,43 +436,11 @@ objective_id = "use_save_totem_01"
 quest_progress_flag = "starter_save_totem_used"
 required_flag = "starter_save_totem_lesson_started"
 
-[node name="PuzzleResetStone" parent="YSortWorld" unique_id=244382430 instance=ExtResource("14_xv4x6")]
-position = Vector2(301, 752)
-scale = Vector2(0.2, 0.2)
-push_object_paths = Array[NodePath]([NodePath("../../Objects/PushRock5"), NodePath("../../Objects/PushRock7")])
-quest_id = "starter_puzzle_reset_lesson"
-objective_id = "use_puzzle_reset_stone_01"
-quest_progress_flag = "Quest Progress Flag:starter_puzzle_reset_used"
-required_flag = "starter_puzzle_reset_lesson_started"
-
-[node name="LootContainer_HealingTonic" parent="YSortWorld" unique_id=1056668251 instance=ExtResource("18_ipecf")]
-position = Vector2(131, 762)
-persistent_id = "HT_1"
-drop_item_id = "healing_tonic"
-quest_progress_enabled = true
-quest_id = "starter_puzzle_reset_lesson"
-objective_id = "collect_puzzle_pouch_01"
-
-[node name="LootContainer_StoneClub" parent="YSortWorld" unique_id=401070892 instance=ExtResource("22_yytj5")]
-position = Vector2(422.00003, 960)
-scale = Vector2(0.6, 0.6)
-closed_texture = ExtResource("22_vfogo")
-drop_item_id = "club"
-quest_progress_enabled = true
-quest_id = "starter_hotbar_and_club_lesson"
-objective_id = "pickup_stone_club_01"
-
-[node name="LootContainer_HealingTonic2" parent="YSortWorld" unique_id=1498576120 instance=ExtResource("18_ipecf")]
-position = Vector2(1332, 846)
-persistent_id = "HT_2"
-drop_item_id = "healing_tonic"
-
 [node name="QuestStuff" type="Node2D" parent="YSortWorld" unique_id=572489815]
 
 [node name="Markers" type="Node2D" parent="YSortWorld/QuestStuff" unique_id=36210484]
 
 [node name="EchoSpiritMarker_MovementQuestEnd" parent="YSortWorld/QuestStuff/Markers" unique_id=175386698 instance=ExtResource("22_2ewpr")]
-visible = true
 position = Vector2(341, 545)
 
 [node name="EchoSpiritMarker_Tunnel_Return_QuestEnd" parent="YSortWorld/QuestStuff/Markers" unique_id=891881901 instance=ExtResource("22_2ewpr")]
@@ -597,11 +448,9 @@ visible = true
 position = Vector2(447, 470)
 
 [node name="EchoSpiritMarker_PushRockQuestEnd2" parent="YSortWorld/QuestStuff/Markers" unique_id=1082482695 instance=ExtResource("22_2ewpr")]
-visible = true
 position = Vector2(309, 810)
 
 [node name="EchoSpiritMarker_PuzzleQuestEnd3" parent="YSortWorld/QuestStuff/Markers" unique_id=1208148355 instance=ExtResource("22_2ewpr")]
-visible = true
 position = Vector2(361, 956)
 
 [node name="EchoSpiritMarker_BreakObjectQuestEnd" parent="YSortWorld/QuestStuff/Markers" unique_id=844494385 instance=ExtResource("22_2ewpr")]
@@ -657,12 +506,7 @@ visible_when_open = true
 position = Vector2(4.1309376, -13.961927)
 polygon = PackedVector2Array(1, -35, 30, -31, 39, 31, 13.74646, 27.129913, -18.205078, 21.83046, -22.727295, -29.214142)
 
-[node name="MapTransitionArea" parent="." unique_id=1344752193 instance=ExtResource("15_ayirs")]
-visible = false
-position = Vector2(1299, 198)
-target_scene_path = "uid://chph8q00qw2nc"
-target_spawn_id = "From_Start_Cavern"
-
 [editable path="YSortWorld/EchoSpirit"]
+[editable path="YSortWorld/EchoSpirit/QuestBlocker"]
 [editable path="YSortWorld/QuestStuff/ProgressAreas/BossArenaTrigger"]
 [editable path="YSortWorld/QuestStuff/ProgressAreas/BossGateBlocker"]

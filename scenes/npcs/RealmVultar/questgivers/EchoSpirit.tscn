@@ -107,11 +107,11 @@ animations = [{
 }]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_l26by"]
-radius = 13.750004
+radius = 16.250006
 height = 37.50001
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_pxpdk"]
-radius = 25.000002
+radius = 23.750002
 
 [node name="EchoSpirit" type="Area2D" unique_id=1989954759]
 scale = Vector2(0.8, 0.8)
@@ -136,6 +136,7 @@ scale = Vector2(0.99999994, 0.99999994)
 script = ExtResource("5_64815")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=740833633]
+scale = Vector2(0.9, 0.9)
 sprite_frames = SubResource("SpriteFrames_aedj1")
 animation = &"idle_left"
 

@@ -1,0 +1,28 @@
+[gd_scene format=3 uid="uid://cfios20wgcga"]
+
+[ext_resource type="Texture2D" uid="uid://duhgax513jdin" path="res://art/objects/reset_ped.png" id="1_ddw0h"]
+[ext_resource type="Script" uid="uid://bbsmeecf58jwx" path="res://scripts/story/PuzzleResetStone.gd" id="3_2ahp4"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_fnhhl"]
+radius = 31.016125
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_2ahp4"]
+radius = 18.110771
+
+[node name="PuzzleResetStone" type="Area2D" unique_id=44811575]
+script = ExtResource("3_2ahp4")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=2123805163]
+texture = ExtResource("1_ddw0h")
+
+[node name="InteractionCollision" type="CollisionShape2D" parent="." unique_id=342518867]
+position = Vector2(-19, 14)
+shape = SubResource("CircleShape2D_fnhhl")
+
+[node name="StaticBody2D" type="StaticBody2D" parent="." unique_id=765709485]
+position = Vector2(-20, 14)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D" unique_id=1148347841]
+position = Vector2(1, 0)
+shape = SubResource("CircleShape2D_2ahp4")
+debug_color = Color(0.5539887, 0.41864344, 0.9578927, 0.41960785)

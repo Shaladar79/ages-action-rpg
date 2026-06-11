@@ -2,7 +2,6 @@
 
 [ext_resource type="Script" uid="uid://clw4trxet62jj" path="res://scripts/player/player.gd" id="1_gfjak"]
 [ext_resource type="Texture2D" uid="uid://38ueimmekc7u" path="res://art/characters/player/Gene_new.png" id="2_4kuee"]
-[ext_resource type="Texture2D" uid="uid://cgp8rhibrpqu4" path="res://art/weapons/Clubs/T1/stone_club.png" id="4_524rm"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_524rm"]
 atlas = ExtResource("2_4kuee")
@@ -12,9 +11,9 @@ region = Rect2(48, 96, 48, 48)
 atlas = ExtResource("2_4kuee")
 region = Rect2(48, 144, 48, 48)
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_c3xxp"]
+[sub_resource type="AtlasTexture" id="AtlasTexture_gfjak"]
 atlas = ExtResource("2_4kuee")
-region = Rect2(96, 48, 48, 48)
+region = Rect2(48, 48, 48, 48)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_npwbq"]
 atlas = ExtResource("2_4kuee")
@@ -104,7 +103,7 @@ animations = [{
 }, {
 "frames": [{
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_c3xxp")
+"texture": SubResource("AtlasTexture_gfjak")
 }],
 "loop": true,
 "name": &"idle_right",
@@ -188,7 +187,7 @@ animations = [{
 }]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_gfjak"]
-size = Vector2(16, 8.5)
+size = Vector2(9.142856, 4.8214264)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_4kuee"]
 size = Vector2(10, 18.5)
@@ -198,6 +197,7 @@ size = Vector2(12, 30.625)
 
 [node name="Player" type="CharacterBody2D" unique_id=949372820]
 scale = Vector2(1.75, 1.75)
+collision_mask = 255
 script = ExtResource("1_gfjak")
 base_move_speed = 100.0
 move_speed_per_speed_point = 5.0
@@ -206,14 +206,14 @@ weapon_visual_offset = 20.0
 weapon_visual_scale = Vector2(0.06, 0.06)
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=664127344]
-scale = Vector2(0.5, 0.5)
+scale = Vector2(0.45, 0.45)
 sprite_frames = SubResource("SpriteFrames_mndc6")
 animation = &"walk_up"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=582978164]
-visible = false
 y_sort_enabled = true
-position = Vector2(0, 13)
+position = Vector2(-0.5714284, 6.4107127)
+scale = Vector2(1.0000001, 1.0000001)
 shape = SubResource("RectangleShape2D_gfjak")
 
 [node name="Camera2D" type="Camera2D" parent="." unique_id=909399435]
@@ -233,11 +233,6 @@ monitorable = false
 visible = false
 shape = SubResource("RectangleShape2D_4kuee")
 disabled = true
-
-[node name="WeaponSprite" type="Sprite2D" parent="." unique_id=126568166]
-position = Vector2(0, -2.3841858e-07)
-scale = Vector2(0.008, 0.01)
-texture = ExtResource("4_524rm")
 
 [node name="Hurtbox" type="Area2D" parent="." unique_id=6034215]
 
