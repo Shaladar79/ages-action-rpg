@@ -1,0 +1,30 @@
+[gd_resource type="Resource" script_class="QuestEntry" format=3 uid="uid://lfvlo3k72kyo"]
+
+[ext_resource type="Script" uid="uid://pomcudkoxce3" path="res://scripts/core/quests/quest_objective_entry.gd" id="1_tjqh1"]
+[ext_resource type="Script" uid="uid://dt5yvut01s10s" path="res://scripts/core/quests/quest_entry.gd" id="2_fjssc"]
+
+[sub_resource type="Resource" id="Resource_tjqh1"]
+script = ExtResource("1_tjqh1")
+objective_id = "kill_starter_monsters_02"
+objective_type = 1
+objective_text = "Defeat the creatures deeper in the tunnel."
+required_amount = 3
+completed_flag = "starter_monster_hunt_02_kills"
+metadata/_custom_type_script = "uid://pomcudkoxce3"
+
+[resource]
+script = ExtResource("2_fjssc")
+quest_id = "starter_monster_hunt_lesson_02"
+quest_title = "Push Deeper"
+quest_type = 0
+started_flag = "starter_monster_hunt_lesson_02_started"
+ready_to_turn_in_flag = "starter_monster_hunt_lesson_02_ready"
+completed_flag = "starter_monster_hunt_lesson_02_completed"
+required_flag = "starter_monster_hunt_lesson_01_completed"
+first_time_dialogue = "Good. You are beginning to understand.
+
+The tunnel ahead is still dangerous. If you are wounded, use your tonic. If you have grown stronger, spend your stat point before pressing forward.
+
+Defeat the next creatures, then I will join you."
+objectives = Array[ExtResource("1_tjqh1")]([SubResource("Resource_tjqh1"), null])
+metadata/_custom_type_script = "uid://dt5yvut01s10s"

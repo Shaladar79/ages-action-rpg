@@ -211,6 +211,7 @@ sprite_frames = SubResource("SpriteFrames_mndc6")
 animation = &"walk_up"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=582978164]
+visible = false
 y_sort_enabled = true
 position = Vector2(-0.5714284, 6.4107127)
 scale = Vector2(1.0000001, 1.0000001)

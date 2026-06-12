@@ -1,0 +1,30 @@
+[gd_resource type="Resource" script_class="QuestEntry" format=3 uid="uid://dctyvgbv3u1sr"]
+
+[ext_resource type="Script" uid="uid://pomcudkoxce3" path="res://scripts/core/quests/quest_objective_entry.gd" id="1_cafjx"]
+[ext_resource type="Script" uid="uid://dt5yvut01s10s" path="res://scripts/core/quests/quest_entry.gd" id="2_t5nxa"]
+
+[sub_resource type="Resource" id="Resource_cafjx"]
+script = ExtResource("1_cafjx")
+objective_id = "kill_starter_monsters_01"
+objective_type = 1
+objective_text = "Defeat the first creatures in the tunnel."
+required_amount = 3
+completed_flag = "starter_monster_hunt_01_kills"
+metadata/_custom_type_script = "uid://pomcudkoxce3"
+
+[resource]
+script = ExtResource("2_t5nxa")
+quest_id = "starter_monster_hunt_lesson_01"
+quest_title = "Clear the First Tunnel"
+quest_type = 0
+started_flag = "starter_monster_hunt_lesson_01_started"
+ready_to_turn_in_flag = "starter_monster_hunt_lesson_01_ready"
+completed_flag = "starter_monster_hunt_lesson_01_completed"
+required_flag = "starter_save_totem_lesson_completed"
+first_time_dialogue = "There are creatures ahead.
+
+Do not rush blindly. Watch how they move, strike when you can, and step away when you must.
+
+Defeat the first creatures in the tunnel, then I will join you."
+objectives = Array[ExtResource("1_cafjx")]([SubResource("Resource_cafjx")])
+metadata/_custom_type_script = "uid://dt5yvut01s10s"

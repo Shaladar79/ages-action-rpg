@@ -26,7 +26,7 @@ quest_type = 0
 started_flag = "starter_hotbar_and_club_lesson_started"
 ready_to_turn_in_flag = "starter_hotbar_and_club_lesson_ready"
 completed_flag = "starter_hotbar_and_club_lesson_completed"
-required_flag = "starter_puzzle_reset_lesson_completed"
+required_flag = "starter_push_and_reset_lesson_completed"
 first_time_dialogue = "You found a healing tonic.
 
 Do not wait until pain teaches you its value.
