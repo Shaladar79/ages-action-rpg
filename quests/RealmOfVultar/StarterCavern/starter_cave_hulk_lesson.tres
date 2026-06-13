@@ -1,0 +1,54 @@
+[gd_resource type="Resource" script_class="QuestEntry" format=3 uid="uid://bsm1rqapwv8o3"]
+
+[ext_resource type="Script" uid="uid://pomcudkoxce3" path="res://scripts/core/quests/quest_objective_entry.gd" id="1_x2pvd"]
+[ext_resource type="Script" uid="uid://dt5yvut01s10s" path="res://scripts/core/quests/quest_entry.gd" id="2_dnjer"]
+
+[sub_resource type="Resource" id="Resource_x2pvd"]
+script = ExtResource("1_x2pvd")
+objective_id = "defeat_cave_hulk_01"
+objective_type = 1
+objective_text = "Defeat the Cave Hulk."
+completed_flag = "starter_cave_hulk_defeated"
+metadata/_custom_type_script = "uid://pomcudkoxce3"
+
+[resource]
+script = ExtResource("2_dnjer")
+quest_id = "starter_cave_hulk_lesson"
+quest_title = "Defeat the Cave Hulk"
+quest_type = 0
+started_flag = "starter_cave_hulk_lesson_started"
+ready_to_turn_in_flag = "starter_cave_hulk_lesson_ready"
+completed_flag = "starter_cave_hulk_lesson_completed"
+required_flag = "starter_monster_hunt_lesson_03_completed"
+first_time_dialogue = "The tunnel is clear, but the cavern is not finished with you.
+
+Something large waits ahead.
+
+The Cave Hulk is not like the creatures you have faced. It is stronger, slower, and far more dangerous.
+
+Listen carefully, Gene. You cannot leave this cave until the Cave Hulk is dead.
+
+The way outside will remain sealed until the beast falls.
+
+Use what you have learned. Move when you must. Strike when you can. Heal before desperation takes you.
+
+When the Cave Hulk is defeated, the path outside will open.
+
+I will meet you beyond the cave."
+active_dialogue = "The Cave Hulk still lives.
+
+The cave will not let you leave while it blocks the way forward.
+
+Defeat it, and I will meet you outside."
+ready_to_turn_in_dialogue = "The Cave Hulk has fallen.
+
+The cavern releases its hold on you now.
+
+Go, Gene. Step into the world beyond this stone.
+
+I will meet you outside."
+completed_dialogue = "The Cave Hulk is dead. The way out of the cave is open."
+summary = "The Echo Spirit says the cave cannot be exited until the Cave Hulk is defeated."
+objective_text = "Defeat the Cave Hulk."
+objectives = Array[ExtResource("1_x2pvd")]([SubResource("Resource_x2pvd")])
+metadata/_custom_type_script = "uid://dt5yvut01s10s"

@@ -1,0 +1,46 @@
+[gd_resource type="Resource" script_class="QuestEntry" format=3 uid="uid://dscq7ldol80hd"]
+
+[ext_resource type="Script" uid="uid://pomcudkoxce3" path="res://scripts/core/quests/quest_objective_entry.gd" id="1_eour4"]
+[ext_resource type="Script" uid="uid://dt5yvut01s10s" path="res://scripts/core/quests/quest_entry.gd" id="2_7r5cs"]
+
+[sub_resource type="Resource" id="Resource_eour4"]
+script = ExtResource("1_eour4")
+objective_id = "kill_starter_monsters_03"
+objective_type = 1
+objective_text = "Defeat the remaining creatures in the tunnel."
+required_amount = 4
+completed_flag = "starter_monster_hunt_03_kills"
+metadata/_custom_type_script = "uid://pomcudkoxce3"
+
+[resource]
+script = ExtResource("2_7r5cs")
+quest_id = "starter_monster_hunt_lesson_03"
+quest_title = "Clear the Last Path"
+quest_type = 0
+started_flag = "starter_monster_hunt_lesson_03_started"
+ready_to_turn_in_flag = "starter_monster_hunt_lesson_03_ready"
+completed_flag = "starter_monster_hunt_lesson_03_completed"
+required_flag = "starter_monster_hunt_lesson_02_completed"
+first_time_dialogue = "One more stretch remains, Gene.
+
+The cavern has tested your hands, your feet, and your nerve.
+
+The creatures ahead are the last between you and the deeper path.
+
+Clear them out, then I will join you."
+active_dialogue = "The last creatures still block the path. Defeat them"
+ready_to_turn_in_dialogue = "The last creatures still block the path. Defeat them, then return to me.
+
+Ready To Turn In Dialogue:
+Good. The tunnel is clear.
+
+You are not helpless anymore, Gene.
+
+Remember that. Fear is useful when it keeps you alive, but it must not be allowed to lead you.
+"
+completed_dialogue = "
+The last path has already been cleared."
+summary = "The Echo Spirit wants me to clear the final group of creatures from the tunnel."
+objective_text = "Defeat the remaining creatures in the tunnel."
+objectives = Array[ExtResource("1_eour4")]([SubResource("Resource_eour4"), null])
+metadata/_custom_type_script = "uid://dt5yvut01s10s"
